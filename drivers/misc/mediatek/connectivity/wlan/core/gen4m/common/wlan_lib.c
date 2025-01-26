@@ -3429,7 +3429,7 @@ uint32_t wlanSetChipEcoInfo(IN struct ADAPTER *prAdapter)
 {
 	uint32_t hw_version = 0, sw_version = 0;
 	struct mt66xx_chip_info *prChipInfo = prAdapter->chip_info;
-	uint32_t chip_id = prChipInfo->chip_id;
+	uint32_t __maybe_unused chip_id = prChipInfo->chip_id;
 	/* WLAN_STATUS status; */
 	uint32_t u4Status = WLAN_STATUS_SUCCESS;
 
