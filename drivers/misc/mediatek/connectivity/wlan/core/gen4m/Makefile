@@ -12,6 +12,9 @@ ifeq ($(CONFIG_MTK_CONNECTIVITY_LOG),y)
 ccflags-y += -DDBG_DISABLE_ALL_LOG=1
 endif
 
+# Don't warn about unused variables or functions
+ccflags-y += -Wno-unused-function -Wno-unused-variable
+
 # ---------------------------------------------------
 # OS option
 # ---------------------------------------------------
