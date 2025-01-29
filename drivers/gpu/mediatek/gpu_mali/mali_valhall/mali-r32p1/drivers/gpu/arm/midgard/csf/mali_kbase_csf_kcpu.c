@@ -76,7 +76,14 @@ static int kbase_kcpu_map_import_prepare(
 		 * on the physical pages tracking object. When the last
 		 * reference to the tracking object is dropped the pages
 		 * would be unpinned if they weren't unpinned before.
+		 *
+		 * Region should be CPU cached: abort if it isn't.
 		 */
+		if (WARN_ON(!(reg->flags & KBASE_REG_CPU_CACHED))) {
+			ret = -EINVAL;
+			goto out;
+		}
+
 		ret = kbase_jd_user_buf_pin_pages(kctx, reg);
 		if (ret)
 			goto out;
@@ -1522,6 +1529,8 @@ static int kbase_kcpu_fence_signal_prepare(
 		goto fd_flags_fail;
 	}
 
+	fd_install(fd, sync_file->file);
+
 	fence.basep.fd = fd;
 
 	current_command->type = BASE_KCPU_COMMAND_TYPE_FENCE_SIGNAL;
@@ -1533,11 +1542,6 @@ static int kbase_kcpu_fence_signal_prepare(
 		goto fd_flags_fail;
 	}
 
-	/* 'sync_file' pointer can't be safely dereferenced once 'fd' is
-	 * installed, so the install step needs to be done at the last
-	 * before returning success.
-	 */
-	fd_install(fd, sync_file->file);
 	return 0;
 
 fd_flags_fail:

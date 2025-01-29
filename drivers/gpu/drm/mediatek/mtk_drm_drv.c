@@ -3402,8 +3402,7 @@ static int mtk_drm_bind(struct device *dev)
 err_deinit:
 	mtk_drm_kms_deinit(drm);
 err_free:
-	drm_dev_put(drm);
-	private->drm = NULL;
+	drm_dev_unref(drm);
 	return ret;
 }
 
@@ -3412,7 +3411,7 @@ static void mtk_drm_unbind(struct device *dev)
 	struct mtk_drm_private *private = dev_get_drvdata(dev);
 
 	drm_dev_unregister(private->drm);
-	drm_dev_put(private->drm);
+	drm_dev_unref(private->drm);
 	private->drm = NULL;
 }
 
@@ -3963,7 +3962,7 @@ static int mtk_drm_remove(struct platform_device *pdev)
 
 	drm_dev_unregister(drm);
 	mtk_drm_kms_deinit(drm);
-	drm_dev_put(drm);
+	drm_dev_unref(drm);
 
 	component_master_del(&pdev->dev, &mtk_drm_ops);
 	pm_runtime_disable(&pdev->dev);

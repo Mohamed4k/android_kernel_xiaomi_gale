@@ -77,8 +77,9 @@ SCHED_FEAT(WARN_DOUBLE_CLOCK, false)
  */
 SCHED_FEAT(RT_PUSH_IPI, true)
 #endif
-
+//MOD by chengyuan@longcheer.com on 2024/2/29 start
 SCHED_FEAT(RT_RUNTIME_SHARE, false)
+//MOD by chengyuan@longcheer.com on 2024/2/29 end
 SCHED_FEAT(LB_MIN, false)
 SCHED_FEAT(ATTACH_AGE_LOAD, true)
 

@@ -5,6 +5,7 @@ MTK_CUSTOM_PATH  := $(srctree)/drivers/misc/mediatek
 
 #FDVT 3.5
 ifeq ($(CONFIG_MACH_MT6763),y)
+  $(info FDVT: Drv use 3.5 folder)
   MTKCAM_FDVT_VERSION := 3.5
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/3.5
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/3.5/inc
@@ -12,6 +13,7 @@ ifeq ($(CONFIG_MACH_MT6763),y)
 endif
 
 ifeq ($(CONFIG_MACH_MT6761),y)
+$(info FDVT: Drv use 3.5 folder)
 MTKCAM_FDVT_VERSION := 3.5
 MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/3.5
 subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/3.5/inc
@@ -20,6 +22,7 @@ endif
 
 #FDVT 4.0
 ifeq ($(CONFIG_MACH_MT6758),y)
+  $(info FDVT: Drv use 4.0 folder)
   MTKCAM_FDVT_VERSION := 4.0
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0/inc
@@ -27,6 +30,7 @@ ifeq ($(CONFIG_MACH_MT6758),y)
 endif
 
 ifeq ($(CONFIG_MACH_MT6757),y)
+  $(info FDVT: Drv use 4.0 folder)
   MTKCAM_FDVT_VERSION := 4.0
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0/inc
@@ -34,6 +38,7 @@ ifeq ($(CONFIG_MACH_MT6757),y)
 endif
 
 ifeq ($(CONFIG_MACH_MT6799),y)
+  $(info FDVT: Drv use 4.0 folder)
   MTKCAM_FDVT_VERSION := 4.0
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0/inc
@@ -41,6 +46,7 @@ ifeq ($(CONFIG_MACH_MT6799),y)
 endif
 
 ifeq ($(CONFIG_MACH_MT6759),y)
+  $(info FDVT: Drv use 4.0 folder)
   MTKCAM_FDVT_VERSION := 4.0
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0/inc
@@ -48,6 +54,7 @@ ifeq ($(CONFIG_MACH_MT6759),y)
 endif
 
 ifeq ($(CONFIG_MACH_MT6775),y)
+  $(info FDVT: Drv use 4.0 folder)
   MTKCAM_FDVT_VERSION := 4.0
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0/inc
@@ -55,6 +62,7 @@ ifeq ($(CONFIG_MACH_MT6775),y)
 endif
 
 ifeq ($(CONFIG_MACH_MT6771),y)
+  $(info FDVT: Drv use 4.0 folder)
   MTKCAM_FDVT_VERSION := 4.0
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0/inc
@@ -62,6 +70,7 @@ ifeq ($(CONFIG_MACH_MT6771),y)
 endif
 
 ifeq ($(CONFIG_MACH_MT6765),y)
+$(info FDVT: Drv use 4.0 folder)
 MTKCAM_FDVT_VERSION := 4.0
 MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0
 subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0/inc
@@ -69,6 +78,7 @@ obj-y += 4.0/
 endif
 
 ifeq ($(CONFIG_MACH_MT6768),y)
+  $(info FDVT: Drv use 4.0 folder)
   MTKCAM_FDVT_VERSION := 4.0
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/4.0/inc
@@ -77,6 +87,7 @@ endif
 
 #FDVT 5.0
 ifeq ($(CONFIG_MACH_MT8168),y)
+  $(info FDVT: Drv use 5.0 folder)
   MTKCAM_FDVT_VERSION := 5.0
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.0
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.0/inc
@@ -84,6 +95,7 @@ ifeq ($(CONFIG_MACH_MT8168),y)
 endif
 
 ifeq ($(CONFIG_MACH_MT6785),y)
+$(info FDVT: Drv use mt6785 folder)
 MTKCAM_FDVT_VERSION := 5.0
 MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/mt6785
 subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/mt6785/inc
@@ -91,6 +103,7 @@ obj-y += mt6785/
 endif
 
 ifeq ($(CONFIG_MACH_MT6779),y)
+$(info FDVT: Drv use 5.0 folder)
 MTKCAM_FDVT_VERSION := 5.0
 MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.0
 subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.0/inc
@@ -99,6 +112,7 @@ endif
 
 #FDVT 5.1
 ifeq ($(CONFIG_MACH_MT6893),y)
+  $(info FDVT: Drv use 5.1 folder)
   MTKCAM_FDVT_VERSION := 5.1
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.1
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.1/inc
@@ -106,6 +120,7 @@ ifeq ($(CONFIG_MACH_MT6893),y)
 endif
 
 ifeq ($(CONFIG_MACH_MT6885),y)
+  $(info FDVT: Drv use 5.1 folder)
   MTKCAM_FDVT_VERSION := 5.1
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.1
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.1/inc
@@ -113,6 +128,7 @@ ifeq ($(CONFIG_MACH_MT6885),y)
 endif
 
 ifeq ($(CONFIG_MACH_MT6873),y)
+$(info FDVT: Drv use 5.1 folder)
 MTKCAM_FDVT_VERSION := 5.1
 MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.1
 subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.1/inc
@@ -120,6 +136,7 @@ obj-y += 5.1/
 endif
 
 ifeq ($(CONFIG_MACH_MT6853),y)
+  $(info FDVT: Drv use 5.1 folder)
   MTKCAM_FDVT_VERSION := 5.1
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.1
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.1/inc
@@ -127,6 +144,7 @@ ifeq ($(CONFIG_MACH_MT6853),y)
 endif
 
 ifeq ($(CONFIG_MACH_MT6833),y)
+  $(info FDVT: Drv use 5.1 folder)
   MTKCAM_FDVT_VERSION := 5.1
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.1
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.1/inc
@@ -134,6 +152,7 @@ ifeq ($(CONFIG_MACH_MT6833),y)
 endif
 
 ifeq ($(CONFIG_MACH_MT6877),y)
+  $(info FDVT: Drv use 5.1 folder)
   MTKCAM_FDVT_VERSION := 5.1
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.1
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.1/inc
@@ -141,6 +160,7 @@ ifeq ($(CONFIG_MACH_MT6877),y)
 endif
 
 ifeq ($(CONFIG_MACH_MT6781),y)
+  $(info FDVT: Drv use 5.1 folder)
   MTKCAM_FDVT_VERSION := 5.1
   MTKCAM_FDVT_PATH := $(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.1
   subdir-ccflags-y += -I$(MTK_CUSTOM_PATH)/cameraisp/fdvt/5.1/inc

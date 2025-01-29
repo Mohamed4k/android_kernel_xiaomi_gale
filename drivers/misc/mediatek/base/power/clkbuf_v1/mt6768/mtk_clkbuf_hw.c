@@ -167,6 +167,18 @@ static void pmic_clk_buf_ctrl_ext(short on)
 				      PMIC_XO_EXTBUF7_EN_M_SHIFT);
 }
 
+static void pmic_clk_buf_ctrl_nfc(short on)
+  {
+	if (on)
+		pmic_config_interface(PMIC_DCXO_CW00_SET_ADDR, 0x1,
+				      PMIC_XO_EXTBUF3_EN_M_MASK,
+				      PMIC_XO_EXTBUF3_EN_M_SHIFT);
+	else
+		pmic_config_interface(PMIC_DCXO_CW00_CLR_ADDR, 0x1,
+				      PMIC_XO_EXTBUF3_EN_M_MASK,
+				      PMIC_XO_EXTBUF3_EN_M_SHIFT);
+}
+
 void clk_buf_ctrl_bblpm_hw(short on)
 {
 	u32 bblpm_sel = 0, aac_sta = 0, i = 0;
@@ -498,7 +510,7 @@ static void pmic_clk_buf_ctrl(enum CLK_BUF_SWCTRL_STATUS_T *status)
 		PMIC_REG_MASK, PMIC_REG_SHIFT);
 	pmic_read_interface(PMIC_DCXO_CW11, &pmic_cw11,
 		PMIC_REG_MASK, PMIC_REG_SHIFT);
-	pr_debug("%s DCXO_CW00=0x%x, CW11=0x%x, clk_buf_swctrl=[%u %u %u %u 0 0 %u]\n",
+	pr_info("%s DCXO_CW00=0x%x, CW11=0x%x, clk_buf_swctrl=[%u %u %u %u 0 0 %u]\n",
 		__func__, pmic_cw00, pmic_cw11, status[XO_SOC], status[XO_WCN],
 		status[XO_NFC], status[XO_CEL], status[XO_EXT]);
 }
@@ -732,6 +744,8 @@ bool clk_buf_ctrl(enum clk_buf_id id, bool onoff)
 				__func__, id);
 			break;
 		}
+                pr_info("%s: id=%d isn't xxxxxxxxxxxxxxxxxxxxx by SW\n",__func__, id);            
+                pmic_clk_buf_ctrl_nfc(onoff);
 		pmic_clk_buf_swctrl[XO_NFC] = onoff;
 		break;
 	case CLK_BUF_RF:
@@ -837,7 +851,7 @@ void clk_buf_dump_clkbuf_log(void)
 			    PMIC_REG_MASK, PMIC_REG_SHIFT);
 	pmic_read_interface(PMIC_DCXO_CW23, &pmic_cw23,
 			    PMIC_REG_MASK, PMIC_REG_SHIFT);
-	pr_debug("%s DCXO_CW00/01/02/11/14/16/23=0x%x %x %x %x %x %x %x\n",
+	pr_info("%s DCXO_CW00/01/02/11/14/16/23=0x%x %x %x %x %x %x %x\n",
 		     __func__, pmic_cw00, pmic_cw01, pmic_cw02, pmic_cw11,
 		     pmic_cw14, pmic_cw16, pmic_cw23);
 	pr_info("%s top_spi_con1=0x%x\n", __func__, top_spi_con1);
@@ -1615,7 +1629,7 @@ void clk_buf_post_init(void)
 	CLK_BUF7_STATUS = CLOCK_BUFFER_DISABLE;
 #endif
 #endif
-#ifndef CONFIG_NFC_CHIP_SUPPORT
+#if 0
 	/* no need to use XO_NFC if no NFC */
 	clk_buf_ctrl_internal(CLK_BUF_NFC, CLK_BUF_FORCE_OFF);
 	CLK_BUF3_STATUS = CLOCK_BUFFER_DISABLE;

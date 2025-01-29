@@ -306,8 +306,7 @@ struct device_link *device_link_add(struct device *consumer,
 {
 	struct device_link *link;
 
-	if (!consumer || !supplier || consumer == supplier ||
-	    flags & ~DL_ADD_VALID_FLAGS ||
+	if (!consumer || !supplier || flags & ~DL_ADD_VALID_FLAGS ||
 	    (flags & DL_FLAG_STATELESS && flags & DL_MANAGED_LINK_FLAGS) ||
 	    (flags & DL_FLAG_SYNC_STATE_ONLY &&
 	     flags != DL_FLAG_SYNC_STATE_ONLY) ||
@@ -738,8 +737,6 @@ static void __device_links_queue_sync_state(struct device *dev,
 {
 	struct device_link *link;
 
-	if (!dev_has_sync_state(dev))
-		return;
 	if (dev->state_synced)
 		return;
 
@@ -841,7 +838,7 @@ late_initcall(sync_state_resume_initcall);
 
 static void __device_links_supplier_defer_sync(struct device *sup)
 {
-	if (list_empty(&sup->links.defer_sync) && dev_has_sync_state(sup))
+	if (list_empty(&sup->links.defer_sync))
 		list_add_tail(&sup->links.defer_sync, &deferred_sync);
 }
 
@@ -1163,7 +1160,7 @@ static void device_links_purge(struct device *dev)
 	struct device_link *link, *ln;
 
 	mutex_lock(&wfs_lock);
-	list_del_init(&dev->links.needs_suppliers);
+	list_del(&dev->links.needs_suppliers);
 	mutex_unlock(&wfs_lock);
 
 	/*

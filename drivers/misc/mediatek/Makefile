@@ -19,12 +19,6 @@ else ifeq ($(CONFIG_MACH_MT6885),y)
 subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/v1
 else ifeq ($(CONFIG_MACH_MT6893),y)
 subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/v1
-else ifeq ($(CONFIG_MACH_MT6853),y)
-subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/v1
-else ifeq ($(CONFIG_MACH_MT6873),y)
-subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/v1
-else ifeq ($(CONFIG_MACH_MT6785),y)
-subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/v1
 else
 obj-$(CONFIG_MTK_POWER_THROTTLING_COMMON) += power_throttling/
 endif
@@ -124,9 +118,7 @@ obj-y += mmdvfs/
 obj-$(CONFIG_MTK_IOMMU_MISC) += iommu/
 obj-$(CONFIG_INTERCONNECT_MTK_MMQOS_COMMON) += mmqos/
 obj-$(CONFIG_MTK_PERF_COMMON) += perf_common/
-ifneq ($(CONFIG_MTK_SYSTRACKER_DISABLE),y)
 obj-$(CONFIG_MTK_SYSTRACKER_V2) += systracker/
-endif
 obj-$(CONFIG_MTK_HANG_DETECT) += monitor_hang/
 ifeq ($(CONFIG_MTK_GAUGE_VERSION),30)
 obj-y += power/
@@ -150,6 +142,7 @@ obj-$(CONFIG_MTK_LEDS) += leds/
 obj-$(CONFIG_MT6360_DBG) += subpmic/
 obj-$(CONFIG_MTK_CAMERA_ISP) += cameraisp/
 obj-$(CONFIG_MTK_IMGSENSOR) += imgsensor/src/
+
 ifdef CONFIG_MTK_V4L2_LENS
 obj-$(CONFIG_MTK_V4L2_LENS) += lens/
 else
@@ -164,7 +157,7 @@ obj-$(CONFIG_RT_REGMAP) += rt-regmap/
 obj-$(CONFIG_MTK_VIDEOCODEC_DRIVER) += videocodec/
 obj-$(CONFIG_MTK_FLASHLIGHT) += flashlight/
 obj-$(CONFIG_RT_FLASHLIGHT)     += flashlight/richtek/
-obj-$(CONFIG_MTK_USB_BOOST) += usb_boost/
+obj-$(CONFIG_USB) += usb_boost/
 obj-$(CONFIG_USB_MTK_HDRC) += usb20/
 ifeq ($(CONFIG_MACH_MT6781),y)
 obj-$(CONFIG_MTK_MUSB_PHY) += usb20/mt6781
@@ -207,3 +200,4 @@ obj-$(CONFIG_MTK_MDDP_SUPPORT) += mddp/
 obj-$(CONFIG_MTK_GATE_IC) += gate_ic/
 obj-$(CONFIG_MTK_FREQ_HOPPING) += freqhopping/
 obj-$(CONFIG_MTK_TASK_TURBO) += task_turbo/
+obj-y += simtray/

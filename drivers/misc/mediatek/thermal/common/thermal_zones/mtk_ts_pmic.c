@@ -57,8 +57,8 @@ static int kernelmode;
 
 static int g_THERMAL_TRIP[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-static int num_trip;
-static char g_bind0[20] = { 0 };
+static int num_trip = 1;
+static char g_bind0[20] = "mtktspmic-sysrst";
 static char g_bind1[20] = { 0 };
 static char g_bind2[20] = { 0 };
 static char g_bind3[20] = { 0 };
@@ -672,6 +672,8 @@ static int mtk_ts_pmic_probe(struct platform_device *pdev)
 	struct proc_dir_entry *entry = NULL;
 	struct proc_dir_entry *mtktspmic_dir = NULL;
 	struct mt6397_chip *chip;
+
+	mtktspmic_debug_log = 1;
 
 	chip = (struct mt6397_chip *)dev_get_drvdata(pdev->dev.parent);
 	mtktspmic_info("[%s]\n", __func__);

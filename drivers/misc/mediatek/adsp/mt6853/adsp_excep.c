@@ -139,11 +139,9 @@ static int dump_buffer(struct adsp_exception_control *ctrl, int coredump_id)
 	n += dump_adsp_shared_memory(buf + n, total - n, coredump_id);
 	n += dump_adsp_shared_memory(buf + n, total - n, ADSP_A_LOGGER_MEM_ID);
 
-	mutex_lock(&ctrl->buffer_lock);
 	reinit_completion(&ctrl->done);
 	ctrl->buf_backup = buf;
 	ctrl->buf_size = total;
-	mutex_unlock(&ctrl->buffer_lock);
 
 	pr_debug("%s, vmalloc size %u, buffer %p, dump_size %u",
 		 __func__, total, buf, n);
@@ -187,14 +185,14 @@ static void adsp_exception_dump(struct adsp_exception_control *ctrl)
 
 	if (suppress_test_ee && coredump
 	    && strstr(coredump->assert_log, ADSP_TEST_EE_PATTERN)) {
-		pr_debug("%s, suppress Test EE dump", __func__);
+		pr_info("%s, suppress Test EE dump", __func__);
 		return;
 	}
 
 	if (dump_flag) {
 		ret = dump_buffer(ctrl, coredump_id);
 		if (ret < 0)
-			pr_debug("%s, excep dump fail ret(%d)", __func__, ret);
+			pr_info("%s, excep dump fail ret(%d)", __func__, ret);
 	}
 
 	n += snprintf(detail + n, ADSP_AED_STR_LEN - n, "%s %s\n",
@@ -211,7 +209,7 @@ static void adsp_exception_dump(struct adsp_exception_control *ctrl)
 		n += snprintf(detail + n, ADSP_AED_STR_LEN - n, "%s",
 			      coredump->assert_log);
 	}
-	pr_err("%s", detail);
+	pr_info("%s", detail);
 
 	/* adsp aed api, only detail information available*/
 	aed_common_exception_api("adsp", (const int *)coredump, coredump_size,
@@ -312,7 +310,6 @@ int init_adsp_exception_control(struct device *dev,
 	ctrl->buf_backup = NULL;
 	ctrl->buf_size = 0;
 	mutex_init(&ctrl->lock);
-	mutex_init(&ctrl->buffer_lock);
 	init_completion(&ctrl->done);
 	INIT_WORK(&ctrl->aed_work, adsp_aed_worker);
 #if IS_ENABLED(CONFIG_PM_WAKELOCKS)
@@ -445,7 +442,6 @@ static ssize_t adsp_dump_show(struct file *filep, struct kobject *kobj,
 	ssize_t n = 0;
 	struct adsp_exception_control *ctrl = &excep_ctrl;
 
-	mutex_lock(&ctrl->buffer_lock);
 	if (ctrl->buf_backup) {
 		n = copy_from_buffer(buf, -1, ctrl->buf_backup,
 			ctrl->buf_size, offset, size);
@@ -459,7 +455,6 @@ static ssize_t adsp_dump_show(struct file *filep, struct kobject *kobj,
 			complete(&ctrl->done);
 		}
 	}
-	mutex_unlock(&ctrl->buffer_lock);
 
 	return n;
 }
