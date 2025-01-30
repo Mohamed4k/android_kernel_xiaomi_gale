@@ -131,8 +131,8 @@ int mga_crtc_cursor_set(struct drm_crtc *crtc,
 		if (this_colour>>24 != 0xff &&
 			this_colour>>24 != 0x0) {
 			if (warn_transparent) {
-				dev_info(&dev->pdev->dev, "Video card doesn't support cursors with partial transparency.\n");
-				dev_info(&dev->pdev->dev, "Not enabling hardware cursor.\n");
+				dev_dbg(&dev->pdev->dev, "Video card doesn't support cursors with partial transparency.\n");
+				dev_dbg(&dev->pdev->dev, "Not enabling hardware cursor.\n");
 				warn_transparent = false; /* Only tell the user once. */
 			}
 			ret = -EINVAL;
@@ -153,8 +153,8 @@ int mga_crtc_cursor_set(struct drm_crtc *crtc,
 		/* We only support 4bit paletted cursors */
 		if (colour_count >= 16) {
 			if (warn_palette) {
-				dev_info(&dev->pdev->dev, "Video card only supports cursors with up to 16 colours.\n");
-				dev_info(&dev->pdev->dev, "Not enabling hardware cursor.\n");
+				dev_dbg(&dev->pdev->dev, "Video card only supports cursors with up to 16 colours.\n");
+				dev_dbg(&dev->pdev->dev, "Not enabling hardware cursor.\n");
 				warn_palette = false; /* Only tell the user once. */
 			}
 			ret = -EINVAL;

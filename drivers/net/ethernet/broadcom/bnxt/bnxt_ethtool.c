@@ -1451,7 +1451,7 @@ static int bnxt_flash_nvram(struct net_device *dev,
 	dma_free_coherent(&bp->pdev->dev, data_len, kmem, dma_handle);
 
 	if (rc == HWRM_ERR_CODE_RESOURCE_ACCESS_DENIED) {
-		netdev_info(dev,
+		netdev_dbg(dev,
 			    "PF does not have admin privileges to flash the device\n");
 		rc = -EACCES;
 	} else if (rc) {
@@ -1507,7 +1507,7 @@ static int bnxt_firmware_reset(struct net_device *dev,
 
 	rc = hwrm_send_message(bp, &req, sizeof(req), HWRM_CMD_TIMEOUT);
 	if (rc == HWRM_ERR_CODE_RESOURCE_ACCESS_DENIED) {
-		netdev_info(dev,
+		netdev_dbg(dev,
 			    "PF does not have admin privileges to reset the device\n");
 		rc = -EACCES;
 	} else if (rc) {
@@ -1808,7 +1808,7 @@ flash_pkg_exit:
 	mutex_unlock(&bp->hwrm_cmd_lock);
 err_exit:
 	if (hwrm_err == HWRM_ERR_CODE_RESOURCE_ACCESS_DENIED) {
-		netdev_info(dev,
+		netdev_dbg(dev,
 			    "PF does not have admin privileges to flash the device\n");
 		rc = -EACCES;
 	} else if (hwrm_err) {
@@ -2723,7 +2723,7 @@ static int bnxt_reset(struct net_device *dev, u32 *flags)
 
 		rc = bnxt_firmware_reset(dev, BNXT_FW_RESET_CHIP);
 		if (!rc) {
-			netdev_info(dev, "Reset request successful. Reload driver to complete reset\n");
+			netdev_dbg(dev, "Reset request successful. Reload driver to complete reset\n");
 			*flags = 0;
 		}
 	} else if (*flags == ETH_RESET_AP) {
@@ -2733,7 +2733,7 @@ static int bnxt_reset(struct net_device *dev, u32 *flags)
 
 		rc = bnxt_firmware_reset(dev, BNXT_FW_RESET_AP);
 		if (!rc) {
-			netdev_info(dev, "Reset Application Processor request successful.\n");
+			netdev_dbg(dev, "Reset Application Processor request successful.\n");
 			*flags = 0;
 		}
 	} else {

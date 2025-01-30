@@ -263,7 +263,7 @@ static void connlog_ring_emi_to_cache(int conn_type)
 
 	if (RING_FULL(ring_cache)) {
 		if (__ratelimit(&_rs))
-			pr_warn("%s cache is full.\n", type_to_title[conn_type]);
+			pr_info("%s cache is full.\n", type_to_title[conn_type]);
 		return;
 	}
 
@@ -788,7 +788,7 @@ static int connlog_eirq_init(const struct connlog_irq_config *irq_config)
 	if (gDev.conn2ApIrqId == 0)
 		gDev.conn2ApIrqId = irq_config->irq_num;
 	else {
-		pr_warn("IRQ has been initialized\n");
+		pr_info("IRQ has been initialized\n");
 		return -1;
 	}
 
@@ -873,7 +873,7 @@ static int connlog_emi_init(phys_addr_t emi_base, const struct connlog_emi_confi
 	}
 
 	if (gDev.phyAddrEmiBase) {
-		pr_warn("emi base address has been initialized\n");
+		pr_info("emi base address has been initialized\n");
 		return -2;
 	}
 
@@ -1359,12 +1359,12 @@ int connsys_dedicated_log_get_log_mode(void)
 int connsys_dedicated_log_set_ap_state(int state)
 {
 	if (!gDev.virAddrEmiLogBase) {
-		pr_notice("%s gDev.virAddrEmiLogBase is NULL\n", __func__);
+		pr_info("%s gDev.virAddrEmiLogBase is NULL\n", __func__);
 		return -1;
 	}
 
 	if (state < 0 || state > 1) {
-		pr_notice("%s state = %d is unexpected\n", __func__, state);
+		pr_info("%s state = %d is unexpected\n", __func__, state);
 		return -1;
 	}
 

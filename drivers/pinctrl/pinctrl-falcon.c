@@ -491,7 +491,7 @@ static int pinctrl_falcon_probe(struct platform_device *pdev)
 
 	ret = ltq_pinctrl_register(pdev, &falcon_info);
 	if (!ret)
-		dev_info(&pdev->dev, "Init done\n");
+		dev_dbg(&pdev->dev, "Init done\n");
 	return ret;
 }
 

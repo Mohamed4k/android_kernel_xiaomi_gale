@@ -89,9 +89,9 @@ static ssize_t ixgbe_dbg_reg_ops_write(struct file *filp,
 		if (cnt == 2) {
 			IXGBE_WRITE_REG(&adapter->hw, reg, value);
 			value = IXGBE_READ_REG(&adapter->hw, reg);
-			e_dev_info("write: 0x%08x = 0x%08x\n", reg, value);
+			e_dev_dbg("write: 0x%08x = 0x%08x\n", reg, value);
 		} else {
-			e_dev_info("write <reg> <value>\n");
+			e_dev_dbg("write <reg> <value>\n");
 		}
 	} else if (strncmp(ixgbe_dbg_reg_ops_buf, "read", 4) == 0) {
 		u32 reg, value;
@@ -99,15 +99,15 @@ static ssize_t ixgbe_dbg_reg_ops_write(struct file *filp,
 		cnt = sscanf(&ixgbe_dbg_reg_ops_buf[4], "%x", &reg);
 		if (cnt == 1) {
 			value = IXGBE_READ_REG(&adapter->hw, reg);
-			e_dev_info("read 0x%08x = 0x%08x\n", reg, value);
+			e_dev_dbg("read 0x%08x = 0x%08x\n", reg, value);
 		} else {
-			e_dev_info("read <reg>\n");
+			e_dev_dbg("read <reg>\n");
 		}
 	} else {
-		e_dev_info("Unknown command %s\n", ixgbe_dbg_reg_ops_buf);
-		e_dev_info("Available commands:\n");
-		e_dev_info("   read <reg>\n");
-		e_dev_info("   write <reg> <value>\n");
+		e_dev_dbg("Unknown command %s\n", ixgbe_dbg_reg_ops_buf);
+		e_dev_dbg("Available commands:\n");
+		e_dev_dbg("   read <reg>\n");
+		e_dev_dbg("   write <reg> <value>\n");
 	}
 	return count;
 }
@@ -167,11 +167,11 @@ static ssize_t ixgbe_dbg_netdev_ops_write(struct file *filp,
 
 	if (strncmp(ixgbe_dbg_netdev_ops_buf, "tx_timeout", 10) == 0) {
 		adapter->netdev->netdev_ops->ndo_tx_timeout(adapter->netdev);
-		e_dev_info("tx_timeout called\n");
+		e_dev_dbg("tx_timeout called\n");
 	} else {
-		e_dev_info("Unknown command: %s\n", ixgbe_dbg_netdev_ops_buf);
-		e_dev_info("Available commands:\n");
-		e_dev_info("    tx_timeout\n");
+		e_dev_dbg("Unknown command: %s\n", ixgbe_dbg_netdev_ops_buf);
+		e_dev_dbg("Available commands:\n");
+		e_dev_dbg("    tx_timeout\n");
 	}
 	return count;
 }

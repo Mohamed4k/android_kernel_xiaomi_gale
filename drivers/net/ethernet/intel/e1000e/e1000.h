@@ -32,7 +32,7 @@ struct e1000_info;
 #define e_err(format, arg...) \
 	netdev_err(adapter->netdev, format, ## arg)
 #define e_info(format, arg...) \
-	netdev_info(adapter->netdev, format, ## arg)
+	netdev_dbg(adapter->netdev, format, ## arg)
 #define e_warn(format, arg...) \
 	netdev_warn(adapter->netdev, format, ## arg)
 #define e_notice(format, arg...) \

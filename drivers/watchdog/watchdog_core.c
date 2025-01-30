@@ -89,7 +89,7 @@ static void watchdog_check_min_max_timeout(struct watchdog_device *wdd)
 	 * not reset them both to 0 (=not used or unknown)
 	 */
 	if (!wdd->max_hw_heartbeat_ms && wdd->min_timeout > wdd->max_timeout) {
-		pr_info("Invalid min and max timeout values, resetting to 0!\n");
+		pr_debug("Invalid min and max timeout values, resetting to 0!\n");
 		wdd->min_timeout = 0;
 		wdd->max_timeout = 0;
 	}
@@ -247,7 +247,7 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
 
 	if (test_bit(WDOG_STOP_ON_REBOOT, &wdd->status)) {
 		if (!wdd->ops->stop)
-			pr_warn("watchdog%d: stop_on_reboot not supported\n", wdd->id);
+			pr_debug("watchdog%d: stop_on_reboot not supported\n", wdd->id);
 		else {
 			wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
 
@@ -267,7 +267,7 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
 
 		ret = register_restart_handler(&wdd->restart_nb);
 		if (ret)
-			pr_warn("watchdog%d: Cannot register restart handler (%d)\n",
+			pr_debug("watchdog%d: Cannot register restart handler (%d)\n",
 				wdd->id, ret);
 	}
 

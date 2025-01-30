@@ -256,7 +256,7 @@ static int mms114_get_version(struct mms114_data *data)
 		if (error)
 			return error;
 
-		dev_info(dev, "TSP FW Rev: bootloader 0x%x / core 0x%x / config 0x%x\n",
+		dev_dbg(dev, "TSP FW Rev: bootloader 0x%x / core 0x%x / config 0x%x\n",
 			 buf[0], buf[1], buf[2]);
 		break;
 
@@ -270,7 +270,7 @@ static int mms114_get_version(struct mms114_data *data)
 		if (group < 0)
 			return group;
 
-		dev_info(dev, "TSP FW Rev: bootloader 0x%x / core 0x%x / config 0x%x, Compat group: %c\n",
+		dev_dbg(dev, "TSP FW Rev: bootloader 0x%x / core 0x%x / config 0x%x, Compat group: %c\n",
 			 buf[0], buf[1], buf[2], group);
 		break;
 
@@ -279,7 +279,7 @@ static int mms114_get_version(struct mms114_data *data)
 		if (error)
 			return error;
 
-		dev_info(dev, "TSP Rev: 0x%x, HW Rev: 0x%x, Firmware Ver: 0x%x\n",
+		dev_dbg(dev, "TSP Rev: 0x%x, HW Rev: 0x%x, Firmware Ver: 0x%x\n",
 			 buf[0], buf[1], buf[3]);
 		break;
 	}

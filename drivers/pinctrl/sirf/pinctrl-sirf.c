@@ -324,7 +324,7 @@ static int sirfsoc_pinmux_probe(struct platform_device *pdev)
 		goto out_no_pmx;
 	}
 
-	dev_info(&pdev->dev, "initialized SIRFSOC pinmux driver\n");
+	dev_dbg(&pdev->dev, "initialized SIRFSOC pinmux driver\n");
 
 	return 0;
 

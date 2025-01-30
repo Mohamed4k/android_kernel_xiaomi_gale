@@ -551,7 +551,7 @@ int cnic_unregister_driver(int ulp_type)
 	}
 
 	if (atomic_read(&ulp_ops->ref_count) != 0)
-		pr_warn("%s: Failed waiting for ref count to go to zero\n",
+		pr_debug("%s: Failed waiting for ref count to go to zero\n",
 			__func__);
 	return 0;
 
@@ -5440,7 +5440,7 @@ static void cnic_free_dev(struct cnic_dev *dev)
 	if (atomic_read(&dev->ref_count) != 0)
 		netdev_err(dev->netdev, "Failed waiting for ref count to go to zero\n");
 
-	netdev_info(dev->netdev, "Removed CNIC device\n");
+	netdev_dbg(dev->netdev, "Removed CNIC device\n");
 	dev_put(dev->netdev);
 	kfree(dev);
 }
@@ -5489,7 +5489,7 @@ static struct cnic_dev *cnic_alloc_dev(struct net_device *dev,
 
 	spin_lock_init(&cp->cnic_ulp_lock);
 
-	netdev_info(dev, "Added CNIC device\n");
+	netdev_dbg(dev, "Added CNIC device\n");
 
 	return cdev;
 }
@@ -5760,7 +5760,7 @@ static int __init cnic_init(void)
 {
 	int rc = 0;
 
-	pr_info("%s", version);
+	pr_debug("%s", version);
 
 	rc = register_netdevice_notifier(&cnic_netdev_notifier);
 	if (rc) {

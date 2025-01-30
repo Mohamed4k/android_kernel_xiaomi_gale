@@ -1041,7 +1041,7 @@ static int abx500_gpio_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "unable to add gpiochip: %d\n", ret);
 		return ret;
 	}
-	dev_info(&pdev->dev, "added gpiochip\n");
+	dev_dbg(&pdev->dev, "added gpiochip\n");
 
 	abx500_pinctrl_desc.pins = pct->soc->pins;
 	abx500_pinctrl_desc.npins = pct->soc->npins;
@@ -1053,7 +1053,7 @@ static int abx500_gpio_probe(struct platform_device *pdev)
 		ret = PTR_ERR(pct->pctldev);
 		goto out_rem_chip;
 	}
-	dev_info(&pdev->dev, "registered pin controller\n");
+	dev_dbg(&pdev->dev, "registered pin controller\n");
 
 	/* We will handle a range of GPIO pins */
 	for (i = 0; i < pct->soc->gpio_num_ranges; i++) {
@@ -1067,7 +1067,7 @@ static int abx500_gpio_probe(struct platform_device *pdev)
 	}
 
 	platform_set_drvdata(pdev, pct);
-	dev_info(&pdev->dev, "initialized abx500 pinctrl driver\n");
+	dev_dbg(&pdev->dev, "initialized abx500 pinctrl driver\n");
 
 	return 0;
 

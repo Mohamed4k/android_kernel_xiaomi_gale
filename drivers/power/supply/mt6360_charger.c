@@ -733,7 +733,7 @@ static irqreturn_t mt6360_pmu_attach_i_handler(int irq, void *data)
 	dev_dbg(mci->dev, "%s\n", __func__);
 	mutex_lock(&mci->chgdet_lock);
 	if (!mci->bc12_en) {
-		dev_info(mci->dev, "%s: bc12 disabled, ignore irq\n", __func__);
+		dev_dbg(mci->dev, "%s: bc12 disabled, ignore irq\n", __func__);
 		goto out;
 	}
 	last_usb_type = mci->psy_usb_type;
@@ -745,7 +745,7 @@ static irqreturn_t mt6360_pmu_attach_i_handler(int irq, void *data)
 	usb_status >>= MT6360_SHFT_USB_STATUS;
 	switch (usb_status) {
 	case MT6360_CHG_TYPE_UNDER_GOING:
-		dev_info(mci->dev, "%s: under going...\n", __func__);
+		dev_dbg(mci->dev, "%s: under going...\n", __func__);
 		goto out;
 	case MT6360_CHG_TYPE_SDP:
 		chg_type = EXTCON_CHG_USB_SDP;
@@ -773,7 +773,7 @@ static irqreturn_t mt6360_pmu_attach_i_handler(int irq, void *data)
 		goto out;
 	}
 
-	dev_info(mci->dev, "%s: chg_type = %d\n", __func__, chg_type);
+	dev_dbg(mci->dev, "%s: chg_type = %d\n", __func__, chg_type);
 	if (chg_type >= EXTCON_CHG_USB_SDP) {
 		val.intval = current_limit;
 		mt6360_charger_set_aicr(mci, &val);
@@ -804,13 +804,13 @@ static void mt6360_handle_chrdet_ext_evt(struct mt6360_chg_info *mci)
 	if (ret < 0)
 		goto out;
 	if (mci->pwr_rdy == pwr_rdy) {
-		dev_info(mci->dev,
+		dev_dbg(mci->dev,
 			 "%s: pwr_rdy is same(%d)\n", __func__, pwr_rdy);
 		goto out;
 	}
 	mci->pwr_rdy = pwr_rdy;
 	last_usb_type = mci->psy_usb_type;
-	dev_info(mci->dev, "%s: pwr_rdy = %d\n", __func__, pwr_rdy);
+	dev_dbg(mci->dev, "%s: pwr_rdy = %d\n", __func__, pwr_rdy);
 	if (!pwr_rdy) {
 		for (i = 0; i < ARRAY_SIZE(mt6360_extcon_cable) - 1; i++) {
 			extcon_set_state_sync(mci->edev,
@@ -837,7 +837,7 @@ static void mt6360_chrdet_work(struct work_struct *work)
 	struct mt6360_chg_info *mci = (struct mt6360_chg_info *)container_of(
 				     work, struct mt6360_chg_info, chrdet_work);
 
-	dev_info(mci->dev, "%s\n", __func__);
+	dev_dbg(mci->dev, "%s\n", __func__);
 	mt6360_handle_chrdet_ext_evt(mci);
 }
 
@@ -845,7 +845,7 @@ static irqreturn_t mt6360_pmu_chrdet_ext_evt_handler(int irq, void *data)
 {
 	struct mt6360_chg_info *mci = data;
 
-	dev_info(mci->dev, "%s\n", __func__);
+	dev_dbg(mci->dev, "%s\n", __func__);
 	mt6360_handle_chrdet_ext_evt(mci);
 	return IRQ_HANDLED;
 }
@@ -1146,7 +1146,7 @@ static int mt6360_charger_probe(struct platform_device *pdev)
 			"%s: create sysfs attrs fail\n", __func__);
 		return ret;
 	}
-	dev_info(&pdev->dev, "Successfully probed\n");
+	dev_dbg(&pdev->dev, "Successfully probed\n");
 	return 0;
 }
 

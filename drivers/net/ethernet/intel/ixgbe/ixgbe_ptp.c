@@ -1268,7 +1268,7 @@ static long ixgbe_ptp_create_clock(struct ixgbe_adapter *adapter)
 		e_dev_err("ptp_clock_register failed\n");
 		return err;
 	} else if (adapter->ptp_clock)
-		e_dev_info("registered PHC device on %s\n", netdev->name);
+		e_dev_dbg("registered PHC device on %s\n", netdev->name);
 
 	/* set default timestamp mode to disabled here. We do this in
 	 * create_clock instead of init, because we don't want to override the
@@ -1350,7 +1350,7 @@ void ixgbe_ptp_stop(struct ixgbe_adapter *adapter)
 	if (adapter->ptp_clock) {
 		ptp_clock_unregister(adapter->ptp_clock);
 		adapter->ptp_clock = NULL;
-		e_dev_info("removed PHC on %s\n",
+		e_dev_dbg("removed PHC on %s\n",
 			   adapter->netdev->name);
 	}
 }

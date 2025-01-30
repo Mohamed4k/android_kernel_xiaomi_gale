@@ -100,7 +100,7 @@ static void __init clk_sp810_of_setup(struct device_node *node)
 		return;
 
 	if (of_clk_parent_fill(node, parent_names, num) != num) {
-		pr_warn("Failed to obtain parent clocks for SP810!\n");
+		pr_debug("Failed to obtain parent clocks for SP810!\n");
 		kfree(sp810);
 		return;
 	}

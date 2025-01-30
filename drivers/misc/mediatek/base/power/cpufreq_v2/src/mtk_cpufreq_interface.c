@@ -184,7 +184,7 @@ static ssize_t cpufreq_oppidx_proc_write(struct file *file,
 	rc = kstrtoint(buf, 10, &oppidx);
 	if (rc < 0) {
 		p->dvfs_disable_by_procfs = false;
-		pr_info("echo oppidx > /proc/cpufreq/%s/cpufreq_oppidx\n",
+		pr_debug("echo oppidx > /proc/cpufreq/%s/cpufreq_oppidx\n",
 			p->name);
 	} else {
 		if (oppidx >= 0 && oppidx < p->nr_opp_tbl) {
@@ -198,7 +198,7 @@ static ssize_t cpufreq_oppidx_proc_write(struct file *file,
 #endif
 		} else {
 			p->dvfs_disable_by_procfs = false;
-			pr_info("echo oppidx > /proc/cpufreq/%s/cpufreq_oppidx\n",
+			pr_debug("echo oppidx > /proc/cpufreq/%s/cpufreq_oppidx\n",
 				p->name);
 		}
 	}
@@ -240,7 +240,7 @@ static ssize_t cpufreq_freq_proc_write(struct file *file,
 		tmp_freq = p->opp_tbl[p->nr_opp_tbl - 1].cpufreq_khz;
 		if (freq < p->opp_tbl[p->nr_opp_tbl - 1].cpufreq_khz) {
 			if (freq != 0)
-				pr_info("frequency should higher than %dKHz!\n",
+				pr_debug("frequency should higher than %dKHz!\n",
 					tmp_freq);
 
 			p->dvfs_disable_by_procfs = false;
@@ -503,7 +503,7 @@ int cpufreq_procfs_init(void)
 	for (i = 0; i < ARRAY_SIZE(entries); i++) {
 		if (!proc_create
 		    (entries[i].name, 0664, dir, entries[i].fops))
-			pr_notice("%s(), create /proc/cpufreq/%s failed\n",
+			pr_debug("%s(), create /proc/cpufreq/%s failed\n",
 				__func__,
 				      entries[i].name);
 	}
@@ -512,7 +512,7 @@ int cpufreq_procfs_init(void)
 		cpu_dir = proc_mkdir(p->name, dir);
 
 		if (!cpu_dir) {
-			pr_notice("fail to create /proc/cpufreq/%s @ %s()\n",
+			pr_debug("fail to create /proc/cpufreq/%s @ %s()\n",
 				p->name, __func__);
 			return -ENOMEM;
 		}
@@ -521,7 +521,7 @@ int cpufreq_procfs_init(void)
 			if (!proc_create_data
 			    (cpu_entries[i].name, 0664, cpu_dir,
 			     cpu_entries[i].fops, p))
-				pr_notice("%s(), create /proc/cpufreq/%s/%s failed\n",
+				pr_debug("%s(), create /proc/cpufreq/%s/%s failed\n",
 					__func__,
 					      p->name, entries[i].name);
 		}

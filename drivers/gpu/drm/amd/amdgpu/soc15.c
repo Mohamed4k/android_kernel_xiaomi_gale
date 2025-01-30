@@ -390,7 +390,7 @@ static int soc15_asic_reset(struct amdgpu_device *adev)
 
 	amdgpu_atombios_scratch_regs_engine_hung(adev, true);
 
-	dev_info(adev->dev, "GPU reset\n");
+	dev_dbg(adev->dev, "GPU reset\n");
 
 	/* disable BM */
 	pci_clear_master(adev->pdev);

@@ -6329,7 +6329,7 @@ static void bnxt_report_link(struct bnxt *bp)
 		netif_carrier_on(bp->dev);
 		speed = bnxt_fw_to_ethtool_speed(bp->link_info.link_speed);
 		if (speed == SPEED_UNKNOWN) {
-			netdev_info(bp->dev, "NIC Link is Up, speed unknown\n");
+			netdev_dbg(bp->dev, "NIC Link is Up, speed unknown\n");
 			return;
 		}
 		if (bp->link_info.duplex == BNXT_LINK_DUPLEX_FULL)
@@ -6344,15 +6344,15 @@ static void bnxt_report_link(struct bnxt *bp)
 			flow_ctrl = "ON - receive";
 		else
 			flow_ctrl = "none";
-		netdev_info(bp->dev, "NIC Link is Up, %u Mbps %s duplex, Flow control: %s\n",
+		netdev_dbg(bp->dev, "NIC Link is Up, %u Mbps %s duplex, Flow control: %s\n",
 			    speed, duplex, flow_ctrl);
 		if (bp->flags & BNXT_FLAG_EEE_CAP)
-			netdev_info(bp->dev, "EEE is %s\n",
+			netdev_dbg(bp->dev, "EEE is %s\n",
 				    bp->eee.eee_active ? "active" :
 							 "not active");
 		fec = bp->link_info.fec_cfg;
 		if (!(fec & PORT_PHY_QCFG_RESP_FEC_CFG_FEC_NONE_SUPPORTED))
-			netdev_info(bp->dev, "FEC autoneg %s encodings: %s\n",
+			netdev_dbg(bp->dev, "FEC autoneg %s encodings: %s\n",
 				    (fec & BNXT_FEC_AUTONEG) ? "on" : "off",
 				    (fec & BNXT_FEC_ENC_BASE_R) ? "BaseR" :
 				     (fec & BNXT_FEC_ENC_RS) ? "RS" : "None");
@@ -7487,7 +7487,7 @@ static int bnxt_cfg_rx_mode(struct bnxt *bp)
 skip_uc:
 	rc = bnxt_hwrm_cfa_l2_set_rx_mask(bp, 0);
 	if (rc && vnic->mc_list_count) {
-		netdev_info(bp->dev, "Failed setting MC filters rc: %d, turning on ALL_MCAST mode\n",
+		netdev_dbg(bp->dev, "Failed setting MC filters rc: %d, turning on ALL_MCAST mode\n",
 			    rc);
 		vnic->rx_mask |= CFA_L2_SET_RX_MASK_REQ_MASK_ALL_MCAST;
 		vnic->mc_list_count = 0;
@@ -7686,7 +7686,7 @@ static void bnxt_dump_tx_sw_state(struct bnxt_napi *bnapi)
 	if (!txr)
 		return;
 
-	netdev_info(bnapi->bp->dev, "[%d]: tx{fw_ring: %d prod: %x cons: %x}\n",
+	netdev_dbg(bnapi->bp->dev, "[%d]: tx{fw_ring: %d prod: %x cons: %x}\n",
 		    i, txr->tx_ring_struct.fw_ring_id, txr->tx_prod,
 		    txr->tx_cons);
 }
@@ -7699,7 +7699,7 @@ static void bnxt_dump_rx_sw_state(struct bnxt_napi *bnapi)
 	if (!rxr)
 		return;
 
-	netdev_info(bnapi->bp->dev, "[%d]: rx{fw_ring: %d prod: %x} rx_agg{fw_ring: %d agg_prod: %x sw_agg_prod: %x}\n",
+	netdev_dbg(bnapi->bp->dev, "[%d]: rx{fw_ring: %d prod: %x} rx_agg{fw_ring: %d agg_prod: %x sw_agg_prod: %x}\n",
 		    i, rxr->rx_ring_struct.fw_ring_id, rxr->rx_prod,
 		    rxr->rx_agg_ring_struct.fw_ring_id, rxr->rx_agg_prod,
 		    rxr->rx_sw_agg_prod);
@@ -7710,7 +7710,7 @@ static void bnxt_dump_cp_sw_state(struct bnxt_napi *bnapi)
 	struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
 	int i = bnapi->index;
 
-	netdev_info(bnapi->bp->dev, "[%d]: cp{fw_ring: %d raw_cons: %x}\n",
+	netdev_dbg(bnapi->bp->dev, "[%d]: cp{fw_ring: %d raw_cons: %x}\n",
 		    i, cpr->cp_ring_struct.fw_ring_id, cpr->cp_raw_cons);
 }
 
@@ -7882,7 +7882,7 @@ static void bnxt_sp_task(struct work_struct *work)
 			netdev_warn(bp->dev, "update phy settings retry failed\n");
 		} else {
 			bp->link_info.phy_retry = false;
-			netdev_info(bp->dev, "update phy settings retry succeeded\n");
+			netdev_dbg(bp->dev, "update phy settings retry succeeded\n");
 		}
 	}
 	if (test_and_clear_bit(BNXT_HWRM_PORT_MODULE_SP_EVENT, &bp->sp_event)) {
@@ -8396,7 +8396,7 @@ static void bnxt_cfg_ntp_filters(struct bnxt *bp)
 		}
 	}
 	if (test_and_clear_bit(BNXT_HWRM_PF_UNLOAD_SP_EVENT, &bp->sp_event))
-		netdev_info(bp->dev, "Receive PF driver unload event!");
+		netdev_dbg(bp->dev, "Receive PF driver unload event!");
 }
 
 #else
@@ -8937,7 +8937,7 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		return -ENODEV;
 
 	if (version_printed++ == 0)
-		pr_info("%s", version);
+		pr_debug("%s", version);
 
 	max_irqs = bnxt_get_max_irq(pdev);
 	dev = alloc_etherdev_mq(sizeof(*bp), max_irqs);
@@ -9138,7 +9138,7 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (BNXT_PF(bp))
 		bnxt_dl_register(bp);
 
-	netdev_info(dev, "%s found at mem %lx, node addr %pM\n",
+	netdev_dbg(dev, "%s found at mem %lx, node addr %pM\n",
 		    board_info[ent->driver_data].name,
 		    (long)pci_resource_start(pdev, 0), dev->dev_addr);
 	pcie_print_link_status(pdev);
@@ -9258,7 +9258,7 @@ static pci_ers_result_t bnxt_io_error_detected(struct pci_dev *pdev,
 	struct net_device *netdev = pci_get_drvdata(pdev);
 	struct bnxt *bp = netdev_priv(netdev);
 
-	netdev_info(netdev, "PCI I/O error detected\n");
+	netdev_dbg(netdev, "PCI I/O error detected\n");
 
 	rtnl_lock();
 	netif_device_detach(netdev);
@@ -9296,7 +9296,7 @@ static pci_ers_result_t bnxt_io_slot_reset(struct pci_dev *pdev)
 	int err = 0;
 	pci_ers_result_t result = PCI_ERS_RESULT_DISCONNECT;
 
-	netdev_info(bp->dev, "PCI Slot Reset\n");
+	netdev_dbg(bp->dev, "PCI Slot Reset\n");
 
 	rtnl_lock();
 

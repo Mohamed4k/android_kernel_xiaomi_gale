@@ -2630,7 +2630,7 @@ static uint32_t tonga_get_offsetof(uint32_t type, uint32_t member)
 		}
 		break;
 	}
-	pr_warn("can't get the offset of type %x member %x\n", type, member);
+	pr_debug("can't get the offset of type %x member %x\n", type, member);
 	return 0;
 }
 
@@ -2654,7 +2654,7 @@ static uint32_t tonga_get_mac_definition(uint32_t value)
 	case SMU_MAX_LEVELS_MVDD:
 		return SMU72_MAX_LEVELS_MVDD;
 	}
-	pr_warn("can't get the mac value %x\n", value);
+	pr_debug("can't get the mac value %x\n", value);
 
 	return 0;
 }

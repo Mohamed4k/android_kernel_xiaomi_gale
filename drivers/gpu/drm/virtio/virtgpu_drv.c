@@ -95,7 +95,7 @@ static int virtio_gpu_pci_quirk(struct drm_device *dev, struct virtio_device *vd
 	 *   * Using the wrong device for i2c, framebuffer_alloc and
 	 *     prime import.
 	 *   Visual changes:
-	 *   * Helpers such as DRM_DEV_ERROR, dev_info, drm_printer,
+	 *   * Helpers such as DRM_DEV_ERROR, dev_dbg, drm_printer,
 	 *     will print the wrong information.
 	 *
 	 * We could address the latter issues, by introducing

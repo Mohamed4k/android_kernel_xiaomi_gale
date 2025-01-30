@@ -1121,7 +1121,7 @@ static int atmel_pinctrl_probe(struct platform_device *pdev)
 		goto gpiochip_add_pin_range_error;
 	}
 
-	dev_info(&pdev->dev, "atmel pinctrl initialized\n");
+	dev_dbg(&pdev->dev, "atmel pinctrl initialized\n");
 
 	return 0;
 

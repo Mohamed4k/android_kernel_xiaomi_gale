@@ -710,10 +710,10 @@ static void cas_begin_auto_negotiation(struct cas *cp,
 #endif
 start_aneg:
 	if (cp->lstate == link_up) {
-		netdev_info(cp->dev, "PCS link down\n");
+		netdev_dbg(cp->dev, "PCS link down\n");
 	} else {
 		if (changed) {
-			netdev_info(cp->dev, "link configuration changed\n");
+			netdev_dbg(cp->dev, "link configuration changed\n");
 		}
 	}
 	cp->lstate = link_down;
@@ -2386,7 +2386,7 @@ static int cas_rx_ringN(struct cas *cp, int ring, int budget)
 	cp->rx_new[ring] = entry;
 
 	if (drops)
-		netdev_info(cp->dev, "Memory squeeze, deferring packet\n");
+		netdev_dbg(cp->dev, "Memory squeeze, deferring packet\n");
 	return npackets;
 }
 
@@ -3346,7 +3346,7 @@ use_random_mac_addr:
 #endif
 
 	/* Sun MAC prefix then 3 random bytes. */
-	pr_info("MAC address not found in ROM VPD\n");
+	pr_debug("MAC address not found in ROM VPD\n");
 	dev_addr[0] = 0x08;
 	dev_addr[1] = 0x00;
 	dev_addr[2] = 0x20;
@@ -3682,14 +3682,14 @@ static void cas_set_link_modes(struct cas *cp)
 
 	if (netif_msg_link(cp)) {
 		if (pause & 0x01) {
-			netdev_info(cp->dev, "Pause is enabled (rxfifo: %d off: %d on: %d)\n",
+			netdev_dbg(cp->dev, "Pause is enabled (rxfifo: %d off: %d on: %d)\n",
 				    cp->rx_fifo_size,
 				    cp->rx_pause_off,
 				    cp->rx_pause_on);
 		} else if (pause & 0x10) {
-			netdev_info(cp->dev, "TX pause enabled\n");
+			netdev_dbg(cp->dev, "TX pause enabled\n");
 		} else {
-			netdev_info(cp->dev, "Pause is disabled\n");
+			netdev_dbg(cp->dev, "Pause is disabled\n");
 		}
 	}
 
@@ -4911,7 +4911,7 @@ static int cas_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	u8 orig_cacheline_size = 0, cas_cacheline_size = 0;
 
 	if (cas_version_printed++ == 0)
-		pr_info("%s", version);
+		pr_debug("%s", version);
 
 	err = pci_enable_device(pdev);
 	if (err) {
@@ -4949,7 +4949,7 @@ static int cas_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	pci_cmd |= PCI_COMMAND_PARITY;
 	pci_write_config_word(pdev, PCI_COMMAND, pci_cmd);
 	if (pci_try_set_mwi(pdev))
-		pr_warn("Could not enable MWI for %s\n", pci_name(pdev));
+		pr_debug("Could not enable MWI for %s\n", pci_name(pdev));
 
 	cas_program_bridge(pdev);
 
@@ -5114,7 +5114,7 @@ static int cas_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	}
 
 	i = readl(cp->regs + REG_BIM_CFG);
-	netdev_info(dev, "Sun Cassini%s (%sbit/%sMHz PCI/%s) Ethernet[%d] %pM\n",
+	netdev_dbg(dev, "Sun Cassini%s (%sbit/%sMHz PCI/%s) Ethernet[%d] %pM\n",
 		    (cp->cas_flags & CAS_FLAG_REG_PLUS) ? "+" : "",
 		    (i & BIM_CFG_32BIT) ? "32" : "64",
 		    (i & BIM_CFG_66MHZ) ? "66" : "33",
@@ -5229,7 +5229,7 @@ static int cas_resume(struct pci_dev *pdev)
 	struct net_device *dev = pci_get_drvdata(pdev);
 	struct cas *cp = netdev_priv(dev);
 
-	netdev_info(dev, "resuming\n");
+	netdev_dbg(dev, "resuming\n");
 
 	mutex_lock(&cp->pm_mutex);
 	cas_hard_reset(cp);

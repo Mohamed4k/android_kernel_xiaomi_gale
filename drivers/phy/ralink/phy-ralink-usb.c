@@ -126,12 +126,12 @@ static int ralink_usb_phy_power_on(struct phy *_phy)
 
 	/* print some status info */
 	regmap_read(phy->sysctl, RT_SYSC_REG_USB_PHY_CFG, &t);
-	dev_info(&phy->phy->dev, "remote usb device wakeup %s\n",
+	dev_dbg(&phy->phy->dev, "remote usb device wakeup %s\n",
 		(t & UDEV_WAKEUP) ? ("enabled") : ("disabled"));
 	if (t & USB_PHY_UTMI_8B60M)
-		dev_info(&phy->phy->dev, "UTMI 8bit 60MHz\n");
+		dev_dbg(&phy->phy->dev, "UTMI 8bit 60MHz\n");
 	else
-		dev_info(&phy->phy->dev, "UTMI 16bit 30MHz\n");
+		dev_dbg(&phy->phy->dev, "UTMI 16bit 30MHz\n");
 
 	return 0;
 }

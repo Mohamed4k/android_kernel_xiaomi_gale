@@ -743,7 +743,7 @@ void i40e_ptp_init(struct i40e_pf *pf)
 		I40E_PRTTSYN_CTL0_PF_ID_SHIFT;
 	if (hw->pf_id != pf_id) {
 		pf->flags &= ~I40E_FLAG_PTP;
-		dev_info(&pf->pdev->dev, "%s: PTP not supported on %s\n",
+		dev_dbg(&pf->pdev->dev, "%s: PTP not supported on %s\n",
 			 __func__,
 			 netdev->name);
 		return;
@@ -763,7 +763,7 @@ void i40e_ptp_init(struct i40e_pf *pf)
 		u32 regval;
 
 		if (pf->hw.debug_mask & I40E_DEBUG_LAN)
-			dev_info(&pf->pdev->dev, "PHC enabled\n");
+			dev_dbg(&pf->pdev->dev, "PHC enabled\n");
 		pf->flags |= I40E_FLAG_PTP;
 
 		/* Ensure the clocks are running. */
@@ -810,7 +810,7 @@ void i40e_ptp_stop(struct i40e_pf *pf)
 	if (pf->ptp_clock) {
 		ptp_clock_unregister(pf->ptp_clock);
 		pf->ptp_clock = NULL;
-		dev_info(&pf->pdev->dev, "%s: removed PHC on %s\n", __func__,
+		dev_dbg(&pf->pdev->dev, "%s: removed PHC on %s\n", __func__,
 			 pf->vsi[pf->lan_vsi]->netdev->name);
 	}
 }

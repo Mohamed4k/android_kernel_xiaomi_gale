@@ -2463,7 +2463,7 @@ u16 fman_get_max_frm(void)
 	if (!fm_check_mfl) {
 		if (fsl_fm_max_frm > FSL_FM_MAX_POSSIBLE_FRAME_SIZE ||
 		    fsl_fm_max_frm < FSL_FM_MIN_POSSIBLE_FRAME_SIZE) {
-			pr_warn("Invalid fsl_fm_max_frm value (%d) in bootargs, valid range is %d-%d. Falling back to the default (%d)\n",
+			pr_debug("Invalid fsl_fm_max_frm value (%d) in bootargs, valid range is %d-%d. Falling back to the default (%d)\n",
 				fsl_fm_max_frm,
 				FSL_FM_MIN_POSSIBLE_FRAME_SIZE,
 				FSL_FM_MAX_POSSIBLE_FRAME_SIZE,
@@ -2489,7 +2489,7 @@ int fman_get_rx_extra_headroom(void)
 	if (!fm_check_rx_extra_headroom) {
 		if (fsl_fm_rx_extra_headroom > FSL_FM_RX_EXTRA_HEADROOM_MAX ||
 		    fsl_fm_rx_extra_headroom < FSL_FM_RX_EXTRA_HEADROOM_MIN) {
-			pr_warn("Invalid fsl_fm_rx_extra_headroom value (%d) in bootargs, valid range is %d-%d. Falling back to the default (%d)\n",
+			pr_debug("Invalid fsl_fm_rx_extra_headroom value (%d) in bootargs, valid range is %d-%d. Falling back to the default (%d)\n",
 				fsl_fm_rx_extra_headroom,
 				FSL_FM_RX_EXTRA_HEADROOM_MIN,
 				FSL_FM_RX_EXTRA_HEADROOM_MAX,

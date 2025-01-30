@@ -233,7 +233,7 @@ static int __init sar_unify_init(void)
 }
 static void __exit sar_unify_exit(void)
 {
-	pr_info("sar_unify exit\n");
+	pr_debug("sar_unify exit\n");
 }
 module_init(sar_unify_init);
 module_exit(sar_unify_exit);

@@ -948,7 +948,7 @@ static int mpc52xx_fec_probe(struct platform_device *op)
 	/* the 7-wire property means don't use MII mode */
 	if (of_find_property(np, "fsl,7-wire-mode", NULL)) {
 		priv->seven_wire_mode = 1;
-		dev_info(&ndev->dev, "using 7-wire PHY mode\n");
+		dev_dbg(&ndev->dev, "using 7-wire PHY mode\n");
 	}
 
 	/* Hardware init */
@@ -961,7 +961,7 @@ static int mpc52xx_fec_probe(struct platform_device *op)
 
 	/* We're done ! */
 	platform_set_drvdata(op, ndev);
-	netdev_info(ndev, "%pOF MAC %pM\n",
+	netdev_dbg(ndev, "%pOF MAC %pM\n",
 		    op->dev.of_node, ndev->dev_addr);
 
 	return 0;

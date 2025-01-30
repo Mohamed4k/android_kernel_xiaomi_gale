@@ -160,7 +160,7 @@ static int psb_lvds_pwm_set_brightness(struct drm_device *dev, int level)
 		  (max_pwm_blc << PSB_BACKLIGHT_PWM_CTL_SHIFT) |
 		  (blc_pwm_duty_cycle));
 
-        dev_info(dev->dev, "Backlight lvds set brightness %08x\n",
+        dev_dbg(dev->dev, "Backlight lvds set brightness %08x\n",
 		  (max_pwm_blc << PSB_BACKLIGHT_PWM_CTL_SHIFT) |
 		  (blc_pwm_duty_cycle));
 

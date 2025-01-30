@@ -3293,7 +3293,7 @@ INT32 wmt_lib_dmp_consys_state(P_CONSYS_STATE_DMP_INFO dmp_info,
 
 
 	if (cpupcr_times > WMT_LIB_DMP_CONSYS_MAX_TIMES) {
-		pr_warn("dump too many times [%d]\n", cpupcr_times);
+		pr_info("dump too many times [%d]\n", cpupcr_times);
 		return MTK_WCN_BOOL_FALSE;
 	}
 

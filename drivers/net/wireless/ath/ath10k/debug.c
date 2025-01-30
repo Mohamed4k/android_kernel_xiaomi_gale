@@ -41,7 +41,7 @@ void ath10k_info(struct ath10k *ar, const char *fmt, ...)
 
 	va_start(args, fmt);
 	vaf.va = &args;
-	dev_info(ar->dev, "%pV", &vaf);
+	dev_dbg(ar->dev, "%pV", &vaf);
 	trace_ath10k_log_info(ar, &vaf);
 	va_end(args);
 }

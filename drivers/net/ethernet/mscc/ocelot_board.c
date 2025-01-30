@@ -296,7 +296,7 @@ static int mscc_ocelot_probe(struct platform_device *pdev)
 
 	register_netdevice_notifier(&ocelot_netdevice_nb);
 
-	dev_info(&pdev->dev, "Ocelot switch probed\n");
+	dev_dbg(&pdev->dev, "Ocelot switch probed\n");
 
 	return 0;
 

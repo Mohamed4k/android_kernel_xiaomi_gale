@@ -1046,7 +1046,7 @@ static int bcm2835_clock_on(struct clk_hw *hw)
 	 * if it's ticking at the rate we expect.
 	 */
 	if (data->tcnt_mux && false) {
-		dev_info(cprman->dev,
+		dev_dbg(cprman->dev,
 			 "clk %s: rate %ld, measure %ld\n",
 			 data->name,
 			 clk_hw_get_rate(hw),

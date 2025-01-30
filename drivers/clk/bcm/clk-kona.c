@@ -202,7 +202,7 @@ __ccu_wait_bit(struct ccu_data *ccu, u32 reg_offset, u32 bit, bool want)
 			return true;
 		udelay(1);
 	}
-	pr_warn("%s: %s/0x%04x bit %u was never %s\n", __func__,
+	pr_debug("%s: %s/0x%04x bit %u was never %s\n", __func__,
 		ccu->name, reg_offset, bit, want ? "set" : "clear");
 
 	return false;
@@ -465,7 +465,7 @@ __clk_gate(struct ccu_data *ccu, struct bcm_clk_gate *gate, bool enable)
 		return true;	/* Nothing to do */
 
 	if (!enable && gate_is_no_disable(gate)) {
-		pr_warn("%s: invalid gate disable request (ignoring)\n",
+		pr_debug("%s: invalid gate disable request (ignoring)\n",
 			__func__);
 		return true;
 	}

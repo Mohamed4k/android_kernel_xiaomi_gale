@@ -577,7 +577,7 @@ static int gmc_v6_0_gart_enable(struct amdgpu_device *adev)
 		gmc_v6_0_set_fault_enable_default(adev, true);
 
 	gmc_v6_0_flush_gpu_tlb(adev, 0);
-	dev_info(adev->dev, "PCIE GART of %uM enabled (table at 0x%016llX).\n",
+	dev_dbg(adev->dev, "PCIE GART of %uM enabled (table at 0x%016llX).\n",
 		 (unsigned)(adev->gmc.gart_size >> 20),
 		 (unsigned long long)adev->gart.table_addr);
 	adev->gart.ready = true;
@@ -1046,7 +1046,7 @@ static int gmc_v6_0_soft_reset(void *handle)
 
 		tmp = RREG32(mmSRBM_SOFT_RESET);
 		tmp |= srbm_soft_reset;
-		dev_info(adev->dev, "SRBM_SOFT_RESET=0x%08X\n", tmp);
+		dev_dbg(adev->dev, "SRBM_SOFT_RESET=0x%08X\n", tmp);
 		WREG32(mmSRBM_SOFT_RESET, tmp);
 		tmp = RREG32(mmSRBM_SOFT_RESET);
 

@@ -68,7 +68,7 @@ void msdc_debug_set_host(struct mmc_host *mmc)
 	if(mmc && mmc->index >=0 && mmc->index <= HOST_MAX_NUM)
 		mtk_msdc_host[mmc->index] = mmc_priv(mmc);
 	else
-		pr_info("error:index=%d\n",mmc->index);
+		pr_debug("error:index=%d\n",mmc->index);
 }
 EXPORT_SYMBOL_GPL(msdc_debug_set_host);
 
@@ -342,7 +342,7 @@ static void msdc_proc_dump(struct seq_file *m, u32 id)
 	struct msdc_host *host = mtk_msdc_host[id];
 
 	if (host == NULL) {
-		pr_info("====== Null msdc%d, dump skipped ======\n", id);
+		pr_debug("====== Null msdc%d, dump skipped ======\n", id);
 		return;
 	}
 
@@ -357,7 +357,7 @@ void get_msdc_aee_buffer(unsigned long *vaddr, unsigned long *size)
 	char *buff;
 
 	if (host == NULL) {
-		pr_info("====== Null msdc, dump skipped ======\n");
+		pr_debug("====== Null msdc, dump skipped ======\n");
 		return;
 	}
 
@@ -429,7 +429,7 @@ static ssize_t msdc_debug_proc_write(struct file *file, const char *buf,
 		enable_msdc_debug = 0;
 		break;
 	}
-	pr_info("enable_msdc_debug=%d\n", enable_msdc_debug);
+	pr_debug("enable_msdc_debug=%d\n", enable_msdc_debug);
 
 	return count;
 }
@@ -473,7 +473,7 @@ int msdc_debug_proc_init(void)
 	if (prEntry)
 		proc_set_user(prEntry, uid, gid);
 	else
-		pr_info("[%s]: failed to create /proc/msdc_debug\n",
+		pr_debug("[%s]: failed to create /proc/msdc_debug\n",
 			__func__);
 
 	return 0;

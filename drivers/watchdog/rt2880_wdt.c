@@ -169,7 +169,7 @@ static int rt288x_wdt_probe(struct platform_device *pdev)
 
 	ret = watchdog_register_device(&rt288x_wdt_dev);
 	if (!ret)
-		dev_info(&pdev->dev, "Initialized\n");
+		dev_dbg(&pdev->dev, "Initialized\n");
 
 	return 0;
 }

@@ -1171,7 +1171,7 @@ static int gsc_bind(struct device *dev, struct device *master, void *data)
 			DRM_EXYNOS_IPP_CAP_SCALE | DRM_EXYNOS_IPP_CAP_CONVERT,
 			ctx->formats, ctx->num_formats, "gsc");
 
-	dev_info(dev, "The exynos gscaler has been probed successfully\n");
+	dev_dbg(dev, "The exynos gscaler has been probed successfully\n");
 
 	return 0;
 }
@@ -1278,7 +1278,7 @@ static int gsc_probe(struct platform_device *pdev)
 	if (ret)
 		goto err_pm_dis;
 
-	dev_info(dev, "drm gsc registered successfully.\n");
+	dev_dbg(dev, "drm gsc registered successfully.\n");
 
 	return 0;
 

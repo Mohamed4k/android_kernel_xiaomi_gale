@@ -982,7 +982,7 @@ static void musb_rx_reinit
 	} else {
 		csr = musb_readw(ep->regs, MUSB_RXCSR);
 		if (csr & MUSB_RXCSR_RXPKTRDY)
-			pr_notice("[MUSB]rx%d, packet/%d ready?\n", ep->epnum,
+			pr_debug("[MUSB]rx%d, packet/%d ready?\n", ep->epnum,
 				musb_readw(ep->regs, MUSB_RXCOUNT));
 
 		/* musb_h_flush_rxfifo(ep, MUSB_RXCSR_CLRDATATOG); */
@@ -1280,7 +1280,7 @@ static void musb_ep_program(struct musb *musb, u8 epnum,
 					       SG_MITER_ATOMIC
 					       | SG_MITER_FROM_SG);
 				if (!sg_miter_next(&qh->sg_miter)) {
-					dev_info(musb->controller, "error: sg list empty\n");
+					dev_dbg(musb->controller, "error: sg list empty\n");
 					sg_miter_stop(&qh->sg_miter);
 					goto finish;
 				}
@@ -1323,7 +1323,7 @@ finish:
 			if (csr & (MUSB_RXCSR_RXPKTRDY
 					| MUSB_RXCSR_DMAENAB
 					| MUSB_RXCSR_H_REQPKT))
-				pr_notice("broken !rx_reinit, ep%d csr %04x\n"
+				pr_debug("broken !rx_reinit, ep%d csr %04x\n"
 					, hw_ep->epnum, csr);
 
 			/* scrub any stale state, leaving toggle alone */
@@ -1479,7 +1479,7 @@ finish:
 				 * csr |= MUSB_RXCSR_AUTOCLEAR;
 				 */
 
-				/* pr_notice("%s, line %d: csr = 0x%x,
+				/* pr_debug("%s, line %d: csr = 0x%x,
 				 *	qh->hb_mult = %d,
 				 * MUSB_RXCSR,MUSB_RXCSR_H_WZC_BITS
 				 *	| csr = 0x%x\n",
@@ -1671,7 +1671,7 @@ static bool musb_h_ep0_continue(struct musb *musb, u16 len, struct urb *urb)
 		}
 		break;
 	default:
-		pr_notice("bogus ep0 stage %d\n", musb->ep0_stage);
+		pr_debug("bogus ep0 stage %d\n", musb->ep0_stage);
 		break;
 	}
 
@@ -1765,7 +1765,7 @@ irqreturn_t musb_h_ep0_irq(struct musb *musb)
 		/* stop endpoint since we have no place for its data, this
 		 * SHOULD NEVER HAPPEN!
 		 */
-		pr_notice("no URB for end 0\n");
+		pr_debug("no URB for end 0\n");
 
 		musb_h_ep0_flush_fifo(hw_ep);
 		goto done;
@@ -2275,7 +2275,7 @@ void musb_host_rx(struct musb *musb, u8 epnum)
 
 	if (unlikely(dma_channel_status(dma) == MUSB_DMA_STATUS_BUSY)) {
 		/* SHOULD NEVER HAPPEN ... but at least DaVinci has done it */
-		pr_notice("RX%d dma busy, csr %04x\n", epnum, rx_csr);
+		pr_debug("RX%d dma busy, csr %04x\n", epnum, rx_csr);
 		goto finish;
 	}
 
@@ -2376,7 +2376,7 @@ void musb_host_rx(struct musb *musb, u8 epnum)
 		/* if no errors, be sure a packet is ready for unloading */
 		if (unlikely(!(rx_csr & MUSB_RXCSR_RXPKTRDY))) {
 			status = -EPROTO;
-			pr_notice("Rx interrupt with no errors or packet!\n");
+			pr_debug("Rx interrupt with no errors or packet!\n");
 
 			/* FIXME this is another "SHOULD NEVER HAPPEN" */
 
@@ -2530,7 +2530,7 @@ void musb_host_rx(struct musb *musb, u8 epnum)
 
 			if (use_sg) {
 				if (!sg_miter_next(&qh->sg_miter)) {
-					dev_info(musb->controller, "error: sg list empty\n");
+					dev_dbg(musb->controller, "error: sg list empty\n");
 					sg_miter_stop(&qh->sg_miter);
 					status = -EINVAL;
 					done = true;

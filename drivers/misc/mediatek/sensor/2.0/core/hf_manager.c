@@ -726,10 +726,10 @@ static void hf_manager_find_best_param(struct hf_core *core,
 
 #ifdef HF_MANAGER_DEBUG
 	if (tmp_enable)
-		pr_notice("Find best command %u %u %lld %lld\n",
+		pr_debug("Find best command %u %u %lld %lld\n",
 			sensor_type, tmp_enable, tmp_delay, tmp_latency);
 	else
-		pr_notice("Find best command %u %u\n",
+		pr_debug("Find best command %u %u\n",
 			sensor_type, tmp_enable);
 #endif
 }
@@ -1054,7 +1054,7 @@ static int hf_manager_drive_device(struct hf_client *client,
 	}
 
 #ifdef HF_MANAGER_DEBUG
-	pr_notice("Drive device:%s command %u %u\n",
+	pr_debug("Drive device:%s command %u %u\n",
 		device->dev_name, cmd->sensor_type, cmd->action);
 #endif
 
@@ -1120,7 +1120,7 @@ struct hf_client *hf_client_create(void)
 	client->core = &hfcore;
 
 #ifdef HF_MANAGER_DEBUG
-	pr_notice("Client create\n");
+	pr_debug("Client create\n");
 #endif
 
 	INIT_LIST_HEAD(&client->list);
@@ -1157,7 +1157,7 @@ void hf_client_destroy(struct hf_client *client)
 	unsigned long flags;
 
 #ifdef HF_MANAGER_DEBUG
-	pr_notice("Client destroy\n");
+	pr_debug("Client destroy\n");
 #endif
 	spin_lock_irqsave(&client->core->client_lock, flags);
 	list_del(&client->list);

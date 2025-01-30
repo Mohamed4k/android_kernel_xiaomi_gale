@@ -89,7 +89,7 @@ void kfd_debugfs_init(void)
 
 	debugfs_root = debugfs_create_dir("kfd", NULL);
 	if (!debugfs_root || debugfs_root == ERR_PTR(-ENODEV)) {
-		pr_warn("Failed to create kfd debugfs dir\n");
+		pr_debug("Failed to create kfd debugfs dir\n");
 		return;
 	}
 
@@ -97,13 +97,13 @@ void kfd_debugfs_init(void)
 				  kfd_debugfs_mqds_by_process,
 				  &kfd_debugfs_fops);
 	if (!ent)
-		pr_warn("Failed to create mqds in kfd debugfs\n");
+		pr_debug("Failed to create mqds in kfd debugfs\n");
 
 	ent = debugfs_create_file("hqds", S_IFREG | 0444, debugfs_root,
 				  kfd_debugfs_hqds_by_device,
 				  &kfd_debugfs_fops);
 	if (!ent)
-		pr_warn("Failed to create hqds in kfd debugfs\n");
+		pr_debug("Failed to create hqds in kfd debugfs\n");
 
 	ent = debugfs_create_file("rls", S_IFREG | 0444, debugfs_root,
 				  kfd_debugfs_rls_by_device,
@@ -114,7 +114,7 @@ void kfd_debugfs_init(void)
 				  &kfd_debugfs_hang_hws_fops);
 
 	if (!ent)
-		pr_warn("Failed to create rls in kfd debugfs\n");
+		pr_debug("Failed to create rls in kfd debugfs\n");
 }
 
 void kfd_debugfs_fini(void)

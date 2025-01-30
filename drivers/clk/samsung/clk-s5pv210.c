@@ -156,7 +156,7 @@ static void s5pv210_clk_sleep_init(void)
 		samsung_clk_alloc_reg_dump(s5pv210_clk_regs,
 					   ARRAY_SIZE(s5pv210_clk_regs));
 	if (!s5pv210_clk_dump) {
-		pr_warn("%s: Failed to allocate sleep save data\n", __func__);
+		pr_debug("%s: Failed to allocate sleep save data\n", __func__);
 		return;
 	}
 
@@ -826,7 +826,7 @@ static void __init __s5pv210_clk_init(struct device_node *np,
 
 	samsung_clk_of_add_provider(np, ctx);
 
-	pr_info("%s clocks: mout_apll = %ld, mout_mpll = %ld\n"
+	pr_debug("%s clocks: mout_apll = %ld, mout_mpll = %ld\n"
 		"\tmout_epll = %ld, mout_vpll = %ld\n",
 		is_s5p6442 ? "S5P6442" : "S5PV210",
 		_get_rate("mout_apll"), _get_rate("mout_mpll"),

@@ -323,7 +323,7 @@ sh_pfc_add_gpiochip(struct sh_pfc *pfc, int(*setup)(struct sh_pfc_chip *),
 	if (unlikely(ret < 0))
 		return ERR_PTR(ret);
 
-	dev_info(pfc->dev, "%s handling gpio %u -> %u\n",
+	dev_dbg(pfc->dev, "%s handling gpio %u -> %u\n",
 		 chip->gpio_chip.label, chip->gpio_chip.base,
 		 chip->gpio_chip.base + chip->gpio_chip.ngpio - 1);
 

@@ -397,7 +397,7 @@ static int dw_mci_hi3660_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
 
 	dw_mci_hs_set_timing(host, mmc->ios.timing, best_clksmpl);
 
-	dev_info(host->dev, "tuning ok best_clksmpl %u tuning_sample_flag %x\n",
+	dev_dbg(host->dev, "tuning ok best_clksmpl %u tuning_sample_flag %x\n",
 		 best_clksmpl, tuning_sample_flag);
 	return 0;
 }

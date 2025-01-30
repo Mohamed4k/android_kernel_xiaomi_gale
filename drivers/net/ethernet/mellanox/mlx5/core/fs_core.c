@@ -316,7 +316,7 @@ static bool check_valid_spec(const struct mlx5_flow_spec *spec)
 
 	for (i = 0; i < MLX5_ST_SZ_DW_MATCH_PARAM; i++)
 		if (spec->match_value[i] & ~spec->match_criteria[i]) {
-			pr_warn("mlx5_core: match_value differs from match_criteria\n");
+			pr_debug("mlx5_core: match_value differs from match_criteria\n");
 			return false;
 		}
 
@@ -331,7 +331,7 @@ static struct mlx5_flow_root_namespace *find_root(struct fs_node *node)
 	root = node->root;
 
 	if (WARN_ON(root->type != FS_TYPE_NAMESPACE)) {
-		pr_warn("mlx5: flow steering node is not in tree or garbaged\n");
+		pr_debug("mlx5: flow steering node is not in tree or garbaged\n");
 		return NULL;
 	}
 

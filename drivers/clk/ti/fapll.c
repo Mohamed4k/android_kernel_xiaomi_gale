@@ -208,7 +208,7 @@ static int ti_fapll_set_div_mult(unsigned long rate,
 	 * with the multiplier?
 	 */
 	if (rate < parent_rate) {
-		pr_warn("FAPLL main divider rates unsupported\n");
+		pr_debug("FAPLL main divider rates unsupported\n");
 		return -EINVAL;
 	}
 

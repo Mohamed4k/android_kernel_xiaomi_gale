@@ -312,7 +312,7 @@ static int esb_probe(struct pci_dev *pdev,
 	edev->wdd.max_timeout = ESB_HEARTBEAT_MAX;
 	edev->wdd.timeout = ESB_HEARTBEAT_DEFAULT;
 	if (watchdog_init_timeout(&edev->wdd, heartbeat, NULL))
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			"heartbeat value must be " ESB_HEARTBEAT_RANGE
 			", using %u\n", edev->wdd.timeout);
 	watchdog_set_nowayout(&edev->wdd, nowayout);
@@ -327,7 +327,7 @@ static int esb_probe(struct pci_dev *pdev,
 			"cannot register watchdog device (err=%d)\n", ret);
 		goto err_unmap;
 	}
-	dev_info(&pdev->dev,
+	dev_dbg(&pdev->dev,
 		"initialized (0x%p). heartbeat=%d sec (nowayout=%d)\n",
 		edev->base, edev->wdd.timeout, nowayout);
 	return 0;

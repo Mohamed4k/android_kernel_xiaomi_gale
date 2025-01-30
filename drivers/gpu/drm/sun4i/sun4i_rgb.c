@@ -185,7 +185,7 @@ int sun4i_rgb_init(struct drm_device *drm, struct sun4i_tcon *tcon)
 	ret = drm_of_find_panel_or_bridge(tcon->dev->of_node, 1, 0,
 					  &tcon->panel, &bridge);
 	if (ret) {
-		dev_info(drm->dev, "No panel or bridge found... RGB output disabled\n");
+		dev_dbg(drm->dev, "No panel or bridge found... RGB output disabled\n");
 		return 0;
 	}
 

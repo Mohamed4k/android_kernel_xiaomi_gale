@@ -145,8 +145,8 @@ void __init tegra_init_apbmisc(void)
 
 			straps.flags = IORESOURCE_MEM;
 
-			pr_warn("Using APBMISC region %pR\n", &apbmisc);
-			pr_warn("Using strapping options registers %pR\n",
+			pr_debug("Using APBMISC region %pR\n", &apbmisc);
+			pr_debug("Using strapping options registers %pR\n",
 				&straps);
 		} else {
 			/*

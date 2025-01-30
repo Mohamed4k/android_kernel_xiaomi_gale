@@ -579,7 +579,7 @@ static irqreturn_t rt5133_intr_handler(int irq_number, void *data)
 	 * this event will also be trigger. Skip it
 	 */
 	if (handle_evts & ~RT5133_VREF_EVT_MASK)
-		dev_info(priv->dev, "base event occurred [0x%02x]\n",
+		dev_dbg(priv->dev, "base event occurred [0x%02x]\n",
 			 handle_evts);
 
 	handle_evts = (intr_evts & RT5133_LDO_OC_EVT_MASK) >>
@@ -795,12 +795,12 @@ static int rt5133_regulator_notify(struct notifier_block *nb,
 		goto out;
 
 	if (data == NULL) {
-		pr_info("%s: data gets null pointer\n", __func__);
+		pr_debug("%s: data gets null pointer\n", __func__);
 		goto out;
 	}
 
 	idx = *(int *)data;
-	pr_info("%s, ldo(%d), event = %d\n", __func__, idx, (int)event);
+	pr_debug("%s, ldo(%d), event = %d\n", __func__, idx, (int)event);
 
 	idx = idx - 1;
 	if (idx < 0)
@@ -874,7 +874,7 @@ static int rt5133_probe(struct i2c_client *i2c)
 	struct regulator_config config = {0};
 	int i, ret;
 
-	dev_info(&i2c->dev, "%s start(%s)\n", __func__, RT5133_DRV_VERSION);
+	dev_dbg(&i2c->dev, "%s start(%s)\n", __func__, RT5133_DRV_VERSION);
 	priv = devm_kzalloc(&i2c->dev, sizeof(*priv), GFP_KERNEL);
 	if (!priv)
 		return -ENOMEM;
@@ -963,7 +963,7 @@ static int rt5133_probe(struct i2c_client *i2c)
 		return ret;
 	}
 
-	dev_info(&i2c->dev, "%s done.\n", __func__);
+	dev_dbg(&i2c->dev, "%s done.\n", __func__);
 	return ret;
 }
 

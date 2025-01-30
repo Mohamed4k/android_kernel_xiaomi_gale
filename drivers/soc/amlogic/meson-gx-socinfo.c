@@ -177,7 +177,7 @@ static int __init meson_gx_socinfo_init(void)
 	}
 	dev = soc_device_to_device(soc_dev);
 
-	dev_info(dev, "Amlogic Meson %s Revision %x:%x (%x:%x) Detected\n",
+	dev_dbg(dev, "Amlogic Meson %s Revision %x:%x (%x:%x) Detected\n",
 			soc_dev_attr->soc_id,
 			socinfo_to_major(socinfo),
 			socinfo_to_minor(socinfo),

@@ -366,13 +366,13 @@ static int mtk_usb_phy_probe(struct platform_device *pdev)
 	struct phy_provider *provider;
 
 	if (!pdev->dev.of_node) {
-		dev_info(dev, "This driver is required to be instantiated from device tree\n");
+		dev_dbg(dev, "This driver is required to be instantiated from device tree\n");
 		return -EINVAL;
 	}
 
 	match = of_match_node(mtk_phy_of_match, pdev->dev.of_node);
 	if (!match) {
-		dev_info(dev, "of_match_node() failed\n");
+		dev_dbg(dev, "of_match_node() failed\n");
 		return -EINVAL;
 	}
 
@@ -421,7 +421,7 @@ static int mtk_usb_phy_probe(struct platform_device *pdev)
 
 		phy = devm_phy_create(dev, np, &mtk_u3phy_ops);
 		if (IS_ERR(phy)) {
-			dev_info(dev, "Failed to create usb2_phy \"%s\"\n",
+			dev_dbg(dev, "Failed to create usb2_phy \"%s\"\n",
 				name);
 			retval = PTR_ERR(phy);
 			goto err2;

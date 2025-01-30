@@ -169,7 +169,7 @@ static int mid_wdt_probe(struct platform_device *pdev)
 		return ret;
 	}
 
-	dev_info(&pdev->dev, "Intel MID watchdog device probed\n");
+	dev_dbg(&pdev->dev, "Intel MID watchdog device probed\n");
 
 	return 0;
 }

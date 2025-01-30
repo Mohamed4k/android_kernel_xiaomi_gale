@@ -1513,7 +1513,7 @@ tc35815_rx(struct net_device *dev, int limit)
 		} else {
 			dev->stats.rx_errors++;
 			if (netif_msg_rx_err(lp))
-				dev_info(&dev->dev, "Rx error (status %x)\n",
+				dev_dbg(&dev->dev, "Rx error (status %x)\n",
 					 status & Rx_Stat_Mask);
 			/* WORKAROUND: LongErr and CRCErr means Overflow. */
 			if ((status & Rx_LongErr) && (status & Rx_CRCErr)) {

@@ -195,7 +195,7 @@ mt7601u_set_country_reg(struct mt7601u_dev *dev, u8 *eeprom)
 		idx = val - 32 + 8;
 
 	if (idx != -1)
-		dev_info(dev->dev,
+		dev_dbg(dev->dev,
 			 "EEPROM country region %02hhx (channels %hhd-%hhd)\n",
 			 val, chan_bounds[idx].start,
 			 chan_bounds[idx].start + chan_bounds[idx].num - 1);
@@ -377,7 +377,7 @@ mt7601u_eeprom_init(struct mt7601u_dev *dev)
 		dev_warn(dev->dev,
 			 "Warning: unsupported EEPROM version %02hhx\n",
 			 eeprom[MT_EE_VERSION_EE]);
-	dev_info(dev->dev, "EEPROM ver:%02hhx fae:%02hhx\n",
+	dev_dbg(dev->dev, "EEPROM ver:%02hhx fae:%02hhx\n",
 		 eeprom[MT_EE_VERSION_EE], eeprom[MT_EE_VERSION_FAE]);
 
 	mt7601u_set_macaddr(dev, eeprom + MT_EE_MAC_ADDR);

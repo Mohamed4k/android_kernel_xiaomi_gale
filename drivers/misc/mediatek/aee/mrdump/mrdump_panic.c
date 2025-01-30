@@ -55,15 +55,15 @@ static inline void show_kaslr(void)
 {
 	u64 const kaslr_offset = aee_get_kimage_vaddr() - KIMAGE_VADDR;
 
-	pr_notice("Kernel Offset: 0x%llx from 0x%lx\n",
+	pr_debug("Kernel Offset: 0x%llx from 0x%lx\n",
 			kaslr_offset, KIMAGE_VADDR);
-	pr_notice("PHYS_OFFSET: 0x%llx\n", PHYS_OFFSET);
+	pr_debug("PHYS_OFFSET: 0x%llx\n", PHYS_OFFSET);
 	aee_rr_rec_kaslr_offset(kaslr_offset);
 }
 #else
 static inline void show_kaslr(void)
 {
-	pr_notice("Kernel Offset: disabled\n");
+	pr_debug("Kernel Offset: disabled\n");
 	aee_rr_rec_kaslr_offset(0xd15ab1e);
 }
 #endif
@@ -217,28 +217,28 @@ static __init int mrdump_parse_chosen(struct mrdump_params *mparams)
 					       reg, ARRAY_SIZE(reg)) == 0) {
 			mparams->cb_addr = reg[0];
 			mparams->cb_size = reg[1];
-			pr_notice("%s: mrdump_cbaddr=%pa, mrdump_cbsize=%pa\n",
+			pr_debug("%s: mrdump_cbaddr=%pa, mrdump_cbsize=%pa\n",
 				  __func__, &mparams->cb_addr, &mparams->cb_size);
 		}
 
 		if (of_property_read_string(node, "mrdump,lk", &lkver) == 0) {
 			strlcpy(mparams->lk_version, lkver,
 				sizeof(mparams->lk_version));
-			pr_notice("%s: lk version %s\n", __func__, lkver);
+			pr_debug("%s: lk version %s\n", __func__, lkver);
 		}
 
 		if (of_property_read_string(node, "mrdump,ddr_rsv",
 					    &ddr_rsv) == 0) {
 			if (strcmp(ddr_rsv, "yes") == 0)
 				mparams->drm_ready = true;
-			pr_notice("%s: ddr reserve mode %s\n", __func__,
+			pr_debug("%s: ddr reserve mode %s\n", __func__,
 				  ddr_rsv);
 		}
 
 		return 0;
 	}
 	of_node_put(node);
-	pr_notice("%s: Can't find chosen node\n", __func__);
+	pr_debug("%s: Can't find chosen node\n", __func__);
 	return -1;
 }
 
@@ -262,7 +262,7 @@ static int __init mrdump_panic_init(void)
 	struct mrdump_params mparams = {};
 
 	if (!aee_is_enable()) {
-		pr_notice("%s: ipanic: mrdump is disable\n", __func__);
+		pr_debug("%s: ipanic: mrdump is disable\n", __func__);
 		return 0;
 	}
 
@@ -273,7 +273,7 @@ static int __init mrdump_panic_init(void)
 	mrdump_hw_init(mparams.drm_ready);
 	mrdump_cblock_init(mparams.cb_addr, mparams.cb_size);
 	if (mrdump_cblock == NULL) {
-		pr_notice("%s: MT-RAMDUMP no control block\n", __func__);
+		pr_debug("%s: MT-RAMDUMP no control block\n", __func__);
 		return -EINVAL;
 	}
 	mrdump_mini_init(&mparams);
@@ -281,7 +281,7 @@ static int __init mrdump_panic_init(void)
 	if (strcmp(mparams.lk_version, MRDUMP_GO_DUMP) == 0) {
 		mrdump_full_init();
 	} else {
-		pr_notice("%s: Full ramdump disabled, version %s not matched.\n",
+		pr_debug("%s: Full ramdump disabled, version %s not matched.\n",
 			  __func__, mparams.lk_version);
 	}
 

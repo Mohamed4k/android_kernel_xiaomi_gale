@@ -206,7 +206,7 @@ static int mtk_dvfsrc_met_probe(struct platform_device *pdev)
 	res = platform_get_resource_byname(parent_dev,
 			IORESOURCE_MEM, "dvfsrc");
 	if (!res) {
-		dev_info(dev, "dvfsrc debug resource not found\n");
+		dev_dbg(dev, "dvfsrc debug resource not found\n");
 		return -ENODEV;
 	}
 

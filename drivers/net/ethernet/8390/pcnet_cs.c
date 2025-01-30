@@ -530,7 +530,7 @@ static struct hw_info *pcnet_try_config(struct pcmcia_device *link,
 
 	if ((link->config_base == 0x03c0) &&
 	    (link->manf_id == 0x149) && (link->card_id == 0xc1ab)) {
-		dev_info(&link->dev,
+		dev_dbg(&link->dev,
 			"this is an AX88190 card - use axnet_cs instead.\n");
 		return NULL;
 	}
@@ -606,18 +606,18 @@ static int pcnet_config(struct pcmcia_device *link)
     SET_NETDEV_DEV(dev, &link->dev);
 
     if (register_netdev(dev) != 0) {
-	pr_notice("register_netdev() failed\n");
+	pr_debug("register_netdev() failed\n");
 	goto failed;
     }
 
     if (info->flags & (IS_DL10019|IS_DL10022)) {
 	u_char id = inb(dev->base_addr + 0x1a);
-	netdev_info(dev, "NE2000 (DL100%d rev %02x): ",
+	netdev_dbg(dev, "NE2000 (DL100%d rev %02x): ",
 		    (info->flags & IS_DL10022) ? 22 : 19, id);
 	if (info->pna_phy)
 	    pr_cont("PNA, ");
     } else {
-	netdev_info(dev, "NE2000 Compatible: ");
+	netdev_dbg(dev, "NE2000 Compatible: ");
     }
     pr_cont("io %#3lx, irq %d,", dev->base_addr, dev->irq);
     if (info->flags & USE_SHMEM)
@@ -981,7 +981,7 @@ static int set_config(struct net_device *dev, struct ifmap *map)
 	else if ((map->port < 1) || (map->port > 2))
 	    return -EINVAL;
 	dev->if_port = map->port;
-	netdev_info(dev, "switched to %s port\n", if_names[dev->if_port]);
+	netdev_dbg(dev, "switched to %s port\n", if_names[dev->if_port]);
 	NS8390_init(dev, 1);
     }
     return 0;
@@ -1016,7 +1016,7 @@ static void ei_watchdog(struct timer_list *t)
        this, we can limp along even if the interrupt is blocked */
     if (info->stale++ && (inb_p(nic_base + EN0_ISR) & ENISR_ALL)) {
 	if (!info->fast_poll)
-	    netdev_info(dev, "interrupt(s) dropped!\n");
+	    netdev_dbg(dev, "interrupt(s) dropped!\n");
 	ei_irq_wrapper(dev->irq, dev);
 	info->fast_poll = HZ;
     }
@@ -1036,7 +1036,7 @@ static void ei_watchdog(struct timer_list *t)
 	if (info->eth_phy) {
 	    info->phy_id = info->eth_phy = 0;
 	} else {
-	    netdev_info(dev, "MII is missing!\n");
+	    netdev_dbg(dev, "MII is missing!\n");
 	    info->flags &= ~HAS_MII;
 	}
 	goto reschedule;
@@ -1045,7 +1045,7 @@ static void ei_watchdog(struct timer_list *t)
     link &= 0x0004;
     if (link != info->link_status) {
 	u_short p = mdio_read(mii_addr, info->phy_id, 5);
-	netdev_info(dev, "%s link beat\n", link ? "found" : "lost");
+	netdev_dbg(dev, "%s link beat\n", link ? "found" : "lost");
 	if (link && (info->flags & IS_DL10022)) {
 	    /* Disable collision detection on full duplex links */
 	    outb((p & 0x0140) ? 4 : 0, nic_base + DLINK_DIAG);
@@ -1056,12 +1056,12 @@ static void ei_watchdog(struct timer_list *t)
 	if (link) {
 	    if (info->phy_id == info->eth_phy) {
 		if (p)
-		    netdev_info(dev, "autonegotiation complete: "
+		    netdev_dbg(dev, "autonegotiation complete: "
 				"%sbaseT-%cD selected\n",
 				((p & 0x0180) ? "100" : "10"),
 				((p & 0x0140) ? 'F' : 'H'));
 		else
-		    netdev_info(dev, "link partner did not autonegotiate\n");
+		    netdev_dbg(dev, "link partner did not autonegotiate\n");
 	    }
 	    NS8390_init(dev, 1);
 	}
@@ -1074,7 +1074,7 @@ static void ei_watchdog(struct timer_list *t)
 	    /* isolate this MII and try flipping to the other one */
 	    mdio_write(mii_addr, info->phy_id, 0, 0x0400);
 	    info->phy_id ^= info->pna_phy ^ info->eth_phy;
-	    netdev_info(dev, "switched to %s transceiver\n",
+	    netdev_dbg(dev, "switched to %s transceiver\n",
 			(info->phy_id == info->eth_phy) ? "ethernet" : "PNA");
 	    mdio_write(mii_addr, info->phy_id, 0,
 		       (info->phy_id == info->eth_phy) ? 0x1000 : 0);

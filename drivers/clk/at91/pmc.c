@@ -155,10 +155,10 @@ static void pmc_resume(void)
 
 	regmap_read(pmcreg, AT91_PMC_MCKR, &tmp);
 	if (pmc_cache.mckr != tmp)
-		pr_warn("MCKR was not configured properly by the firmware\n");
+		pr_debug("MCKR was not configured properly by the firmware\n");
 	regmap_read(pmcreg, AT91_CKGR_PLLAR, &tmp);
 	if (pmc_cache.pllar != tmp)
-		pr_warn("PLLAR was not configured properly by the firmware\n");
+		pr_debug("PLLAR was not configured properly by the firmware\n");
 
 	regmap_write(pmcreg, AT91_PMC_SCER, pmc_cache.scsr);
 	regmap_write(pmcreg, AT91_PMC_PCER, pmc_cache.pcsr0);

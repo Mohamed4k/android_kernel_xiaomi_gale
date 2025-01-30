@@ -443,7 +443,7 @@ static void mmci_dma_setup(struct mmci_host *host)
 	else
 		txname = "none";
 
-	dev_info(mmc_dev(host->mmc), "DMA channels RX %s, TX %s\n",
+	dev_dbg(mmc_dev(host->mmc), "DMA channels RX %s, TX %s\n",
 		 rxname, txname);
 
 	/*
@@ -1798,7 +1798,7 @@ static int mmci_probe(struct amba_device *dev,
 
 	amba_set_drvdata(dev, mmc);
 
-	dev_info(&dev->dev, "%s: PL%03x manf %x rev%u at 0x%08llx irq %d,%d (pio)\n",
+	dev_dbg(&dev->dev, "%s: PL%03x manf %x rev%u at 0x%08llx irq %d,%d (pio)\n",
 		 mmc_hostname(mmc), amba_part(dev), amba_manf(dev),
 		 amba_rev(dev), (unsigned long long)dev->res.start,
 		 dev->irq[0], dev->irq[1]);

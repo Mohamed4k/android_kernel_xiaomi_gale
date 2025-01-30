@@ -104,7 +104,7 @@ void lcm_request_gpio_control(struct device *dev)
 {
 	int ret;
 
-	pr_notice("[Kernel/LCM] %s enter\n", __func__);
+	pr_debug("[Kernel/LCM] %s enter\n", __func__);
 
 	GPIO_LCD_RST = of_get_named_gpio(dev->of_node, "gpio_lcd_rst", 0);
 	gpio_request(GPIO_LCD_RST, "GPIO_LCD_RST");
@@ -120,19 +120,19 @@ void lcm_request_gpio_control(struct device *dev)
 	lcd_pinctrl1 = devm_pinctrl_get(dev);
 	if (IS_ERR(lcd_pinctrl1)) {
 		ret = PTR_ERR(lcd_pinctrl1);
-		pr_notice(" Cannot find lcd_pinctrl1 %d!\n", ret);
+		pr_debug(" Cannot find lcd_pinctrl1 %d!\n", ret);
 	}
 
 	lcd_disp_pwm = pinctrl_lookup_state(lcd_pinctrl1, "disp_pwm");
 	if (IS_ERR(lcd_pinctrl1)) {
 		ret = PTR_ERR(lcd_pinctrl1);
-		pr_notice(" Cannot find lcd_disp_pwm %d!\n", ret);
+		pr_debug(" Cannot find lcd_disp_pwm %d!\n", ret);
 	}
 
 	lcd_disp_pwm_gpio = pinctrl_lookup_state(lcd_pinctrl1, "disp_pwm_gpio");
 	if (IS_ERR(lcd_pinctrl1)) {
 		ret = PTR_ERR(lcd_pinctrl1);
-		pr_notice(" Cannot find lcd_disp_pwm_gpio %d!\n", ret);
+		pr_debug(" Cannot find lcd_disp_pwm_gpio %d!\n", ret);
 	}
 }
 
@@ -176,9 +176,9 @@ static struct platform_driver lcm_driver = {
 
 static int __init lcm_drv_init(void)
 {
-	pr_notice("[Kernel/LCM] %s enter\n", __func__);
+	pr_debug("[Kernel/LCM] %s enter\n", __func__);
 	if (platform_driver_register(&lcm_driver)) {
-		pr_notice("LCM: failed to register disp driver\n");
+		pr_debug("LCM: failed to register disp driver\n");
 		return -ENODEV;
 	}
 
@@ -188,7 +188,7 @@ static int __init lcm_drv_init(void)
 static void __exit lcm_drv_exit(void)
 {
 	platform_driver_unregister(&lcm_driver);
-	pr_notice("LCM: Unregister lcm driver done\n");
+	pr_debug("LCM: Unregister lcm driver done\n");
 }
 
 late_initcall(lcm_drv_init);
@@ -474,7 +474,7 @@ static void lcm_resume_power(void)
 
 static void lcm_init(void)
 {
-	pr_notice("[Kernel/LCM] %s enter\n", __func__);
+	pr_debug("[Kernel/LCM] %s enter\n", __func__);
 
 	lcm_set_gpio_output(GPIO_LCD_PWR_ENP, GPIO_OUT_ONE);
 	MDELAY(1);
@@ -485,24 +485,24 @@ static void lcm_init(void)
 	/* 4.0V + 20 * 100mV */
 	ret = SM5109_REG_MASK(0x00, 20, (0x1F << 0));
 	if (ret < 0)
-		pr_notice("[Kernel/LCM] cmd=%0x--i2c write error\n", 0x00);
+		pr_debug("[Kernel/LCM] cmd=%0x--i2c write error\n", 0x00);
 	else
-		pr_notice("[Kernel/LCM] cmd=%0x--i2c write success\n", 0x00);
+		pr_debug("[Kernel/LCM] cmd=%0x--i2c write success\n", 0x00);
 
 	/* set AVEE */
 	/* -4.0V - 20 * 100mV */
 	ret = SM5109_REG_MASK(0x01, 20, (0x1F << 0));
 	if (ret < 0)
-		pr_notice("[Kernel/LCM] cmd=%0x--i2c write error\n", 0x01);
+		pr_debug("[Kernel/LCM] cmd=%0x--i2c write error\n", 0x01);
 	else
-		pr_notice("[Kernel/LCM] cmd=%0x--i2c write success\n", 0x01);
+		pr_debug("[Kernel/LCM] cmd=%0x--i2c write success\n", 0x01);
 
 	/* enable AVDD & AVEE discharge*/
 	ret = SM5109_REG_MASK(0x03, (1<<0) | (1<<1), (1<<0) | (1<<1));
 	if (ret < 0)
-		pr_notice("[Kernel/LCM] cmd=%0x--i2c write error\n", 0x03);
+		pr_debug("[Kernel/LCM] cmd=%0x--i2c write error\n", 0x03);
 	else
-		pr_notice("[Kernel/LCM] cmd=%0x--i2c write success\n", 0x03);
+		pr_debug("[Kernel/LCM] cmd=%0x--i2c write success\n", 0x03);
 
 	MDELAY(8);
 #endif
@@ -524,12 +524,12 @@ static void lcm_init(void)
 		init_setting_vdo,
 		sizeof(init_setting_vdo) / sizeof(struct LCM_setting_table),
 		1);
-	pr_notice("[Kernel/LCM] %s exit\n", __func__);
+	pr_debug("[Kernel/LCM] %s exit\n", __func__);
 }
 
 static void lcm_suspend(void)
 {
-	pr_notice("[Kernel/LCM] %s enter\n", __func__);
+	pr_debug("[Kernel/LCM] %s enter\n", __func__);
 
 	push_table(NULL,
 		lcm_suspend_setting,
@@ -550,7 +550,7 @@ static void lcm_suspend(void)
 
 static void lcm_resume(void)
 {
-	pr_notice("[Kernel/LCM] %s enter\n", __func__);
+	pr_debug("[Kernel/LCM] %s enter\n", __func__);
 
 	lcm_init();
 }
@@ -584,7 +584,7 @@ static void lcm_validate_roi(int *x, int *y, int *width, int *height)
 	/* check height again */
 	if (y1 >= FRAME_HEIGHT || y1 + h > FRAME_HEIGHT) {
 		/* assign full screen roi */
-		pr_notice("%s calc error, assign full roi: y=%d, h=%d\n",
+		pr_debug("%s calc error, assign full roi: y=%d, h=%d\n",
 			__func__, *y, *height);
 		y1 = 0;
 		h = FRAME_HEIGHT;

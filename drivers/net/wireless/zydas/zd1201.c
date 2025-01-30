@@ -1810,7 +1810,7 @@ static int zd1201_probe(struct usb_interface *interface,
 	err = register_netdev(dev);
 	if (err)
 		goto err_start;
-	dev_info(&usb->dev, "%s: ZD1201 USB Wireless interface\n",
+	dev_dbg(&usb->dev, "%s: ZD1201 USB Wireless interface\n",
 	    dev->name);
 
 	usb_set_intfdata(interface, zd);

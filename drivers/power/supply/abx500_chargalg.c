@@ -1763,7 +1763,7 @@ static ssize_t abx500_chargalg_curr_step_store(struct abx500_chargalg *di,
 		di->curr_status.curr_step_change = true;
 		queue_work(di->chargalg_wq, &di->chargalg_work);
 	} else
-		dev_info(di->dev, "Wrong current step\n"
+		dev_dbg(di->dev, "Wrong current step\n"
 			"Enter 0. Disable AC/USB Charging\n"
 			"1--100. Set AC/USB charging current step\n"
 			"100. Enable AC/USB Charging\n");
@@ -1819,7 +1819,7 @@ static ssize_t abx500_chargalg_en_store(struct abx500_chargalg *di,
 			&di->chargalg_work);
 		break;
 	default:
-		dev_info(di->dev, "Wrong input\n"
+		dev_dbg(di->dev, "Wrong input\n"
 			"Enter 0. Disable AC/USB Charging\n"
 			"1. Enable AC charging\n"
 			"2. Enable USB Charging\n");
@@ -2070,7 +2070,7 @@ static int abx500_chargalg_probe(struct platform_device *pdev)
 	/* Run the charging algorithm */
 	queue_delayed_work(di->chargalg_wq, &di->chargalg_periodic_work, 0);
 
-	dev_info(di->dev, "probe success\n");
+	dev_dbg(di->dev, "probe success\n");
 	return ret;
 
 free_psy:

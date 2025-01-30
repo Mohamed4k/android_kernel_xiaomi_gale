@@ -2358,7 +2358,7 @@ static int clk_mt6853_apmixed_probe(struct platform_device *pdev)
 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init begin\n", __func__);
+	pr_debug("%s init begin\n", __func__);
 #endif
 
 	base = devm_ioremap_resource(&pdev->dev, res);
@@ -2384,7 +2384,7 @@ static int clk_mt6853_apmixed_probe(struct platform_device *pdev)
 	apmixed_base = base;
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init end\n", __func__);
+	pr_debug("%s init end\n", __func__);
 #endif
 
 	return r;
@@ -2401,7 +2401,7 @@ static int clk_mt6853_top_probe(struct platform_device *pdev)
 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init begin\n", __func__);
+	pr_debug("%s init begin\n", __func__);
 #endif
 
 	base = devm_ioremap_resource(&pdev->dev, res);
@@ -2429,7 +2429,7 @@ static int clk_mt6853_top_probe(struct platform_device *pdev)
 			__func__, r);
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init end\n", __func__);
+	pr_debug("%s init end\n", __func__);
 #endif
 
 	return r;
@@ -2442,7 +2442,7 @@ static int clk_mt6853_ifrao_probe(struct platform_device *pdev)
 	struct device_node *node = pdev->dev.of_node;
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init begin\n", __func__);
+	pr_debug("%s init begin\n", __func__);
 #endif
 
 	clk_data = mtk_alloc_clk_data(CLK_IFRAO_NR_CLK);
@@ -2457,7 +2457,7 @@ static int clk_mt6853_ifrao_probe(struct platform_device *pdev)
 			__func__, r);
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init end\n", __func__);
+	pr_debug("%s init end\n", __func__);
 #endif
 
 	return r;
@@ -2470,7 +2470,7 @@ static int clk_mt6853_peri_probe(struct platform_device *pdev)
 	struct device_node *node = pdev->dev.of_node;
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init begin\n", __func__);
+	pr_debug("%s init begin\n", __func__);
 #endif
 
 	clk_data = mtk_alloc_clk_data(CLK_PERI_NR_CLK);
@@ -2485,7 +2485,7 @@ static int clk_mt6853_peri_probe(struct platform_device *pdev)
 			__func__, r);
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init end\n", __func__);
+	pr_debug("%s init end\n", __func__);
 #endif
 
 	return r;

@@ -48,10 +48,10 @@ static int add_timestamp_string(char *buf, int bufsize)
 		       (unsigned long)ts, rem_nsec / 1000);
 
 	if (len < 0)
-		pr_notice("len = %d error\n", len);
+		pr_debug("len = %d error\n", len);
 
 #ifdef DEBUG_DRIVER
-	pr_notice("get_timestamp_string, len = %d\n", len);
+	pr_debug("get_timestamp_string, len = %d\n", len);
 #endif
 	return len;
 }
@@ -79,7 +79,7 @@ static ssize_t show_debuglv(struct file *filp, char __user *buffer,
 	len += scnprintf(buf + len, sizeof(buf) - len,
 			"g_debug_log_lv = %d:\n", g_debug_log_lv);
 
-	pr_notice("buf_head = %d,char_count = %lld dbglog_buf = %s\n",
+	pr_debug("buf_head = %d,char_count = %lld dbglog_buf = %s\n",
 		buf_head, char_count, (dbglog_buf + buf_head));
 
 
@@ -91,18 +91,18 @@ static ssize_t show_debuglv(struct file *filp, char __user *buffer,
 
 				i++;
 				p_line++;
-				pr_notice("dbglog[%d,%d] = %s\n", p_line, i,
+				pr_debug("dbglog[%d,%d] = %s\n", p_line, i,
 					(dbglog_buf + buf_head + i));
 			}
 		} else {
 			while (total_count < APU_LOG_SIZE) {
 				if (buf_head + i > APU_LOG_SIZE) {
-					pr_notice("reset data\n");
+					pr_debug("reset data\n");
 					data = dbglog_buf;
 					buf_head = 0;
 					i = 0;
 					p_line++;
-					pr_notice("!!dbglog[%d,%d] = %s\n",
+					pr_debug("!!dbglog[%d,%d] = %s\n",
 						p_line, i,
 						(dbglog_buf	+
 						buf_head + i));
@@ -114,22 +114,22 @@ static ssize_t show_debuglv(struct file *filp, char __user *buffer,
 				i++;
 				p_line++;
 				if (p_line >= line_count) {
-					pr_notice("strang line number too big!!!\n");
+					pr_debug("strang line number too big!!!\n");
 					break;
 				}
 
 				if (buf_head == 0 && i >= save_head) {
-					pr_notice("print too much [%d,%d] !!!\n",
+					pr_debug("print too much [%d,%d] !!!\n",
 						i, total_count);
 					break;
 				}
-				pr_notice("dbglog[%d,%d,%d] = %s\n",
+				pr_debug("dbglog[%d,%d,%d] = %s\n",
 					p_line, i, total_count,
 					(dbglog_buf + buf_head + i));
 			}
 		}
 	}
-	pr_notice("finished print debug log\n");
+	pr_debug("finished print debug log\n");
 	/*Reset all buffer count*/
 
 	len += scnprintf(buf + len, sizeof(buf) - len,
@@ -166,12 +166,12 @@ static ssize_t set_debuglv(struct file *flip,
 	cursor = tmp;
 	ret = kstrtouint(cursor, 10, &input);
 
-	pr_notice("set debug lv = %d\n", input);
+	pr_debug("set debug lv = %d\n", input);
 
 	g_debug_log_lv = input;
 
 	if (input >= 5) {
-		pr_notice("release dbg resource\n");
+		pr_debug("release dbg resource\n");
 		if (dbglog_buf != NULL) {
 			kfree(dbglog_buf);
 			dbglog_buf = NULL;
@@ -247,7 +247,7 @@ void apu_dbg_print(const char *fmt, ...)
 		if (_cPos + 256 > APU_LOG_SIZE) {
 			_cPos = 0;
 			buf_head = 1;
-			pr_notice("%s reset _cPos", __func__);
+			pr_debug("%s reset _cPos", __func__);
 		}
 		number_count = add_timestamp_string(dbglog_buf + _cPos, 512);
 		_cPos += number_count;
@@ -264,7 +264,7 @@ void apu_dbg_print(const char *fmt, ...)
 			buf_head = _cPos;
 
 #ifdef DEBUG_DRIVER
-		pr_notice("edma_print _cPos = %d,line = %d, buf_head = %d\n",
+		pr_debug("edma_print _cPos = %d,line = %d, buf_head = %d\n",
 			_cPos, line_count, buf_head);
 #endif
 print_end:
@@ -276,7 +276,7 @@ static int debug_probe(struct platform_device *pdev)
 {
 	int ret = 0;
 
-	pr_notice("%s in", __func__);
+	pr_debug("%s in", __func__);
 
 	apusys_debug_root = debugfs_create_dir(APUSYS_DEBUG_DIR, NULL);
 	ret = IS_ERR_OR_NULL(apusys_debug_root);
@@ -303,7 +303,7 @@ static int debug_probe(struct platform_device *pdev)
 		goto out;
 	}
 
-	pr_notice("debug probe done, dbglog_buf= 0x%p\n", dbglog_buf);
+	pr_debug("debug probe done, dbglog_buf= 0x%p\n", dbglog_buf);
 	ret = apusys_dump_init(&pdev->dev);
 	if (ret) {
 		DBG_LOG_ERR("failed to create debug dump attr node(devinfo).\n");
@@ -313,7 +313,7 @@ static int debug_probe(struct platform_device *pdev)
 	return 0;
 
 out:
-	pr_notice("debug probe error!!\n");
+	pr_debug("debug probe error!!\n");
 
 	return ret;
 }
@@ -343,7 +343,7 @@ static int __init debug_INIT(void)
 {
 	int ret = 0;
 
-	pr_notice("%s debug driver init", __func__);
+	pr_debug("%s debug driver init", __func__);
 
 	dbglog_buf = NULL;
 	g_debug_log_lv = 0;
@@ -355,7 +355,7 @@ static int __init debug_INIT(void)
 
 	ret = platform_driver_register(&debug_driver);
 	if (ret != 0)
-		pr_notice("failed to register debug driver");
+		pr_debug("failed to register debug driver");
 
 
 	if (platform_device_register(&debug_device)) {

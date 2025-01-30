@@ -105,7 +105,7 @@ static void atlx_check_for_link(struct atlx_adapter *adapter)
 		/* Link Down */
 		if (netif_carrier_ok(netdev)) {
 			/* old link state: Up */
-			dev_info(&adapter->pdev->dev, "%s link is down\n",
+			dev_dbg(&adapter->pdev->dev, "%s link is down\n",
 				netdev->name);
 			adapter->link_speed = SPEED_0;
 			netif_carrier_off(netdev);

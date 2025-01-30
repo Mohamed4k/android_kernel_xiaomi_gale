@@ -167,7 +167,7 @@ static bool rwdt_blacklisted(struct device *dev)
 
 	attr = soc_device_match(rwdt_quirks_match);
 	if (attr && setup_max_cpus > (uintptr_t)attr->data) {
-		dev_info(dev, "Watchdog blacklisted on %s %s\n", attr->soc_id,
+		dev_dbg(dev, "Watchdog blacklisted on %s %s\n", attr->soc_id,
 			 attr->revision);
 		return true;
 	}

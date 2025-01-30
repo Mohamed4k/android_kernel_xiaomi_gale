@@ -195,7 +195,7 @@ static int atl1e_check_link(struct atl1e_adapter *adapter)
 			adapter->link_speed  = speed;
 			adapter->link_duplex = duplex;
 			atl1e_setup_mac_ctrl(adapter);
-			netdev_info(netdev,
+			netdev_dbg(netdev,
 				    "NIC Link is Up <%d Mbps %s Duplex>\n",
 				    adapter->link_speed,
 				    adapter->link_duplex == FULL_DUPLEX ?
@@ -241,7 +241,7 @@ static void atl1e_link_chg_event(struct atl1e_adapter *adapter)
 	if (!link_up) {
 		if (netif_carrier_ok(netdev)) {
 			/* old link state: Up */
-			netdev_info(netdev, "NIC Link is Down\n");
+			netdev_dbg(netdev, "NIC Link is Down\n");
 			adapter->link_speed = SPEED_0;
 			netif_stop_queue(netdev);
 		}

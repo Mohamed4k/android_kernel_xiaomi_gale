@@ -63,7 +63,7 @@ static void VA09_operation(int op, bool force)
 	if (op == VA09_OP_ON && !on) {
 		ret = regulator_enable(reg_va09);
 		if (ret < 0) {
-			pr_notice("regulator_enable va09 failed: %d\n", ret);
+			pr_debug("regulator_enable va09 failed: %d\n", ret);
 			return;
 		}
 		on = true;
@@ -71,7 +71,7 @@ static void VA09_operation(int op, bool force)
 	} else if (op == VA09_OP_OFF && on) {
 		ret = regulator_disable(reg_va09);
 		if (ret < 0) {
-			pr_notice("regulator_enable va09 failed: %d\n", ret);
+			pr_debug("regulator_enable va09 failed: %d\n", ret);
 			return;
 		}
 		on = false;
@@ -183,12 +183,12 @@ static bool usb_enable_clock(bool enable)
 	unsigned long flags;
 
 	if (!ssusb_clk || IS_ERR(ssusb_clk)) {
-		pr_notice("clock not ready, ssusb_clk:%p", ssusb_clk);
+		pr_debug("clock not ready, ssusb_clk:%p", ssusb_clk);
 		return -1;
 	}
 
 	if (!sys_ck || IS_ERR(sys_ck)) {
-		pr_notice("clock not ready, sys_ck:%p", sys_ck);
+		pr_debug("clock not ready, sys_ck:%p", sys_ck);
 		return -1;
 	}
 
@@ -198,9 +198,9 @@ static bool usb_enable_clock(bool enable)
 	if (enable && count == 0) {
 		usb_hal_dpidle_request(USB_DPIDLE_FORBIDDEN);
 		if (clk_enable(ssusb_clk) != 0)
-			pr_notice("ssusb_ref_clk enable fail\n");
+			pr_debug("ssusb_ref_clk enable fail\n");
 		if (clk_enable(sys_ck) != 0)
-			pr_notice("sys_ck enable fail\n");
+			pr_debug("sys_ck enable fail\n");
 	} else if (!enable && count == 1) {
 		clk_disable(ssusb_clk);
 		clk_disable(sys_ck);
@@ -611,13 +611,13 @@ int usb2jtag_usb_init(void)
 
 	node = of_find_compatible_node(NULL, NULL, "mediatek,usb3");
 	if (!node) {
-		pr_notice("[USB2JTAG] map node @ mediatek,usb3 failed\n");
+		pr_debug("[USB2JTAG] map node @ mediatek,usb3 failed\n");
 		return -1;
 	}
 
 	usb3_sif2_base = of_iomap(node, 2);
 	if (!usb3_sif2_base) {
-		pr_notice("[USB2JTAG] iomap usb3_sif2_base failed\n");
+		pr_debug("[USB2JTAG] iomap usb3_sif2_base failed\n");
 		return -1;
 	}
 
@@ -840,7 +840,7 @@ void usb_phy_savecurrent(unsigned int clk_on)
 	os_printk(K_INFO, "%s clk_on=%d+\n", __func__, clk_on);
 
 	if (sib_mode) {
-		pr_notice("%s sib_mode can't savecurrent\n", __func__);
+		pr_debug("%s sib_mode can't savecurrent\n", __func__);
 		return;
 	}
 
@@ -1278,51 +1278,51 @@ void Charger_Detect_Release(void)
 static int mt_usb_dts_probe(struct platform_device *pdev)
 {
 	int retval = 0;
-	pr_notice("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 
 	/* POWER */
 	reg_vusb = regulator_get(&pdev->dev, "vusb");
 	if (!IS_ERR(reg_vusb)) {
 		retval = regulator_enable(reg_vusb);
 		if (retval < 0) {
-			pr_notice("regulator_enable vusb failed: %d\n", retval);
+			pr_debug("regulator_enable vusb failed: %d\n", retval);
 			regulator_put(reg_vusb);
 		}
 	} else {
-		pr_notice("regulator_get vusb failed\n");
+		pr_debug("regulator_get vusb failed\n");
 		reg_vusb = NULL;
 	}
 
 	reg_va09 = regulator_get(&pdev->dev, "va09");
 	if (IS_ERR(reg_va09)) {
-		pr_notice("regulator_get va09 failed\n");
+		pr_debug("regulator_get va09 failed\n");
 		reg_va09 = NULL;
 	}
 
 	ssusb_clk = devm_clk_get(&pdev->dev, "ssusb_clk");
 	if (IS_ERR(ssusb_clk)) {
-		pr_notice("ssusb_clk get ssusb_clk fail\n");
+		pr_debug("ssusb_clk get ssusb_clk fail\n");
 	} else {
 		retval = clk_prepare(ssusb_clk);
 		if (retval == 0)
 			pr_debug("ssusb_clk<%p> prepare done\n", ssusb_clk);
 		else
-			pr_notice("ssusb_clk prepare fail\n");
+			pr_debug("ssusb_clk prepare fail\n");
 	}
 
 	sys_ck = devm_clk_get(&pdev->dev, "sys_ck");
 	if (IS_ERR(sys_ck)) {
-		pr_notice("sys_ck get sys_ck fail\n");
+		pr_debug("sys_ck get sys_ck fail\n");
 	} else {
 		retval = clk_prepare(sys_ck);
 		if (retval == 0)
 			pr_debug("sys_ck<%p> prepare done\n", sys_ck);
 		else
-			pr_notice("sys_ck prepare fail\n");
+			pr_debug("sys_ck prepare fail\n");
 	}
 
 	usb20_phy_rev6 = 1;
-	pr_notice("%s, usb20_phy_rev6 to %d\n", __func__, usb20_phy_rev6);
+	pr_debug("%s, usb20_phy_rev6 to %d\n", __func__, usb20_phy_rev6);
 
 	return retval;
 }

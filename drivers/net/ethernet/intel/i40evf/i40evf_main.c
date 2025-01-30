@@ -156,7 +156,7 @@ void i40evf_debug_d(void *hw, u32 mask, char *fmt_str, ...)
 	va_end(argptr);
 
 	/* the debug string is already formatted with a newline */
-	pr_info("%s", buf);
+	pr_debug("%s", buf);
 }
 
 /**
@@ -467,7 +467,7 @@ i40evf_request_traffic_irqs(struct i40evf_adapter *adapter, char *basename)
 				  q_vector->name,
 				  q_vector);
 		if (err) {
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "Request_irq failed, error: %d\n", err);
 			goto free_queue_irqs;
 		}
@@ -1464,10 +1464,10 @@ int i40evf_init_interrupt_scheme(struct i40evf_adapter *adapter)
 	 */
 	if ((adapter->vf_res->vf_cap_flags & VIRTCHNL_VF_OFFLOAD_ADQ) &&
 	    adapter->num_tc)
-		dev_info(&adapter->pdev->dev, "ADq Enabled, %u TCs created",
+		dev_dbg(&adapter->pdev->dev, "ADq Enabled, %u TCs created",
 			 adapter->num_tc);
 
-	dev_info(&adapter->pdev->dev, "Multiqueue %s: Queue pair count = %u",
+	dev_dbg(&adapter->pdev->dev, "Multiqueue %s: Queue pair count = %u",
 		 (adapter->num_active_queues > 1) ? "Enabled" : "Disabled",
 		 adapter->num_active_queues);
 
@@ -1806,7 +1806,7 @@ static void i40evf_disable_vf(struct i40evf_adapter *adapter)
 	adapter->flags &= ~I40EVF_FLAG_RESET_PENDING;
 	adapter->state = __I40EVF_DOWN;
 	wake_up(&adapter->down_waitqueue);
-	dev_info(&adapter->pdev->dev, "Reset task did not complete, VF disabled\n");
+	dev_dbg(&adapter->pdev->dev, "Reset task did not complete, VF disabled\n");
 }
 
 #define I40EVF_RESET_WAIT_MS 10
@@ -1872,7 +1872,7 @@ static void i40evf_reset_task(struct work_struct *work)
 		usleep_range(5000, 10000);
 	}
 	if (i == I40EVF_RESET_WAIT_COUNT) {
-		dev_info(&adapter->pdev->dev, "Never saw reset\n");
+		dev_dbg(&adapter->pdev->dev, "Never saw reset\n");
 		goto continue_reset; /* act like the reset happened */
 	}
 
@@ -1928,7 +1928,7 @@ continue_reset:
 	adapter->current_op = VIRTCHNL_OP_UNKNOWN;
 	err = i40evf_init_adminq(hw);
 	if (err)
-		dev_info(&adapter->pdev->dev, "Failed to init adminq: %d\n",
+		dev_dbg(&adapter->pdev->dev, "Failed to init adminq: %d\n",
 			 err);
 	adapter->aq_required = 0;
 
@@ -2062,15 +2062,15 @@ static void i40evf_adminq_task(struct work_struct *work)
 		goto freedom;
 	oldval = val;
 	if (val & I40E_VF_ARQLEN1_ARQVFE_MASK) {
-		dev_info(&adapter->pdev->dev, "ARQ VF Error detected\n");
+		dev_dbg(&adapter->pdev->dev, "ARQ VF Error detected\n");
 		val &= ~I40E_VF_ARQLEN1_ARQVFE_MASK;
 	}
 	if (val & I40E_VF_ARQLEN1_ARQOVFL_MASK) {
-		dev_info(&adapter->pdev->dev, "ARQ Overflow Error detected\n");
+		dev_dbg(&adapter->pdev->dev, "ARQ Overflow Error detected\n");
 		val &= ~I40E_VF_ARQLEN1_ARQOVFL_MASK;
 	}
 	if (val & I40E_VF_ARQLEN1_ARQCRIT_MASK) {
-		dev_info(&adapter->pdev->dev, "ARQ Critical Error detected\n");
+		dev_dbg(&adapter->pdev->dev, "ARQ Critical Error detected\n");
 		val &= ~I40E_VF_ARQLEN1_ARQCRIT_MASK;
 	}
 	if (oldval != val)
@@ -2079,15 +2079,15 @@ static void i40evf_adminq_task(struct work_struct *work)
 	val = rd32(hw, hw->aq.asq.len);
 	oldval = val;
 	if (val & I40E_VF_ATQLEN1_ATQVFE_MASK) {
-		dev_info(&adapter->pdev->dev, "ASQ VF Error detected\n");
+		dev_dbg(&adapter->pdev->dev, "ASQ VF Error detected\n");
 		val &= ~I40E_VF_ATQLEN1_ATQVFE_MASK;
 	}
 	if (val & I40E_VF_ATQLEN1_ATQOVFL_MASK) {
-		dev_info(&adapter->pdev->dev, "ASQ Overflow Error detected\n");
+		dev_dbg(&adapter->pdev->dev, "ASQ Overflow Error detected\n");
 		val &= ~I40E_VF_ATQLEN1_ATQOVFL_MASK;
 	}
 	if (val & I40E_VF_ATQLEN1_ATQCRIT_MASK) {
-		dev_info(&adapter->pdev->dev, "ASQ Critical Error detected\n");
+		dev_dbg(&adapter->pdev->dev, "ASQ Critical Error detected\n");
 		val &= ~I40E_VF_ATQLEN1_ATQCRIT_MASK;
 	}
 	if (oldval != val)
@@ -2500,7 +2500,7 @@ static int i40evf_parse_cls_flower(struct i40evf_adapter *adapter,
 		}
 
 		if (key->ip_proto != IPPROTO_TCP) {
-			dev_info(&adapter->pdev->dev, "Only TCP transport is supported\n");
+			dev_dbg(&adapter->pdev->dev, "Only TCP transport is supported\n");
 			return -EINVAL;
 		}
 	}
@@ -2620,7 +2620,7 @@ static int i40evf_parse_cls_flower(struct i40evf_adapter *adapter,
 		}
 
 		if (field_flags & I40EVF_CLOUD_FIELD_TEN_ID) {
-			dev_info(&adapter->pdev->dev, "Tenant id not allowed for ip filter\n");
+			dev_dbg(&adapter->pdev->dev, "Tenant id not allowed for ip filter\n");
 			return I40E_ERR_CONFIG;
 		}
 		if (key->dst) {
@@ -3406,7 +3406,7 @@ static void i40evf_init_task(struct work_struct *work)
 		}
 		err = i40evf_check_reset_complete(hw);
 		if (err) {
-			dev_info(&pdev->dev, "Device is still in reset (%d), retrying\n",
+			dev_dbg(&pdev->dev, "Device is still in reset (%d), retrying\n",
 				 err);
 			goto err;
 		}
@@ -3507,7 +3507,7 @@ static void i40evf_init_task(struct work_struct *work)
 	netdev->max_mtu = I40E_MAX_RXBUFFER - I40E_PACKET_HDR_PAD;
 
 	if (!is_valid_ether_addr(adapter->hw.mac.addr)) {
-		dev_info(&pdev->dev, "Invalid MAC address %pM, using random\n",
+		dev_dbg(&pdev->dev, "Invalid MAC address %pM, using random\n",
 			 adapter->hw.mac.addr);
 		eth_hw_addr_random(netdev);
 		ether_addr_copy(adapter->hw.mac.addr, netdev->dev_addr);
@@ -3549,13 +3549,13 @@ static void i40evf_init_task(struct work_struct *work)
 	if (CLIENT_ALLOWED(adapter)) {
 		err = i40evf_lan_add_device(adapter);
 		if (err)
-			dev_info(&pdev->dev, "Failed to add VF to client API service list: %d\n",
+			dev_dbg(&pdev->dev, "Failed to add VF to client API service list: %d\n",
 				 err);
 	}
 
-	dev_info(&pdev->dev, "MAC address: %pM\n", adapter->hw.mac.addr);
+	dev_dbg(&pdev->dev, "MAC address: %pM\n", adapter->hw.mac.addr);
 	if (netdev->features & NETIF_F_GRO)
-		dev_info(&pdev->dev, "GRO is enabled\n");
+		dev_dbg(&pdev->dev, "GRO is enabled\n");
 
 	adapter->state = __I40EVF_DOWN;
 	set_bit(__I40E_VSI_DOWN, adapter->vsi.state);
@@ -3953,10 +3953,10 @@ static int __init i40evf_init_module(void)
 {
 	int ret;
 
-	pr_info("i40evf: %s - version %s\n", i40evf_driver_string,
+	pr_debug("i40evf: %s - version %s\n", i40evf_driver_string,
 		i40evf_driver_version);
 
-	pr_info("%s\n", i40evf_copyright);
+	pr_debug("%s\n", i40evf_copyright);
 
 	i40evf_wq = alloc_workqueue("%s", WQ_UNBOUND | WQ_MEM_RECLAIM, 1,
 				    i40evf_driver_name);

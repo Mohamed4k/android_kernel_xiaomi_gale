@@ -432,7 +432,7 @@ static int cros_usbpd_charger_probe(struct platform_device *pd)
 		 * This can happen on a system that doesn't support USB PD.
 		 * Log a message, but no need to warn.
 		 */
-		dev_info(dev, "No charging ports found\n");
+		dev_dbg(dev, "No charging ports found\n");
 		ret = -ENODEV;
 		goto fail_nowarn;
 	}
@@ -504,7 +504,7 @@ fail:
 	WARN(1, "%s: Failing probe (err:0x%x)\n", dev_name(dev), ret);
 
 fail_nowarn:
-	dev_info(dev, "Failing probe (err:0x%x)\n", ret);
+	dev_dbg(dev, "Failing probe (err:0x%x)\n", ret);
 	return ret;
 }
 

@@ -1076,7 +1076,7 @@ static int u300_pmx_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, upmx);
 
-	dev_info(&pdev->dev, "initialized U300 pin control driver\n");
+	dev_dbg(&pdev->dev, "initialized U300 pin control driver\n");
 
 	return 0;
 }

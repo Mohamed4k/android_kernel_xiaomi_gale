@@ -196,7 +196,7 @@ static void phy_mdm6600_status(struct work_struct *work)
 	}
 	ddata->status = val;
 
-	dev_info(dev, "modem status: %i %s\n",
+	dev_dbg(dev, "modem status: %i %s\n",
 		 ddata->status,
 		 phy_mdm6600_status_name[ddata->status & 7]);
 	complete(&ddata->ack);
@@ -306,7 +306,7 @@ static int phy_mdm6600_init_lines(struct phy_mdm6600 *ddata)
 
 		*gpio = devm_gpiod_get(dev, map->name, map->direction);
 		if (IS_ERR(*gpio)) {
-			dev_info(dev, "gpio %s error %li\n",
+			dev_dbg(dev, "gpio %s error %li\n",
 				 map->name, PTR_ERR(*gpio));
 			return PTR_ERR(*gpio);
 		}
@@ -393,12 +393,12 @@ static int phy_mdm6600_device_power_on(struct phy_mdm6600 *ddata)
 	ddata->enabled = true;
 
 	/* Booting up the rest of MDM6600 will take total about 8 seconds */
-	dev_info(ddata->dev, "Waiting for power up request to complete..\n");
+	dev_dbg(ddata->dev, "Waiting for power up request to complete..\n");
 	if (wait_for_completion_timeout(&ddata->ack,
 			msecs_to_jiffies(PHY_MDM6600_ENABLED_DELAY_MS))) {
 		if (ddata->status > PHY_MDM6600_STATUS_PANIC &&
 		    ddata->status < PHY_MDM6600_STATUS_SHUTDOWN_ACK)
-			dev_info(ddata->dev, "Powered up OK\n");
+			dev_dbg(ddata->dev, "Powered up OK\n");
 	} else {
 		ddata->enabled = false;
 		error = -ETIMEDOUT;
@@ -443,11 +443,11 @@ static void phy_mdm6600_device_power_off(struct phy_mdm6600 *ddata)
 
 	gpiod_set_value_cansleep(reset_gpio, 1);
 
-	dev_info(ddata->dev, "Waiting for power down request to complete.. ");
+	dev_dbg(ddata->dev, "Waiting for power down request to complete.. ");
 	if (wait_for_completion_timeout(&ddata->ack,
 					msecs_to_jiffies(5000))) {
 		if (ddata->status == PHY_MDM6600_STATUS_PANIC)
-			dev_info(ddata->dev, "Powered down OK\n");
+			dev_dbg(ddata->dev, "Powered down OK\n");
 	} else {
 		dev_err(ddata->dev, "Timed out powering down\n");
 	}

@@ -217,7 +217,7 @@ static int i40e_add_del_fdir_udpv4(struct i40e_vsi *vsi,
 	fd_data->pctype = I40E_FILTER_PCTYPE_NONF_IPV4_UDP;
 	ret = i40e_program_fdir_filter(fd_data, raw_packet, pf, add);
 	if (ret) {
-		dev_info(&pf->pdev->dev,
+		dev_dbg(&pf->pdev->dev,
 			 "PCTYPE:%d, Filter command send failed for fd_id:%d (ret = %d)\n",
 			 fd_data->pctype, fd_data->fd_id, ret);
 		/* Free the packet buffer since it wasn't added to the ring */
@@ -225,11 +225,11 @@ static int i40e_add_del_fdir_udpv4(struct i40e_vsi *vsi,
 		return -EOPNOTSUPP;
 	} else if (I40E_DEBUG_FD & pf->hw.debug_mask) {
 		if (add)
-			dev_info(&pf->pdev->dev,
+			dev_dbg(&pf->pdev->dev,
 				 "Filter OK for PCTYPE %d loc = %d\n",
 				 fd_data->pctype, fd_data->fd_id);
 		else
-			dev_info(&pf->pdev->dev,
+			dev_dbg(&pf->pdev->dev,
 				 "Filter deleted for PCTYPE %d loc = %d\n",
 				 fd_data->pctype, fd_data->fd_id);
 	}
@@ -291,7 +291,7 @@ static int i40e_add_del_fdir_tcpv4(struct i40e_vsi *vsi,
 	fd_data->pctype = I40E_FILTER_PCTYPE_NONF_IPV4_TCP;
 	ret = i40e_program_fdir_filter(fd_data, raw_packet, pf, add);
 	if (ret) {
-		dev_info(&pf->pdev->dev,
+		dev_dbg(&pf->pdev->dev,
 			 "PCTYPE:%d, Filter command send failed for fd_id:%d (ret = %d)\n",
 			 fd_data->pctype, fd_data->fd_id, ret);
 		/* Free the packet buffer since it wasn't added to the ring */
@@ -299,10 +299,10 @@ static int i40e_add_del_fdir_tcpv4(struct i40e_vsi *vsi,
 		return -EOPNOTSUPP;
 	} else if (I40E_DEBUG_FD & pf->hw.debug_mask) {
 		if (add)
-			dev_info(&pf->pdev->dev, "Filter OK for PCTYPE %d loc = %d)\n",
+			dev_dbg(&pf->pdev->dev, "Filter OK for PCTYPE %d loc = %d)\n",
 				 fd_data->pctype, fd_data->fd_id);
 		else
-			dev_info(&pf->pdev->dev,
+			dev_dbg(&pf->pdev->dev,
 				 "Filter deleted for PCTYPE %d loc = %d\n",
 				 fd_data->pctype, fd_data->fd_id);
 	}
@@ -311,7 +311,7 @@ static int i40e_add_del_fdir_tcpv4(struct i40e_vsi *vsi,
 		pf->fd_tcp4_filter_cnt++;
 		if ((pf->flags & I40E_FLAG_FD_ATR_ENABLED) &&
 		    I40E_DEBUG_FD & pf->hw.debug_mask)
-			dev_info(&pf->pdev->dev, "Forcing ATR off, sideband rules for TCP/IPv4 flow being applied\n");
+			dev_dbg(&pf->pdev->dev, "Forcing ATR off, sideband rules for TCP/IPv4 flow being applied\n");
 		set_bit(__I40E_FD_ATR_AUTO_DISABLED, pf->state);
 	} else {
 		pf->fd_tcp4_filter_cnt--;
@@ -369,7 +369,7 @@ static int i40e_add_del_fdir_sctpv4(struct i40e_vsi *vsi,
 	fd_data->pctype = I40E_FILTER_PCTYPE_NONF_IPV4_SCTP;
 	ret = i40e_program_fdir_filter(fd_data, raw_packet, pf, add);
 	if (ret) {
-		dev_info(&pf->pdev->dev,
+		dev_dbg(&pf->pdev->dev,
 			 "PCTYPE:%d, Filter command send failed for fd_id:%d (ret = %d)\n",
 			 fd_data->pctype, fd_data->fd_id, ret);
 		/* Free the packet buffer since it wasn't added to the ring */
@@ -377,11 +377,11 @@ static int i40e_add_del_fdir_sctpv4(struct i40e_vsi *vsi,
 		return -EOPNOTSUPP;
 	} else if (I40E_DEBUG_FD & pf->hw.debug_mask) {
 		if (add)
-			dev_info(&pf->pdev->dev,
+			dev_dbg(&pf->pdev->dev,
 				 "Filter OK for PCTYPE %d loc = %d\n",
 				 fd_data->pctype, fd_data->fd_id);
 		else
-			dev_info(&pf->pdev->dev,
+			dev_dbg(&pf->pdev->dev,
 				 "Filter deleted for PCTYPE %d loc = %d\n",
 				 fd_data->pctype, fd_data->fd_id);
 	}
@@ -440,7 +440,7 @@ static int i40e_add_del_fdir_ipv4(struct i40e_vsi *vsi,
 		fd_data->pctype = i;
 		ret = i40e_program_fdir_filter(fd_data, raw_packet, pf, add);
 		if (ret) {
-			dev_info(&pf->pdev->dev,
+			dev_dbg(&pf->pdev->dev,
 				 "PCTYPE:%d, Filter command send failed for fd_id:%d (ret = %d)\n",
 				 fd_data->pctype, fd_data->fd_id, ret);
 			/* The packet buffer wasn't added to the ring so we
@@ -450,11 +450,11 @@ static int i40e_add_del_fdir_ipv4(struct i40e_vsi *vsi,
 			return -EOPNOTSUPP;
 		} else if (I40E_DEBUG_FD & pf->hw.debug_mask) {
 			if (add)
-				dev_info(&pf->pdev->dev,
+				dev_dbg(&pf->pdev->dev,
 					 "Filter OK for PCTYPE %d loc = %d\n",
 					 fd_data->pctype, fd_data->fd_id);
 			else
-				dev_info(&pf->pdev->dev,
+				dev_dbg(&pf->pdev->dev,
 					 "Filter deleted for PCTYPE %d loc = %d\n",
 					 fd_data->pctype, fd_data->fd_id);
 		}
@@ -507,13 +507,13 @@ int i40e_add_del_fdir(struct i40e_vsi *vsi,
 			break;
 		default:
 			/* We cannot support masking based on protocol */
-			dev_info(&pf->pdev->dev, "Unsupported IPv4 protocol 0x%02x\n",
+			dev_dbg(&pf->pdev->dev, "Unsupported IPv4 protocol 0x%02x\n",
 				 input->ip4_proto);
 			return -EINVAL;
 		}
 		break;
 	default:
-		dev_info(&pf->pdev->dev, "Unsupported flow type 0x%02x\n",
+		dev_dbg(&pf->pdev->dev, "Unsupported flow type 0x%02x\n",
 			 input->flow_type);
 		return -EINVAL;
 	}
@@ -597,7 +597,7 @@ static void i40e_fd_handle_status(struct i40e_ring *rx_ring,
 		}
 	} else if (error == BIT(I40E_RX_PROG_STATUS_DESC_NO_FD_ENTRY_SHIFT)) {
 		if (I40E_DEBUG_FD & pf->hw.debug_mask)
-			dev_info(&pdev->dev, "ntuple filter fd_id = %d, could not be removed\n",
+			dev_dbg(&pdev->dev, "ntuple filter fd_id = %d, could not be removed\n",
 				 rx_desc->wb.qword0.hi_dword.fd_id);
 	}
 }
@@ -1338,7 +1338,7 @@ int i40e_setup_tx_descriptors(struct i40e_ring *tx_ring)
 	tx_ring->desc = dma_alloc_coherent(dev, tx_ring->size,
 					   &tx_ring->dma, GFP_KERNEL);
 	if (!tx_ring->desc) {
-		dev_info(dev, "Unable to allocate memory for the Tx descriptor ring, size=%d\n",
+		dev_dbg(dev, "Unable to allocate memory for the Tx descriptor ring, size=%d\n",
 			 tx_ring->size);
 		goto err;
 	}
@@ -1461,7 +1461,7 @@ int i40e_setup_rx_descriptors(struct i40e_ring *rx_ring)
 					   &rx_ring->dma, GFP_KERNEL);
 
 	if (!rx_ring->desc) {
-		dev_info(dev, "Unable to allocate memory for the Rx descriptor ring, size=%d\n",
+		dev_dbg(dev, "Unable to allocate memory for the Rx descriptor ring, size=%d\n",
 			 rx_ring->size);
 		goto err;
 	}
@@ -3478,7 +3478,7 @@ static inline int i40e_tx_map(struct i40e_ring *tx_ring, struct sk_buff *skb,
 	return 0;
 
 dma_error:
-	dev_info(tx_ring->dev, "TX DMA map failed\n");
+	dev_dbg(tx_ring->dev, "TX DMA map failed\n");
 
 	/* clear dma mappings for failed tx_bi map */
 	for (;;) {

@@ -285,7 +285,7 @@ xpc_partition_disengaged(struct xpc_partition *part)
 			 * request in a timely fashion, so assume it's dead.
 			 */
 
-			dev_info(xpc_part, "deactivate request to remote "
+			dev_dbg(xpc_part, "deactivate request to remote "
 				 "partition %d timed out\n", partid);
 			xpc_disengage_timedout = 1;
 			xpc_arch_ops.assume_partition_disengaged(partid);

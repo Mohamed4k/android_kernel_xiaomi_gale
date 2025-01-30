@@ -132,7 +132,7 @@ EXPORT_SYMBOL(__drm_printfn_seq_file);
 
 void __drm_printfn_info(struct drm_printer *p, struct va_format *vaf)
 {
-	dev_info(p->arg, "[" DRM_NAME "] %pV", vaf);
+	dev_dbg(p->arg, "[" DRM_NAME "] %pV", vaf);
 }
 EXPORT_SYMBOL(__drm_printfn_info);
 

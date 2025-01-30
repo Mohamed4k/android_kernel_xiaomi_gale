@@ -1158,7 +1158,7 @@ static int cpmac_probe(struct platform_device *pdev)
 	}
 
 	if (netif_msg_probe(priv)) {
-		dev_info(&pdev->dev, "regs: %p, irq: %d, phy: %s, "
+		dev_dbg(&pdev->dev, "regs: %p, irq: %d, phy: %s, "
 			 "mac: %pM\n", (void *)mem->start, dev->irq,
 			 priv->phy_name, dev->dev_addr);
 	}

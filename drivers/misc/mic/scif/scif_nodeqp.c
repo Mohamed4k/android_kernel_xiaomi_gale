@@ -608,7 +608,7 @@ scif_display_message(struct scif_dev *scifdev, struct scifmsg *msg,
 			"%s: unknown msg type %d\n", label, msg->uop);
 		return;
 	}
-	dev_info(&scifdev->sdev->dev,
+	dev_dbg(&scifdev->sdev->dev,
 		 "%s: msg type %s, src %d:%d, dest %d:%d payload 0x%llx:0x%llx:0x%llx:0x%llx\n",
 		 label, message_types[msg->uop], msg->src.node, msg->src.port,
 		 msg->dst.node, msg->dst.port, msg->payload[0], msg->payload[1],

@@ -650,7 +650,7 @@ static int nmclan_config(struct pcmcia_device *link)
       dev_dbg(&link->dev, "nmclan_cs configured: mace id=%x %x\n",
 	    sig[0], sig[1]);
     } else {
-      pr_notice("mace id not found: %x %x should be 0x40 0x?9\n",
+      pr_debug("mace id not found: %x %x should be 0x40 0x?9\n",
 		sig[0], sig[1]);
       return -ENODEV;
     }
@@ -663,17 +663,17 @@ static int nmclan_config(struct pcmcia_device *link)
   if (if_port <= 2)
     dev->if_port = if_port;
   else
-    pr_notice("invalid if_port requested\n");
+    pr_debug("invalid if_port requested\n");
 
   SET_NETDEV_DEV(dev, &link->dev);
 
   i = register_netdev(dev);
   if (i != 0) {
-    pr_notice("register_netdev() failed\n");
+    pr_debug("register_netdev() failed\n");
     goto failed;
   }
 
-  netdev_info(dev, "nmclan: port %#3lx, irq %d, %s port, hw_addr %pM\n",
+  netdev_dbg(dev, "nmclan: port %#3lx, irq %d, %s port, hw_addr %pM\n",
 	      dev->base_addr, dev->irq, if_names[dev->if_port], dev->dev_addr);
   return 0;
 
@@ -762,7 +762,7 @@ static int mace_config(struct net_device *dev, struct ifmap *map)
   if ((map->port != (u_char)(-1)) && (map->port != dev->if_port)) {
     if (map->port <= 2) {
       dev->if_port = map->port;
-      netdev_info(dev, "switched to %s port\n", if_names[dev->if_port]);
+      netdev_dbg(dev, "switched to %s port\n", if_names[dev->if_port]);
     } else
       return -EINVAL;
   }

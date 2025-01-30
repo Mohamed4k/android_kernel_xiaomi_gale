@@ -3231,7 +3231,7 @@ static void xgbe_txq_prepare_tx_stop(struct xgbe_prv_data *pdata,
 	}
 
 	if (!time_before(jiffies, tx_timeout))
-		netdev_info(pdata->netdev,
+		netdev_dbg(pdata->netdev,
 			    "timed out waiting for Tx queue %u to empty\n",
 			    queue);
 }
@@ -3274,7 +3274,7 @@ static void xgbe_prepare_tx_stop(struct xgbe_prv_data *pdata,
 	}
 
 	if (!time_before(jiffies, tx_timeout))
-		netdev_info(pdata->netdev,
+		netdev_dbg(pdata->netdev,
 			    "timed out waiting for Tx DMA channel %u to stop\n",
 			    queue);
 }
@@ -3345,7 +3345,7 @@ static void xgbe_prepare_rx_stop(struct xgbe_prv_data *pdata,
 	}
 
 	if (!time_before(jiffies, rx_timeout))
-		netdev_info(pdata->netdev,
+		netdev_dbg(pdata->netdev,
 			    "timed out waiting for Rx queue %u to empty\n",
 			    queue);
 }

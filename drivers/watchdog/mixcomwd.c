@@ -284,7 +284,7 @@ static int __init mixcomwd_init(void)
 		goto error_misc_register_watchdog;
 	}
 
-	pr_info("MixCOM watchdog driver v%s, watchdog port at 0x%3x\n",
+	pr_debug("MixCOM watchdog driver v%s, watchdog port at 0x%3x\n",
 		VERSION, watchdog_port);
 
 	return 0;
@@ -299,7 +299,7 @@ static void __exit mixcomwd_exit(void)
 {
 	if (!nowayout) {
 		if (mixcomwd_timer_alive) {
-			pr_warn("I quit now, hardware will probably reboot!\n");
+			pr_debug("I quit now, hardware will probably reboot!\n");
 			del_timer_sync(&mixcomwd_timer);
 			mixcomwd_timer_alive = 0;
 		}

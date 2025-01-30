@@ -379,7 +379,7 @@ static int tsl2550_probe(struct i2c_client *client,
 		data->operating_mode = *opmode;
 	} else
 		data->operating_mode = 0;	/* default mode is standard */
-	dev_info(&client->dev, "%s operating mode\n",
+	dev_dbg(&client->dev, "%s operating mode\n",
 			data->operating_mode ? "extended" : "standard");
 
 	mutex_init(&data->update_lock);
@@ -394,7 +394,7 @@ static int tsl2550_probe(struct i2c_client *client,
 	if (err)
 		goto exit_kfree;
 
-	dev_info(&client->dev, "support ver. %s enabled\n", DRIVER_VERSION);
+	dev_dbg(&client->dev, "support ver. %s enabled\n", DRIVER_VERSION);
 
 	return 0;
 

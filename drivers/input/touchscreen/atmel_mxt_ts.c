@@ -1219,7 +1219,7 @@ static int mxt_soft_reset(struct mxt_data *data)
 	struct device *dev = &data->client->dev;
 	int ret = 0;
 
-	dev_info(dev, "Resetting device\n");
+	dev_dbg(dev, "Resetting device\n");
 
 	disable_irq(data->irq);
 
@@ -1523,13 +1523,13 @@ static int mxt_update_cfg(struct mxt_data *data, const struct firmware *fw)
 	 */
 	if (info_crc == data->info_crc) {
 		if (config_crc == 0 || data->config_crc == 0) {
-			dev_info(dev, "CRC zero, attempting to apply config\n");
+			dev_dbg(dev, "CRC zero, attempting to apply config\n");
 		} else if (config_crc == data->config_crc) {
 			dev_dbg(dev, "Config CRC 0x%06X: OK\n",
 				 data->config_crc);
 			return 0;
 		} else {
-			dev_info(dev, "Config CRC 0x%06X: does not match file 0x%06X\n",
+			dev_dbg(dev, "Config CRC 0x%06X: does not match file 0x%06X\n",
 				 data->config_crc, config_crc);
 		}
 	} else {
@@ -1581,7 +1581,7 @@ static int mxt_update_cfg(struct mxt_data *data, const struct firmware *fw)
 	if (ret)
 		goto release_mem;
 
-	dev_info(dev, "Config successfully updated\n");
+	dev_dbg(dev, "Config successfully updated\n");
 
 	/* T7 config may have changed */
 	mxt_init_t7_power_cfg(data);
@@ -1798,7 +1798,7 @@ static int mxt_read_info_block(struct mxt_data *data)
 	data->raw_info_block = id_buf;
 	data->info = (struct mxt_info *)id_buf;
 
-	dev_info(&client->dev,
+	dev_dbg(&client->dev,
 		 "Family: %u Variant: %u Firmware V%u.%u.%02X Objects: %u\n",
 		 data->info->family_id, data->info->variant_id,
 		 data->info->version >> 4, data->info->version & 0xf,
@@ -2008,7 +2008,7 @@ static int mxt_initialize_input_device(struct mxt_data *data)
 	if (data->xy_switch)
 		swap(data->max_x, data->max_y);
 
-	dev_info(dev, "Touchscreen size X%uY%u\n", data->max_x, data->max_y);
+	dev_dbg(dev, "Touchscreen size X%uY%u\n", data->max_x, data->max_y);
 
 	/* Register input device */
 	input_dev = input_allocate_device();
@@ -2129,7 +2129,7 @@ static int mxt_initialize(struct mxt_data *data)
 		/* Check bootloader state */
 		error = mxt_probe_bootloader(data, false);
 		if (error) {
-			dev_info(&client->dev, "Trying alternate bootloader address\n");
+			dev_dbg(&client->dev, "Trying alternate bootloader address\n");
 			error = mxt_probe_bootloader(data, true);
 			if (error) {
 				/* Chip is not in appmode or bootloader mode */
@@ -2824,7 +2824,7 @@ static int mxt_load_fw(struct device *dev, const char *fn)
 		if (ret)
 			goto disable_irq;
 	} else {
-		dev_info(dev, "Unlocking bootloader\n");
+		dev_dbg(dev, "Unlocking bootloader\n");
 
 		/* Unlock bootloader */
 		ret = mxt_send_bootloader_cmd(data, true);
@@ -2905,7 +2905,7 @@ static ssize_t mxt_update_fw_store(struct device *dev,
 		dev_err(dev, "The firmware update failed(%d)\n", error);
 		count = error;
 	} else {
-		dev_info(dev, "The firmware update succeeded\n");
+		dev_dbg(dev, "The firmware update succeeded\n");
 
 		error = mxt_initialize(data);
 		if (error)

@@ -65,7 +65,7 @@ int pcf50633_mbc_usb_curlim_set(struct pcf50633 *pcf, int ma)
 	if (ret)
 		dev_err(pcf->dev, "error setting usb curlim to %d mA\n", ma);
 	else
-		dev_info(pcf->dev, "usb curlim to %d mA\n", ma);
+		dev_dbg(pcf->dev, "usb curlim to %d mA\n", ma);
 
 	/*
 	 * We limit the charging current to be the USB current limit.

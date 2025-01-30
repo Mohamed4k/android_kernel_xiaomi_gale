@@ -45,7 +45,7 @@ static int check_sram_base(void)
 	if (plat)
 		return 0;
 
-	pr_notice("%s:%d: sram_base == 0x0\n", __func__, __LINE__);
+	pr_debug("%s:%d: sram_base == 0x0\n", __func__, __LINE__);
 	return -1;
 }
 
@@ -68,13 +68,13 @@ int set_sram_flag_etb_user(unsigned int etb_id, unsigned int user_id)
 		return -1;
 
 	if (etb_id >= MAX_ETB_NUM) {
-		pr_notice("%s:%d: etb_id > MAX_ETB_NUM\n",
+		pr_debug("%s:%d: etb_id > MAX_ETB_NUM\n",
 				__func__, __LINE__);
 		return -1;
 	}
 
 	if (user_id >= MAX_ETB_USER_NUM) {
-		pr_notice("%s:%d: user_id > MAX_ETB_USER_NUM\n",
+		pr_debug("%s:%d: user_id > MAX_ETB_USER_NUM\n",
 				__func__, __LINE__);
 		return -1;
 	}
@@ -94,7 +94,7 @@ int set_sram_flag_timestamp(void)
 	if (check_sram_base() < 0)
 		return -1;
 	ts = sched_clock_get_cyc(&tick);
-	pr_notice("%s: tick=0x%llx, ts=%llu\n", __func__, tick, ts);
+	pr_debug("%s: tick=0x%llx, ts=%llu\n", __func__, tick, ts);
 	ts = sched_clock();
 	boot_time = mtk_get_archcounter_time(arch_counter_get_cntvct());
 	boot_time -= ts;
@@ -104,7 +104,7 @@ int set_sram_flag_timestamp(void)
 	boot_time = (boot_time*13)/1000;
 #endif
 	plat->plat_sram_flag0 = boot_time;
-	pr_notice("%s: kernel_start_tick = 0x%x\n", __func__,
+	pr_debug("%s: kernel_start_tick = 0x%x\n", __func__,
 			plat->plat_sram_flag0);
 	return 0;
 }
@@ -139,7 +139,7 @@ static ssize_t plat_sram_flag_dump_show(struct device_driver *driver,
 	char *wp = buf;
 
 	if (!plat) {
-		pr_notice("%s:%d: sram_base == 0x0\n", __func__, __LINE__);
+		pr_debug("%s:%d: sram_base == 0x0\n", __func__, __LINE__);
 		return snprintf(buf, PAGE_SIZE, "sram_base == 0x0\n");
 	}
 
@@ -200,7 +200,7 @@ static int __init plat_sram_flag_init(void)
 	ret = driver_create_file(&plat_sram_flag_drv.driver,
 			&driver_attr_plat_sram_flag_dump);
 	if (ret)
-		pr_notice("%s:%d: driver_create_file failed.\n",
+		pr_debug("%s:%d: driver_create_file failed.\n",
 				__func__, __LINE__);
 
 

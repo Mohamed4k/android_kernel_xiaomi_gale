@@ -58,21 +58,21 @@ static void spi_slave_system_control_complete(void *arg)
 	cmd = be16_to_cpu(priv->cmd);
 	switch (cmd) {
 	case CMD_REBOOT:
-		dev_info(&priv->spi->dev, "Rebooting system...\n");
+		dev_dbg(&priv->spi->dev, "Rebooting system...\n");
 		kernel_restart(NULL);
 
 	case CMD_POWEROFF:
-		dev_info(&priv->spi->dev, "Powering off system...\n");
+		dev_dbg(&priv->spi->dev, "Powering off system...\n");
 		kernel_power_off();
 		break;
 
 	case CMD_HALT:
-		dev_info(&priv->spi->dev, "Halting system...\n");
+		dev_dbg(&priv->spi->dev, "Halting system...\n");
 		kernel_halt();
 		break;
 
 	case CMD_SUSPEND:
-		dev_info(&priv->spi->dev, "Suspending system...\n");
+		dev_dbg(&priv->spi->dev, "Suspending system...\n");
 		pm_suspend(PM_SUSPEND_MEM);
 		break;
 
@@ -88,7 +88,7 @@ static void spi_slave_system_control_complete(void *arg)
 	return;
 
 terminate:
-	dev_info(&priv->spi->dev, "Terminating\n");
+	dev_dbg(&priv->spi->dev, "Terminating\n");
 	complete(&priv->finished);
 }
 

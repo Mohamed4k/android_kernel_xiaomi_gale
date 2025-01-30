@@ -370,7 +370,7 @@ static void temac_set_multicast_list(struct net_device *ndev)
 		 */
 		ndev->flags |= IFF_PROMISC;
 		temac_indirect_out32(lp, XTE_AFM_OFFSET, XTE_AFM_EPPRM_MASK);
-		dev_info(&ndev->dev, "Promiscuous mode enabled.\n");
+		dev_dbg(&ndev->dev, "Promiscuous mode enabled.\n");
 	} else if (!netdev_mc_empty(ndev)) {
 		struct netdev_hw_addr *ha;
 
@@ -396,7 +396,7 @@ static void temac_set_multicast_list(struct net_device *ndev)
 				     val & ~XTE_AFM_EPPRM_MASK);
 		temac_indirect_out32(lp, XTE_MAW0_OFFSET, 0);
 		temac_indirect_out32(lp, XTE_MAW1_OFFSET, 0);
-		dev_info(&ndev->dev, "Promiscuous mode disabled.\n");
+		dev_dbg(&ndev->dev, "Promiscuous mode disabled.\n");
 	}
 	mutex_unlock(&lp->indirect_mutex);
 }

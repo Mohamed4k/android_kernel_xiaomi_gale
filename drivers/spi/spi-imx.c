@@ -1670,7 +1670,7 @@ static int spi_imx_probe(struct platform_device *pdev)
 		}
 	}
 
-	dev_info(&pdev->dev, "probed\n");
+	dev_dbg(&pdev->dev, "probed\n");
 
 	clk_disable(spi_imx->clk_ipg);
 	clk_disable(spi_imx->clk_per);

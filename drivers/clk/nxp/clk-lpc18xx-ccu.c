@@ -232,7 +232,7 @@ static void lpc18xx_ccu_register_branch_gate_div(struct lpc18xx_clk_branch *bran
 					     &branch->gate.hw, &lpc18xx_ccu_gate_ops, 0);
 	if (IS_ERR(branch->clk)) {
 		kfree(div);
-		pr_warn("%s: failed to register %s\n", __func__, branch->name);
+		pr_debug("%s: failed to register %s\n", __func__, branch->name);
 		return;
 	}
 
@@ -272,7 +272,7 @@ static void __init lpc18xx_ccu_init(struct device_node *np)
 
 	reg_base = of_iomap(np, 0);
 	if (!reg_base) {
-		pr_warn("%s: failed to map address range\n", __func__);
+		pr_debug("%s: failed to map address range\n", __func__);
 		return;
 	}
 
@@ -294,7 +294,7 @@ static void __init lpc18xx_ccu_init(struct device_node *np)
 		ret = of_property_read_string_index(np, "clock-names", i,
 						    &clk_data->name[i]);
 		if (ret) {
-			pr_warn("%s: failed to get clock name at idx %d\n",
+			pr_debug("%s: failed to get clock name at idx %d\n",
 				__func__, i);
 			continue;
 		}

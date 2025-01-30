@@ -60,7 +60,7 @@ struct test_buffer_info *m4u_test_start(size_t size, int port)
 
 	memset((void *)&mm_data, 0, sizeof(mm_data));
 	if (!g_ion_device) {
-		pr_notice("%s:g_ion_device is NULL\n", __func__);
+		pr_debug("%s:g_ion_device is NULL\n", __func__);
 		return NULL;
 	}
 
@@ -72,7 +72,7 @@ struct test_buffer_info *m4u_test_start(size_t size, int port)
 
 	handle = ion_alloc(client, size, 0, ION_HEAP_MULTIMEDIA_MASK, 0);
 	if (IS_ERR(handle)) {
-		pr_notice("Fatal Error, ion_alloc for size %d failed\n",
+		pr_debug("Fatal Error, ion_alloc for size %d failed\n",
 			  size);
 		goto err;
 	}
@@ -82,7 +82,7 @@ struct test_buffer_info *m4u_test_start(size_t size, int port)
 	mm_data.mm_cmd = ION_MM_GET_IOVA;
 	if (ion_kernel_ioctl(client, ION_CMD_MULTIMEDIA,
 			     (unsigned long)&mm_data) < 0) {
-		pr_notice("m4u_test_drv: Config buffer failed.\n");
+		pr_debug("m4u_test_drv: Config buffer failed.\n");
 		goto err;
 	}
 
@@ -91,7 +91,7 @@ struct test_buffer_info *m4u_test_start(size_t size, int port)
 	buf_info->mva = (dma_addr_t)mm_data.get_phys_param.phy_addr;
 	buf_info->size = (size_t)mm_data.get_phys_param.len;
 
-	pr_info("%s done mva:%pa, size:0x%zx, port:%s\n",
+	pr_debug("%s done mva:%pa, size:0x%zx, port:%s\n",
 		__func__, &buf_info->mva, buf_info->size,
 		iommu_get_port_name(port));
 	return buf_info;
@@ -108,7 +108,7 @@ int m4u_test_end(struct test_buffer_info *buf_info)
 	ion_free(buf_info->client, buf_info->handle);
 	ion_client_destroy(buf_info->client);
 	kfree(buf_info);
-	pr_info("%s done\n", __func__);
+	pr_debug("%s done\n", __func__);
 
 	return 0;
 }
@@ -120,7 +120,7 @@ int m4u_test(size_t size, int port)
 
 	buf_info = m4u_test_start(size, port);
 	if (!buf_info) {
-		pr_notice("%s fail, port:%s\n", __func__,
+		pr_debug("%s fail, port:%s\n", __func__,
 			  iommu_get_port_name(port));
 		return -1;
 	}
@@ -152,7 +152,7 @@ static int m4u_test_probe(struct platform_device *pdev)
 	ret = m4u_test(12345, M4U_PORT_L21_APU_FAKE_DATA); //apu_data
 	ret = m4u_test(12345, M4U_PORT_L21_APU_FAKE_VLM); //apu_vlm
 #endif
-	pr_info("probe dev:0x%lx, name:%s\n",
+	pr_debug("probe dev:0x%lx, name:%s\n",
 		(unsigned long)&pdev->dev, dev_name(&pdev->dev));
 
 	return 0;
@@ -220,9 +220,9 @@ static struct platform_driver m4u_test_driver = {
 
 static int __init m4u_test_init(void)
 {
-	pr_info("%s()\n", __func__);
+	pr_debug("%s()\n", __func__);
 	if (platform_driver_register(&m4u_test_driver)) {
-		pr_notice("%s platform driver register failed.\n", __func__);
+		pr_debug("%s platform driver register failed.\n", __func__);
 		return -ENODEV;
 	}
 	return 0;

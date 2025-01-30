@@ -88,7 +88,7 @@ static int md_buck_oc_notify(struct notifier_block *nb, unsigned long event,
 	ret = exec_ccci_kern_func_by_md_id(MD_SYS1, ID_PMIC_INTR,
 					   (char *)&data_int32, 4);
 	if (ret)
-		pr_notice("[%s]-exec_ccci fail(%d)\n", __func__, ret);
+		pr_debug("[%s]-exec_ccci fail(%d)\n", __func__, ret);
 #endif
 	return NOTIFY_OK;
 }
@@ -99,9 +99,9 @@ void mt6362_vmd1_pmic_setting_on(void)
 	struct mt6362_buck_manager_data *data = g_data;
 	int ret;
 
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 	if (!data) {
-		pr_notice("%s: data uninitialize, adjust probe order\n",
+		pr_debug("%s: data uninitialize, adjust probe order\n",
 			__func__);
 		return;
 	}
@@ -117,7 +117,7 @@ void mt6362_vmd1_pmic_setting_on(void)
 				"%s: read MD buck voltage fail\n", __func__);
 			return;
 		}
-		dev_info(data->dev, "%s: [vosel]vmodem=%d, vsram_md=%d\n",
+		dev_dbg(data->dev, "%s: [vosel]vmodem=%d, vsram_md=%d\n",
 			 __func__, data->vmodem, data->vsram_md);
 		data->md_init = true;
 		return;
@@ -145,7 +145,7 @@ void mt6362_vmd1_pmic_setting_on(void)
 				 MT6362_MASK_MD_SPMI_CFG, 0xff);
 	if (ret < 0)
 		dev_err(data->dev, "%s: recover spmi_p ctrl fail\n", __func__);
-	pr_info("%s: reset vosel done\n", __func__);
+	pr_debug("%s: reset vosel done\n", __func__);
 }
 
 static int mt6362_buck_manager_probe(struct platform_device *pdev)
@@ -155,9 +155,9 @@ static int mt6362_buck_manager_probe(struct platform_device *pdev)
 	struct regulator *reg;
 	int i, ret = 0;
 
-	dev_info(&pdev->dev, "%s\n", __func__);
+	dev_dbg(&pdev->dev, "%s\n", __func__);
 	if (!of_device_is_available(pdev->dev.of_node)) {
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "this project no need to enable OC debug\n");
 		return 0;
 	}
@@ -200,7 +200,7 @@ static int mt6362_buck_manager_probe(struct platform_device *pdev)
 				   "register regulator notifier failed\n");
 		}
 	}
-	dev_info(&pdev->dev, "%s: successfully\n", __func__);
+	dev_dbg(&pdev->dev, "%s: successfully\n", __func__);
 	return ret;
 }
 

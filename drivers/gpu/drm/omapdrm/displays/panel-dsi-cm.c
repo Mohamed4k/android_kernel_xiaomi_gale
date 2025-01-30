@@ -696,7 +696,7 @@ static int dsicm_power_on(struct panel_drv_data *ddata)
 	ddata->enabled = 1;
 
 	if (!ddata->intro_printed) {
-		dev_info(&ddata->pdev->dev, "panel revision %02x.%02x.%02x\n",
+		dev_dbg(&ddata->pdev->dev, "panel revision %02x.%02x.%02x\n",
 			id1, id2, id3);
 		ddata->intro_printed = true;
 	}

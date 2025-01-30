@@ -554,11 +554,11 @@ static void dwmac4_phystatus(void __iomem *ioaddr, struct stmmac_extra_stats *x)
 
 		x->pcs_duplex = (status & GMAC_PHYIF_CTRLSTATUS_LNKMOD_MASK);
 
-		pr_info("Link is Up - %d/%s\n", (int)x->pcs_speed,
+		pr_debug("Link is Up - %d/%s\n", (int)x->pcs_speed,
 			x->pcs_duplex ? "Full" : "Half");
 	} else {
 		x->pcs_link = 0;
-		pr_info("Link is Down\n");
+		pr_debug("Link is Down\n");
 	}
 }
 
@@ -827,7 +827,7 @@ int dwmac4_setup(struct stmmac_priv *priv)
 {
 	struct mac_device_info *mac = priv->hw;
 
-	dev_info(priv->device, "\tDWMAC4/5\n");
+	dev_dbg(priv->device, "\tDWMAC4/5\n");
 
 	priv->dev->priv_flags |= IFF_UNICAST_FLT;
 	mac->pcsr = priv->ioaddr;

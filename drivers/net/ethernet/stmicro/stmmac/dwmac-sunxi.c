@@ -143,7 +143,7 @@ static int sun7i_gmac_probe(struct platform_device *pdev)
 			ret = -EPROBE_DEFER;
 			goto err_remove_config_dt;
 		}
-		dev_info(dev, "no regulator found\n");
+		dev_dbg(dev, "no regulator found\n");
 		gmac->regulator = NULL;
 	}
 

@@ -2246,7 +2246,7 @@ out_unmap:
 
 out:
 	if(!mode)
-		pr_info("%s: falling back to port IO\n", pci_name(pdev));
+		pr_debug("%s: falling back to port IO\n", pci_name(pdev));
 	return mode;
 }
 
@@ -2462,7 +2462,7 @@ typhoon_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	pci_set_drvdata(pdev, dev);
 
-	netdev_info(dev, "%s at %s 0x%llx, %pM\n",
+	netdev_dbg(dev, "%s at %s 0x%llx, %pM\n",
 		    typhoon_card_info[card_id].name,
 		    use_mmio ? "MMIO" : "IO",
 		    (unsigned long long)pci_resource_start(pdev, use_mmio),
@@ -2476,7 +2476,7 @@ typhoon_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		 * of version is Month/Day of build.
 		 */
 		u16 monthday = le32_to_cpu(xp_resp[0].parm2) & 0xffff;
-		netdev_info(dev, "Typhoon 1.0 Sleep Image built %02u/%02u/2000\n",
+		netdev_dbg(dev, "Typhoon 1.0 Sleep Image built %02u/%02u/2000\n",
 			    monthday >> 8, monthday & 0xff);
 	} else if(xp_resp[0].numDesc == 2) {
 		/* This is the Typhoon 1.1+ type Sleep Image
@@ -2484,7 +2484,7 @@ typhoon_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		u32 sleep_ver = le32_to_cpu(xp_resp[0].parm2);
 		u8 *ver_string = (u8 *) &xp_resp[1];
 		ver_string[25] = 0;
-		netdev_info(dev, "Typhoon 1.1+ Sleep Image version %02x.%03x.%03x %s\n",
+		netdev_dbg(dev, "Typhoon 1.1+ Sleep Image version %02x.%03x.%03x %s\n",
 			    sleep_ver >> 24, (sleep_ver >> 12) & 0xfff,
 			    sleep_ver & 0xfff, ver_string);
 	} else {

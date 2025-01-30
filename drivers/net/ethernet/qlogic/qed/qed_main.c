@@ -86,14 +86,14 @@ MODULE_FIRMWARE(QED_FW_FILE_NAME);
 
 static int __init qed_init(void)
 {
-	pr_info("%s", version);
+	pr_debug("%s", version);
 
 	return 0;
 }
 
 static void __exit qed_cleanup(void)
 {
-	pr_notice("qed_cleanup called\n");
+	pr_debug("qed_cleanup called\n");
 }
 
 module_init(qed_init);
@@ -236,77 +236,77 @@ err0:
 	return rc;
 }
 
-int qed_fill_dev_info(struct qed_dev *cdev,
-		      struct qed_dev_info *dev_info)
+int qed_fill_dev_dbg(struct qed_dev *cdev,
+		      struct qed_dev_dbg *dev_dbg)
 {
 	struct qed_hwfn *p_hwfn = QED_LEADING_HWFN(cdev);
 	struct qed_hw_info *hw_info = &p_hwfn->hw_info;
 	struct qed_tunnel_info *tun = &cdev->tunnel;
 	struct qed_ptt  *ptt;
 
-	memset(dev_info, 0, sizeof(struct qed_dev_info));
+	memset(dev_dbg, 0, sizeof(struct qed_dev_dbg));
 
 	if (tun->vxlan.tun_cls == QED_TUNN_CLSS_MAC_VLAN &&
 	    tun->vxlan.b_mode_enabled)
-		dev_info->vxlan_enable = true;
+		dev_dbg->vxlan_enable = true;
 
 	if (tun->l2_gre.b_mode_enabled && tun->ip_gre.b_mode_enabled &&
 	    tun->l2_gre.tun_cls == QED_TUNN_CLSS_MAC_VLAN &&
 	    tun->ip_gre.tun_cls == QED_TUNN_CLSS_MAC_VLAN)
-		dev_info->gre_enable = true;
+		dev_dbg->gre_enable = true;
 
 	if (tun->l2_geneve.b_mode_enabled && tun->ip_geneve.b_mode_enabled &&
 	    tun->l2_geneve.tun_cls == QED_TUNN_CLSS_MAC_VLAN &&
 	    tun->ip_geneve.tun_cls == QED_TUNN_CLSS_MAC_VLAN)
-		dev_info->geneve_enable = true;
+		dev_dbg->geneve_enable = true;
 
-	dev_info->num_hwfns = cdev->num_hwfns;
-	dev_info->pci_mem_start = cdev->pci_params.mem_start;
-	dev_info->pci_mem_end = cdev->pci_params.mem_end;
-	dev_info->pci_irq = cdev->pci_params.irq;
-	dev_info->rdma_supported = QED_IS_RDMA_PERSONALITY(p_hwfn);
-	dev_info->dev_type = cdev->type;
-	ether_addr_copy(dev_info->hw_mac, hw_info->hw_mac_addr);
+	dev_dbg->num_hwfns = cdev->num_hwfns;
+	dev_dbg->pci_mem_start = cdev->pci_params.mem_start;
+	dev_dbg->pci_mem_end = cdev->pci_params.mem_end;
+	dev_dbg->pci_irq = cdev->pci_params.irq;
+	dev_dbg->rdma_supported = QED_IS_RDMA_PERSONALITY(p_hwfn);
+	dev_dbg->dev_type = cdev->type;
+	ether_addr_copy(dev_dbg->hw_mac, hw_info->hw_mac_addr);
 
 	if (IS_PF(cdev)) {
-		dev_info->fw_major = FW_MAJOR_VERSION;
-		dev_info->fw_minor = FW_MINOR_VERSION;
-		dev_info->fw_rev = FW_REVISION_VERSION;
-		dev_info->fw_eng = FW_ENGINEERING_VERSION;
-		dev_info->b_inter_pf_switch = test_bit(QED_MF_INTER_PF_SWITCH,
+		dev_dbg->fw_major = FW_MAJOR_VERSION;
+		dev_dbg->fw_minor = FW_MINOR_VERSION;
+		dev_dbg->fw_rev = FW_REVISION_VERSION;
+		dev_dbg->fw_eng = FW_ENGINEERING_VERSION;
+		dev_dbg->b_inter_pf_switch = test_bit(QED_MF_INTER_PF_SWITCH,
 						       &cdev->mf_bits);
-		dev_info->tx_switching = true;
+		dev_dbg->tx_switching = true;
 
 		if (hw_info->b_wol_support == QED_WOL_SUPPORT_PME)
-			dev_info->wol_support = true;
+			dev_dbg->wol_support = true;
 
-		dev_info->abs_pf_id = QED_LEADING_HWFN(cdev)->abs_pf_id;
+		dev_dbg->abs_pf_id = QED_LEADING_HWFN(cdev)->abs_pf_id;
 	} else {
-		qed_vf_get_fw_version(&cdev->hwfns[0], &dev_info->fw_major,
-				      &dev_info->fw_minor, &dev_info->fw_rev,
-				      &dev_info->fw_eng);
+		qed_vf_get_fw_version(&cdev->hwfns[0], &dev_dbg->fw_major,
+				      &dev_dbg->fw_minor, &dev_dbg->fw_rev,
+				      &dev_dbg->fw_eng);
 	}
 
 	if (IS_PF(cdev)) {
 		ptt = qed_ptt_acquire(QED_LEADING_HWFN(cdev));
 		if (ptt) {
 			qed_mcp_get_mfw_ver(QED_LEADING_HWFN(cdev), ptt,
-					    &dev_info->mfw_rev, NULL);
+					    &dev_dbg->mfw_rev, NULL);
 
 			qed_mcp_get_mbi_ver(QED_LEADING_HWFN(cdev), ptt,
-					    &dev_info->mbi_version);
+					    &dev_dbg->mbi_version);
 
 			qed_mcp_get_flash_size(QED_LEADING_HWFN(cdev), ptt,
-					       &dev_info->flash_size);
+					       &dev_dbg->flash_size);
 
 			qed_ptt_release(QED_LEADING_HWFN(cdev), ptt);
 		}
 	} else {
 		qed_mcp_get_mfw_ver(QED_LEADING_HWFN(cdev), NULL,
-				    &dev_info->mfw_rev, NULL);
+				    &dev_dbg->mfw_rev, NULL);
 	}
 
-	dev_info->mtu = hw_info->mtu;
+	dev_dbg->mtu = hw_info->mtu;
 
 	return 0;
 }

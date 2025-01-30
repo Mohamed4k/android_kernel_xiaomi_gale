@@ -666,7 +666,7 @@ static int vi_gpu_pci_config_reset(struct amdgpu_device *adev)
 {
 	u32 i;
 
-	dev_info(adev->dev, "GPU pci config reset\n");
+	dev_dbg(adev->dev, "GPU pci config reset\n");
 
 	/* disable BM */
 	pci_clear_master(adev->pdev);

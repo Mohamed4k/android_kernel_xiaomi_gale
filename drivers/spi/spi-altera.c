@@ -216,7 +216,7 @@ static int altera_spi_probe(struct platform_device *pdev)
 	err = devm_spi_register_master(&pdev->dev, master);
 	if (err)
 		goto exit;
-	dev_info(&pdev->dev, "base %p, irq %d\n", hw->base, hw->irq);
+	dev_dbg(&pdev->dev, "base %p, irq %d\n", hw->base, hw->irq);
 
 	return 0;
 exit:

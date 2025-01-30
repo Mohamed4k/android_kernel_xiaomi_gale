@@ -26,7 +26,7 @@ enum {
 	} while (0)
 
 #define cmdq_aee(fmt, args...) \
-	pr_notice("[cmdq][aee] "fmt"\n", ##args)
+	pr_debug("[cmdq][aee] "fmt"\n", ##args)
 
 #define cmdq_util_msg(fmt, args...) \
 	do { \
@@ -46,7 +46,7 @@ enum {
 			u32 gce = cmdq_util_hw_id( \
 				(u32)cmdq_mbox_get_base_pa(chan)); \
 			s32 thd = cmdq_mbox_chan_id(chan); \
-			pr_notice("[%s]<%u>(%d)[cmdq] "fmt"\n", \
+			pr_debug("[%s]<%u>(%d)[cmdq] "fmt"\n", \
 				cmdq_thread_module_dispatch(gce, thd), \
 				gce, thd, ##args); \
 			cmdq_util_error_save("[cmdq] "fmt"\n", ##args); \
@@ -60,7 +60,7 @@ enum {
 			u32 gce = cmdq_util_hw_id( \
 				(u32)cmdq_mbox_get_base_pa(chan)); \
 			s32 thd = cmdq_mbox_chan_id(chan); \
-			pr_notice("[%s]<%u>(%d)[cmdq][err] "fmt"\n", \
+			pr_debug("[%s]<%u>(%d)[cmdq][err] "fmt"\n", \
 				cmdq_thread_module_dispatch(gce, thd), \
 				gce, thd, ##args); \
 			cmdq_util_error_save("[cmdq][err] "fmt"\n", ##args); \

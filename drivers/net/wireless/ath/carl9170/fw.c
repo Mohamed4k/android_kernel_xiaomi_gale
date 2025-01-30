@@ -98,7 +98,7 @@ static void carl9170_fw_info(struct ar9170 *ar)
 	unsigned int str_ver_len;
 	u32 fw_date;
 
-	dev_info(&ar->udev->dev, "driver   API: %s 2%03d-%02d-%02d [%d-%d]\n",
+	dev_dbg(&ar->udev->dev, "driver   API: %s 2%03d-%02d-%02d [%d-%d]\n",
 		CARL9170FW_VERSION_GIT, CARL9170FW_VERSION_YEAR,
 		CARL9170FW_VERSION_MONTH, CARL9170FW_VERSION_DAY,
 		CARL9170FW_API_MIN_VER, CARL9170FW_API_MAX_VER);
@@ -112,7 +112,7 @@ static void carl9170_fw_info(struct ar9170 *ar)
 
 		fw_date = le32_to_cpu(motd_desc->fw_year_month_day);
 
-		dev_info(&ar->udev->dev, "firmware API: %.*s 2%03d-%02d-%02d\n",
+		dev_dbg(&ar->udev->dev, "firmware API: %.*s 2%03d-%02d-%02d\n",
 			 str_ver_len, motd_desc->release,
 			 CARL9170FW_GET_YEAR(fw_date),
 			 CARL9170FW_GET_MONTH(fw_date),
@@ -280,7 +280,7 @@ static int carl9170_fw(struct ar9170 *ar, const __u8 *data, size_t len)
 	}
 
 	if (!SUPP(CARL9170FW_COMMAND_CAM)) {
-		dev_info(&ar->udev->dev, "crypto offloading is disabled "
+		dev_dbg(&ar->udev->dev, "crypto offloading is disabled "
 			 "by firmware.\n");
 		ar->fw.disable_offload_fw = true;
 	}

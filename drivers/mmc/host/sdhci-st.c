@@ -427,7 +427,7 @@ static int sdhci_st_probe(struct platform_device *pdev)
 
 	host_version = readw_relaxed((host->ioaddr + SDHCI_HOST_VERSION));
 
-	dev_info(&pdev->dev, "SDHCI ST Initialised: Host Version: 0x%x Vendor Version 0x%x\n",
+	dev_dbg(&pdev->dev, "SDHCI ST Initialised: Host Version: 0x%x Vendor Version 0x%x\n",
 		((host_version & SDHCI_SPEC_VER_MASK) >> SDHCI_SPEC_VER_SHIFT),
 		((host_version & SDHCI_VENDOR_VER_MASK) >>
 		SDHCI_VENDOR_VER_SHIFT));

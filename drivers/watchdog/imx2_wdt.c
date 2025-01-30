@@ -323,7 +323,7 @@ static int __init imx2_wdt_probe(struct platform_device *pdev)
 		goto disable_clk;
 	}
 
-	dev_info(&pdev->dev, "timeout %d sec (nowayout=%d)\n",
+	dev_dbg(&pdev->dev, "timeout %d sec (nowayout=%d)\n",
 		 wdog->timeout, nowayout);
 
 	return 0;

@@ -775,56 +775,56 @@ static int ps_enable_nodata(int en)
 	struct alspshub_ipi_data *obj = obj_ipi_data;
 
 	tp_verison = tp_proximity();
-	pr_notice("obj_ipi_data als enable value = %d tp = %d\n", en,tp_verison);
+	pr_debug("obj_ipi_data als enable value = %d tp = %d\n", en,tp_verison);
 	if (en == true){
 		WRITE_ONCE(obj->ps_android_enable, true);
 		if(tp_verison == 1){
 			ret = nvt_set_proximity_switch(1);
 			if(!ret){
-				pr_notice("nvt_set_proximity_switch = %d\n", en);
+				pr_debug("nvt_set_proximity_switch = %d\n", en);
 			}
 		}else if(tp_verison == 2){
 			ret = fts_set_proximity_switch(1);
 			if(!ret){
-				pr_notice("fts_set_proximity_switch = %d\n", en);
+				pr_debug("fts_set_proximity_switch = %d\n", en);
 			}
 		}else if(tp_verison == 3){
             ret = ovt_set_proximity_switch(1);
             if(!ret){
-                pr_notice("ovt_set_proximity_switch = %d\n", en);
+                pr_debug("ovt_set_proximity_switch = %d\n", en);
             }
             	}else if(tp_verison == 4){
             ret = cts_set_proximity_switch(1);
             if(!ret){
-                pr_notice("cts_set_proximity_switch = %d\n", en);
+                pr_debug("cts_set_proximity_switch = %d\n", en);
             }
 		}else{
-			pr_notice("enable not_support_tp_version = %d\n", tp_verison);
+			pr_debug("enable not_support_tp_version = %d\n", tp_verison);
 		}
 	} else {
 		WRITE_ONCE(obj->ps_android_enable, false);
 		if(tp_verison == 1){
 			ret = nvt_set_proximity_switch(0);
 			if(!ret){
-				pr_notice("nvt_set_proximity_switch = %d\n", en);
+				pr_debug("nvt_set_proximity_switch = %d\n", en);
 			}
 		}else if(tp_verison == 2){
 			ret = fts_set_proximity_switch(0);
 			if(!ret){
-				pr_notice("fts_set_proximity_switch = %d\n", en);
+				pr_debug("fts_set_proximity_switch = %d\n", en);
 			}
 		}else if(tp_verison == 3){
             ret = ovt_set_proximity_switch(0);
             if(!ret){
-                pr_notice("ovt_set_proximity_switch = %d\n", en);
+                pr_debug("ovt_set_proximity_switch = %d\n", en);
             }
                 }else if(tp_verison == 4){
             ret = cts_set_proximity_switch(0);
             if(!ret){
-                pr_notice("cts_set_proximity_switch = %d\n", en);
+                pr_debug("cts_set_proximity_switch = %d\n", en);
             }
 		}else{
-			pr_notice("disable not_support_tp_version = %d\n", tp_verison);
+			pr_debug("disable not_support_tp_version = %d\n", tp_verison);
 		}
 	}
 	res = sensor_enable_to_hub(ID_PROXIMITY, en);

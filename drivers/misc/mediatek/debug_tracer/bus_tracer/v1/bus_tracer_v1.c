@@ -24,13 +24,13 @@ static int start(struct bus_tracer_plt *plt)
 	/* u32 args[3]; */
 
 	if (!plt) {
-		pr_notice("%s:%d: plt == NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt == NULL\n", __func__, __LINE__);
 		return -1;
 	}
 
 	node = of_find_compatible_node(NULL, NULL, "mediatek,bus_tracer-v1");
 	if (!node) {
-		pr_notice("can't find compatible node for bus_tracer\n");
+		pr_debug("can't find compatible node for bus_tracer\n");
 		return -1;
 	}
 
@@ -40,12 +40,12 @@ static int start(struct bus_tracer_plt *plt)
 
 	if (of_property_read_u32(node, "mediatek,num_tracer",
 				&num_tracer) != 0) {
-		pr_notice("can't find property \"mediatek,num_tracer\"\n");
+		pr_debug("can't find property \"mediatek,num_tracer\"\n");
 		return -1;
 	}
 
 	if (num_tracer <= 0) {
-		pr_notice("[bus tracer] fatal error: num_tracer <= 0\n");
+		pr_debug("[bus tracer] fatal error: num_tracer <= 0\n");
 		return -1;
 	}
 
@@ -108,7 +108,7 @@ static int start(struct bus_tracer_plt *plt)
 					plt->tracer[i].filter.idf[j].enabled =
 						0;
 		} else {
-			pr_notice("failed to alloc id filter for tracer %d\n",
+			pr_debug("failed to alloc id filter for tracer %d\n",
 				i);
 			return -ENOMEM;
 		}
@@ -183,8 +183,8 @@ static int dump_etb(void __iomem *base, char **ptr)
 	else
 		depth = CIRC_CNT(wp, rp, readl(base + ETB_DEPTH) << 2);
 
-	pr_notice("[bus tracer] etb depth = 0x%lx bytes", depth);
-	pr_notice("[bus tracer] etb status = 0x%lx, rp = 0x%lx, wp = 0x%lx\n)",
+	pr_debug("[bus tracer] etb depth = 0x%lx bytes", depth);
+	pr_debug("[bus tracer] etb status = 0x%lx, rp = 0x%lx, wp = 0x%lx\n)",
 		ret, rp, wp);
 
 	if (depth == 0)
@@ -197,13 +197,13 @@ static int dump_etb(void __iomem *base, char **ptr)
 	nr_unaligned_bytes = depth % 4;
 	for (i = 0; i < nr_words; i++) {
 		packet = readl(base + ETB_READMEM);
-		/*pr_notice("%d %lx\n", i, packet);*/
+		/*pr_debug("%d %lx\n", i, packet);*/
 		(*ptr) += sprintf((*ptr), "%08lx\n", packet);
 	}
 
 	if (nr_unaligned_bytes != 0) {
 		/* bus tracer always generate word-aligned transactions */
-		pr_notice("etb depth is unaligned!\n");
+		pr_debug("etb depth is unaligned!\n");
 		(*ptr) += sprintf((*ptr), "etb depth is unaligned!\n");
 	}
 
@@ -225,7 +225,7 @@ static int dump(struct bus_tracer_plt *plt, char *buf, int len)
 
 	for (i = 0; i <= plt->num_tracer-1; ++i) {
 		if (plt->tracer[i].recording) {
-			pr_notice("[bus tracer] tracer %d is running,\n"
+			pr_debug("[bus tracer] tracer %d is running,\n"
 				"you must pause it before first\n", i);
 			buf += sprintf(buf,
 				"[bus tracer] tracer %d is running,\n"
@@ -237,7 +237,7 @@ static int dump(struct bus_tracer_plt *plt, char *buf, int len)
 	disable_etb(plt->etb_base);
 
 	if (dump_etb(plt->etb_base, &buf) < 0) {
-		pr_notice("[bus tracer] error when dumping etb\n");
+		pr_debug("[bus tracer] error when dumping etb\n");
 		return -2;
 	}
 #endif
@@ -252,22 +252,22 @@ static int enable(struct bus_tracer_plt *plt, unsigned char force_enable,
 	unsigned long ret;
 
 	if (!plt->tracer) {
-		pr_notice("%s:%d: plt->tracer == NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt->tracer == NULL\n", __func__, __LINE__);
 		return -1;
 	}
 
 	if (!plt->dem_base) {
-		pr_notice("%s:%d: dem_base == NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: dem_base == NULL\n", __func__, __LINE__);
 		return -1;
 	}
 
 	if (!plt->dbgao_base) {
-		pr_notice("%s:%d: dbgao_base == NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: dbgao_base == NULL\n", __func__, __LINE__);
 		return -1;
 	}
 
 	if (!plt->funnel_base) {
-		pr_notice("%s:%d: funnel_base == NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: funnel_base == NULL\n", __func__, __LINE__);
 		return -1;
 	}
 
@@ -432,7 +432,7 @@ static int set_recording(struct bus_tracer_plt *plt, unsigned char pause)
 	unsigned long ret;
 
 	if (!plt->tracer) {
-		pr_notice("%s:%d: plt->tracer == NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt->tracer == NULL\n", __func__, __LINE__);
 		return -1;
 	}
 
@@ -475,12 +475,12 @@ static int set_watchpoint_filter(struct bus_tracer_plt *plt,
 	unsigned long ret;
 
 	if (!plt->tracer) {
-		pr_notice("%s: plt->tracer == NULL\n", __func__);
+		pr_debug("%s: plt->tracer == NULL\n", __func__);
 		return -1;
 	}
 
 	if (tracer_id > plt->num_tracer) {
-		pr_notice("%s: tracer_id > plt->num_tracer\n", __func__);
+		pr_debug("%s: tracer_id > plt->num_tracer\n", __func__);
 		return -1;
 	}
 
@@ -506,12 +506,12 @@ static int set_bypass_filter(struct bus_tracer_plt *plt,
 	unsigned long ret;
 
 	if (!plt->tracer) {
-		pr_notice("%s: plt->tracer == NULL\n", __func__);
+		pr_debug("%s: plt->tracer == NULL\n", __func__);
 		return -1;
 	}
 
 	if (tracer_id > plt->num_tracer) {
-		pr_notice("%s: tracer_id > plt->num_tracer\n", __func__);
+		pr_debug("%s: tracer_id > plt->num_tracer\n", __func__);
 		return -1;
 	}
 
@@ -536,23 +536,23 @@ static int set_id_filter(struct bus_tracer_plt *plt,
 	unsigned long ret;
 
 	if (!plt->tracer) {
-		pr_notice("%s: plt->tracer == NULL\n", __func__);
+		pr_debug("%s: plt->tracer == NULL\n", __func__);
 		return -1;
 	}
 
 	if (tracer_id > plt->num_tracer) {
-		pr_notice("%s: tracer_id > plt->num_tracer\n", __func__);
+		pr_debug("%s: tracer_id > plt->num_tracer\n", __func__);
 		return -1;
 	}
 
 	if (!plt->tracer[tracer_id].filter.idf) {
-		pr_notice("%s: plt->tracer[tracer_id].filter.idf == NULL\n",
+		pr_debug("%s: plt->tracer[tracer_id].filter.idf == NULL\n",
 				__func__);
 		return -1;
 	}
 
 	if (idf_id > NUM_ID_FILTER) {
-		pr_notice("%s: idf_id >  NUM_ID_FILTER\n", __func__);
+		pr_debug("%s: idf_id >  NUM_ID_FILTER\n", __func__);
 		return -1;
 	}
 
@@ -575,12 +575,12 @@ static int set_rw_filter(struct bus_tracer_plt *plt, struct rw_filter f,
 		unsigned int tracer_id)
 {
 	if (!plt->tracer) {
-		pr_notice("%s:%d: plt->tracer == NULL\n", __func__);
+		pr_debug("%s:%d: plt->tracer == NULL\n", __func__);
 		return -1;
 	}
 
 	if (tracer_id > plt->num_tracer) {
-		pr_notice("%s:%d: tracer_id > plt->num_tracer\n", __func__);
+		pr_debug("%s:%d: tracer_id > plt->num_tracer\n", __func__);
 		return -1;
 	}
 
@@ -596,7 +596,7 @@ static int dump_setting(struct bus_tracer_plt *plt, char *buf, int len)
 	int i;
 
 	if (!plt->tracer) {
-		pr_notice("%s:%d: plt->tracer == NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt->tracer == NULL\n", __func__, __LINE__);
 		return -1;
 	}
 
@@ -675,7 +675,7 @@ static int resume(struct bus_tracer_plt *plt, struct platform_device *pdev)
 	unsigned long ret;
 
 	if (!plt->tracer) {
-		pr_notice("%s:%d: plt->tracer == NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt->tracer == NULL\n", __func__, __LINE__);
 		return -1;
 	}
 
@@ -691,7 +691,7 @@ static int resume(struct bus_tracer_plt *plt, struct platform_device *pdev)
 			writel(ret|BUS_TRACE_EN, plt->tracer[i].base +
 					BUS_TRACE_CON);
 			dsb(sy);
-			pr_notice("%s: plt->tracer[%d]\n", __func__, i);
+			pr_debug("%s: plt->tracer[%d]\n", __func__, i);
 		}
 	}
 #endif
@@ -725,7 +725,7 @@ static int __init bus_tracer_init(void)
 
 	ret = bus_tracer_register(plt);
 	if (ret) {
-		pr_notice("%s: bus_tracer_register failed\n", __func__);
+		pr_debug("%s: bus_tracer_register failed\n", __func__);
 		goto register_bus_tracer_err;
 	}
 

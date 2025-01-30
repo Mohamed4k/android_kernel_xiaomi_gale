@@ -216,15 +216,15 @@ static inline struct net_device *vnic_get_netdev(struct vnic_dev *vdev)
 	dev_err(&(vdev)->pdev->dev, fmt, ##__VA_ARGS__)
 #define vdev_warn(vdev, fmt, ...)					\
 	dev_warn(&(vdev)->pdev->dev, fmt, ##__VA_ARGS__)
-#define vdev_info(vdev, fmt, ...)					\
-	dev_info(&(vdev)->pdev->dev, fmt, ##__VA_ARGS__)
+#define vdev_dbg(vdev, fmt, ...)					\
+	dev_dbg(&(vdev)->pdev->dev, fmt, ##__VA_ARGS__)
 
 #define vdev_neterr(vdev, fmt, ...)					\
 	netdev_err(vnic_get_netdev(vdev), fmt, ##__VA_ARGS__)
 #define vdev_netwarn(vdev, fmt, ...)					\
 	netdev_warn(vnic_get_netdev(vdev), fmt, ##__VA_ARGS__)
 #define vdev_netinfo(vdev, fmt, ...)					\
-	netdev_info(vnic_get_netdev(vdev), fmt, ##__VA_ARGS__)
+	netdev_dbg(vnic_get_netdev(vdev), fmt, ##__VA_ARGS__)
 
 static inline struct device *enic_get_dev(struct enic *enic)
 {

@@ -1070,7 +1070,7 @@ static int rza1_dt_node_to_map(struct pinctrl_dev *pctldev,
 		goto remove_group;
 	}
 
-	dev_info(rza1_pctl->dev, "Parsed function and group %s with %d pins\n",
+	dev_dbg(rza1_pctl->dev, "Parsed function and group %s with %d pins\n",
 				 grpname, npins);
 
 	/* Create map where to retrieve function and mux settings from */
@@ -1096,7 +1096,7 @@ remove_group:
 	pinctrl_generic_remove_group(pctldev, gsel);
 	mutex_unlock(&rza1_pctl->mutex);
 
-	dev_info(rza1_pctl->dev, "Unable to parse function and group %s\n",
+	dev_dbg(rza1_pctl->dev, "Unable to parse function and group %s\n",
 				 grpname);
 
 	return ret;
@@ -1245,7 +1245,7 @@ static int rza1_parse_gpiochip(struct rza1_pinctrl *rza1_pctl,
 
 	pinctrl_add_gpio_range(rza1_pctl->pctl, range);
 
-	dev_info(rza1_pctl->dev, "Parsed gpiochip %s with %d pins\n",
+	dev_dbg(rza1_pctl->dev, "Parsed gpiochip %s with %d pins\n",
 		 chip->label, chip->ngpio);
 
 	return 0;
@@ -1292,7 +1292,7 @@ static int rza1_gpio_register(struct rza1_pinctrl *rza1_pctl)
 		++i;
 	}
 
-	dev_info(rza1_pctl->dev, "Registered %u gpio controllers\n", i);
+	dev_dbg(rza1_pctl->dev, "Registered %u gpio controllers\n", i);
 
 	return 0;
 
@@ -1405,7 +1405,7 @@ static int rza1_pinctrl_probe(struct platform_device *pdev)
 	if (ret)
 		return ret;
 
-	dev_info(&pdev->dev,
+	dev_dbg(&pdev->dev,
 		 "RZ/A1 pin controller and gpio successfully registered\n");
 
 	return 0;

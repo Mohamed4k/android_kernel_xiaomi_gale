@@ -112,7 +112,7 @@ MODULE_ALIAS("platform:smc911x");
 			netdev_dbg(dev, args);	 \
 	} while (0)
 
-#define PRINTK(dev, args...)   netdev_info(dev, args)
+#define PRINTK(dev, args...)   netdev_dbg(dev, args)
 #else
 #define DBG(n, dev, args...)   do { } while (0)
 #define PRINTK(dev, args...)   netdev_dbg(dev, args)
@@ -902,7 +902,7 @@ static void smc911x_phy_configure(struct work_struct *work)
 		return;
 
 	if (smc911x_phy_reset(dev, phyaddr)) {
-		netdev_info(dev, "PHY reset timed out\n");
+		netdev_dbg(dev, "PHY reset timed out\n");
 		return;
 	}
 	spin_lock_irqsave(&lp->lock, flags);
@@ -924,7 +924,7 @@ static void smc911x_phy_configure(struct work_struct *work)
 	/* Copy our capabilities from MII_BMSR to MII_ADVERTISE */
 	SMC_GET_PHY_BMSR(lp, phyaddr, my_phy_caps);
 	if (!(my_phy_caps & BMSR_ANEGCAPABLE)) {
-		netdev_info(dev, "Auto negotiation NOT supported\n");
+		netdev_dbg(dev, "Auto negotiation NOT supported\n");
 		smc911x_phy_fixed(dev);
 		goto smc911x_phy_configure_exit;
 	}
@@ -1999,7 +1999,7 @@ static int smc911x_probe(struct net_device *dev)
 	retval = register_netdev(dev);
 	if (retval == 0) {
 		/* now, print out the card info, in a short format.. */
-		netdev_info(dev, "%s (rev %d) at %#lx IRQ %d",
+		netdev_dbg(dev, "%s (rev %d) at %#lx IRQ %d",
 			    version_string, lp->revision,
 			    dev->base_addr, dev->irq);
 
@@ -2015,7 +2015,7 @@ static int smc911x_probe(struct net_device *dev)
 			netdev_warn(dev, "Invalid ethernet MAC address. Please set using ifconfig\n");
 		} else {
 			/* Print the Ethernet address */
-			netdev_info(dev, "Ethernet addr: %pM\n",
+			netdev_dbg(dev, "Ethernet addr: %pM\n",
 				    dev->dev_addr);
 		}
 
@@ -2110,7 +2110,7 @@ release_both:
 release_1:
 		release_mem_region(res->start, SMC911X_IO_EXTENT);
 out:
-		pr_info("%s: not found (%d).\n", CARDNAME, ret);
+		pr_debug("%s: not found (%d).\n", CARDNAME, ret);
 	}
 #ifdef SMC_USE_DMA
 	else {

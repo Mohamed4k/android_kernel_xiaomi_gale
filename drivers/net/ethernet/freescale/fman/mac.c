@@ -149,7 +149,7 @@ static int tgec_initialization(struct mac_device *mac_dev)
 	if (err < 0)
 		goto _return_fm_mac_free;
 
-	dev_info(priv->dev, "FMan XGEC version: 0x%08x\n", version);
+	dev_dbg(priv->dev, "FMan XGEC version: 0x%08x\n", version);
 
 	goto _return;
 
@@ -199,7 +199,7 @@ static int dtsec_initialization(struct mac_device *mac_dev)
 	if (err < 0)
 		goto _return_fm_mac_free;
 
-	dev_info(priv->dev, "FMan dTSEC version: 0x%08x\n", version);
+	dev_dbg(priv->dev, "FMan dTSEC version: 0x%08x\n", version);
 
 	goto _return;
 
@@ -245,7 +245,7 @@ static int memac_initialization(struct mac_device *mac_dev)
 	if (err < 0)
 		goto _return_fm_mac_free;
 
-	dev_info(priv->dev, "FMan MEMAC\n");
+	dev_dbg(priv->dev, "FMan MEMAC\n");
 
 	goto _return;
 
@@ -859,7 +859,7 @@ static int mac_probe(struct platform_device *_of_dev)
 	if (err < 0)
 		dev_err(dev, "fman_set_mac_active_pause() = %d\n", err);
 
-	dev_info(dev, "FMan MAC address: %02hx:%02hx:%02hx:%02hx:%02hx:%02hx\n",
+	dev_dbg(dev, "FMan MAC address: %02hx:%02hx:%02hx:%02hx:%02hx:%02hx\n",
 		 mac_dev->addr[0], mac_dev->addr[1], mac_dev->addr[2],
 		 mac_dev->addr[3], mac_dev->addr[4], mac_dev->addr[5]);
 

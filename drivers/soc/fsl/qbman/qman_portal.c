@@ -159,7 +159,7 @@ static struct qman_portal *init_pcfg(struct qm_portal_config *pcfg)
 
 	spin_unlock(&qman_lock);
 
-	dev_info(pcfg->dev, "Portal initialised, cpu %d\n", pcfg->cpu);
+	dev_dbg(pcfg->dev, "Portal initialised, cpu %d\n", pcfg->cpu);
 
 	return p;
 }

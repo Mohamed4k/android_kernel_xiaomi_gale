@@ -237,7 +237,7 @@ static int reset_long_term_buff(struct ibmvnic_adapter *adapter,
 	wait_for_completion(&adapter->fw_done);
 
 	if (adapter->fw_done_rc) {
-		dev_info(&adapter->vdev->dev,
+		dev_dbg(&adapter->vdev->dev,
 			 "Reset failed, attempting to free and reallocate buffer\n");
 		free_long_term_buff(adapter, ltb);
 		return alloc_long_term_buff(adapter, ltb, ltb->size);
@@ -3713,7 +3713,7 @@ static void handle_vpd_rsp(union ibmvnic_crq *crq,
 	 */
 	substr = strnstr(adapter->vpd->buff, "RM", adapter->vpd->len);
 	if (!substr) {
-		dev_info(dev, "Warning - No FW level has been provided in the VPD buffer by the VIOS Server\n");
+		dev_dbg(dev, "Warning - No FW level has been provided in the VPD buffer by the VIOS Server\n");
 		goto complete;
 	}
 
@@ -3721,7 +3721,7 @@ static void handle_vpd_rsp(union ibmvnic_crq *crq,
 	if ((substr + 2) < (adapter->vpd->buff + adapter->vpd->len)) {
 		fw_level_len = *(substr + 2);
 	} else {
-		dev_info(dev, "Length of FW substr extrapolated VDP buff\n");
+		dev_dbg(dev, "Length of FW substr extrapolated VDP buff\n");
 		goto complete;
 	}
 
@@ -3730,7 +3730,7 @@ static void handle_vpd_rsp(union ibmvnic_crq *crq,
 	    (adapter->vpd->buff + adapter->vpd->len)) {
 		strncpy((char *)adapter->fw_version, substr + 3, fw_level_len);
 	} else {
-		dev_info(dev, "FW substr extrapolated VPD buff\n");
+		dev_dbg(dev, "FW substr extrapolated VPD buff\n");
 	}
 
 complete:
@@ -3954,7 +3954,7 @@ static void handle_request_cap_rsp(union ibmvnic_crq *crq,
 	case SUCCESS:
 		break;
 	case PARTIALSUCCESS:
-		dev_info(dev, "req=%lld, rsp=%ld in %s queue, retrying.\n",
+		dev_dbg(dev, "req=%lld, rsp=%ld in %s queue, retrying.\n",
 			 *req_value,
 			 (long int)be64_to_cpu(crq->request_capability_rsp.
 					       number), name);
@@ -4276,7 +4276,7 @@ static void ibmvnic_handle_crq(union ibmvnic_crq *crq,
 	case IBMVNIC_CRQ_INIT_RSP:
 		switch (gen_crq->cmd) {
 		case IBMVNIC_CRQ_INIT:
-			dev_info(dev, "Partner initialized\n");
+			dev_dbg(dev, "Partner initialized\n");
 			adapter->from_passive_init = true;
 			adapter->failover_pending = false;
 			if (!completion_done(&adapter->init_done)) {
@@ -4286,7 +4286,7 @@ static void ibmvnic_handle_crq(union ibmvnic_crq *crq,
 			ibmvnic_reset(adapter, VNIC_RESET_FAILOVER);
 			break;
 		case IBMVNIC_CRQ_INIT_COMPLETE:
-			dev_info(dev, "Partner initialization complete\n");
+			dev_dbg(dev, "Partner initialization complete\n");
 			adapter->crq.active = true;
 			send_version_xchg(adapter);
 			break;
@@ -4300,10 +4300,10 @@ static void ibmvnic_handle_crq(union ibmvnic_crq *crq,
 		if (adapter->resetting)
 			adapter->force_reset_recovery = true;
 		if (gen_crq->cmd == IBMVNIC_PARTITION_MIGRATED) {
-			dev_info(dev, "Migrated, re-enabling adapter\n");
+			dev_dbg(dev, "Migrated, re-enabling adapter\n");
 			ibmvnic_reset(adapter, VNIC_RESET_MOBILITY);
 		} else if (gen_crq->cmd == IBMVNIC_DEVICE_FAILOVER) {
-			dev_info(dev, "Backing device failover detected\n");
+			dev_dbg(dev, "Backing device failover detected\n");
 			adapter->failover_pending = true;
 		} else {
 			/* The adapter lost the connection */
@@ -4329,7 +4329,7 @@ static void ibmvnic_handle_crq(union ibmvnic_crq *crq,
 		}
 		ibmvnic_version =
 			    be16_to_cpu(crq->version_exchange_rsp.version);
-		dev_info(dev, "Partner protocol version is %d\n",
+		dev_dbg(dev, "Partner protocol version is %d\n",
 			 ibmvnic_version);
 		send_cap_queries(adapter);
 		break;
@@ -4787,7 +4787,7 @@ static int ibmvnic_probe(struct vio_dev *dev, const struct vio_device_id *id)
 		dev_err(&dev->dev, "failed to register netdev rc=%d\n", rc);
 		goto ibmvnic_register_fail;
 	}
-	dev_info(&dev->dev, "ibmvnic registered\n");
+	dev_dbg(&dev->dev, "ibmvnic registered\n");
 
 	adapter->state = VNIC_PROBED;
 
@@ -4939,7 +4939,7 @@ static struct vio_driver ibmvnic_driver = {
 /* module functions */
 static int __init ibmvnic_module_init(void)
 {
-	pr_info("%s: %s %s\n", ibmvnic_driver_name, ibmvnic_driver_string,
+	pr_debug("%s: %s %s\n", ibmvnic_driver_name, ibmvnic_driver_string,
 		IBMVNIC_DRIVER_VERSION);
 
 	return vio_register_driver(&ibmvnic_driver);

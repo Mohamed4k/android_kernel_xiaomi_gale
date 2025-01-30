@@ -909,7 +909,7 @@ static int ibmveth_set_tso(struct net_device *dev, u32 data)
 		 */
 		if (data == 1) {
 			dev->features &= ~NETIF_F_TSO6;
-			netdev_info(dev, "TSO feature requires all partitions to have updated driver");
+			netdev_dbg(dev, "TSO feature requires all partitions to have updated driver");
 		}
 		adapter->large_send = data;
 	}

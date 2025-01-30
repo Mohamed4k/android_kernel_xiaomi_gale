@@ -133,7 +133,7 @@ static irqreturn_t wkup_m3_txev_handler(int irq, void *ipc_data)
 			dev_warn(dev, "CM3 Firmware Version %x not supported\n",
 				 ver);
 		} else {
-			dev_info(dev, "CM3 Firmware Version = 0x%x\n", ver);
+			dev_dbg(dev, "CM3 Firmware Version = 0x%x\n", ver);
 		}
 
 		m3_ipc->state = M3_STATE_INITED;

@@ -1525,7 +1525,7 @@ static int netsec_register_mdio(struct netsec_priv *priv, u32 phy_addr)
 			/* older f/w doesn't populate the mdio subnode,
 			 * allow relaxed upgrade of f/w in due time.
 			 */
-			dev_info(priv->dev, "Upgrade f/w for mdio subnode!\n");
+			dev_dbg(priv->dev, "Upgrade f/w for mdio subnode!\n");
 		}
 
 		ret = of_mdiobus_register(bus, parent);
@@ -1580,7 +1580,7 @@ static int netsec_probe(struct platform_device *pdev)
 
 	eeprom_res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
 	if (!eeprom_res) {
-		dev_info(&pdev->dev, "No EEPROM resource found.\n");
+		dev_dbg(&pdev->dev, "No EEPROM resource found.\n");
 		return -ENODEV;
 	}
 
@@ -1689,7 +1689,7 @@ static int netsec_probe(struct platform_device *pdev)
 		goto pm_disable;
 	}
 
-	dev_info(&pdev->dev, "hardware revision %d.%d\n",
+	dev_dbg(&pdev->dev, "hardware revision %d.%d\n",
 		 hw_ver >> 16, hw_ver & 0xffff);
 
 	netif_napi_add(ndev, &priv->napi, netsec_napi_poll, NAPI_POLL_WEIGHT);

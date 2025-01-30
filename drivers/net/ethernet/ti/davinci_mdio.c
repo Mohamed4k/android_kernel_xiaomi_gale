@@ -160,7 +160,7 @@ static int davinci_mdio_reset(struct mii_bus *bus)
 
 	/* dump hardware version info */
 	ver = __raw_readl(&data->regs->version);
-	dev_info(data->dev,
+	dev_dbg(data->dev,
 		 "davinci mdio revision %d.%d, bus freq %ld\n",
 		 (ver >> 8) & 0xff, ver & 0xff,
 		 data->pdata.bus_freq);
@@ -172,7 +172,7 @@ static int davinci_mdio_reset(struct mii_bus *bus)
 	phy_mask = __raw_readl(&data->regs->alive);
 	if (phy_mask) {
 		/* restrict mdio bus to live phys only */
-		dev_info(data->dev, "detected phy mask %x\n", ~phy_mask);
+		dev_dbg(data->dev, "detected phy mask %x\n", ~phy_mask);
 		phy_mask = ~phy_mask;
 	} else {
 		/* desperately scan all phys */
@@ -438,7 +438,7 @@ static int davinci_mdio_probe(struct platform_device *pdev)
 	for (addr = 0; addr < PHY_MAX_ADDR; addr++) {
 		phy = mdiobus_get_phy(data->bus, addr);
 		if (phy) {
-			dev_info(dev, "phy[%d]: device %s, driver %s\n",
+			dev_dbg(dev, "phy[%d]: device %s, driver %s\n",
 				 phy->mdio.addr, phydev_name(phy),
 				 phy->drv ? phy->drv->name : "unknown");
 		}

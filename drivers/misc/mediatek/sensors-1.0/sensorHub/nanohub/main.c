@@ -436,7 +436,7 @@ static ssize_t nanohub_erase_shared(struct device *dev,
  *	__nanohub_hw_reset(data, 1);
  *
  *	status = nanohub_bl_erase_shared(data);
- *	dev_info(dev, "nanohub_bl_erase_shared: status=%02x\n",
+ *	dev_dbg(dev, "nanohub_bl_erase_shared: status=%02x\n",
  *		 status);
  *
  *	__nanohub_hw_reset(data, 0);
@@ -471,7 +471,7 @@ static ssize_t nanohub_download_bl(struct device *dev,
  *	} else {
  *		status = nanohub_bl_download(data, pdata->bl_addr,
  *					     fw_entry->data, fw_entry->size);
- *		dev_info(dev, "%s: status=%02x\n", __func__, status);
+ *		dev_dbg(dev, "%s: status=%02x\n", __func__, status);
  *		release_firmware(fw_entry);
  *	}
  *
@@ -806,7 +806,7 @@ static int nanohub_kthread(void *arg)
 		if (buf) {
 			ret = request_wakeup_timeout(data, WAKEUP_TIMEOUT_MS);
 			if (ret) {
-				dev_info(sensor_dev,
+				dev_dbg(sensor_dev,
 					 "%s: request_wakeup_timeout: ret=%d\n",
 					 __func__, ret);
 				continue;
@@ -1007,7 +1007,7 @@ static int __init nanohub_init(void)
 #ifdef CONFIG_NANOHUB_MTK_IPI
 		ret = nanohub_ipi_init();
 #endif
-	pr_info("nanohub: loaded; ret=%d\n", ret);
+	pr_debug("nanohub: loaded; ret=%d\n", ret);
 	return ret;
 }
 

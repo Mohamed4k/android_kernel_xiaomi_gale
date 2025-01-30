@@ -56,12 +56,12 @@
 
 #if IS_ENABLED(TRUSTY_SMC_DEBUG)
 #define trusty_dbg(fmt...) dev_dbg(fmt)
-#define trusty_info(fmt...) dev_info(fmt)
-#define trusty_err(fmt...) dev_info(fmt)
+#define trusty_info(fmt...) dev_dbg(fmt)
+#define trusty_err(fmt...) dev_dbg(fmt)
 #else
 #define trusty_dbg(fmt...)
-#define trusty_info(fmt...) dev_info(fmt)
-#define trusty_err(fmt...) dev_info(fmt)
+#define trusty_info(fmt...) dev_dbg(fmt)
+#define trusty_err(fmt...) dev_dbg(fmt)
 #endif
 
 #if IS_ENABLED(CONFIG_ARM64)
@@ -242,7 +242,7 @@ static void trusty_std_call_cpu_idle(struct trusty_state *s)
 
 	ret = wait_for_completion_timeout(&s->cpu_idle_completion, timeout);
 	if (!ret) {
-		pr_info("%s: time out wait cpu idle to clear, retry anyway\n",
+		pr_debug("%s: time out wait cpu idle to clear, retry anyway\n",
 			__func__);
 	}
 }
@@ -940,13 +940,13 @@ static int trusty_probe(struct platform_device *pdev)
 	/* For multiple TEEs */
 	ret = of_property_read_u32(node, "tee-id", &tee_id);
 	if (ret != 0 && !is_tee_id(tee_id)) {
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "[%s] ERROR: tee_id is not set on device tree\n",
 			 __func__);
 		return -EINVAL;
 	}
 
-	dev_info(&pdev->dev, "--- init trusty-smc for MTEE %d ---\n", tee_id);
+	dev_dbg(&pdev->dev, "--- init trusty-smc for MTEE %d ---\n", tee_id);
 
 	s = devm_kzalloc(&pdev->dev, sizeof(*s), GFP_KERNEL);
 	if (!s)
@@ -1084,7 +1084,7 @@ static int __init trusty_driver_init(void)
 
 err_nebula_driver:
 err_trusty_driver:
-	pr_info("Platform driver register failed\n");
+	pr_debug("Platform driver register failed\n");
 	return -ENODEV;
 }
 

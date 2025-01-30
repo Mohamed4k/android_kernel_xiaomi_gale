@@ -561,7 +561,7 @@ static int ocxl_probe(struct pci_dev *dev, const struct pci_device_id *id)
 			afu_count++;
 		}
 	}
-	dev_info(&dev->dev, "%d AFU(s) configured\n", afu_count);
+	dev_dbg(&dev->dev, "%d AFU(s) configured\n", afu_count);
 	return 0;
 }
 

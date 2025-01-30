@@ -1039,7 +1039,7 @@ static int mlx5_load_one(struct mlx5_core_dev *dev, struct mlx5_priv *priv,
 		goto out;
 	}
 
-	dev_info(&pdev->dev, "firmware version: %d.%d.%d\n", fw_rev_maj(dev),
+	dev_dbg(&pdev->dev, "firmware version: %d.%d.%d\n", fw_rev_maj(dev),
 		 fw_rev_min(dev), fw_rev_sub(dev));
 
 	/* Only PFs hold the relevant PCIe information for this query */
@@ -1487,7 +1487,7 @@ static pci_ers_result_t mlx5_pci_err_detected(struct pci_dev *pdev,
 	struct mlx5_core_dev *dev = pci_get_drvdata(pdev);
 	struct mlx5_priv *priv = &dev->priv;
 
-	dev_info(&pdev->dev, "%s was called\n", __func__);
+	dev_dbg(&pdev->dev, "%s was called\n", __func__);
 
 	mlx5_enter_error_state(dev, false);
 	mlx5_unload_one(dev, priv, false);
@@ -1517,7 +1517,7 @@ static int wait_vital(struct pci_dev *pdev)
 		count = ioread32be(health->health_counter);
 		if (count && count != 0xffffffff) {
 			if (last_count && last_count != count) {
-				dev_info(&pdev->dev, "Counter value 0x%x after %d iterations\n", count, i);
+				dev_dbg(&pdev->dev, "Counter value 0x%x after %d iterations\n", count, i);
 				return 0;
 			}
 			last_count = count;
@@ -1533,7 +1533,7 @@ static pci_ers_result_t mlx5_pci_slot_reset(struct pci_dev *pdev)
 	struct mlx5_core_dev *dev = pci_get_drvdata(pdev);
 	int err;
 
-	dev_info(&pdev->dev, "%s was called\n", __func__);
+	dev_dbg(&pdev->dev, "%s was called\n", __func__);
 
 	err = mlx5_pci_enable_device(dev);
 	if (err) {
@@ -1560,14 +1560,14 @@ static void mlx5_pci_resume(struct pci_dev *pdev)
 	struct mlx5_priv *priv = &dev->priv;
 	int err;
 
-	dev_info(&pdev->dev, "%s was called\n", __func__);
+	dev_dbg(&pdev->dev, "%s was called\n", __func__);
 
 	err = mlx5_load_one(dev, priv, false);
 	if (err)
 		dev_err(&pdev->dev, "%s: mlx5_load_one failed with error code: %d\n"
 			, __func__, err);
 	else
-		dev_info(&pdev->dev, "%s: device recovered\n", __func__);
+		dev_dbg(&pdev->dev, "%s: device recovered\n", __func__);
 }
 
 static const struct pci_error_handlers mlx5_err_handler = {
@@ -1622,7 +1622,7 @@ static void shutdown(struct pci_dev *pdev)
 	struct mlx5_priv *priv = &dev->priv;
 	int err;
 
-	dev_info(&pdev->dev, "Shutdown was called\n");
+	dev_dbg(&pdev->dev, "Shutdown was called\n");
 	err = mlx5_try_fast_unload(dev);
 	if (err)
 		mlx5_unload_one(dev, priv, false);
@@ -1675,7 +1675,7 @@ static struct pci_driver mlx5_core_driver = {
 static void mlx5_core_verify_params(void)
 {
 	if (prof_sel >= ARRAY_SIZE(profile)) {
-		pr_warn("mlx5_core: WARNING: Invalid module parameter prof_sel %d, valid range 0-%zu, changing back to default(%d)\n",
+		pr_debug("mlx5_core: WARNING: Invalid module parameter prof_sel %d, valid range 0-%zu, changing back to default(%d)\n",
 			prof_sel,
 			ARRAY_SIZE(profile) - 1,
 			MLX5_DEFAULT_PROF);

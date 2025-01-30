@@ -22,7 +22,7 @@
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/kernel.h>
-#include <linux/device.h>  /* for dev_info() */
+#include <linux/device.h>  /* for dev_dbg() */
 #include <linux/timer.h>
 #include <linux/errno.h>
 #include <linux/ioport.h>
@@ -4134,11 +4134,11 @@ static void bnx2x_fan_failure(struct bnx2x *bp)
 	/* mark the failure */
 	ext_phy_config =
 		SHMEM_RD(bp,
-			 dev_info.port_hw_config[port].external_phy_config);
+			 dev_dbg.port_hw_config[port].external_phy_config);
 
 	ext_phy_config &= ~PORT_HW_CFG_XGXS_EXT_PHY_TYPE_MASK;
 	ext_phy_config |= PORT_HW_CFG_XGXS_EXT_PHY_TYPE_FAILURE;
-	SHMEM_WR(bp, dev_info.port_hw_config[port].external_phy_config,
+	SHMEM_WR(bp, dev_dbg.port_hw_config[port].external_phy_config,
 		 ext_phy_config);
 
 	/* log the failure */
@@ -6939,7 +6939,7 @@ static void bnx2x_setup_fan_failure_detection(struct bnx2x *bp)
 		return;
 
 	is_required = 0;
-	val = SHMEM_RD(bp, dev_info.shared_hw_config.config2) &
+	val = SHMEM_RD(bp, dev_dbg.shared_hw_config.config2) &
 	      SHARED_HW_CFG_FAN_FAILURE_MASK;
 
 	if (val == SHARED_HW_CFG_FAN_FAILURE_ENABLED)
@@ -11116,7 +11116,7 @@ static void bnx2x_get_common_hwinfo(struct bnx2x *bp)
 		return;
 	}
 
-	bp->common.hw_config = SHMEM_RD(bp, dev_info.shared_hw_config.config);
+	bp->common.hw_config = SHMEM_RD(bp, dev_dbg.shared_hw_config.config);
 	BNX2X_DEV_INFO("hw_config 0x%08x\n", bp->common.hw_config);
 
 	bp->link_params.hw_led_mode = ((bp->common.hw_config &
@@ -11124,7 +11124,7 @@ static void bnx2x_get_common_hwinfo(struct bnx2x *bp)
 				       SHARED_HW_CFG_LED_MODE_SHIFT);
 
 	bp->link_params.feature_config_flags = 0;
-	val = SHMEM_RD(bp, dev_info.shared_feature_config.config);
+	val = SHMEM_RD(bp, dev_dbg.shared_feature_config.config);
 	if (val & SHARED_FEAT_CFG_OVERRIDE_PREEMPHASIS_CFG_ENABLED)
 		bp->link_params.feature_config_flags |=
 				FEATURE_CONFIG_OVERRIDE_PREEMPHASIS_ENABLED;
@@ -11132,7 +11132,7 @@ static void bnx2x_get_common_hwinfo(struct bnx2x *bp)
 		bp->link_params.feature_config_flags &=
 				~FEATURE_CONFIG_OVERRIDE_PREEMPHASIS_ENABLED;
 
-	val = SHMEM_RD(bp, dev_info.bc_rev) >> 8;
+	val = SHMEM_RD(bp, dev_dbg.bc_rev) >> 8;
 	bp->common.bc_ver = val;
 	BNX2X_DEV_INFO("bc_ver %X\n", val);
 	if (val < BNX2X_BC_VER) {
@@ -11172,7 +11172,7 @@ static void bnx2x_get_common_hwinfo(struct bnx2x *bp)
 			BC_SUPPORTS_RMMOD_CMD : 0;
 
 	boot_mode = SHMEM_RD(bp,
-			dev_info.port_feature_config[BP_PORT(bp)].mba_config) &
+			dev_dbg.port_feature_config[BP_PORT(bp)].mba_config) &
 			PORT_FEATURE_MBA_BOOT_AGENT_TYPE_MASK;
 	switch (boot_mode) {
 	case PORT_FEATURE_MBA_BOOT_AGENT_TYPE_PXE:
@@ -11195,12 +11195,12 @@ static void bnx2x_get_common_hwinfo(struct bnx2x *bp)
 	BNX2X_DEV_INFO("%sWoL capable\n",
 		       (bp->flags & NO_WOL_FLAG) ? "not " : "");
 
-	val = SHMEM_RD(bp, dev_info.shared_hw_config.part_num);
-	val2 = SHMEM_RD(bp, dev_info.shared_hw_config.part_num[4]);
-	val3 = SHMEM_RD(bp, dev_info.shared_hw_config.part_num[8]);
-	val4 = SHMEM_RD(bp, dev_info.shared_hw_config.part_num[12]);
+	val = SHMEM_RD(bp, dev_dbg.shared_hw_config.part_num);
+	val2 = SHMEM_RD(bp, dev_dbg.shared_hw_config.part_num[4]);
+	val3 = SHMEM_RD(bp, dev_dbg.shared_hw_config.part_num[8]);
+	val4 = SHMEM_RD(bp, dev_dbg.shared_hw_config.part_num[12]);
 
-	dev_info(&bp->pdev->dev, "part number %X-%X-%X-%X\n",
+	dev_dbg(&bp->pdev->dev, "part number %X-%X-%X-%X\n",
 		 val, val2, val3, val4);
 }
 
@@ -11302,9 +11302,9 @@ static void bnx2x_link_settings_supported(struct bnx2x *bp, u32 switch_cfg)
 	if (!(bp->port.supported[0] || bp->port.supported[1])) {
 		BNX2X_ERR("NVRAM config error. BAD phy config. PHY1 config 0x%x, PHY2 config 0x%x\n",
 			   SHMEM_RD(bp,
-			   dev_info.port_hw_config[port].external_phy_config),
+			   dev_dbg.port_hw_config[port].external_phy_config),
 			   SHMEM_RD(bp,
-			   dev_info.port_hw_config[port].external_phy_config2));
+			   dev_dbg.port_hw_config[port].external_phy_config2));
 			return;
 	}
 
@@ -11584,28 +11584,28 @@ static void bnx2x_get_port_hwinfo(struct bnx2x *bp)
 	bp->link_params.port = port;
 
 	bp->link_params.lane_config =
-		SHMEM_RD(bp, dev_info.port_hw_config[port].lane_config);
+		SHMEM_RD(bp, dev_dbg.port_hw_config[port].lane_config);
 
 	bp->link_params.speed_cap_mask[0] =
 		SHMEM_RD(bp,
-			 dev_info.port_hw_config[port].speed_capability_mask) &
+			 dev_dbg.port_hw_config[port].speed_capability_mask) &
 		PORT_HW_CFG_SPEED_CAPABILITY_D0_MASK;
 	bp->link_params.speed_cap_mask[1] =
 		SHMEM_RD(bp,
-			 dev_info.port_hw_config[port].speed_capability_mask2) &
+			 dev_dbg.port_hw_config[port].speed_capability_mask2) &
 		PORT_HW_CFG_SPEED_CAPABILITY_D0_MASK;
 	bp->port.link_config[0] =
-		SHMEM_RD(bp, dev_info.port_feature_config[port].link_config);
+		SHMEM_RD(bp, dev_dbg.port_feature_config[port].link_config);
 
 	bp->port.link_config[1] =
-		SHMEM_RD(bp, dev_info.port_feature_config[port].link_config2);
+		SHMEM_RD(bp, dev_dbg.port_feature_config[port].link_config2);
 
 	bp->link_params.multi_phy_config =
-		SHMEM_RD(bp, dev_info.port_hw_config[port].multi_phy_config);
+		SHMEM_RD(bp, dev_dbg.port_hw_config[port].multi_phy_config);
 	/* If the device is capable of WoL, set the default state according
 	 * to the HW
 	 */
-	config = SHMEM_RD(bp, dev_info.port_feature_config[port].config);
+	config = SHMEM_RD(bp, dev_dbg.port_feature_config[port].config);
 	bp->wol = (!(bp->flags & NO_WOL_FLAG) &&
 		   (config & PORT_FEATURE_WOL_ENABLED));
 
@@ -11634,7 +11634,7 @@ static void bnx2x_get_port_hwinfo(struct bnx2x *bp)
 	 */
 	ext_phy_config =
 		SHMEM_RD(bp,
-			 dev_info.port_hw_config[port].external_phy_config);
+			 dev_dbg.port_hw_config[port].external_phy_config);
 	ext_phy_type = XGXS_EXT_PHY_TYPE(ext_phy_config);
 	if (ext_phy_type == PORT_HW_CFG_XGXS_EXT_PHY_TYPE_DIRECT)
 		bp->mdio.prtad = bp->port.phy_addr;
@@ -11645,7 +11645,7 @@ static void bnx2x_get_port_hwinfo(struct bnx2x *bp)
 			XGXS_EXT_PHY_ADDR(ext_phy_config);
 
 	/* Configure link feature according to nvram value */
-	eee_mode = (((SHMEM_RD(bp, dev_info.
+	eee_mode = (((SHMEM_RD(bp, dev_dbg.
 		      port_feature_config[port].eee_power_mode)) &
 		     PORT_FEAT_CFG_EEE_POWER_MODE_MASK) >>
 		    PORT_FEAT_CFG_EEE_POWER_MODE_SHIFT);
@@ -11773,21 +11773,21 @@ static void bnx2x_get_fcoe_info(struct bnx2x *bp)
 		/* Port info */
 		bp->cnic_eth_dev.fcoe_wwn_port_name_hi =
 			SHMEM_RD(bp,
-				 dev_info.port_hw_config[port].
+				 dev_dbg.port_hw_config[port].
 				 fcoe_wwn_port_name_upper);
 		bp->cnic_eth_dev.fcoe_wwn_port_name_lo =
 			SHMEM_RD(bp,
-				 dev_info.port_hw_config[port].
+				 dev_dbg.port_hw_config[port].
 				 fcoe_wwn_port_name_lower);
 
 		/* Node info */
 		bp->cnic_eth_dev.fcoe_wwn_node_name_hi =
 			SHMEM_RD(bp,
-				 dev_info.port_hw_config[port].
+				 dev_dbg.port_hw_config[port].
 				 fcoe_wwn_node_name_upper);
 		bp->cnic_eth_dev.fcoe_wwn_node_name_lo =
 			SHMEM_RD(bp,
-				 dev_info.port_hw_config[port].
+				 dev_dbg.port_hw_config[port].
 				 fcoe_wwn_node_name_lower);
 	} else if (!IS_MF_SD(bp)) {
 		/* Read the WWN info only if the FCoE feature is enabled for
@@ -11889,15 +11889,15 @@ static void bnx2x_get_cnic_mac_hwinfo(struct bnx2x *bp)
 		if (IS_MF_FCOE_AFEX(bp))
 			memcpy(bp->dev->dev_addr, fip_mac, ETH_ALEN);
 	} else {
-		val2 = SHMEM_RD(bp, dev_info.port_hw_config[port].
+		val2 = SHMEM_RD(bp, dev_dbg.port_hw_config[port].
 				iscsi_mac_upper);
-		val = SHMEM_RD(bp, dev_info.port_hw_config[port].
+		val = SHMEM_RD(bp, dev_dbg.port_hw_config[port].
 			       iscsi_mac_lower);
 		bnx2x_set_mac_buf(iscsi_mac, val, val2);
 
-		val2 = SHMEM_RD(bp, dev_info.port_hw_config[port].
+		val2 = SHMEM_RD(bp, dev_dbg.port_hw_config[port].
 				fcoe_fip_mac_upper);
-		val = SHMEM_RD(bp, dev_info.port_hw_config[port].
+		val = SHMEM_RD(bp, dev_dbg.port_hw_config[port].
 			       fcoe_fip_mac_lower);
 		bnx2x_set_mac_buf(fip_mac, val, val2);
 	}
@@ -11938,8 +11938,8 @@ static void bnx2x_get_mac_hwinfo(struct bnx2x *bp)
 			bnx2x_get_cnic_mac_hwinfo(bp);
 	} else {
 		/* in SF read MACs from port configuration */
-		val2 = SHMEM_RD(bp, dev_info.port_hw_config[port].mac_upper);
-		val = SHMEM_RD(bp, dev_info.port_hw_config[port].mac_lower);
+		val2 = SHMEM_RD(bp, dev_dbg.port_hw_config[port].mac_upper);
+		val = SHMEM_RD(bp, dev_dbg.port_hw_config[port].mac_lower);
 		bnx2x_set_mac_buf(bp->dev->dev_addr, val, val2);
 
 		if (CNIC_SUPPORT(bp))
@@ -11948,8 +11948,8 @@ static void bnx2x_get_mac_hwinfo(struct bnx2x *bp)
 
 	if (!BP_NOMCP(bp)) {
 		/* Read physical port identifier from shmem */
-		val2 = SHMEM_RD(bp, dev_info.port_hw_config[port].mac_upper);
-		val = SHMEM_RD(bp, dev_info.port_hw_config[port].mac_lower);
+		val2 = SHMEM_RD(bp, dev_dbg.port_hw_config[port].mac_upper);
+		val = SHMEM_RD(bp, dev_dbg.port_hw_config[port].mac_lower);
 		bnx2x_set_mac_buf(bp->phys_port_id, val, val2);
 		bp->flags |= HAS_PHYS_PORT_ID;
 	}
@@ -11980,7 +11980,7 @@ static bool bnx2x_get_dropless_info(struct bnx2x *bp)
 		/* Take port: tmp = port */
 		tmp = BP_PORT(bp);
 		cfg = SHMEM_RD(bp,
-			       dev_info.port_hw_config[tmp].generic_features);
+			       dev_dbg.port_hw_config[tmp].generic_features);
 		cfg = !!(cfg & PORT_HW_CFG_PAUSE_ON_HOST_RING_ENABLED);
 	}
 	return cfg;
@@ -12119,7 +12119,7 @@ static int bnx2x_get_hwinfo(struct bnx2x *bp)
 		if (bp->common.mf_cfg_base != SHMEM_MF_CFG_ADDR_NONE) {
 			/* get mf configuration */
 			val = SHMEM_RD(bp,
-				       dev_info.shared_feature_config.config);
+				       dev_dbg.shared_feature_config.config);
 			val &= SHARED_FEAT_CFG_FORCE_SF_MODE_MASK;
 
 			switch (val) {
@@ -12188,7 +12188,7 @@ static int bnx2x_get_hwinfo(struct bnx2x *bp)
 				break;
 			case SHARED_FEAT_CFG_FORCE_SF_MODE_EXTENDED_MODE:
 				val2 = SHMEM_RD(bp,
-					dev_info.shared_hw_config.config_3);
+					dev_dbg.shared_hw_config.config_3);
 				val2 &= SHARED_HW_CFG_EXTENDED_MF_MODE_MASK;
 				switch (val2) {
 				case SHARED_HW_CFG_EXTENDED_MF_MODE_NPAR1_DOT_5:
@@ -12611,7 +12611,7 @@ static int bnx2x_open(struct net_device *dev)
 				     (!global || !other_load_status)) &&
 				      bnx2x_trylock_leader_lock(bp) &&
 				      !bnx2x_leader_reset(bp)) {
-					netdev_info(bp->dev,
+					netdev_dbg(bp->dev,
 						    "Recovered in open\n");
 					break;
 				}
@@ -13705,10 +13705,10 @@ static int bnx2x_get_num_non_def_sbs(struct pci_dev *pdev, int cnic_cnt)
 	 * one fast path queue: one FP queue + SB for CNIC
 	 */
 	if (!pdev->msix_cap) {
-		dev_info(&pdev->dev, "no msix capability found\n");
+		dev_dbg(&pdev->dev, "no msix capability found\n");
 		return 1 + cnic_cnt;
 	}
-	dev_info(&pdev->dev, "msix capability found\n");
+	dev_dbg(&pdev->dev, "msix capability found\n");
 
 	/*
 	 * The value in the PCI configuration space is the index of the last
@@ -14093,7 +14093,7 @@ static int bnx2x_init_one(struct pci_dev *pdev,
 
 #ifdef CONFIG_BNX2X_SRIOV
 		/* VF with OLD Hypervisor or old PF do not support filtering */
-		if (bp->acquire_resp.pfdev_info.pf_cap & PFVF_CAP_VLAN_FILTER) {
+		if (bp->acquire_resp.pfdev_dbg.pf_cap & PFVF_CAP_VLAN_FILTER) {
 			dev->hw_features |= NETIF_F_HW_VLAN_CTAG_FILTER;
 			dev->features |= NETIF_F_HW_VLAN_CTAG_FILTER;
 		}
@@ -14518,7 +14518,7 @@ static int __init bnx2x_init(void)
 {
 	int ret;
 
-	pr_info("%s", version);
+	pr_debug("%s", version);
 
 	bnx2x_wq = create_singlethread_workqueue("bnx2x");
 	if (bnx2x_wq == NULL) {

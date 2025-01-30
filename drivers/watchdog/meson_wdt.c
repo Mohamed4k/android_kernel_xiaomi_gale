@@ -208,7 +208,7 @@ static int meson_wdt_probe(struct platform_device *pdev)
 	if (err)
 		return err;
 
-	dev_info(&pdev->dev, "Watchdog enabled (timeout=%d sec, nowayout=%d)",
+	dev_dbg(&pdev->dev, "Watchdog enabled (timeout=%d sec, nowayout=%d)",
 		 meson_wdt->wdt_dev.timeout, nowayout);
 
 	return 0;

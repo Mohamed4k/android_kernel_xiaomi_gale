@@ -555,7 +555,7 @@ static void xgene_enet_link_state(struct work_struct *work)
 			xgene_sgmac_set_speed(p);
 			xgene_sgmac_rx_enable(p);
 			xgene_sgmac_tx_enable(p);
-			netdev_info(ndev, "Link is Up - %dMbps\n",
+			netdev_dbg(ndev, "Link is Up - %dMbps\n",
 				    p->phy_speed);
 		}
 		poll_interval = PHY_POLL_LINK_ON;
@@ -564,7 +564,7 @@ static void xgene_enet_link_state(struct work_struct *work)
 			xgene_sgmac_rx_disable(p);
 			xgene_sgmac_tx_disable(p);
 			netif_carrier_off(ndev);
-			netdev_info(ndev, "Link is Down\n");
+			netdev_dbg(ndev, "Link is Down\n");
 		}
 		poll_interval = PHY_POLL_LINK_OFF;
 	}

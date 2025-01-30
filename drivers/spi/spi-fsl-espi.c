@@ -656,7 +656,7 @@ static void fsl_espi_init_regs(struct device *dev, bool initial)
 		fsl_espi_write_reg(espi, ESPI_SPMODEx(cs), csmode);
 
 		if (initial)
-			dev_info(dev, "cs=%u, init_csmode=0x%x\n", cs, csmode);
+			dev_dbg(dev, "cs=%u, init_csmode=0x%x\n", cs, csmode);
 	}
 
 	/* Enable SPI interface */
@@ -726,7 +726,7 @@ static int fsl_espi_probe(struct device *dev, struct resource *mem,
 	if (ret < 0)
 		goto err_pm;
 
-	dev_info(dev, "at 0x%p (irq = %u)\n", espi->reg_base, irq);
+	dev_dbg(dev, "at 0x%p (irq = %u)\n", espi->reg_base, irq);
 
 	pm_runtime_mark_last_busy(dev);
 	pm_runtime_put_autosuspend(dev);

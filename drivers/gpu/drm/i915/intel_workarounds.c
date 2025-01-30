@@ -732,7 +732,7 @@ static void cfl_gt_workarounds_apply(struct drm_i915_private *dev_priv)
 
 static void wa_init_mcr(struct drm_i915_private *dev_priv)
 {
-	const struct sseu_dev_info *sseu = &(INTEL_INFO(dev_priv)->sseu);
+	const struct sseu_dev_dbg *sseu = &(INTEL_INFO(dev_priv)->sseu);
 	u32 mcr;
 	u32 mcr_slice_subslice_mask;
 

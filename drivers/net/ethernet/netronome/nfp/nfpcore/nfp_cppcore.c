@@ -1241,7 +1241,7 @@ nfp_cpp_from_operations(const struct nfp_cpp_operations *ops,
 	nfp_cpp_readl(cpp, arm, NFP_ARM_GCSR + NFP_ARM_GCSR_SOFTMODEL3,
 		      &mask[1]);
 
-	dev_info(cpp->dev.parent, "Model: 0x%08x, SN: %pM, Ifc: 0x%04x\n",
+	dev_dbg(cpp->dev.parent, "Model: 0x%08x, SN: %pM, Ifc: 0x%04x\n",
 		 nfp_cpp_model(cpp), cpp->serial, nfp_cpp_interface(cpp));
 
 	return cpp;

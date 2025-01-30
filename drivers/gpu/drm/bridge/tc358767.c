@@ -987,14 +987,14 @@ static int tc_main_link_setup(struct tc_data *tc)
 		if (ret < 0)
 			goto err_dpcd_read;
 		dev_err(dev, "channel(s) EQ not ok\n");
-		dev_info(dev, "0x0200 SINK_COUNT: 0x%02x\n", tmp[0]);
-		dev_info(dev, "0x0201 DEVICE_SERVICE_IRQ_VECTOR: 0x%02x\n",
+		dev_dbg(dev, "0x0200 SINK_COUNT: 0x%02x\n", tmp[0]);
+		dev_dbg(dev, "0x0201 DEVICE_SERVICE_IRQ_VECTOR: 0x%02x\n",
 			 tmp[1]);
-		dev_info(dev, "0x0202 LANE0_1_STATUS: 0x%02x\n", tmp[2]);
-		dev_info(dev, "0x0204 LANE_ALIGN_STATUS_UPDATED: 0x%02x\n",
+		dev_dbg(dev, "0x0202 LANE0_1_STATUS: 0x%02x\n", tmp[2]);
+		dev_dbg(dev, "0x0204 LANE_ALIGN_STATUS_UPDATED: 0x%02x\n",
 			 tmp[4]);
-		dev_info(dev, "0x0205 SINK_STATUS: 0x%02x\n", tmp[5]);
-		dev_info(dev, "0x0206 ADJUST_REQUEST_LANE0_1: 0x%02x\n",
+		dev_dbg(dev, "0x0205 SINK_STATUS: 0x%02x\n", tmp[5]);
+		dev_dbg(dev, "0x0206 ADJUST_REQUEST_LANE0_1: 0x%02x\n",
 			 tmp[6]);
 
 		return -EAGAIN;

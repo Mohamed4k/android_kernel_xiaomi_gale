@@ -206,9 +206,9 @@ static int __init tlc_tui_init(void)
 {
 	dev_set_name(&tui_dev, "TUI");
 
-	tui_dev_info("Loading t-base-tui module.");
+	tui_dev_dbg("Loading t-base-tui module.");
 	tui_dev_devel("=============== Running TUI Kernel TLC ===============");
-	tui_dev_info("%s", MOBICORE_COMPONENT_BUILD_TAG);
+	tui_dev_dbg("%s", MOBICORE_COMPONENT_BUILD_TAG);
 
 	dev_t devno;
 	int err;

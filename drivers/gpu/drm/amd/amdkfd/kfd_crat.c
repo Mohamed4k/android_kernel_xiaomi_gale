@@ -452,7 +452,7 @@ static int kfd_parse_subtype(struct crat_subtype_generic *sub_type_hdr,
 		ret = kfd_parse_subtype_iolink(iolink, device_list);
 		break;
 	default:
-		pr_warn("Unknown subtype %d in CRAT\n",
+		pr_debug("Unknown subtype %d in CRAT\n",
 				sub_type_hdr->type);
 	}
 
@@ -484,14 +484,14 @@ int kfd_parse_crat_table(void *crat_image, struct list_head *device_list,
 		return -EINVAL;
 
 	if (!list_empty(device_list)) {
-		pr_warn("Error device list should be empty\n");
+		pr_debug("Error device list should be empty\n");
 		return -EINVAL;
 	}
 
 	num_nodes = crat_table->num_domains;
 	image_len = crat_table->length;
 
-	pr_info("Parsing CRAT table with %d nodes\n", num_nodes);
+	pr_debug("Parsing CRAT table with %d nodes\n", num_nodes);
 
 	for (node_id = 0; node_id < num_nodes; node_id++) {
 		top_dev = kfd_create_topology_device(device_list);
@@ -733,7 +733,7 @@ int kfd_create_crat_image_acpi(void **crat_image, size_t *size)
 	/* Fetch the CRAT table from ACPI */
 	status = acpi_get_table(CRAT_SIGNATURE, 0, &crat_table);
 	if (status == AE_NOT_FOUND) {
-		pr_warn("CRAT table not found\n");
+		pr_debug("CRAT table not found\n");
 		return -ENODATA;
 	} else if (ACPI_FAILURE(status)) {
 		const char *err = acpi_format_exception(status);
@@ -743,7 +743,7 @@ int kfd_create_crat_image_acpi(void **crat_image, size_t *size)
 	}
 
 	if (ignore_crat) {
-		pr_info("CRAT table disabled by module option\n");
+		pr_debug("CRAT table disabled by module option\n");
 		return -ENODATA;
 	}
 
@@ -929,7 +929,7 @@ static int kfd_create_vcrat_image_cpu(void *pcrat_image, size_t *size)
 
 	status = acpi_get_table("DSDT", 0, &acpi_table);
 	if (status != AE_OK)
-		pr_warn("DSDT table not found for OEM information\n");
+		pr_debug("DSDT table not found for OEM information\n");
 	else {
 		crat_table->oem_revision = acpi_table->revision;
 		memcpy(crat_table->oem_id, acpi_table->oem_id,
@@ -994,7 +994,7 @@ static int kfd_create_vcrat_image_cpu(void *pcrat_image, size_t *size)
 	 */
 
 	*size = crat_table->length;
-	pr_info("Virtual CRAT table created for CPU\n");
+	pr_debug("Virtual CRAT table created for CPU\n");
 
 	return 0;
 }
@@ -1222,7 +1222,7 @@ static int kfd_create_vcrat_image_gpu(void *pcrat_image,
 	crat_table->total_entries++;
 
 	*size = crat_table->length;
-	pr_info("Virtual CRAT table created for GPU\n");
+	pr_debug("Virtual CRAT table created for GPU\n");
 
 	return ret;
 }

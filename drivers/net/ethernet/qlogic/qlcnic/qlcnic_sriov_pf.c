@@ -168,7 +168,7 @@ static void qlcnic_sriov_set_vf_max_vlan(struct qlcnic_adapter *adapter,
 	if (qlcnic_83xx_pf_check(adapter))
 		sriov->num_allowed_vlans = 1;
 
-	netdev_info(adapter->netdev, "Max Guest VLANs supported per VF = %d\n",
+	netdev_dbg(adapter->netdev, "Max Guest VLANs supported per VF = %d\n",
 		    sriov->num_allowed_vlans);
 }
 
@@ -207,7 +207,7 @@ static int qlcnic_sriov_get_pf_info(struct qlcnic_adapter *adapter,
 
 	qlcnic_sriov_set_vf_max_vlan(adapter, npar_info);
 	qlcnic_sriov_pf_set_ff_max_res(adapter, npar_info);
-	dev_info(&adapter->pdev->dev,
+	dev_dbg(&adapter->pdev->dev,
 		 "\n\ttotal_pf: %d,\n"
 		 "\n\ttotal_rss_engines: %d max_vports: %d max_tx_ques %d,\n"
 		 "\tmax_tx_mac_filters: %d max_rx_mcast_mac_filters: %d,\n"
@@ -457,7 +457,7 @@ void qlcnic_sriov_pf_disable(struct qlcnic_adapter *adapter)
 		return;
 
 	pci_disable_sriov(adapter->pdev);
-	netdev_info(adapter->netdev,
+	netdev_dbg(adapter->netdev,
 		    "SR-IOV is disabled successfully on port %d\n",
 		    adapter->portnum);
 }
@@ -470,7 +470,7 @@ static int qlcnic_pci_sriov_disable(struct qlcnic_adapter *adapter)
 		netdev_err(adapter->netdev,
 			   "SR-IOV VFs belonging to port %d are assigned to VMs. SR-IOV can not be disabled on this port\n",
 			   adapter->portnum);
-		netdev_info(adapter->netdev,
+		netdev_dbg(adapter->netdev,
 			    "Please detach SR-IOV VFs belonging to port %d from VMs, and then try to disable SR-IOV on this port\n",
 			    adapter->portnum);
 		return -EPERM;
@@ -639,7 +639,7 @@ static int qlcnic_pci_sriov_enable(struct qlcnic_adapter *adapter, int num_vfs)
 	rtnl_unlock();
 	err = qlcnic_sriov_pf_enable(adapter, num_vfs);
 	if (!err) {
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "SR-IOV is enabled successfully on port %d\n",
 			    adapter->portnum);
 		/* Return number of vfs enabled */
@@ -657,7 +657,7 @@ error:
 	}
 
 	rtnl_unlock();
-	netdev_info(netdev, "Failed to enable SR-IOV on port %d\n",
+	netdev_dbg(netdev, "Failed to enable SR-IOV on port %d\n",
 		    adapter->portnum);
 
 	return err;
@@ -1717,7 +1717,7 @@ static void qlcnic_sriov_handle_soft_flr(struct qlcnic_adapter *adapter,
 	set_bit(QLC_BC_VF_SOFT_FLR, &vf->state);
 	vf->flr_trans = trans;
 	qlcnic_sriov_schedule_flr(sriov, vf, qlcnic_sriov_pf_process_flr);
-	netdev_info(adapter->netdev, "Software FLR for PCI func %d\n",
+	netdev_dbg(adapter->netdev, "Software FLR for PCI func %d\n",
 		    vf->pci_func);
 }
 
@@ -1749,7 +1749,7 @@ void qlcnic_sriov_pf_handle_flr(struct qlcnic_sriov *sriov,
 	}
 
 	if (test_and_set_bit(QLC_BC_VF_FLR, &vf->state)) {
-		netdev_info(dev, "FLR for PCI func %d in progress\n",
+		netdev_dbg(dev, "FLR for PCI func %d in progress\n",
 			    vf->pci_func);
 		return;
 	}
@@ -1759,7 +1759,7 @@ void qlcnic_sriov_pf_handle_flr(struct qlcnic_sriov *sriov,
 		       sizeof(*vf->sriov_vlans) * sriov->num_allowed_vlans);
 
 	qlcnic_sriov_schedule_flr(sriov, vf, qlcnic_sriov_pf_process_flr);
-	netdev_info(dev, "FLR received for PCI func %d\n", vf->pci_func);
+	netdev_dbg(dev, "FLR received for PCI func %d\n", vf->pci_func);
 }
 
 void qlcnic_sriov_pf_reset(struct qlcnic_adapter *adapter)
@@ -1797,7 +1797,7 @@ int qlcnic_sriov_pf_reinit(struct qlcnic_adapter *adapter)
 	if (err)
 		return err;
 
-	dev_info(&adapter->pdev->dev, "%s: op_mode %d\n",
+	dev_dbg(&adapter->pdev->dev, "%s: op_mode %d\n",
 		 __func__, ahw->op_mode);
 	return err;
 }
@@ -1844,7 +1844,7 @@ int qlcnic_sriov_set_vf_mac(struct net_device *netdev, int vf, u8 *mac)
 	}
 
 	memcpy(curr_mac, mac, netdev->addr_len);
-	netdev_info(netdev, "MAC Address %pM  is configured for VF %d\n",
+	netdev_dbg(netdev, "MAC Address %pM  is configured for VF %d\n",
 		    mac, vf);
 	return 0;
 }
@@ -1904,11 +1904,11 @@ int qlcnic_sriov_set_vf_tx_rate(struct net_device *netdev, int vf,
 	}
 
 	vp->max_tx_bw = max_tx_rate / 100;
-	netdev_info(netdev,
+	netdev_dbg(netdev,
 		    "Setting Max Tx rate %d (Mbps), %d %% of PF bandwidth, for VF %d\n",
 		    max_tx_rate, vp->max_tx_bw, vf);
 	vp->min_tx_bw = min_tx_rate / 100;
-	netdev_info(netdev,
+	netdev_dbg(netdev,
 		    "Setting Min Tx rate %d (Mbps), %d %% of PF bandwidth, for VF %d\n",
 		    min_tx_rate, vp->min_tx_bw, vf);
 	return 0;
@@ -1965,7 +1965,7 @@ int qlcnic_sriov_set_vf_vlan(struct net_device *netdev, int vf,
 		vp->pvid = vlan;
 	}
 
-	netdev_info(netdev, "Setting VLAN %d, QoS %d, for VF %d\n",
+	netdev_dbg(netdev, "Setting VLAN %d, QoS %d, for VF %d\n",
 		    vlan, qos, vf);
 	return 0;
 }
@@ -1986,7 +1986,7 @@ static __u32 qlcnic_sriov_get_vf_vlan(struct qlcnic_adapter *adapter,
 		vlan = 0;
 		break;
 	default:
-		netdev_info(adapter->netdev, "Invalid VLAN mode = %d for VF %d\n",
+		netdev_dbg(adapter->netdev, "Invalid VLAN mode = %d for VF %d\n",
 			    vp->vlan_mode, vf);
 	}
 

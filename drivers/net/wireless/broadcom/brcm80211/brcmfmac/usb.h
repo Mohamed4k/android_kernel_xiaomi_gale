@@ -33,7 +33,7 @@ struct brcmf_stats {
 
 struct brcmf_usbdev {
 	struct brcmf_bus *bus;
-	struct brcmf_usbdev_info *devinfo;
+	struct brcmf_usbdev_dbg *devinfo;
 	enum brcmf_usb_state state;
 	struct brcmf_stats stats;
 	int ntxq, nrxq, rxsize;
@@ -45,7 +45,7 @@ struct brcmf_usbdev {
 /* IO Request Block (IRB) */
 struct brcmf_usbreq {
 	struct list_head list;
-	struct brcmf_usbdev_info *devinfo;
+	struct brcmf_usbdev_dbg *devinfo;
 	struct urb *urb;
 	struct sk_buff  *skb;
 };

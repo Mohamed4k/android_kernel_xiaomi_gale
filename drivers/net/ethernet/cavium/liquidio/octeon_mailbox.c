@@ -257,7 +257,7 @@ static int octeon_mbox_process_cmd(struct octeon_mbox *mbox,
 		break;
 
 	case OCTEON_VF_FLR_REQUEST:
-		dev_info(&oct->pci_dev->dev,
+		dev_dbg(&oct->pci_dev->dev,
 			 "got a request for FLR from VF that owns DPI ring %u\n",
 			 mbox->q_no);
 		pcie_capability_set_word(

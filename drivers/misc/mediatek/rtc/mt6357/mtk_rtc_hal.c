@@ -28,7 +28,7 @@
 #include "include/pmic.h"
 
 #define hal_rtc_xinfo(fmt, args...)		\
-	pr_notice(fmt, ##args)
+	pr_debug(fmt, ##args)
 
 /*TODO extern bool pmic_chrdet_status(void);*/
 
@@ -163,7 +163,7 @@ void rtc_spar_alarm_clear_wait(void)
 		if ((rtc_read(RTC_BBPU) & RTC_BBPU_CLR) == 0)
 			break;
 		else if (sched_clock() > timeout) {
-			pr_notice("%s, spar/alarm clear time out, %x,\n",
+			pr_debug("%s, spar/alarm clear time out, %x,\n",
 				__func__, rtc_read(RTC_BBPU));
 			break;
 		}
@@ -258,7 +258,7 @@ void hal_rtc_bbpu_pwdn(bool charger_status)
 		rtc_write_trigger();
 	}
 	/* lpsd */
-	pr_notice("clear lpsd solution\n");
+	pr_debug("clear lpsd solution\n");
 	bbpu = RTC_BBPU_KEY | RTC_BBPU_CLR | RTC_BBPU_PWREN;
 	rtc_write(RTC_BBPU, bbpu);
 
@@ -272,7 +272,7 @@ void hal_rtc_bbpu_pwdn(bool charger_status)
 	rtc_write(RTC_BBPU,
 			rtc_read(RTC_BBPU) | RTC_BBPU_KEY | RTC_BBPU_RELOAD);
 	rtc_write_trigger();
-	pr_notice("RTC_AL_MASK= 0x%x RTC_IRQ_EN= 0x%x\n",
+	pr_debug("RTC_AL_MASK= 0x%x RTC_IRQ_EN= 0x%x\n",
 			rtc_read(RTC_AL_MASK), rtc_read(RTC_IRQ_EN));
 	/* lpsd */
 	rtc_bbpu_pwrdown(true);
@@ -430,14 +430,14 @@ void rtc_clock_enable(int enable)
 
 void rtc_lpsd_restore_al_mask(void)
 {
-	pr_notice("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 
 	rtc_write(RTC_BBPU,
 			rtc_read(RTC_BBPU) | RTC_BBPU_KEY | RTC_BBPU_RELOAD);
 	rtc_write_trigger();
-	pr_notice("1st RTC_AL_MASK = 0x%x\n", rtc_read(RTC_AL_MASK));
+	pr_debug("1st RTC_AL_MASK = 0x%x\n", rtc_read(RTC_AL_MASK));
 	/* mask DOW */
 	rtc_write(RTC_AL_MASK, RTC_AL_MASK_DOW);
 	rtc_write_trigger();
-	pr_notice("2nd RTC_AL_MASK = 0x%x\n", rtc_read(RTC_AL_MASK));
+	pr_debug("2nd RTC_AL_MASK = 0x%x\n", rtc_read(RTC_AL_MASK));
 }

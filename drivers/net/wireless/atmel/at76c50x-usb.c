@@ -2560,7 +2560,7 @@ static void at76_disconnect(struct usb_interface *interface)
 	wiphy_info(priv->hw->wiphy, "disconnecting\n");
 	at76_delete_device(priv);
 	usb_put_dev(priv->udev);
-	dev_info(&interface->dev, "disconnected\n");
+	dev_dbg(&interface->dev, "disconnected\n");
 }
 
 /* Structure for registering this driver with the USB subsystem */

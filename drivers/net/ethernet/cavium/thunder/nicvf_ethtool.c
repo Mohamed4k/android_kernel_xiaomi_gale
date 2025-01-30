@@ -568,7 +568,7 @@ static int nicvf_set_rss_hash_opts(struct nicvf *nic,
 		netdev_err(nic->netdev,
 			   "RSS is disabled, hash cannot be set\n");
 
-	netdev_info(nic->netdev, "Set RSS flow type = %d, data = %lld\n",
+	netdev_dbg(nic->netdev, "Set RSS flow type = %d, data = %lld\n",
 		    info->flow_type, info->data);
 
 	if (!(info->data & RXH_IP_SRC) || !(info->data & RXH_IP_DST))
@@ -772,7 +772,7 @@ static int nicvf_set_channels(struct net_device *dev,
 	if (if_up)
 		nicvf_open(dev);
 
-	netdev_info(dev, "Setting num Tx rings to %d, Rx rings to %d success\n",
+	netdev_dbg(dev, "Setting num Tx rings to %d, Rx rings to %d success\n",
 		    nic->tx_queues, nic->rx_queues);
 
 	return err;

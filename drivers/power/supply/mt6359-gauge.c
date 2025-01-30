@@ -2255,7 +2255,7 @@ static int psy_gauge_set_property(struct power_supply *psy,
 
 	switch (psp) {
 	case POWER_SUPPLY_PROP_ONLINE:
-		pr_notice("%s: %d %d\n", __func__, psp, val->intval);
+		pr_debug("%s: %d %d\n", __func__, psp, val->intval);
 		break;
 	case POWER_SUPPLY_PROP_ENERGY_EMPTY:
 		gm = gauge->gm;

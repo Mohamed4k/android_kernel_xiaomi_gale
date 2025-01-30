@@ -285,7 +285,7 @@ static void atl1c_check_link_status(struct atl1c_adapter *adapter)
 			atl1c_post_phy_linkchg(hw, speed);
 			atl1c_start_mac(adapter);
 			if (netif_msg_link(adapter))
-				dev_info(&pdev->dev,
+				dev_dbg(&pdev->dev,
 					"%s: %s NIC Link is Up<%d Mbps %s>\n",
 					atl1c_driver_name, netdev->name,
 					adapter->link_speed,
@@ -315,7 +315,7 @@ static void atl1c_link_chg_event(struct atl1c_adapter *adapter)
 			/* old link state: Up */
 			netif_carrier_off(netdev);
 			if (netif_msg_link(adapter))
-				dev_info(&pdev->dev,
+				dev_dbg(&pdev->dev,
 					"%s: %s NIC Link is Down\n",
 					atl1c_driver_name, netdev->name);
 			adapter->link_speed = SPEED_0;
@@ -2662,7 +2662,7 @@ static int atl1c_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	}
 
 	if (netif_msg_probe(adapter))
-		dev_info(&pdev->dev, "version %s\n", ATL1C_DRV_VERSION);
+		dev_dbg(&pdev->dev, "version %s\n", ATL1C_DRV_VERSION);
 	cards_found++;
 	return 0;
 

@@ -2206,7 +2206,7 @@ static int fm10k_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	pcie_print_link_status(interface->pdev);
 
 	/* report MAC address for logging */
-	dev_info(&pdev->dev, "%pM\n", netdev->dev_addr);
+	dev_dbg(&pdev->dev, "%pM\n", netdev->dev_addr);
 
 	/* enable SR-IOV after registering netdev to enforce PF/VF ordering */
 	fm10k_iov_configure(pdev, 0);

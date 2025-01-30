@@ -1699,7 +1699,7 @@ int hns_dsaf_rm_mac_addr(
 	entry_index = hns_dsaf_find_soft_mac_entry(dsaf_dev, &mac_key);
 	if (entry_index == DSAF_INVALID_ENTRY_IDX) {
 		/* can not find the tcam entry, return 0 */
-		dev_info(dsaf_dev->dev,
+		dev_dbg(dsaf_dev->dev,
 			 "rm_uc_addr no tcam, %s Mac key(%#x:%#x)\n",
 			 dsaf_dev->ae_dev.name,
 			 mac_key.high.val, mac_key.low.val);

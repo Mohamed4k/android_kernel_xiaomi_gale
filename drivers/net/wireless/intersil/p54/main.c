@@ -819,7 +819,7 @@ int p54_register_common(struct ieee80211_hw *dev, struct device *pdev)
 	}
 #endif /* CONFIG_P54_LEDS */
 
-	dev_info(pdev, "is registered as '%s'\n", wiphy_name(dev->wiphy));
+	dev_dbg(pdev, "is registered as '%s'\n", wiphy_name(dev->wiphy));
 	return 0;
 }
 EXPORT_SYMBOL_GPL(p54_register_common);

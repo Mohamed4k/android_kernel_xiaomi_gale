@@ -29,7 +29,7 @@ static DEFINE_MUTEX(be_adapter_list_lock);
 
 static void _be_roce_dev_add(struct be_adapter *adapter)
 {
-	struct be_dev_info dev_info;
+	struct be_dev_dbg dev_dbg;
 	int i, num_vec;
 	struct pci_dev *pdev = adapter->pdev;
 
@@ -46,41 +46,41 @@ static void _be_roce_dev_add(struct be_adapter *adapter)
 		if (!msix_enabled(adapter))
 			return;
 		/* DPP region address and length */
-		dev_info.dpp_unmapped_addr = pci_resource_start(pdev, 2);
-		dev_info.dpp_unmapped_len = pci_resource_len(pdev, 2);
+		dev_dbg.dpp_unmapped_addr = pci_resource_start(pdev, 2);
+		dev_dbg.dpp_unmapped_len = pci_resource_len(pdev, 2);
 	} else {
-		dev_info.dpp_unmapped_addr = 0;
-		dev_info.dpp_unmapped_len = 0;
+		dev_dbg.dpp_unmapped_addr = 0;
+		dev_dbg.dpp_unmapped_len = 0;
 	}
-	dev_info.pdev = adapter->pdev;
-	dev_info.db = adapter->db;
-	dev_info.unmapped_db = adapter->roce_db.io_addr;
-	dev_info.db_page_size = adapter->roce_db.size;
-	dev_info.db_total_size = adapter->roce_db.total_size;
-	dev_info.netdev = adapter->netdev;
-	memcpy(dev_info.mac_addr, adapter->netdev->dev_addr, ETH_ALEN);
-	dev_info.dev_family = adapter->sli_family;
+	dev_dbg.pdev = adapter->pdev;
+	dev_dbg.db = adapter->db;
+	dev_dbg.unmapped_db = adapter->roce_db.io_addr;
+	dev_dbg.db_page_size = adapter->roce_db.size;
+	dev_dbg.db_total_size = adapter->roce_db.total_size;
+	dev_dbg.netdev = adapter->netdev;
+	memcpy(dev_dbg.mac_addr, adapter->netdev->dev_addr, ETH_ALEN);
+	dev_dbg.dev_family = adapter->sli_family;
 	if (msix_enabled(adapter)) {
 		/* provide all the vectors, so that EQ creation response
 		 * can decide which one to use.
 		 */
 		num_vec = adapter->num_msix_vec + adapter->num_msix_roce_vec;
-		dev_info.intr_mode = BE_INTERRUPT_MODE_MSIX;
-		dev_info.msix.num_vectors = min(num_vec, MAX_MSIX_VECTORS);
+		dev_dbg.intr_mode = BE_INTERRUPT_MODE_MSIX;
+		dev_dbg.msix.num_vectors = min(num_vec, MAX_MSIX_VECTORS);
 		/* provide start index of the vector,
 		 * so in case of linear usage,
 		 * it can use the base as starting point.
 		 */
-		dev_info.msix.start_vector = adapter->num_evt_qs;
-		for (i = 0; i < dev_info.msix.num_vectors; i++) {
-			dev_info.msix.vector_list[i] =
+		dev_dbg.msix.start_vector = adapter->num_evt_qs;
+		for (i = 0; i < dev_dbg.msix.num_vectors; i++) {
+			dev_dbg.msix.vector_list[i] =
 			    adapter->msix_entries[i].vector;
 		}
 	} else {
-		dev_info.msix.num_vectors = 0;
-		dev_info.intr_mode = BE_INTERRUPT_MODE_INTX;
+		dev_dbg.msix.num_vectors = 0;
+		dev_dbg.intr_mode = BE_INTERRUPT_MODE_INTX;
 	}
-	adapter->ocrdma_dev = ocrdma_drv->add(&dev_info);
+	adapter->ocrdma_dev = ocrdma_drv->add(&dev_dbg);
 }
 
 void be_roce_dev_add(struct be_adapter *adapter)

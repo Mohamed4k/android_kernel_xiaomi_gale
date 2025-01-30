@@ -912,7 +912,7 @@ static void xgbe_disable_vxlan_offloads(struct xgbe_prv_data *pdata)
 	if (!pdata->vxlan_offloads_set)
 		return;
 
-	netdev_info(netdev, "disabling VXLAN offloads\n");
+	netdev_dbg(netdev, "disabling VXLAN offloads\n");
 
 	netdev->hw_enc_features &= ~(NETIF_F_SG |
 				     NETIF_F_IP_CSUM |
@@ -955,7 +955,7 @@ static void xgbe_enable_vxlan_offloads(struct xgbe_prv_data *pdata)
 	if (pdata->vxlan_offloads_set)
 		return;
 
-	netdev_info(netdev, "enabling VXLAN offloads\n");
+	netdev_dbg(netdev, "enabling VXLAN offloads\n");
 
 	netdev->hw_enc_features |= NETIF_F_SG |
 				   NETIF_F_IP_CSUM |

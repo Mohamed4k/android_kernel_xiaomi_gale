@@ -69,7 +69,7 @@ static int pd_tcp_notifier_call(struct notifier_block *pnb,
 	pinfo = container_of(pnb, struct mtk_pd_adapter_info, pd_nb);
 	adapter = pinfo->adapter_dev;
 
-	pr_notice("PD charger event:%d %d\n", (int)event,
+	pr_debug("PD charger event:%d %d\n", (int)event,
 		(int)noti->pd_state.connected);
 
 	switch (event) {
@@ -186,13 +186,13 @@ static int pd_set_cap(struct adapter_device *dev, enum adapter_cap_type type,
 	int tcpm_ret = TCPM_SUCCESS;
 	struct mtk_pd_adapter_info *info;
 
-	pr_notice("[%s] type:%d mV:%d mA:%d\n",
+	pr_debug("[%s] type:%d mV:%d mA:%d\n",
 		__func__, type, mV, mA);
 
 
 	info = (struct mtk_pd_adapter_info *)adapter_dev_get_drvdata(dev);
 	if (info == NULL || info->tcpc == NULL) {
-		pr_notice("[%s] info null\n", __func__);
+		pr_debug("[%s] info null\n", __func__);
 		return -1;
 	}
 
@@ -209,7 +209,7 @@ static int pd_set_cap(struct adapter_device *dev, enum adapter_cap_type type,
 					mA, NULL);
 	}
 
-	pr_notice("[%s] type:%d mV:%d mA:%d ret:%d\n",
+	pr_debug("[%s] type:%d mV:%d mA:%d ret:%d\n",
 		__func__, type, mV, mA, tcpm_ret);
 
 
@@ -303,7 +303,7 @@ static int pd_get_cap(struct adapter_device *dev,
 			if (ret == TCPM_ERROR_NOT_FOUND) {
 				break;
 			} else if (ret != TCPM_SUCCESS) {
-				pr_notice("[%s] tcpm_inquire_pd_source_apdo failed(%d)\n",
+				pr_debug("[%s] tcpm_inquire_pd_source_apdo failed(%d)\n",
 					__func__, ret);
 				break;
 			}
@@ -314,7 +314,7 @@ static int pd_get_cap(struct adapter_device *dev,
 				tacap->pdp = cap_ext.source_pdp;
 			else {
 				tacap->pdp = 0;
-				pr_notice("[%s] tcpm_dpm_pd_get_source_cap_ext failed(%d)\n",
+				pr_debug("[%s] tcpm_dpm_pd_get_source_cap_ext failed(%d)\n",
 					__func__, ret);
 			}
 
@@ -330,26 +330,26 @@ static int pd_get_cap(struct adapter_device *dev,
 			tacap->type[idx] = MTK_PD_APDO;
 
 			idx++;
-			pr_notice("pps_boundary[%d], %d mv ~ %d mv, %d ma pl:%d\n",
+			pr_debug("pps_boundary[%d], %d mv ~ %d mv, %d ma pl:%d\n",
 				cap_i,
 				apdo_cap.min_mv, apdo_cap.max_mv,
 				apdo_cap.ma, apdo_cap.pwr_limit);
 			if (idx >= ADAPTER_CAP_MAX_NR) {
-				pr_notice("CAP NR > %d\n", ADAPTER_CAP_MAX_NR);
+				pr_debug("CAP NR > %d\n", ADAPTER_CAP_MAX_NR);
 				break;
 			}
 		}
 		tacap->nr = idx;
 
 		for (i = 0; i < tacap->nr; i++) {
-			pr_notice("pps_cap[%d:%d], %d mv ~ %d mv, %d ma pl:%d pdp:%d\n",
+			pr_debug("pps_cap[%d:%d], %d mv ~ %d mv, %d ma pl:%d pdp:%d\n",
 				i, (int)tacap->nr, tacap->min_mv[i],
 				tacap->max_mv[i], tacap->ma[i],
 				tacap->pwr_limit[i], tacap->pdp);
 		}
 
 		if (cap_i == 0)
-			pr_notice("no APDO for pps\n");
+			pr_debug("no APDO for pps\n");
 
 	} else if (type == MTK_PD) {
 		pd_cap.nr = 0;
@@ -359,11 +359,11 @@ static int pd_get_cap(struct adapter_device *dev,
 		if (pd_cap.nr != 0) {
 
 			tacap->selected_cap_idx = pd_cap.selected_cap_idx - 1;
-			pr_notice("[%s] nr:%d idx:%d\n",
+			pr_debug("[%s] nr:%d idx:%d\n",
 			__func__, pd_cap.nr, pd_cap.selected_cap_idx - 1);
 
 			j = 0;
-			pr_notice("adapter cap: nr:%d\n", pd_cap.nr);
+			pr_debug("adapter cap: nr:%d\n", pd_cap.nr);
 			for (i = 0; i < pd_cap.nr; i++) {
 				if (pd_cap.type[i] == 0 &&
 					j >= 0 &&
@@ -379,16 +379,16 @@ static int pd_get_cap(struct adapter_device *dev,
 					j++;
 				}
 
-				pr_notice("[%s]:%d mv:[%d,%d] mA:%d type:%d %d\n",
+				pr_debug("[%s]:%d mv:[%d,%d] mA:%d type:%d %d\n",
 					__func__, i, pd_cap.min_mv[i],
 					pd_cap.max_mv[i], pd_cap.ma[i],
 					pd_cap.type[i], pd_cap.type[i]);
 			}
 
 			tacap->nr = j;
-			pr_notice("pd cap: nr:%d\n", tacap->nr);
+			pr_debug("pd cap: nr:%d\n", tacap->nr);
 			for (i = 0; i < tacap->nr; i++) {
-				pr_notice("[%s]:%d mv:[%d,%d] mA:%d max:%d min:%d type:%d %d\n",
+				pr_debug("[%s]:%d mv:[%d,%d] mA:%d max:%d min:%d type:%d %d\n",
 					__func__, i, tacap->min_mv[i],
 					tacap->max_mv[i], tacap->ma[i],
 					tacap->maxwatt[i], tacap->minwatt[i],
@@ -413,16 +413,16 @@ static int adapter_parse_dt(struct mtk_pd_adapter_info *info,
 {
 	struct device_node *np = dev->of_node;
 
-	pr_notice("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 
 	if (!np) {
-		pr_notice("%s: no device node\n", __func__);
+		pr_debug("%s: no device node\n", __func__);
 		return -EINVAL;
 	}
 
 	if (of_property_read_string(np, "adapter_name",
 		&info->adapter_dev_name) < 0)
-		pr_notice("%s: no adapter name\n", __func__);
+		pr_debug("%s: no adapter name\n", __func__);
 
 	return 0;
 }
@@ -433,7 +433,7 @@ static int mtk_pd_adapter_probe(struct platform_device *pdev)
 	struct mtk_pd_adapter_info *info = NULL;
 	static bool is_deferred;
 
-	pr_notice("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 
 	info = devm_kzalloc(&pdev->dev, sizeof(struct mtk_pd_adapter_info),
 			GFP_KERNEL);
@@ -454,11 +454,11 @@ static int mtk_pd_adapter_probe(struct platform_device *pdev)
 	info->tcpc = tcpc_dev_get_by_name("type_c_port0");
 	if (info->tcpc == NULL) {
 		if (is_deferred == false) {
-			pr_info("%s: tcpc device not ready, defer\n", __func__);
+			pr_debug("%s: tcpc device not ready, defer\n", __func__);
 			is_deferred = true;
 			ret = -EPROBE_DEFER;
 		} else {
-			pr_info("%s: failed to get tcpc device\n", __func__);
+			pr_debug("%s: failed to get tcpc device\n", __func__);
 			ret = -EINVAL;
 		}
 		goto err_get_tcpc_dev;
@@ -468,7 +468,7 @@ static int mtk_pd_adapter_probe(struct platform_device *pdev)
 	ret = register_tcp_dev_notifier(info->tcpc, &info->pd_nb,
 				TCP_NOTIFY_TYPE_USB | TCP_NOTIFY_TYPE_MISC);
 	if (ret < 0) {
-		pr_info("%s: register tcpc notifer fail\n", __func__);
+		pr_debug("%s: register tcpc notifer fail\n", __func__);
 		ret = -EINVAL;
 		goto err_get_tcpc_dev;
 	}

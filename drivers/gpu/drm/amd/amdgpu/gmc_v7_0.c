@@ -1017,12 +1017,12 @@ static int gmc_v7_0_sw_init(void *handle)
 	if (r) {
 		adev->need_dma32 = true;
 		dma_bits = 32;
-		pr_warn("amdgpu: No suitable DMA available\n");
+		pr_debug("amdgpu: No suitable DMA available\n");
 	}
 	r = pci_set_consistent_dma_mask(adev->pdev, DMA_BIT_MASK(dma_bits));
 	if (r) {
 		pci_set_consistent_dma_mask(adev->pdev, DMA_BIT_MASK(32));
-		pr_warn("amdgpu: No coherent DMA available\n");
+		pr_debug("amdgpu: No coherent DMA available\n");
 	}
 	adev->need_swiotlb = drm_get_max_iomem() > ((u64)1 << dma_bits);
 
@@ -1207,7 +1207,7 @@ static int gmc_v7_0_soft_reset(void *handle)
 
 		tmp = RREG32(mmSRBM_SOFT_RESET);
 		tmp |= srbm_soft_reset;
-		dev_info(adev->dev, "SRBM_SOFT_RESET=0x%08X\n", tmp);
+		dev_dbg(adev->dev, "SRBM_SOFT_RESET=0x%08X\n", tmp);
 		WREG32(mmSRBM_SOFT_RESET, tmp);
 		tmp = RREG32(mmSRBM_SOFT_RESET);
 

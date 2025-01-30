@@ -2724,16 +2724,16 @@ static void hclge_do_reset(struct hclge_dev *hdev)
 		val = hclge_read_dev(&hdev->hw, HCLGE_GLOBAL_RESET_REG);
 		hnae3_set_bit(val, HCLGE_GLOBAL_RESET_BIT, 1);
 		hclge_write_dev(&hdev->hw, HCLGE_GLOBAL_RESET_REG, val);
-		dev_info(&pdev->dev, "Global Reset requested\n");
+		dev_dbg(&pdev->dev, "Global Reset requested\n");
 		break;
 	case HNAE3_CORE_RESET:
 		val = hclge_read_dev(&hdev->hw, HCLGE_GLOBAL_RESET_REG);
 		hnae3_set_bit(val, HCLGE_CORE_RESET_BIT, 1);
 		hclge_write_dev(&hdev->hw, HCLGE_GLOBAL_RESET_REG, val);
-		dev_info(&pdev->dev, "Core Reset requested\n");
+		dev_dbg(&pdev->dev, "Core Reset requested\n");
 		break;
 	case HNAE3_FUNC_RESET:
-		dev_info(&pdev->dev, "PF Reset requested\n");
+		dev_dbg(&pdev->dev, "PF Reset requested\n");
 		hclge_func_reset_cmd(hdev, 0);
 		/* schedule again to check later */
 		set_bit(HNAE3_FUNC_RESET, &hdev->reset_pending);
@@ -2843,7 +2843,7 @@ static void hclge_reset_event(struct hnae3_handle *handle)
 	else if (time_after(jiffies, (handle->last_reset_time + 4 * 5 * HZ)))
 		handle->reset_level = HNAE3_FUNC_RESET;
 
-	dev_info(&hdev->pdev->dev, "received reset event , reset type is %d",
+	dev_dbg(&hdev->pdev->dev, "received reset event , reset type is %d",
 		 handle->reset_level);
 
 	/* request reset & schedule reset task */
@@ -5365,13 +5365,13 @@ static int hclge_set_pauseparam(struct hnae3_handle *handle, u32 auto_neg,
 
 	fc_autoneg = hclge_get_autoneg(handle);
 	if (auto_neg != fc_autoneg) {
-		dev_info(&hdev->pdev->dev,
+		dev_dbg(&hdev->pdev->dev,
 			 "To change autoneg please use: ethtool -s <dev> autoneg <on|off>\n");
 		return -EOPNOTSUPP;
 	}
 
 	if (hdev->tm_info.fc_mode == HCLGE_FC_PFC) {
-		dev_info(&hdev->pdev->dev,
+		dev_dbg(&hdev->pdev->dev,
 			 "Priority flow control enabled. Cannot set link flow control.\n");
 		return -EOPNOTSUPP;
 	}
@@ -5811,7 +5811,7 @@ static int hclge_init_ae_dev(struct hnae3_ae_dev *ae_dev)
 
 	hclge_state_init(hdev);
 
-	pr_info("%s driver initialization finished.\n", HCLGE_DRIVER_NAME);
+	pr_debug("%s driver initialization finished.\n", HCLGE_DRIVER_NAME);
 	return 0;
 
 err_mdiobus_unreg:
@@ -5903,7 +5903,7 @@ static int hclge_reset_ae_dev(struct hnae3_ae_dev *ae_dev)
 		return ret;
 	}
 
-	dev_info(&pdev->dev, "Reset done, %s driver initialization finished.\n",
+	dev_dbg(&pdev->dev, "Reset done, %s driver initialization finished.\n",
 		 HCLGE_DRIVER_NAME);
 
 	return 0;
@@ -6051,7 +6051,7 @@ static int hclge_set_channels(struct hnae3_handle *handle, u32 new_tqps_num)
 	kfree(rss_indir);
 
 	if (!ret)
-		dev_info(&hdev->pdev->dev,
+		dev_dbg(&hdev->pdev->dev,
 			 "Channels changed, rss_size from %d to %d, tqps from %d to %d",
 			 cur_rss_size, kinfo->rss_size,
 			 cur_tqps, kinfo->rss_size * kinfo->num_tc);
@@ -6378,7 +6378,7 @@ static struct hnae3_ae_algo ae_algo = {
 
 static int hclge_init(void)
 {
-	pr_info("%s is initializing\n", HCLGE_NAME);
+	pr_debug("%s is initializing\n", HCLGE_NAME);
 
 	hnae3_register_ae_algo(&ae_algo);
 

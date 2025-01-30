@@ -519,7 +519,7 @@ struct msm_kms *mdp4_kms_init(struct drm_device *dev)
 		if (ret)
 			goto fail;
 	} else {
-		dev_info(dev->dev, "no iommu, fallback to phys "
+		dev_dbg(dev->dev, "no iommu, fallback to phys "
 				"contig buffers for scanout\n");
 		aspace = NULL;
 	}

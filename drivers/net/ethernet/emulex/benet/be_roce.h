@@ -32,7 +32,7 @@ enum be_interrupt_mode {
 };
 
 #define MAX_MSIX_VECTORS		32
-struct be_dev_info {
+struct be_dev_dbg {
 	u8 __iomem *db;
 	u64 unmapped_db;
 	u32 db_page_size;
@@ -55,7 +55,7 @@ struct be_dev_info {
 struct ocrdma_driver {
 	unsigned char name[32];
 	u32 be_abi_version;
-	struct ocrdma_dev *(*add) (struct be_dev_info *dev_info);
+	struct ocrdma_dev *(*add) (struct be_dev_dbg *dev_dbg);
 	void (*remove) (struct ocrdma_dev *);
 	void (*state_change_handler) (struct ocrdma_dev *, u32 new_state);
 };

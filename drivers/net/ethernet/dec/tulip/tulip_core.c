@@ -388,7 +388,7 @@ static void tulip_up(struct net_device *dev)
 			(dev->if_port == 12 ? 0 : dev->if_port);
 		for (i = 0; i < tp->mtable->leafcount; i++)
 			if (tp->mtable->mleaf[i].media == looking_for) {
-				dev_info(&dev->dev,
+				dev_dbg(&dev->dev,
 					 "Using user-specified media %s\n",
 					 medianame[dev->if_port]);
 				goto media_picked;
@@ -398,7 +398,7 @@ static void tulip_up(struct net_device *dev)
 		int looking_for = tp->mtable->defaultmedia & MEDIA_MASK;
 		for (i = 0; i < tp->mtable->leafcount; i++)
 			if (tp->mtable->mleaf[i].media == looking_for) {
-				dev_info(&dev->dev,
+				dev_dbg(&dev->dev,
 					 "Using EEPROM-set media %s\n",
 					 medianame[looking_for]);
 				goto media_picked;
@@ -427,7 +427,7 @@ media_picked:
 		if (tp->mii_cnt) {
 			tulip_select_media(dev, 1);
 			if (tulip_debug > 1)
-				dev_info(&dev->dev,
+				dev_dbg(&dev->dev,
 					 "Using MII transceiver %d, status %04x\n",
 					 tp->phys[0],
 					 tulip_mdio_read(dev, tp->phys[0], 1));
@@ -1099,7 +1099,7 @@ static void set_rx_mode(struct net_device *dev)
 				filterbit &= 0x3f;
 				mc_filter[filterbit >> 5] |= 1 << (filterbit & 31);
 				if (tulip_debug > 2)
-					dev_info(&dev->dev,
+					dev_dbg(&dev->dev,
 						 "Added filter for %pM  %08x bit %d\n",
 						 ha->addr,
 						 ether_crc(ETH_ALEN, ha->addr),
@@ -1349,13 +1349,13 @@ static int tulip_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 		if (pdev->vendor == 0x1282 && pdev->device == 0x9100 &&
 		    pdev->revision < 0x30) {
-			pr_info("skipping early DM9100 with Crc bug (use dmfe)\n");
+			pr_debug("skipping early DM9100 with Crc bug (use dmfe)\n");
 			return -ENODEV;
 		}
 
 		dp = pci_device_to_OF_node(pdev);
 		if (!(dp && of_get_property(dp, "local-mac-address", NULL))) {
-			pr_info("skipping DM910x expansion card (use dmfe)\n");
+			pr_debug("skipping DM910x expansion card (use dmfe)\n");
 			return -ENODEV;
 		}
 	}
@@ -1460,7 +1460,7 @@ static int tulip_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		if (sig == 0x09811317) {
 			tp->flags |= COMET_PM;
 			tp->wolinfo.supported = WAKE_PHY | WAKE_MAGIC;
-			pr_info("%s: Enabled WOL support for AN983B\n",
+			pr_debug("%s: Enabled WOL support for AN983B\n",
 				__func__);
 		}
 	}
@@ -1645,7 +1645,7 @@ static int tulip_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (dev->mem_start & MEDIA_MASK)
 		tp->default_port = dev->mem_start & MEDIA_MASK;
 	if (tp->default_port) {
-		pr_info(DRV_NAME "%d: Transceiver selection forced to %s\n",
+		pr_debug(DRV_NAME "%d: Transceiver selection forced to %s\n",
 			board_idx, medianame[tp->default_port & MEDIA_MASK]);
 		tp->medialock = 1;
 		if (tulip_media_cap[tp->default_port] & MediaAlwaysFD)
@@ -1701,7 +1701,7 @@ static int tulip_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	pci_set_drvdata(pdev, dev);
 
-	dev_info(&dev->dev,
+	dev_dbg(&dev->dev,
 #ifdef CONFIG_TULIP_MMIO
 		 "%s rev %d at MMIO %#llx,%s %pM, IRQ %d\n",
 #else
@@ -1970,11 +1970,11 @@ static struct pci_driver tulip_driver = {
 static int __init tulip_init (void)
 {
 #ifdef MODULE
-	pr_info("%s", version);
+	pr_debug("%s", version);
 #endif
 
 	if (!csr0) {
-		pr_warn("tulip: unknown CPU architecture, using default csr0\n");
+		pr_debug("tulip: unknown CPU architecture, using default csr0\n");
 		/* default to 8 longword cache line alignment */
 		csr0 = 0x00A00000 | 0x4800;
 	}

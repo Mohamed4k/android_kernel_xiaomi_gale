@@ -3011,7 +3011,7 @@ static int ixgbevf_sw_init(struct ixgbevf_adapter *adapter)
 
 	err = hw->mac.ops.reset_hw(hw);
 	if (err) {
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "PF still in reset state.  Is the PF interface up?\n");
 	} else {
 		err = hw->mac.ops.init_hw(hw);
@@ -3022,15 +3022,15 @@ static int ixgbevf_sw_init(struct ixgbevf_adapter *adapter)
 		ixgbevf_negotiate_api(adapter);
 		err = hw->mac.ops.get_mac_addr(hw, hw->mac.addr);
 		if (err)
-			dev_info(&pdev->dev, "Error reading MAC address\n");
+			dev_dbg(&pdev->dev, "Error reading MAC address\n");
 		else if (is_zero_ether_addr(adapter->hw.mac.addr))
-			dev_info(&pdev->dev,
+			dev_dbg(&pdev->dev,
 				 "MAC address not assigned by administrator.\n");
 		ether_addr_copy(netdev->dev_addr, hw->mac.addr);
 	}
 
 	if (!is_valid_ether_addr(netdev->dev_addr)) {
-		dev_info(&pdev->dev, "Assigning random MAC address\n");
+		dev_dbg(&pdev->dev, "Assigning random MAC address\n");
 		eth_hw_addr_random(netdev);
 		ether_addr_copy(hw->mac.addr, netdev->dev_addr);
 		ether_addr_copy(hw->mac.perm_addr, netdev->dev_addr);
@@ -3231,7 +3231,7 @@ static void ixgbevf_watchdog_link_is_up(struct ixgbevf_adapter *adapter)
 	if (netif_carrier_ok(netdev))
 		return;
 
-	dev_info(&adapter->pdev->dev, "NIC Link is Up %s\n",
+	dev_dbg(&adapter->pdev->dev, "NIC Link is Up %s\n",
 		 (adapter->link_speed == IXGBE_LINK_SPEED_10GB_FULL) ?
 		 "10 Gbps" :
 		 (adapter->link_speed == IXGBE_LINK_SPEED_1GB_FULL) ?
@@ -3258,7 +3258,7 @@ static void ixgbevf_watchdog_link_is_down(struct ixgbevf_adapter *adapter)
 	if (!netif_carrier_ok(netdev))
 		return;
 
-	dev_info(&adapter->pdev->dev, "NIC Link is Down\n");
+	dev_dbg(&adapter->pdev->dev, "NIC Link is Down\n");
 
 	netif_carrier_off(netdev);
 }
@@ -4651,19 +4651,19 @@ static int ixgbevf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	ixgbevf_init_last_counter_stats(adapter);
 
 	/* print the VF info */
-	dev_info(&pdev->dev, "%pM\n", netdev->dev_addr);
-	dev_info(&pdev->dev, "MAC: %d\n", hw->mac.type);
+	dev_dbg(&pdev->dev, "%pM\n", netdev->dev_addr);
+	dev_dbg(&pdev->dev, "MAC: %d\n", hw->mac.type);
 
 	switch (hw->mac.type) {
 	case ixgbe_mac_X550_vf:
-		dev_info(&pdev->dev, "Intel(R) X550 Virtual Function\n");
+		dev_dbg(&pdev->dev, "Intel(R) X550 Virtual Function\n");
 		break;
 	case ixgbe_mac_X540_vf:
-		dev_info(&pdev->dev, "Intel(R) X540 Virtual Function\n");
+		dev_dbg(&pdev->dev, "Intel(R) X540 Virtual Function\n");
 		break;
 	case ixgbe_mac_82599_vf:
 	default:
-		dev_info(&pdev->dev, "Intel(R) 82599 Virtual Function\n");
+		dev_dbg(&pdev->dev, "Intel(R) 82599 Virtual Function\n");
 		break;
 	}
 
@@ -4842,10 +4842,10 @@ static struct pci_driver ixgbevf_driver = {
  **/
 static int __init ixgbevf_init_module(void)
 {
-	pr_info("%s - version %s\n", ixgbevf_driver_string,
+	pr_debug("%s - version %s\n", ixgbevf_driver_string,
 		ixgbevf_driver_version);
 
-	pr_info("%s\n", ixgbevf_copyright);
+	pr_debug("%s\n", ixgbevf_copyright);
 	ixgbevf_wq = create_singlethread_workqueue(ixgbevf_driver_name);
 	if (!ixgbevf_wq) {
 		pr_err("%s: Failed to create workqueue\n", ixgbevf_driver_name);

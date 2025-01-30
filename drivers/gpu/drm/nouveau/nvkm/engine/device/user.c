@@ -53,7 +53,7 @@ nvkm_udevice_info_subdev(struct nvkm_device *device, u64 mthd, u64 *data)
 
 	subdev = nvkm_device_subdev(device, subidx);
 	if (subdev)
-		return nvkm_subdev_info(subdev, mthd, data);
+		return nvkm_subdev_dbg(subdev, mthd, data);
 	return -ENODEV;
 }
 

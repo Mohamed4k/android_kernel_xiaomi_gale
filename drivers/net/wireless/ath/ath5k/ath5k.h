@@ -78,7 +78,7 @@
 \****************************/
 
 #define ATH5K_PRINTF(fmt, ...)						\
-	pr_warn("%s: " fmt, __func__, ##__VA_ARGS__)
+	pr_debug("%s: " fmt, __func__, ##__VA_ARGS__)
 
 void __printf(3, 4)
 _ath5k_printk(const struct ath5k_hw *ah, const char *level,

@@ -227,7 +227,7 @@ static int npcm_wdt_probe(struct platform_device *pdev)
 		return ret;
 	}
 
-	dev_info(dev, "NPCM watchdog driver enabled\n");
+	dev_dbg(dev, "NPCM watchdog driver enabled\n");
 
 	return 0;
 }

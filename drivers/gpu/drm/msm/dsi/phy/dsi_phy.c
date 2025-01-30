@@ -617,7 +617,7 @@ static int dsi_phy_driver_probe(struct platform_device *pdev)
 
 	phy->pll = msm_dsi_pll_init(pdev, phy->cfg->type, phy->id);
 	if (IS_ERR_OR_NULL(phy->pll))
-		dev_info(dev,
+		dev_dbg(dev,
 			"%s: pll init failed: %ld, need separate pll clk driver\n",
 			__func__, PTR_ERR(phy->pll));
 

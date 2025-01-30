@@ -1379,7 +1379,7 @@ static void __init _samsung_clk_register_pll(struct samsung_clk_provider *ctx,
 			init.ops = &samsung_pll2650xx_clk_ops;
 		break;
 	default:
-		pr_warn("%s: Unknown pll type for pll clk %s\n",
+		pr_debug("%s: Unknown pll type for pll clk %s\n",
 			__func__, pll_clk->name);
 	}
 

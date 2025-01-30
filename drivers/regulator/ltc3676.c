@@ -343,7 +343,7 @@ static irqreturn_t ltc3676_isr(int irq, void *dev_id)
 	}
 
 	if (irqstat & LTC3676_IRQSTAT_UNDERVOLT_WARN) {
-		dev_info(dev, "Undervoltage Warning\n");
+		dev_dbg(dev, "Undervoltage Warning\n");
 		event = REGULATOR_EVENT_UNDER_VOLTAGE;
 		for (i = 0; i < LTC3676_NUM_REGULATORS; i++)
 			regulator_notifier_call_chain(ltc3676->regulators[i],

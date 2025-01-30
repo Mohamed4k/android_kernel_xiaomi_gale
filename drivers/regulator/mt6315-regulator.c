@@ -178,7 +178,7 @@ static irqreturn_t mt6315_irq_handler(int irq, void *data)
 		if ((int_status & BIT(hwirq)) == 0)
 			continue;
 		virq = irq_find_mapping(chip->irq_domain, hwirq);
-		dev_info(chip->dev,
+		dev_dbg(chip->dev,
 			"Reg[0x%x]=0x%x,hwirq=%d,type=%d\n",
 			irq_data->sta_reg, int_status, hwirq,
 			irq_get_trigger_type(virq));
@@ -569,7 +569,7 @@ static ssize_t extbuck_access_show(struct device *dev,
 {
 	struct mt6315_chip *chip = dev_get_drvdata(dev);
 
-	pr_info("[%s] 0x%x\n", __func__, chip->reg_value);
+	pr_debug("[%s] 0x%x\n", __func__, chip->reg_value);
 
 	return sprintf(buf, "0x%x\n", chip->reg_value);
 }
@@ -594,7 +594,7 @@ static ssize_t extbuck_access_store(struct device *dev,
 		return -ENODEV;
 
 	if (buf != NULL && size != 0) {
-		pr_info("[%s] size is %d, buf is %s\n", __func__,
+		pr_debug("[%s] size is %d, buf is %s\n", __func__,
 			(int)size, buf);
 
 		pvalue = (char *)buf;
@@ -605,7 +605,7 @@ static ssize_t extbuck_access_store(struct device *dev,
 			ret = kstrtou32(addr, 16, (unsigned int *)&reg_adr);
 		if (val) {
 			ret = kstrtou32(val, 16, (unsigned int *)&reg_val);
-			pr_info("write MT6315_S%d Reg[0x%x] to 0x%x!\n",
+			pr_debug("write MT6315_S%d Reg[0x%x] to 0x%x!\n",
 				sid, reg_adr, reg_val);
 			ret = regmap_write(chip->regmap, reg_adr, reg_val);
 		} else {
@@ -613,7 +613,7 @@ static ssize_t extbuck_access_store(struct device *dev,
 			ret = regmap_read(chip->regmap,
 					  reg_adr, &chip->reg_value);
 			mutex_unlock(&chip->lock);
-			pr_info("read MT6315_S%d Reg[0x%x]=0x%x!\n",
+			pr_debug("read MT6315_S%d Reg[0x%x]=0x%x!\n",
 				sid, reg_adr, chip->reg_value);
 		}
 	}
@@ -656,7 +656,7 @@ static ssize_t dump_rec_pmic_show(struct device *dev,
 				    sid, (rdata3 & 0x3),
 				    (rdata1 << 0x8) | rdata0, rdata2);
 	}
-	pr_info("\n[SPMISLV] %s", buf);
+	pr_debug("\n[SPMISLV] %s", buf);
 
 	return log_size;
 }
@@ -707,7 +707,7 @@ static int mt6315_regulator_probe(struct platform_device *pdev)
 		dev_notice(&pdev->dev, "Failed to read Chip ID\n");
 		return -EIO;
 	}
-	dev_info(&pdev->dev, "Chip ID = 0x%x\n", reg_value);
+	dev_dbg(&pdev->dev, "Chip ID = 0x%x\n", reg_value);
 
 	for (i = 0; i < regulator_init_data->size; i++) {
 		config.dev = &pdev->dev;
@@ -749,7 +749,7 @@ static void mt6315_regulator_shutdown(struct platform_device *pdev)
 	struct regmap *regmap;
 	int ret = 0;
 
-	dev_info(&pdev->dev, "%s\n", __func__);
+	dev_dbg(&pdev->dev, "%s\n", __func__);
 	regmap = dev_get_regmap(dev->parent, NULL);
 	if (!regmap) {
 		dev_notice(&pdev->dev, "%s: invalid regmap.\n", __func__);

@@ -164,7 +164,7 @@ static int __init stnic_probe(void)
   }
   stnic_dev = dev;
 
-  netdev_info(dev, "NS ST-NIC 83902A\n");
+  netdev_dbg(dev, "NS ST-NIC 83902A\n");
 
   return 0;
 }

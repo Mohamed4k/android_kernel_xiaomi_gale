@@ -155,7 +155,7 @@ static int bcm7038_wdt_probe(struct platform_device *pdev)
 		return err;
 	}
 
-	dev_info(dev, "Registered BCM7038 Watchdog\n");
+	dev_dbg(dev, "Registered BCM7038 Watchdog\n");
 
 	return 0;
 }

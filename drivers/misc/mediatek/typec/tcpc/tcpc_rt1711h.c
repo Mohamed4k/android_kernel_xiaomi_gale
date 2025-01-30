@@ -592,7 +592,7 @@ static int rt1711_init_alert(struct tcpc_device *tcpc)
 
 	snprintf(name, PAGE_SIZE, "%s-IRQ", chip->tcpc_desc->name);
 
-	pr_info("%s name = %s, gpio = %d\n", __func__,
+	pr_debug("%s name = %s, gpio = %d\n", __func__,
 				chip->tcpc_desc->name, chip->irq_gpio);
 
 	ret = devm_gpio_request(chip->dev, chip->irq_gpio, name);
@@ -620,7 +620,7 @@ static int rt1711_init_alert(struct tcpc_device *tcpc)
 		goto init_alert_err;
 	}
 
-	pr_info("%s : IRQ number = %d\n", __func__, chip->irq);
+	pr_debug("%s : IRQ number = %d\n", __func__, chip->irq);
 
 	kthread_init_worker(&chip->irq_worker);
 	chip->irq_worker_task = kthread_run(kthread_worker_fn,
@@ -633,7 +633,7 @@ static int rt1711_init_alert(struct tcpc_device *tcpc)
 	sched_setscheduler(chip->irq_worker_task, SCHED_FIFO, &param);
 	kthread_init_work(&chip->irq_work, rt1711_irq_work_handler);
 
-	pr_info("IRQF_NO_THREAD Test\n");
+	pr_debug("IRQF_NO_THREAD Test\n");
 	ret = request_irq(chip->irq, rt1711_intr_handler,
 		IRQF_TRIGGER_FALLING | IRQF_NO_THREAD, name, chip);
 	if (ret < 0) {
@@ -1115,7 +1115,7 @@ static int rt1711_set_vconn(struct tcpc_device *tcpc, int enable)
 	data |= enable ? TCPC_V10_REG_POWER_CTRL_VCONN : 0;
 	if ((chip->chip_id == HUSB311_DID) && (chip->husb311_version == HUSB311_B)) {
 		data &= ~TCPC_V10_REG_POWER_CTRL_VCONN;
-		pr_info("%s - write 0x%x to HUSB311_POWER_CTRL_VCONNL, off vconn\n",
+		pr_debug("%s - write 0x%x to HUSB311_POWER_CTRL_VCONNL, off vconn\n",
 				__func__, data);
 	}
 
@@ -1138,7 +1138,7 @@ static int rt1711_is_low_power_mode(struct tcpc_device *tcpc)
 		return rv;
 
 	if (chip->chip_id == HUSB311_DID) {
-		pr_info("%s - read 0x90=0x%x\n", __func__, rv);
+		pr_debug("%s - read 0x90=0x%x\n", __func__, rv);
 		return ((rv & RT1711H_REG_BMCIO_OSC_EN) == 0);
 	}
 
@@ -1170,7 +1170,7 @@ static int rt1711_set_low_power_mode(
 #endif
 		if (chip->chip_id == HUSB311_DID) {
 			data &= ~RT1711H_REG_BMCIO_OSC_EN;
-			pr_info("%s - write HUSB311_REG_BMC_CTRL=0x%x\n",
+			pr_debug("%s - write HUSB311_REG_BMC_CTRL=0x%x\n",
 				__func__, data);
 		}
 	} else {
@@ -1178,7 +1178,7 @@ static int rt1711_set_low_power_mode(
 			RT1711H_REG_VBUS_DET_EN | RT1711H_REG_BMCIO_OSC_EN;
 		if (chip->chip_id == HUSB311_DID) {
 			data |= RT1711H_REG_BMCIO_OSC_EN;
-			pr_info("%s - write HUSB311_REG_BMC_CTRL=0x%x\n",
+			pr_debug("%s - write HUSB311_REG_BMC_CTRL=0x%x\n",
 				__func__, data);
 		}
 	}
@@ -1440,11 +1440,11 @@ static int rt_parse_dt(struct rt1711_chip *chip, struct device *dev)
 	struct device_node *np = NULL;
 	int ret = 0;
 
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 
 	np = of_find_node_by_name(NULL, "rt1711_type_c_port0");
 	if (!np) {
-		pr_notice("%s find node rt1711_type_c_port0 fail\n", __func__);
+		pr_debug("%s find node rt1711_type_c_port0 fail\n", __func__);
 		return -ENODEV;
 	}
 	dev->of_node = np;
@@ -1466,7 +1466,7 @@ static int rt_parse_dt(struct rt1711_chip *chip, struct device *dev)
 }
 
 /*
- * In some platform pr_info may spend too much time on printing debug message.
+ * In some platform pr_debug may spend too much time on printing debug message.
  * So we use this function to test the printk performance.
  * If your platform cannot not pass this check function, please config
  * PD_DBG_INFO, this will provide the threaded debug message for you.
@@ -1490,21 +1490,21 @@ static void check_printk_performance(void)
 	}
 	for (i = 0; i < 10; i++) {
 		t1 = local_clock();
-		pr_info("%d\n", i);
+		pr_debug("%d\n", i);
 		t2 = local_clock();
 		t2 -= t1;
 		nsrem = do_div(t2, 1000000000);
-		pr_info("pr_info : t2-t1 = %lu\n",
+		pr_debug("pr_debug : t2-t1 = %lu\n",
 				(unsigned long)nsrem / 1000);
 	}
 #else
 	for (i = 0; i < 10; i++) {
 		t1 = local_clock();
-		pr_info("%d\n", i);
+		pr_debug("%d\n", i);
 		t2 = local_clock();
 		t2 -= t1;
 		nsrem = do_div(t2, 1000000000);
-		pr_info("t2-t1 = %lu\n",
+		pr_debug("t2-t1 = %lu\n",
 				(unsigned long)nsrem /  1000);
 		PD_BUG_ON(nsrem > 100*1000);
 	}
@@ -1519,7 +1519,7 @@ static int rt1711_tcpcdev_init(struct rt1711_chip *chip, struct device *dev)
 	u32 val, len;
 	const char *name = "default";
 
-	dev_info(dev, "%s\n", __func__);
+	dev_dbg(dev, "%s\n", __func__);
 
 	desc = devm_kzalloc(dev, sizeof(*desc), GFP_KERNEL);
 	if (!desc)
@@ -1530,7 +1530,7 @@ static int rt1711_tcpcdev_init(struct rt1711_chip *chip, struct device *dev)
 		else
 			desc->role_def = val;
 	} else {
-		dev_info(dev, "use default Role DRP\n");
+		dev_dbg(dev, "use default Role DRP\n");
 		desc->role_def = TYPEC_ROLE_DRP;
 	}
 
@@ -1562,14 +1562,14 @@ static int rt1711_tcpcdev_init(struct rt1711_chip *chip, struct device *dev)
 		else
 			desc->vconn_supply = val;
 	} else {
-		dev_info(dev, "use default VconnSupply\n");
+		dev_dbg(dev, "use default VconnSupply\n");
 		desc->vconn_supply = TCPC_VCONN_SUPPLY_ALWAYS;
 	}
 #endif	/* CONFIG_TCPC_VCONN_SUPPLY_MODE */
 
 	if (of_property_read_string(np, "rt-tcpc,name",
 				(char const **)&name) < 0) {
-		dev_info(dev, "use default name\n");
+		dev_dbg(dev, "use default name\n");
 	}
 
 	len = strlen(name);
@@ -1607,9 +1607,9 @@ static int rt1711_tcpcdev_init(struct rt1711_chip *chip, struct device *dev)
 		chip->tcpc->tcpc_flags |= TCPC_FLAGS_PD_REV30;
 
 	if (chip->tcpc->tcpc_flags & TCPC_FLAGS_PD_REV30)
-		dev_info(dev, "PD_REV30\n");
+		dev_dbg(dev, "PD_REV30\n");
 	else
-		dev_info(dev, "PD_REV20\n");
+		dev_dbg(dev, "PD_REV20\n");
 #endif	/* CONFIG_USB_PD_REV30 */
 	chip->tcpc->tcpc_flags |= TCPC_FLAGS_ALERT_V10;
 
@@ -1636,7 +1636,7 @@ static inline int rt1711h_check_revision(struct i2c_client *client)
 	}
 
 	if ((vid != RICHTEK_1711_VID) && (vid != SC2150A_VID) && (vid != HUSB311_VID)) {
-		pr_info("%s failed, VID=0x%04x\n", __func__, vid);
+		pr_debug("%s failed, VID=0x%04x\n", __func__, vid);
 		return -ENODEV;
 	}
 
@@ -1647,7 +1647,7 @@ static inline int rt1711h_check_revision(struct i2c_client *client)
 	}
 
 	if ((pid != RICHTEK_1711_PID) && (pid != SC2150A_PID) && (pid != HUSB311_PID)) {
-		pr_info("%s failed, PID=0x%04x\n", __func__, pid);
+		pr_debug("%s failed, PID=0x%04x\n", __func__, pid);
 		return -ENODEV;
 	}
 
@@ -1680,12 +1680,12 @@ static int rt1711_i2c_probe(struct i2c_client *client,
 	bool use_dt = client->dev.of_node;
 	u8 version;
 
-	pr_info("%s (%s)\n", __func__, RT1711H_DRV_VERSION);
+	pr_debug("%s (%s)\n", __func__, RT1711H_DRV_VERSION);
 	if (i2c_check_functionality(client->adapter,
 			I2C_FUNC_SMBUS_I2C_BLOCK | I2C_FUNC_SMBUS_BYTE_DATA))
-		pr_info("I2C functionality : OK...\n");
+		pr_debug("I2C functionality : OK...\n");
 	else
-		pr_info("I2C functionality check : failuare...\n");
+		pr_debug("I2C functionality check : failuare...\n");
 
 	chip_id = rt1711h_check_revision(client);
 	if (chip_id < 0)
@@ -1717,7 +1717,7 @@ static int rt1711_i2c_probe(struct i2c_client *client,
 		wakeup_source_register(chip->dev, "rt1711h_irq_wake_lock");
 
 	chip->chip_id = chip_id;
-	pr_info("rt1711h_chipID = 0x%0x\n", chip_id);
+	pr_debug("rt1711h_chipID = 0x%0x\n", chip_id);
 
 	if (chip_id == HUSB311_DID) {
 		ret = rt1711_read_device(client, HUSB311_REG_CF, 1, &version);
@@ -1727,10 +1727,10 @@ static int rt1711_i2c_probe(struct i2c_client *client,
 		}
 		if (version & BIT(7)) {
 			chip->husb311_version = HUSB311_B;
-			pr_info("%s:version=0x%x,311B\n", __func__, version);
+			pr_debug("%s:version=0x%x,311B\n", __func__, version);
 		} else {
 			chip->husb311_version = HUSB311_C;
-			pr_info("%s:version=0x%x,311C\n", __func__, version);
+			pr_debug("%s:version=0x%x,311C\n", __func__, version);
 		}
 	}
 
@@ -1753,7 +1753,7 @@ static int rt1711_i2c_probe(struct i2c_client *client,
 	}
 
 	tcpc_schedule_init_work(chip->tcpc);
-	pr_info("%s probe OK!\n", __func__);
+	pr_debug("%s probe OK!\n", __func__);
 	return 0;
 
 err_irq_init:
@@ -1884,12 +1884,12 @@ static int __init rt1711_init(void)
 {
 	struct device_node *np;
 
-	pr_info("%s (%s): initializing...\n", __func__, RT1711H_DRV_VERSION);
+	pr_debug("%s (%s): initializing...\n", __func__, RT1711H_DRV_VERSION);
 	np = of_find_node_by_name(NULL, "usb_type_c");
 	if (np != NULL)
-		pr_info("usb_type_c node found...\n");
+		pr_debug("usb_type_c node found...\n");
 	else
-		pr_info("usb_type_c node not found...\n");
+		pr_debug("usb_type_c node not found...\n");
 
 	return i2c_add_driver(&rt1711_driver);
 }

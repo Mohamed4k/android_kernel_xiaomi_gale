@@ -188,12 +188,12 @@ static int __init wd_probe1(struct net_device *dev, int ioaddr)
 	}
 
 	if ((wd_msg_enable & NETIF_MSG_DRV) && (version_printed++ == 0))
-		netdev_info(dev, version);
+		netdev_dbg(dev, version);
 
 	for (i = 0; i < 6; i++)
 		dev->dev_addr[i] = inb(ioaddr + 8 + i);
 
-	netdev_info(dev, "WD80x3 at %#3x, %pM", ioaddr, dev->dev_addr);
+	netdev_dbg(dev, "WD80x3 at %#3x, %pM", ioaddr, dev->dev_addr);
 
 	/* The following PureData probe code was contributed by
 	   Mike Jagdis <jaggy@purplet.demon.co.uk>. Puredata does software

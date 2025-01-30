@@ -361,7 +361,7 @@ static void axienet_set_multicast_list(struct net_device *ndev)
 		reg = axienet_ior(lp, XAE_FMI_OFFSET);
 		reg |= XAE_FMI_PM_MASK;
 		axienet_iow(lp, XAE_FMI_OFFSET, reg);
-		dev_info(&ndev->dev, "Promiscuous mode enabled.\n");
+		dev_dbg(&ndev->dev, "Promiscuous mode enabled.\n");
 	} else if (!netdev_mc_empty(ndev)) {
 		struct netdev_hw_addr *ha;
 
@@ -401,7 +401,7 @@ static void axienet_set_multicast_list(struct net_device *ndev)
 			axienet_iow(lp, XAE_AF1_OFFSET, 0);
 		}
 
-		dev_info(&ndev->dev, "Promiscuous mode disabled.\n");
+		dev_dbg(&ndev->dev, "Promiscuous mode disabled.\n");
 	}
 }
 

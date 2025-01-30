@@ -1790,7 +1790,7 @@ int qed_mcp_get_mfw_ver(struct qed_hwfn *p_hwfn,
 			struct pfvf_acquire_resp_tlv *p_resp;
 
 			p_resp = &p_hwfn->vf_iov_info->acquire_resp;
-			*p_mfw_ver = p_resp->pfdev_info.mfw_ver;
+			*p_mfw_ver = p_resp->pfdev_dbg.mfw_ver;
 			return 0;
 		} else {
 			DP_VERBOSE(p_hwfn,

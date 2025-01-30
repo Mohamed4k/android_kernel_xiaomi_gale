@@ -2089,7 +2089,7 @@ static int pwrap_write16(struct pmic_wrapper *wrp, u32 adr, u32 wdata)
 
 	if (adr == 0x20) {
 		dump_stack();
-		dev_info(wrp->dev, "%s pwrap_write adr:%d,wdata:%d\n",
+		dev_dbg(wrp->dev, "%s pwrap_write adr:%d,wdata:%d\n",
 			__func__, adr, wdata);
 	}
 	ret = pwrap_wait_for_state(wrp, pwrap_is_fsm_idle);

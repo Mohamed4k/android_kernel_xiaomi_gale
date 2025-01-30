@@ -807,7 +807,7 @@ msm_gpu_create_address_space(struct msm_gpu *gpu, struct platform_device *pdev,
 	iommu->geometry.aperture_start = va_start;
 	iommu->geometry.aperture_end = va_end;
 
-	dev_info(gpu->dev->dev, "%s: using IOMMU\n", gpu->name);
+	dev_dbg(gpu->dev->dev, "%s: using IOMMU\n", gpu->name);
 
 	aspace = msm_gem_address_space_create(&pdev->dev, iommu, "gpu");
 	if (IS_ERR(aspace)) {
@@ -902,7 +902,7 @@ int msm_gpu_init(struct drm_device *drm, struct platform_device *pdev,
 		config->va_start, config->va_end);
 
 	if (gpu->aspace == NULL)
-		dev_info(drm->dev, "%s: no IOMMU, fallback to VRAM carveout!\n", name);
+		dev_dbg(drm->dev, "%s: no IOMMU, fallback to VRAM carveout!\n", name);
 	else if (IS_ERR(gpu->aspace)) {
 		ret = PTR_ERR(gpu->aspace);
 		goto fail;

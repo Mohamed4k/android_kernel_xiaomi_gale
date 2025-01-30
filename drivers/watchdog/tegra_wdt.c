@@ -227,7 +227,7 @@ static int tegra_wdt_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, wdt);
 
-	dev_info(&pdev->dev,
+	dev_dbg(&pdev->dev,
 		 "initialized (heartbeat = %d sec, nowayout = %d)\n",
 		 heartbeat, nowayout);
 
@@ -240,7 +240,7 @@ static int tegra_wdt_remove(struct platform_device *pdev)
 
 	tegra_wdt_stop(&wdt->wdd);
 
-	dev_info(&pdev->dev, "removed wdt\n");
+	dev_dbg(&pdev->dev, "removed wdt\n");
 
 	return 0;
 }

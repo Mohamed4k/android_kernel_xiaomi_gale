@@ -121,7 +121,7 @@ static int realview_soc_probe(struct platform_device *pdev)
 	device_create_file(soc_device_to_device(soc_dev), &realview_arch_attr);
 	device_create_file(soc_device_to_device(soc_dev), &realview_build_attr);
 
-	dev_info(&pdev->dev, "RealView Syscon Core ID: 0x%08x, HBI-%03x\n",
+	dev_dbg(&pdev->dev, "RealView Syscon Core ID: 0x%08x, HBI-%03x\n",
 		 realview_coreid,
 		 ((realview_coreid >> 16) & 0xfff));
 	/* FIXME: add attributes for SoC to sysfs */

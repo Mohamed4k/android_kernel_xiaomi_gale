@@ -123,7 +123,7 @@ void charger_manager_set_system_temp_level(int temp_level)
 	if (pinfo->temp_level == 0)
 		thermal_current_limit = -1;
 
-	pr_info("%s: temp level = %d, thermal charge current limit = %d(ua)\n", __func__,
+	pr_debug("%s: temp level = %d, thermal charge current limit = %d(ua)\n", __func__,
 		pinfo->temp_level, thermal_current_limit);
 
 	pdata = &pinfo->chg1_data;
@@ -348,7 +348,7 @@ int charger_manager_enable_high_voltage_charging(
 	else if (en && consumer->hv_charging_disabled == true)
 		consumer->hv_charging_disabled = false;
 	else {
-		pr_info("[%s] already set: %d %d\n", __func__,
+		pr_debug("[%s] already set: %d %d\n", __func__,
 			consumer->hv_charging_disabled, en);
 		return 0;
 	}
@@ -365,7 +365,7 @@ int charger_manager_enable_high_voltage_charging(
 	}
 	mutex_unlock(&consumer_mutex);
 
-	pr_info("%s: user: %s, en = %d\n", __func__, dev_name(consumer->dev),
+	pr_debug("%s: user: %s, en = %d\n", __func__, dev_name(consumer->dev),
 		info->enable_hv_charging);
 
 	if (mtk_pe50_get_is_connect(info) && !info->enable_hv_charging)
@@ -415,7 +415,7 @@ int charger_manager_enable_power_path(struct charger_consumer *consumer,
 		goto out;
 	}
 
-	pr_info("%s: enable power path = %d\n", __func__, en);
+	pr_debug("%s: enable power path = %d\n", __func__, en);
 	ret = charger_dev_enable_powerpath(chg_dev, en);
 out:
 	mutex_unlock(&info->pp_lock[idx]);
@@ -457,7 +457,7 @@ out:
 
 int charger_manager_set_input_suspend(int suspend)
 {
-	pr_info("%s suspend: %d.\n", __func__, suspend);
+	pr_debug("%s suspend: %d.\n", __func__, suspend);
 
 	if (pinfo == NULL)
 		return false;
@@ -952,7 +952,7 @@ void mtk_charger_get_atm_mode(struct charger_manager *info)
 			info->atm_enabled = true;
 	}
 end:
-	pr_info("%s: atm_enabled = %d\n", __func__, info->atm_enabled);
+	pr_debug("%s: atm_enabled = %d\n", __func__, info->atm_enabled);
 }
 
 /* internal algorithm common function */

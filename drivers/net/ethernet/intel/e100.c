@@ -1700,11 +1700,11 @@ static void e100_watchdog(struct timer_list *t)
 	speed = ethtool_cmd_speed(&cmd);
 
 	if (mii_link_ok(&nic->mii) && !netif_carrier_ok(nic->netdev)) {
-		netdev_info(nic->netdev, "NIC Link is Up %u Mbps %s Duplex\n",
+		netdev_dbg(nic->netdev, "NIC Link is Up %u Mbps %s Duplex\n",
 			    speed == SPEED_100 ? 100 : 10,
 			    cmd.duplex == DUPLEX_FULL ? "Full" : "Half");
 	} else if (!mii_link_ok(&nic->mii) && netif_carrier_ok(nic->netdev)) {
-		netdev_info(nic->netdev, "NIC Link is Down\n");
+		netdev_dbg(nic->netdev, "NIC Link is Down\n");
 	}
 
 	mii_check_link(&nic->mii);
@@ -3165,8 +3165,8 @@ static struct pci_driver e100_driver = {
 static int __init e100_init_module(void)
 {
 	if (((1 << debug) - 1) & NETIF_MSG_DRV) {
-		pr_info("%s, %s\n", DRV_DESCRIPTION, DRV_VERSION);
-		pr_info("%s\n", DRV_COPYRIGHT);
+		pr_debug("%s, %s\n", DRV_DESCRIPTION, DRV_VERSION);
+		pr_debug("%s\n", DRV_COPYRIGHT);
 	}
 	return pci_register_driver(&e100_driver);
 }

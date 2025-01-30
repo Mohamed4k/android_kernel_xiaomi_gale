@@ -1124,7 +1124,7 @@ static int rspi_request_dma(struct device *dev, struct spi_master *master,
 	}
 
 	master->can_dma = rspi_can_dma;
-	dev_info(dev, "DMA available");
+	dev_dbg(dev, "DMA available");
 	return 0;
 }
 
@@ -1332,7 +1332,7 @@ static int rspi_probe(struct platform_device *pdev)
 		goto error3;
 	}
 
-	dev_info(&pdev->dev, "probed\n");
+	dev_dbg(&pdev->dev, "probed\n");
 
 	return 0;
 

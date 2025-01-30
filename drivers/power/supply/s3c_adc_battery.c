@@ -354,7 +354,7 @@ static int s3c_adc_bat_probe(struct platform_device *pdev)
 			goto err_platform;
 	}
 
-	dev_info(&pdev->dev, "successfully loaded\n");
+	dev_dbg(&pdev->dev, "successfully loaded\n");
 	device_init_wakeup(&pdev->dev, 1);
 
 	/* Schedule timer to check current status */

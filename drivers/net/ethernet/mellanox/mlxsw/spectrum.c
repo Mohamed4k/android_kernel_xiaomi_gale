@@ -342,9 +342,9 @@ static int mlxsw_sp_fw_rev_validate(struct mlxsw_sp *mlxsw_sp)
 	      rev->subminor >= req_rev->subminor)))
 		return 0;
 
-	dev_info(mlxsw_sp->bus_info->dev, "The firmware version %d.%d.%d is incompatible with the driver\n",
+	dev_dbg(mlxsw_sp->bus_info->dev, "The firmware version %d.%d.%d is incompatible with the driver\n",
 		 rev->major, rev->minor, rev->subminor);
-	dev_info(mlxsw_sp->bus_info->dev, "Flashing firmware using file %s\n",
+	dev_dbg(mlxsw_sp->bus_info->dev, "Flashing firmware using file %s\n",
 		 fw_filename);
 
 	err = request_firmware_direct(&firmware, fw_filename,
@@ -3371,10 +3371,10 @@ static void mlxsw_sp_pude_event_func(const struct mlxsw_reg_info *reg,
 
 	status = mlxsw_reg_pude_oper_status_get(pude_pl);
 	if (status == MLXSW_PORT_OPER_STATUS_UP) {
-		netdev_info(mlxsw_sp_port->dev, "link up\n");
+		netdev_dbg(mlxsw_sp_port->dev, "link up\n");
 		netif_carrier_on(mlxsw_sp_port->dev);
 	} else {
-		netdev_info(mlxsw_sp_port->dev, "link down\n");
+		netdev_dbg(mlxsw_sp_port->dev, "link down\n");
 		netif_carrier_off(mlxsw_sp_port->dev);
 		mlxsw_sp_port_down_wipe_counters(mlxsw_sp_port);
 	}

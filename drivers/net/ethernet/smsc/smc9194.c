@@ -1000,13 +1000,13 @@ static int __init smc_probe(struct net_device *dev, int ioaddr)
 
 	/* now, print out the card info, in a short format.. */
 
-	netdev_info(dev, "%s(r:%d) at %#3x IRQ:%d INTF:%s MEM:%db ",
+	netdev_dbg(dev, "%s(r:%d) at %#3x IRQ:%d INTF:%s MEM:%db ",
 		    version_string, revision_register & 0xF, ioaddr, dev->irq,
 		    if_string, memory);
 	/*
 	 . Print the Ethernet address
 	*/
-	netdev_info(dev, "ADDR: %pM\n", dev->dev_addr);
+	netdev_dbg(dev, "ADDR: %pM\n", dev->dev_addr);
 
 	/* Grab the IRQ */
 	retval = request_irq(dev->irq, smc_interrupt, 0, DRV_NAME, dev);
@@ -1277,7 +1277,7 @@ static void smc_tx( struct net_device * dev )
 #endif
 
 	if ( tx_status & TS_SUCCESS ) {
-		netdev_info(dev, CARDNAME": Successful packet caused interrupt\n");
+		netdev_dbg(dev, CARDNAME": Successful packet caused interrupt\n");
 	}
 	/* re-enable transmit */
 	SMC_SELECT_BANK( 0 );

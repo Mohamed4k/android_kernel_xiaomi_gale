@@ -161,9 +161,9 @@ static irqreturn_t asm9260_wdt_irq(int irq, void *devid)
 		return IRQ_NONE;
 
 	if (priv->mode == DEBUG) {
-		dev_info(priv->dev, "Watchdog Timeout. Do nothing.\n");
+		dev_dbg(priv->dev, "Watchdog Timeout. Do nothing.\n");
 	} else {
-		dev_info(priv->dev, "Watchdog Timeout. Doing SW Reset.\n");
+		dev_dbg(priv->dev, "Watchdog Timeout. Doing SW Reset.\n");
 		asm9260_wdt_sys_reset(priv);
 	}
 
@@ -341,7 +341,7 @@ static int asm9260_wdt_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, priv);
 
-	dev_info(&pdev->dev, "Watchdog enabled (timeout: %d sec, mode: %s)\n",
+	dev_dbg(&pdev->dev, "Watchdog enabled (timeout: %d sec, mode: %s)\n",
 		 wdd->timeout, mode_name[priv->mode]);
 	return 0;
 

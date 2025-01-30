@@ -1085,7 +1085,7 @@ static int spi_qup_probe(struct platform_device *pdev)
 	size = QUP_IO_M_INPUT_FIFO_SIZE(iomode);
 	controller->in_fifo_sz = controller->in_blk_sz * (2 << size);
 
-	dev_info(dev, "IN:block:%d, fifo:%d, OUT:block:%d, fifo:%d\n",
+	dev_dbg(dev, "IN:block:%d, fifo:%d, OUT:block:%d, fifo:%d\n",
 		 controller->in_blk_sz, controller->in_fifo_sz,
 		 controller->out_blk_sz, controller->out_fifo_sz);
 

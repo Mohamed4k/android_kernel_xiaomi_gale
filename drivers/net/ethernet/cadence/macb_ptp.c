@@ -389,7 +389,7 @@ void gem_ptp_init(struct net_device *dev)
 
 	gem_ptp_init_tsu(bp);
 
-	dev_info(&bp->pdev->dev, "%s ptp clock registered.\n",
+	dev_dbg(&bp->pdev->dev, "%s ptp clock registered.\n",
 		 GEM_PTP_TIMER_NAME);
 }
 
@@ -402,7 +402,7 @@ void gem_ptp_remove(struct net_device *ndev)
 
 	gem_ptp_clear_timer(bp);
 
-	dev_info(&bp->pdev->dev, "%s ptp clock unregistered.\n",
+	dev_dbg(&bp->pdev->dev, "%s ptp clock unregistered.\n",
 		 GEM_PTP_TIMER_NAME);
 }
 

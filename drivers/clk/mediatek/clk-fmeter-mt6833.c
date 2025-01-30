@@ -213,7 +213,7 @@ unsigned int mt_get_ckgen_freq(unsigned int ID)
 	unsigned long flags;
 
 	if (check_mux_pdn(ID)) {
-		pr_notice("ID-%d: MUX PDN, return 0.\n", ID);
+		pr_debug("ID-%d: MUX PDN, return 0.\n", ID);
 		return 0;
 	}
 
@@ -271,7 +271,7 @@ unsigned int mt_get_ckgen_freq(unsigned int ID)
 	if (i > 30)
 		return 0;
 	if ((output * 4) < 25000) {
-		pr_notice("%s: CLK_DBG_CFG = 0x%x, CLK_MISC_CFG_0 = 0x%x, CLK26CALI_0 = 0x%x, CLK26CALI_1 = 0x%x\n",
+		pr_debug("%s: CLK_DBG_CFG = 0x%x, CLK_MISC_CFG_0 = 0x%x, CLK26CALI_0 = 0x%x, CLK26CALI_1 = 0x%x\n",
 			__func__,
 			clk_readl(CLK_DBG_CFG),
 			clk_readl(CLK_MISC_CFG_0),
@@ -341,7 +341,7 @@ unsigned int mt_get_abist_freq(unsigned int ID)
 	if (i > 30)
 		return 0;
 	if ((output * 4) < 25000) {
-		pr_notice("%s: CLK_DBG_CFG = 0x%x, CLK_MISC_CFG_0 = 0x%x, CLK26CALI_0 = 0x%x, CLK26CALI_1 = 0x%x\n",
+		pr_debug("%s: CLK_DBG_CFG = 0x%x, CLK_MISC_CFG_0 = 0x%x, CLK26CALI_0 = 0x%x, CLK26CALI_1 = 0x%x\n",
 			__func__,
 			clk_readl(CLK_DBG_CFG),
 			clk_readl(CLK_MISC_CFG_0),
@@ -424,12 +424,12 @@ static int __init clk_fmeter_mt6833_init(void)
 	if (node) {
 		topck_base = of_iomap(node, 0);
 		if (!topck_base) {
-			pr_notice("%s() can't find iomem for topckgen\n",
+			pr_debug("%s() can't find iomem for topckgen\n",
 					__func__);
 			return -1;
 		}
 	} else {
-		pr_notice("%s can't find compatible node for topckgen\n",
+		pr_debug("%s can't find compatible node for topckgen\n",
 				__func__);
 		return -1;
 	}

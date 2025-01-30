@@ -375,7 +375,7 @@ static int devm_w1_max1721x_add_device(struct w1_slave *sl)
 		dev_warn(info->w1_dev, "RSense not calibrated, set 10 mOhms!\n");
 		info->rsense = 1000; /* in regs in 10^-5 */
 	}
-	dev_info(info->w1_dev, "RSense: %d mOhms.\n", info->rsense / 100);
+	dev_dbg(info->w1_dev, "RSense: %d mOhms.\n", info->rsense / 100);
 
 	if (get_string(info, MAX1721X_REG_MFG_STR,
 			MAX1721X_REG_MFG_NUMB, info->ManufacturerName)) {

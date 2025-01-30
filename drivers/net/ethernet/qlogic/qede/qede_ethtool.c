@@ -376,7 +376,7 @@ static int qede_get_sset_count(struct net_device *dev, int stringset)
 
 		/* Account for the Regular Tx statistics */
 		num_stats += QEDE_TSS_COUNT(edev) * QEDE_NUM_TQSTATS *
-				edev->dev_info.num_tc;
+				edev->dev_dbg.num_tc;
 
 		/* Account for the Regular Rx statistics */
 		num_stats += QEDE_RSS_COUNT(edev) * QEDE_NUM_RQSTATS;
@@ -404,7 +404,7 @@ static u32 qede_get_priv_flags(struct net_device *dev)
 {
 	struct qede_dev *edev = netdev_priv(dev);
 
-	return (!!(edev->dev_info.common.num_hwfns > 1)) << QEDE_PRI_FLAG_CMT;
+	return (!!(edev->dev_dbg.common.num_hwfns > 1)) << QEDE_PRI_FLAG_CMT;
 }
 
 struct qede_link_mode_mapping {
@@ -589,16 +589,16 @@ static void qede_get_drvinfo(struct net_device *ndev,
 	strlcpy(info->version, DRV_MODULE_VERSION, sizeof(info->version));
 
 	snprintf(storm, ETHTOOL_FWVERS_LEN, "%d.%d.%d.%d",
-		 edev->dev_info.common.fw_major,
-		 edev->dev_info.common.fw_minor,
-		 edev->dev_info.common.fw_rev,
-		 edev->dev_info.common.fw_eng);
+		 edev->dev_dbg.common.fw_major,
+		 edev->dev_dbg.common.fw_minor,
+		 edev->dev_dbg.common.fw_rev,
+		 edev->dev_dbg.common.fw_eng);
 
 	snprintf(mfw, ETHTOOL_FWVERS_LEN, "%d.%d.%d.%d",
-		 (edev->dev_info.common.mfw_rev >> 24) & 0xFF,
-		 (edev->dev_info.common.mfw_rev >> 16) & 0xFF,
-		 (edev->dev_info.common.mfw_rev >> 8) & 0xFF,
-		 edev->dev_info.common.mfw_rev & 0xFF);
+		 (edev->dev_dbg.common.mfw_rev >> 24) & 0xFF,
+		 (edev->dev_dbg.common.mfw_rev >> 16) & 0xFF,
+		 (edev->dev_dbg.common.mfw_rev >> 8) & 0xFF,
+		 edev->dev_dbg.common.mfw_rev & 0xFF);
 
 	if ((strlen(storm) + strlen(mfw) + strlen("mfw storm  ")) <
 	    sizeof(info->fw_version)) {
@@ -616,7 +616,7 @@ static void qede_get_wol(struct net_device *ndev, struct ethtool_wolinfo *wol)
 {
 	struct qede_dev *edev = netdev_priv(ndev);
 
-	if (edev->dev_info.common.wol_support) {
+	if (edev->dev_dbg.common.wol_support) {
 		wol->supported = WAKE_MAGIC;
 		wol->wolopts = edev->wol_enabled ? WAKE_MAGIC : 0;
 	}
@@ -639,7 +639,7 @@ static int qede_set_wol(struct net_device *ndev, struct ethtool_wolinfo *wol)
 		return 0;
 
 	/* Need to actually change configuration */
-	if (!edev->dev_info.common.wol_support) {
+	if (!edev->dev_dbg.common.wol_support) {
 		DP_INFO(edev, "Device doesn't support WoL\n");
 		return -EINVAL;
 	}
@@ -1049,12 +1049,12 @@ static int qede_set_channels(struct net_device *dev,
 	}
 
 	/* We need the number of queues to be divisible between the hwfns */
-	if ((count % edev->dev_info.common.num_hwfns) ||
-	    (channels->tx_count % edev->dev_info.common.num_hwfns) ||
-	    (channels->rx_count % edev->dev_info.common.num_hwfns)) {
+	if ((count % edev->dev_dbg.common.num_hwfns) ||
+	    (channels->tx_count % edev->dev_dbg.common.num_hwfns) ||
+	    (channels->rx_count % edev->dev_dbg.common.num_hwfns)) {
 		DP_VERBOSE(edev, (NETIF_MSG_IFUP | NETIF_MSG_IFDOWN),
 			   "Number of channels must be divisible by %04x\n",
-			   edev->dev_info.common.num_hwfns);
+			   edev->dev_dbg.common.num_hwfns);
 		return -EINVAL;
 	}
 
@@ -1334,7 +1334,7 @@ static int qede_set_rxfh(struct net_device *dev, const u32 *indir,
 	struct qede_dev *edev = netdev_priv(dev);
 	int i, rc = 0;
 
-	if (edev->dev_info.common.num_hwfns > 1) {
+	if (edev->dev_dbg.common.num_hwfns > 1) {
 		DP_INFO(edev,
 			"RSS configuration is not supported for 100G devices\n");
 		return -EOPNOTSUPP;

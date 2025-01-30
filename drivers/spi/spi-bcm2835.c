@@ -714,7 +714,7 @@ static int bcm2835_spi_setup(struct spi_device *spi)
 	spi->cs_gpio = chip->base + 8 - spi->chip_select;
 
 	/* and set up the "mode" and level */
-	dev_info(&spi->dev, "setting up native-CS%i as GPIO %i\n",
+	dev_dbg(&spi->dev, "setting up native-CS%i as GPIO %i\n",
 		 spi->chip_select, spi->cs_gpio);
 
 	/* set up GPIO as output and pull to the correct level */

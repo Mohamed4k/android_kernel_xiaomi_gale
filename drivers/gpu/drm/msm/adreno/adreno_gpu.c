@@ -89,7 +89,7 @@ adreno_request_fw(struct adreno_gpu *adreno_gpu, const char *fwname)
 
 		ret = request_firmware_direct(&fw, newname, drm->dev);
 		if (!ret) {
-			dev_info(drm->dev, "loaded %s from new location\n",
+			dev_dbg(drm->dev, "loaded %s from new location\n",
 				newname);
 			adreno_gpu->fwloc = FW_LOCATION_NEW;
 			goto out;
@@ -109,7 +109,7 @@ adreno_request_fw(struct adreno_gpu *adreno_gpu, const char *fwname)
 
 		ret = request_firmware_direct(&fw, fwname, drm->dev);
 		if (!ret) {
-			dev_info(drm->dev, "loaded %s from legacy location\n",
+			dev_dbg(drm->dev, "loaded %s from legacy location\n",
 				newname);
 			adreno_gpu->fwloc = FW_LOCATION_LEGACY;
 			goto out;
@@ -130,7 +130,7 @@ adreno_request_fw(struct adreno_gpu *adreno_gpu, const char *fwname)
 
 		ret = request_firmware(&fw, newname, drm->dev);
 		if (!ret) {
-			dev_info(drm->dev, "loaded %s with helper\n",
+			dev_dbg(drm->dev, "loaded %s with helper\n",
 				newname);
 			adreno_gpu->fwloc = FW_LOCATION_HELPER;
 			goto out;

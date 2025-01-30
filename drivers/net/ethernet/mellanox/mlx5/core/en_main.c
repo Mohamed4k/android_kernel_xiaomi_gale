@@ -238,10 +238,10 @@ static void mlx5e_update_carrier(struct mlx5e_priv *priv)
 					    0);
 
 	if (port_state == VPORT_STATE_UP) {
-		netdev_info(priv->netdev, "Link up\n");
+		netdev_dbg(priv->netdev, "Link up\n");
 		netif_carrier_on(priv->netdev);
 	} else {
-		netdev_info(priv->netdev, "Link down\n");
+		netdev_dbg(priv->netdev, "Link down\n");
 		netif_carrier_off(priv->netdev);
 	}
 }

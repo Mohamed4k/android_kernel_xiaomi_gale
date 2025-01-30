@@ -226,7 +226,7 @@ static INT32 stp_ctx_lock_deinit(mtkstp_context_struct *pctx)
 static INT32 stp_ctx_lock(mtkstp_context_struct *pctx)
 {
 	/* dump_stack(); */
-	/* pr_debug("stp_lock\n\r"); */
+	/* pr_info("stp_lock\n\r"); */
 #if CFG_STP_CORE_CTX_SPIN_LOCK
 	return osal_lock_unsleepable_lock(&((pctx)->stp_mutex));
 #else
@@ -237,7 +237,7 @@ static INT32 stp_ctx_lock(mtkstp_context_struct *pctx)
 static INT32 stp_ctx_unlock(mtkstp_context_struct *pctx)
 {
 	/* dump_stack(); */
-	/* pr_debug("stp_unlock\n\r"); */
+	/* pr_info("stp_unlock\n\r"); */
 
 #if CFG_STP_CORE_CTX_SPIN_LOCK
 	return osal_unlock_unsleepable_lock(&((pctx)->stp_mutex));

@@ -1126,7 +1126,7 @@ void cw1200_rx_cb(struct cw1200_common *priv,
 			icv_len = 16 /* WAPI_MIC_LEN */;
 			break;
 		default:
-			pr_warn("Unknown encryption type %d\n",
+			pr_debug("Unknown encryption type %d\n",
 				WSM_RX_STATUS_ENCRYPTION(arg->flags));
 			goto drop;
 		}

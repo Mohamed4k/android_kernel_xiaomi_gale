@@ -175,7 +175,7 @@ vgpu_scan_nonprivbb_set(void *data, u64 val)
 	if (val)
 		sprintf(s, "low performance expected.");
 
-	pr_warn("%s\n", buf);
+	pr_debug("%s\n", buf);
 
 done:
 	vgpu->scan_nonprivbb = val;

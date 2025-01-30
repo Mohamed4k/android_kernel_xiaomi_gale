@@ -434,7 +434,7 @@ static int mic_request_dma_chans(struct mic_device *mdev)
 				break;
 		}
 	} while (chan);
-	dev_info(&mdev->pdev->dev, "DMA channels # %d\n", mdev->num_dma_ch);
+	dev_dbg(&mdev->pdev->dev, "DMA channels # %d\n", mdev->num_dma_ch);
 	return mdev->num_dma_ch;
 }
 

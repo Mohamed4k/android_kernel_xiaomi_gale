@@ -552,7 +552,7 @@ static void read_mdp_hw_revision(struct mdp5_kms *mdp5_kms,
 	*major = FIELD(version, MDP5_HW_VERSION_MAJOR);
 	*minor = FIELD(version, MDP5_HW_VERSION_MINOR);
 
-	dev_info(dev, "MDP5 version v%d.%d", *major, *minor);
+	dev_dbg(dev, "MDP5 version v%d.%d", *major, *minor);
 }
 
 static int get_clk(struct platform_device *pdev, struct clk **clkp,
@@ -729,7 +729,7 @@ struct msm_kms *mdp5_kms_init(struct drm_device *dev)
 			goto fail;
 		}
 	} else {
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "no iommu, fallback to phys contig buffers for scanout\n");
 		aspace = NULL;
 	}

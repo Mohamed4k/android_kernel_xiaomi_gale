@@ -423,7 +423,7 @@ static int msm_init_vram(struct drm_device *dev)
 			return -ENOMEM;
 		}
 
-		dev_info(dev->dev, "VRAM: %08x->%08x\n",
+		dev_dbg(dev->dev, "VRAM: %08x->%08x\n",
 				(uint32_t)priv->vram.paddr,
 				(uint32_t)(priv->vram.paddr + size));
 	}
@@ -566,7 +566,7 @@ static int msm_drm_init(struct device *dev, struct drm_driver *drv)
 		ret = sched_setscheduler(priv->disp_thread[i].thread,
 							SCHED_FIFO, &param);
 		if (ret)
-			pr_warn("display thread priority update failed: %d\n",
+			pr_debug("display thread priority update failed: %d\n",
 									ret);
 
 		if (IS_ERR(priv->disp_thread[i].thread)) {
@@ -592,7 +592,7 @@ static int msm_drm_init(struct device *dev, struct drm_driver *drv)
 		ret = sched_setscheduler(priv->event_thread[i].thread,
 							SCHED_FIFO, &param);
 		if (ret)
-			pr_warn("display event thread priority update failed: %d\n",
+			pr_debug("display event thread priority update failed: %d\n",
 									ret);
 
 		if (IS_ERR(priv->event_thread[i].thread)) {

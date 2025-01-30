@@ -428,7 +428,7 @@ static int mcfqspi_probe(struct platform_device *pdev)
 		goto fail2;
 	}
 
-	dev_info(&pdev->dev, "Coldfire QSPI bus driver\n");
+	dev_dbg(&pdev->dev, "Coldfire QSPI bus driver\n");
 
 	return 0;
 

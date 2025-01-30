@@ -41,7 +41,7 @@ static unsigned long clk_sama5d4_h32mx_recalc_rate(struct clk_hw *hw,
 		return parent_rate / 2;
 
 	if (parent_rate > H32MX_MAX_FREQ)
-		pr_warn("H32MX clock is too fast\n");
+		pr_debug("H32MX clock is too fast\n");
 	return parent_rate;
 }
 

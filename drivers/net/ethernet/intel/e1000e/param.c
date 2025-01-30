@@ -173,18 +173,18 @@ static int e1000_validate_option(unsigned int *value,
 	case enable_option:
 		switch (*value) {
 		case OPTION_ENABLED:
-			dev_info(&adapter->pdev->dev, "%s Enabled\n",
+			dev_dbg(&adapter->pdev->dev, "%s Enabled\n",
 				 opt->name);
 			return 0;
 		case OPTION_DISABLED:
-			dev_info(&adapter->pdev->dev, "%s Disabled\n",
+			dev_dbg(&adapter->pdev->dev, "%s Disabled\n",
 				 opt->name);
 			return 0;
 		}
 		break;
 	case range_option:
 		if (*value >= opt->arg.r.min && *value <= opt->arg.r.max) {
-			dev_info(&adapter->pdev->dev, "%s set to %i\n",
+			dev_dbg(&adapter->pdev->dev, "%s set to %i\n",
 				 opt->name, *value);
 			return 0;
 		}
@@ -197,7 +197,7 @@ static int e1000_validate_option(unsigned int *value,
 			ent = &opt->arg.l.p[i];
 			if (*value == ent->i) {
 				if (ent->str[0] != '\0')
-					dev_info(&adapter->pdev->dev, "%s\n",
+					dev_dbg(&adapter->pdev->dev, "%s\n",
 						 ent->str);
 				return 0;
 			}
@@ -208,7 +208,7 @@ static int e1000_validate_option(unsigned int *value,
 		BUG();
 	}
 
-	dev_info(&adapter->pdev->dev, "Invalid %s value specified (%i) %s\n",
+	dev_dbg(&adapter->pdev->dev, "Invalid %s value specified (%i) %s\n",
 		 opt->name, *value, opt->err);
 	*value = opt->def;
 	return -1;
@@ -354,7 +354,7 @@ void e1000e_check_options(struct e1000_adapter *adapter)
 			 * default values
 			 */
 			if (adapter->itr > 4)
-				dev_info(&adapter->pdev->dev,
+				dev_dbg(&adapter->pdev->dev,
 					 "%s set to default %d\n", opt.name,
 					 adapter->itr);
 		}
@@ -362,28 +362,28 @@ void e1000e_check_options(struct e1000_adapter *adapter)
 		adapter->itr_setting = adapter->itr;
 		switch (adapter->itr) {
 		case 0:
-			dev_info(&adapter->pdev->dev, "%s turned off\n",
+			dev_dbg(&adapter->pdev->dev, "%s turned off\n",
 				 opt.name);
 			break;
 		case 1:
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "%s set to dynamic mode\n", opt.name);
 			adapter->itr = 20000;
 			break;
 		case 2:
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "%s Invalid mode - setting default\n",
 				 opt.name);
 			adapter->itr_setting = opt.def;
 			/* fall-through */
 		case 3:
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "%s set to dynamic conservative mode\n",
 				 opt.name);
 			adapter->itr = 20000;
 			break;
 		case 4:
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "%s set to simplified (2000-8000 ints) mode\n",
 				 opt.name);
 			break;

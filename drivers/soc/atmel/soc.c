@@ -158,7 +158,7 @@ static int __init at91_get_cidr_exid_from_dbgu(u32 *cidr, u32 *exid)
 	of_node_put(np);
 
 	if (!regs) {
-		pr_warn("Could not map DBGU iomem range");
+		pr_debug("Could not map DBGU iomem range");
 		return -ENXIO;
 	}
 
@@ -183,7 +183,7 @@ static int __init at91_get_cidr_exid_from_chipid(u32 *cidr, u32 *exid)
 	of_node_put(np);
 
 	if (!regs) {
-		pr_warn("Could not map DBGU iomem range");
+		pr_debug("Could not map DBGU iomem range");
 		return -ENXIO;
 	}
 
@@ -213,7 +213,7 @@ struct soc_device * __init at91_soc_init(const struct at91_soc *socs)
 		ret = at91_get_cidr_exid_from_chipid(&cidr, &exid);
 	if (ret) {
 		if (ret == -ENODEV)
-			pr_warn("Could not find identification node");
+			pr_debug("Could not find identification node");
 		return NULL;
 	}
 
@@ -226,7 +226,7 @@ struct soc_device * __init at91_soc_init(const struct at91_soc *socs)
 	}
 
 	if (!soc->name) {
-		pr_warn("Could not find matching SoC description\n");
+		pr_debug("Could not find matching SoC description\n");
 		return NULL;
 	}
 
@@ -242,13 +242,13 @@ struct soc_device * __init at91_soc_init(const struct at91_soc *socs)
 	if (IS_ERR(soc_dev)) {
 		kfree(soc_dev_attr->revision);
 		kfree(soc_dev_attr);
-		pr_warn("Could not register SoC device\n");
+		pr_debug("Could not register SoC device\n");
 		return NULL;
 	}
 
 	if (soc->family)
-		pr_info("Detected SoC family: %s\n", soc->family);
-	pr_info("Detected SoC: %s, revision %X\n", soc->name,
+		pr_debug("Detected SoC family: %s\n", soc->family);
+	pr_debug("Detected SoC: %s, revision %X\n", soc->name,
 		AT91_CIDR_VERSION(cidr));
 
 	return soc_dev;

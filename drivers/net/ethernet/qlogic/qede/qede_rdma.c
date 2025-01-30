@@ -42,7 +42,7 @@ static DEFINE_MUTEX(qedr_dev_list_lock);
 
 bool qede_rdma_supported(struct qede_dev *dev)
 {
-	return dev->dev_info.common.rdma_supported;
+	return dev->dev_dbg.common.rdma_supported;
 }
 
 static void _qede_rdma_dev_add(struct qede_dev *edev)
@@ -209,7 +209,7 @@ int qede_rdma_register_driver(struct qedr_driver *drv)
 	}
 	mutex_unlock(&qedr_dev_list_lock);
 
-	pr_notice("qedr: discovered and registered %d RDMA funcs\n",
+	pr_debug("qedr: discovered and registered %d RDMA funcs\n",
 		  qedr_counter);
 
 	return 0;

@@ -104,7 +104,7 @@ static int set_clk_enable(bool is_enable)
 				ret = clk_prepare_enable(mmsram->clk[i]);
 
 			if (ret) {
-				pr_notice("mmsram clk(%s) enable fail:%d\n",
+				pr_debug("mmsram clk(%s) enable fail:%d\n",
 					mmsram->clk_name[i], ret);
 				for (j = i - 1; j >= 0; j--)
 					clk_disable_unprepare(mmsram->clk[j]);
@@ -121,7 +121,7 @@ static int set_clk_enable(bool is_enable)
 	}
 #endif
 	if (debug_enable)
-		pr_notice("%s:%d\n", __func__, is_enable);
+		pr_debug("%s:%d\n", __func__, is_enable);
 	return ret;
 }
 
@@ -136,7 +136,7 @@ static void set_reg_secure(bool is_on)
 static s32 before_reg_rw(void)
 {
 	if (set_clk_enable(true)) {
-		pr_notice("%s: enable clk fail\n", __func__);
+		pr_debug("%s: enable clk fail\n", __func__);
 		return -EINVAL;
 	}
 	set_reg_secure(false);
@@ -156,7 +156,7 @@ void mmsram_set_secure(bool secure_on)
 		return;
 	is_secure_on = secure_on;
 	if (before_reg_rw()) {
-		pr_notice("%s: error before reg rw\n", __func__);
+		pr_debug("%s: error before reg rw\n", __func__);
 		return;
 	}
 	if (secure_on)
@@ -169,7 +169,7 @@ void mmsram_set_secure(bool secure_on)
 static void init_mmsram_reg(void)
 {
 	if (before_reg_rw()) {
-		pr_notice("%s: error before reg rw\n", __func__);
+		pr_debug("%s: error before reg rw\n", __func__);
 		return;
 	}
 	writel((0x1 << 24) | 0x160000,
@@ -195,7 +195,7 @@ int mmsram_power_on(void)
 	set_clk_enable(true);
 	init_mmsram_reg();
 	if (debug_enable)
-		pr_notice("mmsram power on\n");
+		pr_debug("mmsram power on\n");
 	return ret;
 }
 EXPORT_SYMBOL_GPL(mmsram_power_on);
@@ -204,13 +204,13 @@ void mmsram_power_off(void)
 {
 	set_clk_enable(false);
 	if (debug_enable)
-		pr_notice("mmsram power off\n");
+		pr_debug("mmsram power off\n");
 }
 EXPORT_SYMBOL_GPL(mmsram_power_off);
 
 int enable_mmsram(void)
 {
-	pr_notice("enable mmsram\n");
+	pr_debug("enable mmsram\n");
 
 	return 0;
 }
@@ -218,7 +218,7 @@ EXPORT_SYMBOL_GPL(enable_mmsram);
 
 void disable_mmsram(void)
 {
-	pr_notice("disable mmsram\n");
+	pr_debug("disable mmsram\n");
 }
 EXPORT_SYMBOL_GPL(disable_mmsram);
 
@@ -227,7 +227,7 @@ void mmsram_get_info(struct mmsram_data *data)
 	data->paddr = mmsram->sram_paddr;
 	data->vaddr = mmsram->sram_vaddr;
 	data->size = mmsram->sram_size;
-	pr_notice("%s: pa:%#x va:%#x size:%#lx\n",
+	pr_debug("%s: pa:%#x va:%#x size:%#lx\n",
 		__func__, data->paddr, data->vaddr,
 		data->size);
 }
@@ -239,50 +239,50 @@ static void dump_reg_func(struct work_struct *work)
 	void __iomem *ctrl_base = mmsram->ctrl_base;
 
 	if (before_reg_rw()) {
-		pr_notice("%s: error before reg rw\n", __func__);
+		pr_debug("%s: error before reg rw\n", __func__);
 		return;
 	}
 
 	/* Print debug log */
 	interrupt_monitor0 = readl(ctrl_base + MMSYSRAM_INSTA0);
 	interrupt_monitor1 = readl(ctrl_base + MMSYSRAM_INSTA1);
-	pr_notice("apc0_vio_decerr:%#x apc0_vio_wr_rd:%#x\n",
+	pr_debug("apc0_vio_decerr:%#x apc0_vio_wr_rd:%#x\n",
 		DEC_APC0_VIO_DECERR(interrupt_monitor0),
 		DEC_APC0_VIO_WR_RD(interrupt_monitor0));
-	pr_notice("apc1_vio_decerr:%#x apc1_vio_wr_rd:%#x\n",
+	pr_debug("apc1_vio_decerr:%#x apc1_vio_wr_rd:%#x\n",
 		DEC_APC1_VIO_DECERR(interrupt_monitor0),
 		DEC_APC1_VIO_WR_RD(interrupt_monitor0));
-	pr_notice("mpu0_vio_devapc:%#x mpu0_vio_wr_rd:%#x\n",
+	pr_debug("mpu0_vio_devapc:%#x mpu0_vio_wr_rd:%#x\n",
 		DEC_MPU0_VIO_DEVAPC(interrupt_monitor0),
 		DEC_MPU0_VIO_WR_RD(interrupt_monitor0));
-	pr_notice("mpu1_vio_devapc:%#x mpu1_vio_wr_rd:%#x\n",
+	pr_debug("mpu1_vio_devapc:%#x mpu1_vio_wr_rd:%#x\n",
 		DEC_MPU1_VIO_DEVAPC(interrupt_monitor1),
 		DEC_MPU1_VIO_WR_RD(interrupt_monitor1));
-	pr_notice("apc0_latch_en:%#x apc0_vio_addr:%#x\n",
+	pr_debug("apc0_latch_en:%#x apc0_vio_addr:%#x\n",
 		DEC_APC_LATCH_EN(readl(ctrl_base + FVLD_APC0_LATCH_EN)),
 		DEC_APC_VIO_ADDR(readl(ctrl_base + FVLD_APC0_VIO_ADDR)));
-	pr_notice("apc0_vio_id:%#x apc0_vio_wr_rd:%#x\n",
+	pr_debug("apc0_vio_id:%#x apc0_vio_wr_rd:%#x\n",
 		DEC_APC_VIO_ID(readl(ctrl_base + FVLD_APC0_VIO_ID)),
 		DEC_APC_VIO_WR_RD(readl(ctrl_base + FVLD_APC0_VIO_WR_RD)));
 
-	pr_notice("apc1_latch_en:%#x apc1_vio_addr:%#x\n",
+	pr_debug("apc1_latch_en:%#x apc1_vio_addr:%#x\n",
 		DEC_APC_LATCH_EN(readl(ctrl_base + FVLD_APC1_LATCH_EN)),
 		DEC_APC_VIO_ADDR(readl(ctrl_base + FVLD_APC1_VIO_ADDR)));
-	pr_notice("apc1_vio_id:%#x apc1_vio_wr_rd:%#x\n",
+	pr_debug("apc1_vio_id:%#x apc1_vio_wr_rd:%#x\n",
 		DEC_APC_VIO_ID(readl(ctrl_base + FVLD_APC1_VIO_ID)),
 		DEC_APC_VIO_WR_RD(readl(ctrl_base + FVLD_APC1_VIO_WR_RD)));
 
-	pr_notice("mpu0_latch_en:%#x mpu0_vio_addr:%#x\n",
+	pr_debug("mpu0_latch_en:%#x mpu0_vio_addr:%#x\n",
 		DEC_MPU_LATCH_EN(readl(ctrl_base + FVLD_MPU0_LATCH_EN)),
 		DEC_MPU_VIO_ADDR(readl(ctrl_base + FVLD_MPU0_VIO_ADDR)));
 
-	pr_notice("mpu0_vio_id:%#x mpu0_vio_wr_rd:%#x\n",
+	pr_debug("mpu0_vio_id:%#x mpu0_vio_wr_rd:%#x\n",
 		DEC_MPU_VIO_ID(readl(ctrl_base + FVLD_MPU0_VIO_ID)),
 		DEC_MPU_VIO_WR_RD(readl(ctrl_base + FVLD_MPU0_VIO_WR_RD)));
-	pr_notice("mpu1_latch_en:%#x mpu1_vio_addr:%#x\n",
+	pr_debug("mpu1_latch_en:%#x mpu1_vio_addr:%#x\n",
 		DEC_MPU_LATCH_EN(readl(ctrl_base + FVLD_MPU1_LATCH_EN)),
 		DEC_MPU_VIO_ADDR(readl(ctrl_base + FVLD_MPU1_VIO_ADDR)));
-	pr_notice("mpu1_vio_id:%#x mpu1_vio_wr_rd:%#x\n",
+	pr_debug("mpu1_vio_id:%#x mpu1_vio_wr_rd:%#x\n",
 		DEC_MPU_VIO_ID(readl(ctrl_base + FVLD_MPU1_VIO_ID)),
 		DEC_MPU_VIO_WR_RD(readl(ctrl_base + FVLD_MPU1_VIO_WR_RD)));
 
@@ -296,7 +296,7 @@ static void dump_reg_func(struct work_struct *work)
 
 static irqreturn_t mmsram_irq_handler(int irq, void *data)
 {
-	pr_notice("handle mmsram irq!\n");
+	pr_debug("handle mmsram irq!\n");
 	schedule_work(&dump_reg_work);
 	return IRQ_HANDLED;
 }
@@ -387,10 +387,10 @@ int set_test_mmsram(const char *val, const struct kernel_param *kp)
 
 	result = sscanf(val, "%d %i %i", &test_case, &offset, &value);
 	if (result != 3) {
-		pr_notice("invalid input: %s, result(%d)\n", val, result);
+		pr_debug("invalid input: %s, result(%d)\n", val, result);
 		return -EINVAL;
 	}
-	pr_notice("%s (test_case, offset, value): (%d,%#x,%#x)\n",
+	pr_debug("%s (test_case, offset, value): (%d,%#x,%#x)\n",
 		__func__, test_case, offset, value);
 
 	switch (test_case) {
@@ -408,23 +408,23 @@ int set_test_mmsram(const char *val, const struct kernel_param *kp)
 	case 2: /* Write value to offset */
 		writel(value, data->vaddr + offset);
 		value = readl(data->vaddr + offset);
-		pr_notice("write %#x success\n", value);
+		pr_debug("write %#x success\n", value);
 		break;
 	case 3: /* Read value from offset */
 		value = readl(data->vaddr + offset);
-		pr_notice("read %#x success\n", value);
+		pr_debug("read %#x success\n", value);
 		break;
 	case 4: /* Write test string to offset */
 		memcpy_toio(data->vaddr + offset, test_str, RESULT_STR_LEN);
-		pr_notice("write str:%s success\n", test_str);
+		pr_debug("write str:%s success\n", test_str);
 		break;
 	case 5: /* Write test string from offset */
 		memcpy_fromio(result_str, data->vaddr, RESULT_STR_LEN);
 		result_str[RESULT_STR_LEN] = '\0';
-		pr_notice("read str:%s success\n", result_str);
+		pr_debug("read str:%s success\n", result_str);
 		break;
 	default:
-		pr_notice("wrong input test_case:%d\n", test_case);
+		pr_debug("wrong input test_case:%d\n", test_case);
 	}
 
 	return 0;
@@ -465,7 +465,7 @@ static int __init mtk_mmsram_init(void)
 
 	status = platform_driver_register(&mmsram_drv);
 	if (status) {
-		pr_notice("Failed to register mmsram driver(%d)\n", status);
+		pr_debug("Failed to register mmsram driver(%d)\n", status);
 		return -ENODEV;
 	}
 	return 0;

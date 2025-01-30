@@ -89,7 +89,7 @@ static void __init s3c2443_clk_sleep_init(void)
 	s3c2443_save = samsung_clk_alloc_reg_dump(s3c2443_clk_regs,
 						ARRAY_SIZE(s3c2443_clk_regs));
 	if (!s3c2443_save) {
-		pr_warn("%s: failed to allocate sleep save data, no sleep support!\n",
+		pr_debug("%s: failed to allocate sleep save data, no sleep support!\n",
 			__func__);
 		return;
 	}
@@ -456,7 +456,7 @@ void __init s3c2443_common_clk_init(struct device_node *np, unsigned long xti_f,
 
 	ret = register_restart_handler(&s3c2443_restart_handler);
 	if (ret)
-		pr_warn("cannot register restart handler, %d\n", ret);
+		pr_debug("cannot register restart handler, %d\n", ret);
 }
 
 static void __init s3c2416_clk_init(struct device_node *np)

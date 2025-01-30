@@ -670,7 +670,7 @@ void amdgpu_device_vram_location(struct amdgpu_device *adev,
 	mc->vram_end = mc->vram_start + mc->mc_vram_size - 1;
 	if (limit && limit < mc->real_vram_size)
 		mc->real_vram_size = limit;
-	dev_info(adev->dev, "VRAM: %lluM 0x%016llX - 0x%016llX (%lluM used)\n",
+	dev_dbg(adev->dev, "VRAM: %lluM 0x%016llX - 0x%016llX (%lluM used)\n",
 			mc->mc_vram_size >> 20, mc->vram_start,
 			mc->vram_end, mc->real_vram_size >> 20);
 }
@@ -712,7 +712,7 @@ void amdgpu_device_gart_location(struct amdgpu_device *adev,
 		mc->gart_start = ALIGN(mc->vram_end + 1, 0x100000000ULL);
 	}
 	mc->gart_end = mc->gart_start + mc->gart_size - 1;
-	dev_info(adev->dev, "GART: %lluM 0x%016llX - 0x%016llX\n",
+	dev_dbg(adev->dev, "GART: %lluM 0x%016llX - 0x%016llX\n",
 			mc->gart_size >> 20, mc->gart_start, mc->gart_end);
 }
 
@@ -1029,7 +1029,7 @@ static void amdgpu_switcheroo_set_state(struct pci_dev *pdev, enum vga_switchero
 		return;
 
 	if (state == VGA_SWITCHEROO_ON) {
-		pr_info("amdgpu: switched on\n");
+		pr_debug("amdgpu: switched on\n");
 		/* don't suspend or resume card normally */
 		dev->switch_power_state = DRM_SWITCH_POWER_CHANGING;
 
@@ -1038,7 +1038,7 @@ static void amdgpu_switcheroo_set_state(struct pci_dev *pdev, enum vga_switchero
 		dev->switch_power_state = DRM_SWITCH_POWER_ON;
 		drm_kms_helper_poll_enable(dev);
 	} else {
-		pr_info("amdgpu: switched off\n");
+		pr_debug("amdgpu: switched off\n");
 		drm_kms_helper_poll_disable(dev);
 		dev->switch_power_state = DRM_SWITCH_POWER_CHANGING;
 		amdgpu_device_suspend(dev, true, true);
@@ -3187,7 +3187,7 @@ retry:
 		amdgpu_atom_asic_init(adev->mode_info.atom_context);
 
 		if (!r) {
-			dev_info(adev->dev, "GPU reset succeeded, trying to resume\n");
+			dev_dbg(adev->dev, "GPU reset succeeded, trying to resume\n");
 			r = amdgpu_device_ip_resume_phase1(adev);
 			if (r)
 				goto out;
@@ -3304,7 +3304,7 @@ int amdgpu_device_gpu_recover(struct amdgpu_device *adev,
 		return 0;
 	}
 
-	dev_info(adev->dev, "GPU reset begin!\n");
+	dev_dbg(adev->dev, "GPU reset begin!\n");
 
 	mutex_lock(&adev->lock_reset);
 	atomic_inc(&adev->gpu_reset_counter);
@@ -3363,10 +3363,10 @@ int amdgpu_device_gpu_recover(struct amdgpu_device *adev,
 
 	if (r) {
 		/* bad news, how to tell it to userspace ? */
-		dev_info(adev->dev, "GPU reset(%d) failed\n", atomic_read(&adev->gpu_reset_counter));
+		dev_dbg(adev->dev, "GPU reset(%d) failed\n", atomic_read(&adev->gpu_reset_counter));
 		amdgpu_vf_error_put(adev, AMDGIM_ERROR_VF_GPU_RESET_FAIL, 0, r);
 	} else {
-		dev_info(adev->dev, "GPU reset(%d) succeeded!\n",atomic_read(&adev->gpu_reset_counter));
+		dev_dbg(adev->dev, "GPU reset(%d) succeeded!\n",atomic_read(&adev->gpu_reset_counter));
 	}
 
 	/*unlock kfd */

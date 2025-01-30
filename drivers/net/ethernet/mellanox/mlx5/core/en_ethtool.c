@@ -246,25 +246,25 @@ int mlx5e_ethtool_set_ringparam(struct mlx5e_priv *priv,
 	int err = 0;
 
 	if (param->rx_jumbo_pending) {
-		netdev_info(priv->netdev, "%s: rx_jumbo_pending not supported\n",
+		netdev_dbg(priv->netdev, "%s: rx_jumbo_pending not supported\n",
 			    __func__);
 		return -EINVAL;
 	}
 	if (param->rx_mini_pending) {
-		netdev_info(priv->netdev, "%s: rx_mini_pending not supported\n",
+		netdev_dbg(priv->netdev, "%s: rx_mini_pending not supported\n",
 			    __func__);
 		return -EINVAL;
 	}
 
 	if (param->rx_pending < (1 << MLX5E_PARAMS_MINIMUM_LOG_RQ_SIZE)) {
-		netdev_info(priv->netdev, "%s: rx_pending (%d) < min (%d)\n",
+		netdev_dbg(priv->netdev, "%s: rx_pending (%d) < min (%d)\n",
 			    __func__, param->rx_pending,
 			    1 << MLX5E_PARAMS_MINIMUM_LOG_RQ_SIZE);
 		return -EINVAL;
 	}
 
 	if (param->tx_pending < (1 << MLX5E_PARAMS_MINIMUM_LOG_SQ_SIZE)) {
-		netdev_info(priv->netdev, "%s: tx_pending (%d) < min (%d)\n",
+		netdev_dbg(priv->netdev, "%s: tx_pending (%d) < min (%d)\n",
 			    __func__, param->tx_pending,
 			    1 << MLX5E_PARAMS_MINIMUM_LOG_SQ_SIZE);
 		return -EINVAL;
@@ -332,7 +332,7 @@ int mlx5e_ethtool_set_channels(struct mlx5e_priv *priv,
 	int err = 0;
 
 	if (!count) {
-		netdev_info(priv->netdev, "%s: combined_count=0 not supported\n",
+		netdev_dbg(priv->netdev, "%s: combined_count=0 not supported\n",
 			    __func__);
 		return -EINVAL;
 	}
@@ -455,14 +455,14 @@ int mlx5e_ethtool_set_coalesce(struct mlx5e_priv *priv,
 
 	if (coal->tx_coalesce_usecs > MLX5E_MAX_COAL_TIME ||
 	    coal->rx_coalesce_usecs > MLX5E_MAX_COAL_TIME) {
-		netdev_info(priv->netdev, "%s: maximum coalesce time supported is %lu usecs\n",
+		netdev_dbg(priv->netdev, "%s: maximum coalesce time supported is %lu usecs\n",
 			    __func__, MLX5E_MAX_COAL_TIME);
 		return -ERANGE;
 	}
 
 	if (coal->tx_max_coalesced_frames > MLX5E_MAX_COAL_FRAMES ||
 	    coal->rx_max_coalesced_frames > MLX5E_MAX_COAL_FRAMES) {
-		netdev_info(priv->netdev, "%s: maximum coalesced frames supported is %lu\n",
+		netdev_dbg(priv->netdev, "%s: maximum coalesced frames supported is %lu\n",
 			    __func__, MLX5E_MAX_COAL_FRAMES);
 		return -ERANGE;
 	}
@@ -1010,7 +1010,7 @@ static int mlx5e_set_pfc_prevention_tout(struct net_device *netdev,
 	if (critical_tout != PFC_STORM_PREVENTION_DISABLE &&
 	    (critical_tout > MLX5E_PFC_PREVEN_TOUT_MAX_MSEC ||
 	     critical_tout < MLX5E_PFC_PREVEN_TOUT_MIN_MSEC)) {
-		netdev_info(netdev, "%s: pfc prevention tout not in range (%d-%d)\n",
+		netdev_dbg(netdev, "%s: pfc prevention tout not in range (%d-%d)\n",
 			    __func__, MLX5E_PFC_PREVEN_TOUT_MIN_MSEC,
 			    MLX5E_PFC_PREVEN_TOUT_MAX_MSEC);
 		return -EINVAL;

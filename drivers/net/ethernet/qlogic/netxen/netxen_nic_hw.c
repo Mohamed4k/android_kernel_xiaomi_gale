@@ -2334,11 +2334,11 @@ static int netxen_md_entry_err_chk(struct netxen_adapter *adapter,
 	if (esize != entry->hdr.entry_capture_size) {
 		entry->hdr.entry_capture_size = esize;
 		entry->hdr.driver_flags |= NX_DUMP_SIZE_ERR;
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			"Invalidate dump, Type:%d\tMask:%d\tSize:%dCap_size:%d\n",
 			entry->hdr.entry_type, entry->hdr.entry_capture_mask,
 			esize, entry->hdr.entry_capture_size);
-		dev_info(&adapter->pdev->dev, "Aborting further dump capture\n");
+		dev_dbg(&adapter->pdev->dev, "Aborting further dump capture\n");
 	}
 	return 0;
 }
@@ -2550,12 +2550,12 @@ netxen_dump_fw(struct netxen_adapter *adapter)
 			adapter->mdump.md_timestamp = jiffies;
 			adapter->mdump.has_valid_dump = 1;
 			adapter->fw_mdump_rdy = 1;
-			dev_info(&adapter->pdev->dev, "%s Successfully "
+			dev_dbg(&adapter->pdev->dev, "%s Successfully "
 				"collected fw dump.\n", adapter->netdev->name);
 		}
 
 	} else {
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 					"Cannot overwrite previously collected "
 							"firmware minidump.\n");
 		adapter->fw_mdump_rdy = 1;

@@ -84,7 +84,7 @@ static int tianma_dcs_read(struct tianma *ctx, u8 cmd, void *data, size_t len)
 
 	ret = mipi_dsi_dcs_read(dsi, cmd, data, len);
 	if (ret < 0) {
-		dev_info(ctx->dev, "error %d reading dcs seq:(%#x)\n", ret, cmd);
+		dev_dbg(ctx->dev, "error %d reading dcs seq:(%#x)\n", ret, cmd);
 		ctx->error = ret;
 	}
 
@@ -98,7 +98,7 @@ static void tianma_panel_get_data(struct tianma *ctx)
 
 	if (ret == 0) {
 		ret = tianma_dcs_read(ctx, 0x0A, buffer, 1);
-		dev_info(ctx->dev, "return %d data(0x%08x) to dsi engine\n",
+		dev_dbg(ctx->dev, "return %d data(0x%08x) to dsi engine\n",
 			 ret, buffer[0] | (buffer[1] << 8));
 	}
 }
@@ -125,7 +125,7 @@ static void tianma_dcs_write(struct tianma *ctx, const void *data, size_t len)
 	else
 		ret = mipi_dsi_generic_write(dsi, data, len);
 	if (ret < 0) {
-		dev_info(ctx->dev, "error %zd writing seq: %ph\n", ret, data);
+		dev_dbg(ctx->dev, "error %zd writing seq: %ph\n", ret, data);
 		ctx->error = ret;
 	}
 }
@@ -221,7 +221,7 @@ static void tianma_panel_init(struct tianma *ctx)
 {
 	ctx->reset_gpio = devm_gpiod_get(ctx->dev, "reset", GPIOD_OUT_HIGH);
 	if (IS_ERR(ctx->reset_gpio)) {
-		dev_info(ctx->dev, "%s: cannot get reset_gpio %ld\n",
+		dev_dbg(ctx->dev, "%s: cannot get reset_gpio %ld\n",
 			__func__, PTR_ERR(ctx->reset_gpio));
 		return;
 	}
@@ -567,7 +567,7 @@ static void tianma_panel_init(struct tianma *ctx)
 	tianma_dcs_write_seq_static(ctx, 0xFB, 0x01);
 	tianma_dcs_write_seq_static(ctx, 0x53, 0x22);
 	tianma_dcs_write_seq_static(ctx, 0x54, 0x02);
-	pr_info("%s, fps:%d\n", __func__, current_fps);
+	pr_debug("%s, fps:%d\n", __func__, current_fps);
 	tianma_dcs_write_seq_static(ctx, 0XFF, 0X25);
 	tianma_dcs_write_seq_static(ctx, 0XFB, 0X01);
 	tianma_dcs_write_seq_static(ctx, 0X18, 0X20);
@@ -623,7 +623,7 @@ static int tianma_unprepare(struct drm_panel *panel)
 
 	if (!ctx->prepared)
 		return 0;
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 
 	tianma_dcs_write_seq_static(ctx, 0x28);
 	tianma_dcs_write_seq_static(ctx, 0x10);
@@ -679,7 +679,7 @@ static int tianma_prepare(struct drm_panel *panel)
 	struct tianma *ctx = panel_to_tianma(panel);
 	int ret;
 
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 	if (ctx->prepared)
 		return 0;
 
@@ -972,7 +972,7 @@ static int tianma_setbacklight_cmdq(void *dsi, dcs_write_gce cb,
 {
 	if (level > 255)
 		level = 255;
-	pr_info("%s backlight = -%d\n", __func__, level);
+	pr_debug("%s backlight = -%d\n", __func__, level);
 	bl_tb0[1] = (u8)level;
 
 	if (!cb)
@@ -1039,7 +1039,7 @@ static int panel_ata_check(struct drm_panel *panel)
 
 	ret = mipi_dsi_dcs_read(dsi, 0x4, data, 3);
 	if (ret < 0) {
-		pr_info("%s error\n", __func__);
+		pr_debug("%s error\n", __func__);
 		return 0;
 	}
 
@@ -1101,7 +1101,7 @@ static int tianma_get_modes(struct drm_panel *panel)
 
 	mode = drm_mode_duplicate(panel->drm, &default_mode);
 	if (!mode) {
-		dev_info(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
+		dev_dbg(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
 			default_mode.hdisplay, default_mode.vdisplay,
 			default_mode.vrefresh);
 		return -ENOMEM;
@@ -1112,7 +1112,7 @@ static int tianma_get_modes(struct drm_panel *panel)
 
 	mode_1 = drm_mode_duplicate(panel->drm, &performance_mode_1);
 	if (!mode_1) {
-		dev_info(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
+		dev_dbg(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
 			performance_mode_1.hdisplay,
 			performance_mode_1.vdisplay,
 			performance_mode_1.vrefresh);
@@ -1125,7 +1125,7 @@ static int tianma_get_modes(struct drm_panel *panel)
 
 	mode_2 = drm_mode_duplicate(panel->drm, &performance_mode_2);
 	if (!mode_2) {
-		dev_info(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
+		dev_dbg(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
 			performance_mode_2.hdisplay,
 			performance_mode_2.vdisplay,
 			performance_mode_2.vrefresh);
@@ -1163,17 +1163,17 @@ static int tianma_probe(struct mipi_dsi_device *dsi)
 		if (endpoint) {
 			remote_node = of_graph_get_remote_port_parent(endpoint);
 			if (!remote_node) {
-				pr_info("No panel connected,skip probe lcm\n");
+				pr_debug("No panel connected,skip probe lcm\n");
 				return -ENODEV;
 			}
-			pr_info("device node name:%s\n", remote_node->name);
+			pr_debug("device node name:%s\n", remote_node->name);
 		}
 	}
 	if (remote_node != dev->of_node) {
-		pr_info("%s+ skip probe due to not current lcm\n", __func__);
+		pr_debug("%s+ skip probe due to not current lcm\n", __func__);
 		return -ENODEV;
 	}
-	pr_info("%s+\n", __func__);
+	pr_debug("%s+\n", __func__);
 	ctx = devm_kzalloc(dev, sizeof(struct tianma), GFP_KERNEL);
 	if (!ctx)
 		return -ENOMEM;
@@ -1198,7 +1198,7 @@ static int tianma_probe(struct mipi_dsi_device *dsi)
 
 	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
 	if (IS_ERR(ctx->reset_gpio)) {
-		dev_info(dev, "cannot get reset-gpios %ld\n",
+		dev_dbg(dev, "cannot get reset-gpios %ld\n",
 			PTR_ERR(ctx->reset_gpio));
 		return PTR_ERR(ctx->reset_gpio);
 	}
@@ -1245,7 +1245,7 @@ static int tianma_probe(struct mipi_dsi_device *dsi)
 		return ret;
 #endif
 
-	pr_info("%s-\n", __func__);
+	pr_debug("%s-\n", __func__);
 
 	return ret;
 }

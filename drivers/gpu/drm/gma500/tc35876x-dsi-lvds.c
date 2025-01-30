@@ -352,7 +352,7 @@ void tc35876x_configure_lvds_bridge(struct drm_device *dev)
 	dev_dbg(&tc35876x_client->dev, "%s\n", __func__);
 
 	if (!tc35876x_regr(i2c, IDREG, &id))
-		dev_info(&tc35876x_client->dev, "tc35876x ID 0x%08x\n", id);
+		dev_dbg(&tc35876x_client->dev, "tc35876x ID 0x%08x\n", id);
 	else
 		dev_err(&tc35876x_client->dev, "Cannot read ID\n");
 
@@ -595,15 +595,15 @@ static struct drm_display_mode *tc35876x_get_config_mode(struct drm_device *dev)
 	mode->vtotal = 838;
 	mode->clock = 33324 << 1;
 
-	dev_info(&dev->pdev->dev, "hdisplay(w) = %d\n", mode->hdisplay);
-	dev_info(&dev->pdev->dev, "vdisplay(h) = %d\n", mode->vdisplay);
-	dev_info(&dev->pdev->dev, "HSS = %d\n", mode->hsync_start);
-	dev_info(&dev->pdev->dev, "HSE = %d\n", mode->hsync_end);
-	dev_info(&dev->pdev->dev, "htotal = %d\n", mode->htotal);
-	dev_info(&dev->pdev->dev, "VSS = %d\n", mode->vsync_start);
-	dev_info(&dev->pdev->dev, "VSE = %d\n", mode->vsync_end);
-	dev_info(&dev->pdev->dev, "vtotal = %d\n", mode->vtotal);
-	dev_info(&dev->pdev->dev, "clock = %d\n", mode->clock);
+	dev_dbg(&dev->pdev->dev, "hdisplay(w) = %d\n", mode->hdisplay);
+	dev_dbg(&dev->pdev->dev, "vdisplay(h) = %d\n", mode->vdisplay);
+	dev_dbg(&dev->pdev->dev, "HSS = %d\n", mode->hsync_start);
+	dev_dbg(&dev->pdev->dev, "HSE = %d\n", mode->hsync_end);
+	dev_dbg(&dev->pdev->dev, "htotal = %d\n", mode->htotal);
+	dev_dbg(&dev->pdev->dev, "VSS = %d\n", mode->vsync_start);
+	dev_dbg(&dev->pdev->dev, "VSE = %d\n", mode->vsync_end);
+	dev_dbg(&dev->pdev->dev, "vtotal = %d\n", mode->vtotal);
+	dev_dbg(&dev->pdev->dev, "clock = %d\n", mode->clock);
 
 	drm_mode_set_name(mode);
 	drm_mode_set_crtcinfo(mode, 0);
@@ -634,7 +634,7 @@ static int tc35876x_bridge_probe(struct i2c_client *client,
 {
 	struct tc35876x_platform_data *pdata;
 
-	dev_info(&client->dev, "%s\n", __func__);
+	dev_dbg(&client->dev, "%s\n", __func__);
 
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
 		dev_err(&client->dev, "%s: i2c_check_functionality() failed\n",
@@ -707,7 +707,7 @@ static struct i2c_driver tc35876x_bridge_i2c_driver = {
 static int cmi_lcd_i2c_probe(struct i2c_client *client,
 			     const struct i2c_device_id *id)
 {
-	dev_info(&client->dev, "%s\n", __func__);
+	dev_dbg(&client->dev, "%s\n", __func__);
 
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
 		dev_err(&client->dev, "%s: i2c_check_functionality() failed\n",

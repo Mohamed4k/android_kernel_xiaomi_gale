@@ -437,7 +437,7 @@ static INT32 consys_cr_remapping(UINT32 enable)
 	if (enable) {
 		g_conn_mcu_btif_0_base = ioremap(CONN_MCU_BTIF_0_BASE, 0x100);
 		if (!g_conn_mcu_btif_0_base) {
-			pr_notice("g_conn_mcu_btif_0_base(%x) ioremap fail\n",
+			pr_info("g_conn_mcu_btif_0_base(%x) ioremap fail\n",
 				CONN_MCU_BTIF_0_BASE);
 			return -1;
 		}

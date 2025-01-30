@@ -806,7 +806,7 @@ static int genwqe_platform_recovery(struct genwqe_dev *cd)
 	struct pci_dev *pci_dev = cd->pci_dev;
 	int rc;
 
-	dev_info(&pci_dev->dev,
+	dev_dbg(&pci_dev->dev,
 		 "[%s] resetting card for error recovery\n", __func__);
 
 	/* Clear out error injection flags */
@@ -821,7 +821,7 @@ static int genwqe_platform_recovery(struct genwqe_dev *cd)
 	if (!rc) {
 		rc = genwqe_start(cd);
 		if (!rc)
-			dev_info(&pci_dev->dev,
+			dev_dbg(&pci_dev->dev,
 				 "[%s] card recovered\n", __func__);
 		else
 			dev_err(&pci_dev->dev,
@@ -848,7 +848,7 @@ static int genwqe_reload_bistream(struct genwqe_dev *cd)
 	struct pci_dev *pci_dev = cd->pci_dev;
 	int rc;
 
-	dev_info(&pci_dev->dev,
+	dev_dbg(&pci_dev->dev,
 		 "[%s] resetting card for bitstream reload\n",
 		 __func__);
 
@@ -881,7 +881,7 @@ static int genwqe_reload_bistream(struct genwqe_dev *cd)
 			__func__, rc);
 		return rc;
 	}
-	dev_info(&pci_dev->dev,
+	dev_dbg(&pci_dev->dev,
 		 "[%s] card reloaded\n", __func__);
 	return 0;
 }

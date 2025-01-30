@@ -1827,16 +1827,16 @@ static void cayman_gpu_soft_reset(struct radeon_device *rdev, u32 reset_mask)
 	if (reset_mask == 0)
 		return;
 
-	dev_info(rdev->dev, "GPU softreset: 0x%08X\n", reset_mask);
+	dev_dbg(rdev->dev, "GPU softreset: 0x%08X\n", reset_mask);
 
 	evergreen_print_gpu_status_regs(rdev);
-	dev_info(rdev->dev, "  VM_CONTEXT0_PROTECTION_FAULT_ADDR   0x%08X\n",
+	dev_dbg(rdev->dev, "  VM_CONTEXT0_PROTECTION_FAULT_ADDR   0x%08X\n",
 		 RREG32(0x14F8));
-	dev_info(rdev->dev, "  VM_CONTEXT0_PROTECTION_FAULT_STATUS 0x%08X\n",
+	dev_dbg(rdev->dev, "  VM_CONTEXT0_PROTECTION_FAULT_STATUS 0x%08X\n",
 		 RREG32(0x14D8));
-	dev_info(rdev->dev, "  VM_CONTEXT1_PROTECTION_FAULT_ADDR   0x%08X\n",
+	dev_dbg(rdev->dev, "  VM_CONTEXT1_PROTECTION_FAULT_ADDR   0x%08X\n",
 		 RREG32(0x14FC));
-	dev_info(rdev->dev, "  VM_CONTEXT1_PROTECTION_FAULT_STATUS 0x%08X\n",
+	dev_dbg(rdev->dev, "  VM_CONTEXT1_PROTECTION_FAULT_STATUS 0x%08X\n",
 		 RREG32(0x14DC));
 
 	/* Disable CP parsing/prefetching */
@@ -1916,7 +1916,7 @@ static void cayman_gpu_soft_reset(struct radeon_device *rdev, u32 reset_mask)
 	if (grbm_soft_reset) {
 		tmp = RREG32(GRBM_SOFT_RESET);
 		tmp |= grbm_soft_reset;
-		dev_info(rdev->dev, "GRBM_SOFT_RESET=0x%08X\n", tmp);
+		dev_dbg(rdev->dev, "GRBM_SOFT_RESET=0x%08X\n", tmp);
 		WREG32(GRBM_SOFT_RESET, tmp);
 		tmp = RREG32(GRBM_SOFT_RESET);
 
@@ -1930,7 +1930,7 @@ static void cayman_gpu_soft_reset(struct radeon_device *rdev, u32 reset_mask)
 	if (srbm_soft_reset) {
 		tmp = RREG32(SRBM_SOFT_RESET);
 		tmp |= srbm_soft_reset;
-		dev_info(rdev->dev, "SRBM_SOFT_RESET=0x%08X\n", tmp);
+		dev_dbg(rdev->dev, "SRBM_SOFT_RESET=0x%08X\n", tmp);
 		WREG32(SRBM_SOFT_RESET, tmp);
 		tmp = RREG32(SRBM_SOFT_RESET);
 

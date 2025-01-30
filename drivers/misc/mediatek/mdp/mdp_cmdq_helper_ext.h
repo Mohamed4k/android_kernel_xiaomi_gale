@@ -54,14 +54,14 @@ enum TASK_STATE_ENUM {
 
 #define CMDQ_LOG(string, args...) \
 do {			\
-	pr_notice("[MDP]"string, ##args); \
+	pr_debug("[MDP]"string, ##args); \
 	cmdq_core_save_first_dump("[MDP]"string, ##args); \
 } while (0)
 
 #define CMDQ_MSG(string, args...) \
 do {			\
 	if (cmdq_core_should_print_msg()) { \
-		pr_notice("[MDP]"string, ##args); \
+		pr_debug("[MDP]"string, ##args); \
 	} \
 } while (0)
 
@@ -75,7 +75,7 @@ do { \
 
 #define CMDQ_ERR(string, args...) \
 do {			\
-	pr_notice("[MDP][ERR]"string, ##args); \
+	pr_debug("[MDP][ERR]"string, ##args); \
 	cmdq_core_save_first_dump("[MDP]"string, ##args); \
 } while (0)
 
@@ -93,7 +93,7 @@ do {			\
 	int len = snprintf(dispatchedTag, 50, "CRDISPATCH_KEY:%s", tag); \
 	if (len >= 50) \
 		pr_debug("%s:%d len:%d over 50\n", __func__, __LINE__, len); \
-	pr_notice("[MDP][AEE]"string, ##args); \
+	pr_debug("[MDP][AEE]"string, ##args); \
 	cmdq_core_save_first_dump("[MDP][AEE]"string, ##args); \
 	aee_kernel_warning_api(__FILE__, __LINE__, \
 		DB_OPT_DEFAULT | DB_OPT_PROC_CMDQ_INFO | \

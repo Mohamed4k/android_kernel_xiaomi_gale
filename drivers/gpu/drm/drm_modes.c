@@ -1554,7 +1554,7 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
 	}
 done:
 	if (i >= 0) {
-		pr_warn("[drm] parse error at position %i in video mode '%s'\n",
+		pr_debug("[drm] parse error at position %i in video mode '%s'\n",
 			i, name);
 		mode->specified = false;
 		return false;

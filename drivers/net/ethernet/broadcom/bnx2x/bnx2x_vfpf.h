@@ -122,7 +122,7 @@ struct channel_list_end_tlv {
 struct vfpf_acquire_tlv {
 	struct vfpf_first_tlv first_tlv;
 
-	struct vf_pf_vfdev_info {
+	struct vf_pf_vfdev_dbg {
 		/* the following fields are for debug purposes */
 		u8  vf_id;		/* ME register value */
 		u8  vf_os;		/* e.g. Linux, W2K8 */
@@ -136,7 +136,7 @@ struct vfpf_acquire_tlv {
 		u8 caps;
 #define VF_CAP_SUPPORT_EXT_BULLETIN	(1 << 0)
 #define VF_CAP_SUPPORT_VLAN_FILTER	(1 << 1)
-	} vfdev_info;
+	} vfdev_dbg;
 
 	struct vf_pf_resc_request resc_request;
 
@@ -174,7 +174,7 @@ struct vfpf_rss_tlv {
 /* acquire response tlv - carries the allocated resources */
 struct pfvf_acquire_resp_tlv {
 	struct pfvf_tlv hdr;
-	struct pf_vf_pfdev_info {
+	struct pf_vf_pfdev_dbg {
 		u32 chip_num;
 		u32 pf_cap;
 #define PFVF_CAP_RSS          0x00000001
@@ -187,7 +187,7 @@ struct pfvf_acquire_resp_tlv {
 		u16 db_size;
 		u8  indices_per_sb;
 		u8  padding;
-	} pfdev_info;
+	} pfdev_dbg;
 	struct pf_vf_resc {
 		/* in case of status NO_RESOURCE in message hdr, pf will fill
 		 * this struct with suggested amount of resources for next

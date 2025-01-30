@@ -178,7 +178,7 @@ static int dpaa2_dpio_probe(struct fsl_mc_device *dpio_dev)
 		goto err_dpaa2_io_create;
 	}
 
-	dev_info(dev, "probed\n");
+	dev_dbg(dev, "probed\n");
 	dev_dbg(dev, "   receives_notifications = %d\n",
 		desc.receives_notifications);
 	dpio_close(dpio_dev->mc_io, 0, dpio_dev->mc_handle);

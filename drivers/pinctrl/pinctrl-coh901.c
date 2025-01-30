@@ -650,7 +650,7 @@ static int __init u300_gpio_probe(struct platform_device *pdev)
 		return err;
 	}
 
-	dev_info(gpio->dev,
+	dev_dbg(gpio->dev,
 		 "initializing GPIO Controller COH 901 571/3\n");
 	gpio->stride = U300_GPIO_PORT_STRIDE;
 	gpio->pcr = U300_GPIO_PXPCR;
@@ -663,7 +663,7 @@ static int __init u300_gpio_probe(struct platform_device *pdev)
 	ifr = U300_GPIO_PXIFR;
 
 	val = readl(gpio->base + U300_GPIO_CR);
-	dev_info(gpio->dev, "COH901571/3 block version: %d, " \
+	dev_dbg(gpio->dev, "COH901571/3 block version: %d, " \
 		 "number of cores: %d totalling %d pins\n",
 		 ((val & 0x000001FC) >> 2),
 		 ((val & 0x0000FE00) >> 9),

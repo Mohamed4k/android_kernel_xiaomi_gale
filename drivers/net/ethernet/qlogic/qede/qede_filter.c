@@ -741,7 +741,7 @@ int qede_vlan_rx_add_vid(struct net_device *dev, __be16 proto, u16 vid)
 	 * Note - vlan0 has a reserved filter and can be added without
 	 * worrying about quota
 	 */
-	if ((edev->configured_vlans < edev->dev_info.num_vlan_filters) ||
+	if ((edev->configured_vlans < edev->dev_dbg.num_vlan_filters) ||
 	    (vlan->vid == 0)) {
 		rc = qede_set_ucast_rx_vlan(edev,
 					    QED_FILTER_XCAST_TYPE_ADD,
@@ -795,13 +795,13 @@ static void qede_del_vlan_from_list(struct qede_dev *edev,
 int qede_configure_vlan_filters(struct qede_dev *edev)
 {
 	int rc = 0, real_rc = 0, accept_any_vlan = 0;
-	struct qed_dev_eth_info *dev_info;
+	struct qed_dev_eth_info *dev_dbg;
 	struct qede_vlan *vlan = NULL;
 
 	if (list_empty(&edev->vlan_list))
 		return 0;
 
-	dev_info = &edev->dev_info;
+	dev_dbg = &edev->dev_dbg;
 
 	/* Configure non-configured vlans */
 	list_for_each_entry(vlan, &edev->vlan_list, list) {
@@ -810,7 +810,7 @@ int qede_configure_vlan_filters(struct qede_dev *edev)
 
 		/* We have used all our credits, now enable accept_any_vlan */
 		if ((vlan->vid != 0) &&
-		    (edev->configured_vlans == dev_info->num_vlan_filters)) {
+		    (edev->configured_vlans == dev_dbg->num_vlan_filters)) {
 			accept_any_vlan = 1;
 			continue;
 		}
@@ -989,7 +989,7 @@ void qede_udp_tunnel_add(struct net_device *dev, struct udp_tunnel_info *ti)
 
 	switch (ti->type) {
 	case UDP_TUNNEL_TYPE_VXLAN:
-		if (!edev->dev_info.common.vxlan_enable)
+		if (!edev->dev_dbg.common.vxlan_enable)
 			return;
 
 		if (edev->vxlan_dst_port)
@@ -1013,7 +1013,7 @@ void qede_udp_tunnel_add(struct net_device *dev, struct udp_tunnel_info *ti)
 
 		break;
 	case UDP_TUNNEL_TYPE_GENEVE:
-		if (!edev->dev_info.common.geneve_enable)
+		if (!edev->dev_dbg.common.geneve_enable)
 			return;
 
 		if (edev->geneve_dst_port)
@@ -1312,7 +1312,7 @@ void qede_config_rx_mode(struct net_device *ndev)
 		accept_flags = QED_FILTER_RX_MODE_TYPE_REGULAR;
 
 	/* Configure all filters regardless, in case promisc is rejected */
-	if (uc_count < edev->dev_info.num_mac_filters) {
+	if (uc_count < edev->dev_dbg.num_mac_filters) {
 		int i;
 
 		temp = uc_macs;

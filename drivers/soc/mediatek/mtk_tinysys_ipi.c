@@ -20,7 +20,7 @@
 #define MS_TO_US(x) ((x)*1000)
 
 #define ipi_echo(en, fmt, args...) \
-	({ if (en) pr_info(fmt, ##args); })
+	({ if (en) pr_debug(fmt, ##args); })
 
 
 static void ipi_isr_cb(struct mtk_mbox_pin_recv *pin, void *priv);
@@ -117,7 +117,7 @@ void ipi_monitor_dump(struct mtk_ipi_device *ipidev)
 
 	ipi_chan_count = ipidev->mrpdev->rpdev.src;
 
-	pr_info("%s dump IPIMonitor:\n", ipidev->name);
+	pr_debug("%s dump IPIMonitor:\n", ipidev->name);
 
 	spin_lock_irqsave(&ipidev->lock_monitor, flags);
 
@@ -125,7 +125,7 @@ void ipi_monitor_dump(struct mtk_ipi_device *ipidev)
 		chan = &ipidev->table[i];
 		if (chan->ipi_stage == UNUSED)
 			continue;
-		pr_info("IPI %d: seqno=%d, state=%d, t%d=%lld, t%d=%lld, t%d=%lld\n",
+		pr_debug("IPI %d: seqno=%d, state=%d, t%d=%lld, t%d=%lld, t%d=%lld\n",
 			i, chan->ipi_seqno, chan->ipi_stage,
 			chan->ipi_record[0].idx, chan->ipi_record[0].ts,
 			chan->ipi_record[1].idx, chan->ipi_record[1].ts,
@@ -170,7 +170,7 @@ int mtk_ipi_device_register(struct mtk_ipi_device *ipidev,
 		mtk_rpchan = mtk_rpmsg_create_channel(mtk_rpdev, index,
 				chan_name);
 		if (!mtk_rpchan) {
-			pr_info("%s create rpmsg channel %d fail.\n",
+			pr_debug("%s create rpmsg channel %d fail.\n",
 				ipidev->name, index);
 			kfree(mtk_rpdev);
 			return IPI_RPMSG_ERR;
@@ -212,7 +212,7 @@ int mtk_ipi_device_register(struct mtk_ipi_device *ipidev,
 	ipidev->mbdev = mbox;
 	ipidev->ipi_inited = 1;
 
-	pr_info("%s (with %d IPI) has registered.\n",
+	pr_debug("%s (with %d IPI) has registered.\n",
 		ipidev->name, ipi_chan_count);
 	return IPI_ACTION_DONE;
 }
@@ -246,7 +246,7 @@ int mtk_ipi_device_reset(struct mtk_ipi_device *ipidev)
 
 	ipidev->ipi_inited = 1;
 
-	pr_info("%s (with %d IPI) has reset.\n", ipidev->name, chan_count);
+	pr_debug("%s (with %d IPI) has reset.\n", ipidev->name, chan_count);
 
 	return IPI_ACTION_DONE;
 }
@@ -328,7 +328,7 @@ int mtk_ipi_send(struct mtk_ipi_device *ipidev, int ipi_id,
 	wait_us = MS_TO_US(retry_timeout);
 
 	if (ipidev->pre_cb && ipidev->pre_cb(ipidev->prdata)) {
-		pr_notice("Error: IPI [%s] pre_cb fail\n", ipidev->table[ipi_id].rpchan->info.name);
+		pr_debug("Error: IPI [%s] pre_cb fail\n", ipidev->table[ipi_id].rpchan->info.name);
 		return IPI_PRE_CB_FAIL;
 	}
 
@@ -372,7 +372,7 @@ int mtk_ipi_send(struct mtk_ipi_device *ipidev, int ipi_id,
 		mutex_unlock(&pin->mutex_send);
 
 	if (ipidev->post_cb && ipidev->post_cb(ipidev->prdata)) {
-		pr_notice("Error: IPI [%s] post_cb fail\n",
+		pr_debug("Error: IPI [%s] post_cb fail\n",
 			ipidev->table[ipi_id].rpchan->info.name);
 		return IPI_POST_CB_FAIL;
 	}
@@ -381,7 +381,7 @@ int mtk_ipi_send(struct mtk_ipi_device *ipidev, int ipi_id,
 		ipi_timeout_dump(ipidev, ipi_id);
 		return IPI_PIN_BUSY;
 	} else if (ret != IPI_ACTION_DONE) {
-		pr_warn("%s IPI %d send fail (%d)\n",
+		pr_debug("%s IPI %d send fail (%d)\n",
 			ipidev->name, ipi_id, ret);
 		return IPI_RPMSG_ERR;
 	}
@@ -439,7 +439,7 @@ int mtk_ipi_send_compl(struct mtk_ipi_device *ipidev, int ipi_id,
 	wait = MS_TO_US(timeout);
 
 	if (ipidev->pre_cb && ipidev->pre_cb(ipidev->prdata)) {
-		pr_notice("Error: IPI [%s] pre_cb fail\n", ipidev->table[ipi_id].rpchan->info.name);
+		pr_debug("Error: IPI [%s] pre_cb fail\n", ipidev->table[ipi_id].rpchan->info.name);
 		return IPI_PRE_CB_FAIL;
 	}
 
@@ -483,12 +483,12 @@ int mtk_ipi_send_compl(struct mtk_ipi_device *ipidev, int ipi_id,
 		atomic_set(&ipidev->table[ipi_id].holder, 0);
 
 		if (ipidev->post_cb && ipidev->post_cb(ipidev->prdata)) {
-			pr_notice("Error: IPI [%s] post_cb fail\n",
+			pr_debug("Error: IPI [%s] post_cb fail\n",
 				ipidev->table[ipi_id].rpchan->info.name);
 			return IPI_POST_CB_FAIL;
 		}
 
-		pr_warn("%s IPI %d send fail (%d)\n",
+		pr_debug("%s IPI %d send fail (%d)\n",
 			ipidev->name, ipi_id, ret);
 		return (ret == MBOX_PIN_BUSY) ? IPI_PIN_BUSY : IPI_RPMSG_ERR;
 	}
@@ -538,7 +538,7 @@ int mtk_ipi_send_compl(struct mtk_ipi_device *ipidev, int ipi_id,
 		mutex_unlock(&pin_s->mutex_send);
 
 	if (ipidev->post_cb && ipidev->post_cb(ipidev->prdata)) {
-		pr_notice("Error: IPI [%s] post_cb fail\n",
+		pr_debug("Error: IPI [%s] post_cb fail\n",
 			ipidev->table[ipi_id].rpchan->info.name);
 		return IPI_POST_CB_FAIL;
 	}
@@ -579,7 +579,7 @@ int mtk_ipi_recv_reply(struct mtk_ipi_device *ipidev, int ipi_id,
 
 	/* send the response*/
 	if (ipidev->pre_cb && ipidev->pre_cb(ipidev->prdata)) {
-		pr_notice("Error: IPI [%s] pre_cb fail\n", ipidev->table[ipi_id].rpchan->info.name);
+		pr_debug("Error: IPI [%s] pre_cb fail\n", ipidev->table[ipi_id].rpchan->info.name);
 		return IPI_PRE_CB_FAIL;
 	}
 
@@ -596,7 +596,7 @@ int mtk_ipi_recv_reply(struct mtk_ipi_device *ipidev, int ipi_id,
 	spin_unlock_irqrestore(&pin_s->pin_lock, flags);
 
 	if (ipidev->post_cb && ipidev->post_cb(ipidev->prdata)) {
-		pr_notice("Error: IPI [%s] post_cb fail\n",
+		pr_debug("Error: IPI [%s] post_cb fail\n",
 			ipidev->table[ipi_id].rpchan->info.name);
 		return IPI_POST_CB_FAIL;
 	}
@@ -604,7 +604,7 @@ int mtk_ipi_recv_reply(struct mtk_ipi_device *ipidev, int ipi_id,
 	if (ret == MBOX_PIN_BUSY)
 		return IPI_PIN_BUSY;
 	else if (ret != IPI_ACTION_DONE) {
-		pr_warn("%s IPI %d reply fail (%d)\n",
+		pr_debug("%s IPI %d reply fail (%d)\n",
 			ipidev->name, ipi_id, ret);
 		return IPI_RPMSG_ERR;
 	}
@@ -616,7 +616,7 @@ EXPORT_SYMBOL(mtk_ipi_recv_reply);
 void mtk_ipi_tracking(struct mtk_ipi_device *ipidev, bool en)
 {
 	ipidev->mbdev->log_enable = en;
-	pr_info("%s IPI tracking %s\n", ipidev->name, en ? "on" : "off");
+	pr_debug("%s IPI tracking %s\n", ipidev->name, en ? "on" : "off");
 }
 EXPORT_SYMBOL(mtk_ipi_tracking);
 

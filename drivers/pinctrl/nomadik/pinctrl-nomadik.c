@@ -1194,7 +1194,7 @@ static int nmk_gpio_probe(struct platform_device *dev)
 					     nmk_chip->latent_parent_irq,
 					     nmk_gpio_latent_irq_handler);
 
-	dev_info(&dev->dev, "at address %p\n", nmk_chip->addr);
+	dev_dbg(&dev->dev, "at address %p\n", nmk_chip->addr);
 
 	return 0;
 }
@@ -1903,7 +1903,7 @@ static int nmk_pinctrl_probe(struct platform_device *pdev)
 
 		gpio_np = of_parse_phandle(np, "nomadik-gpio-chips", i);
 		if (gpio_np) {
-			dev_info(&pdev->dev,
+			dev_dbg(&pdev->dev,
 				 "populate NMK GPIO %d \"%s\"\n",
 				 i, gpio_np->name);
 			nmk_chip = nmk_gpio_populate_chip(gpio_np, pdev);
@@ -1920,7 +1920,7 @@ static int nmk_pinctrl_probe(struct platform_device *pdev)
 		npct->prcm_base = of_iomap(prcm_np, 0);
 	if (!npct->prcm_base) {
 		if (version == PINCTRL_NMK_STN8815) {
-			dev_info(&pdev->dev,
+			dev_dbg(&pdev->dev,
 				 "No PRCM base, "
 				 "assuming no ALT-Cx control is available\n");
 		} else {
@@ -1940,7 +1940,7 @@ static int nmk_pinctrl_probe(struct platform_device *pdev)
 	}
 
 	platform_set_drvdata(pdev, npct);
-	dev_info(&pdev->dev, "initialized Nomadik pin control driver\n");
+	dev_dbg(&pdev->dev, "initialized Nomadik pin control driver\n");
 
 	return 0;
 }

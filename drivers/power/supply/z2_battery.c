@@ -163,7 +163,7 @@ static int z2_batt_ps_init(struct z2_charger *charger, int props)
 		prop[i++] = POWER_SUPPLY_PROP_VOLTAGE_MIN;
 
 	if (!info->batt_name) {
-		dev_info(&charger->client->dev,
+		dev_dbg(&charger->client->dev,
 				"Please consider setting proper battery "
 				"name in platform definition file, falling "
 				"back to name \" Z2_DEFAULT_NAME \"\n");

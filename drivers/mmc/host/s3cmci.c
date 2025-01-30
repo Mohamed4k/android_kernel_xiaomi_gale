@@ -141,7 +141,7 @@ static const int dbgmap_debug = dbg_err | dbg_debug;
 	if (dbgmap_err & channels) 		  \
 		dev_err(&host->pdev->dev, args);  \
 	else if (dbgmap_info & channels)	  \
-		dev_info(&host->pdev->dev, args); \
+		dev_dbg(&host->pdev->dev, args); \
 	else if (dbgmap_debug & channels)	  \
 		dev_dbg(&host->pdev->dev, args);  \
 	} while (0)
@@ -974,7 +974,7 @@ static int s3cmci_setup_data(struct s3cmci_host *host, struct mmc_data *data)
 		 * one block being transferred. */
 
 		if (data->blocks > 1) {
-			pr_warn("%s: can't do non-word sized block transfers (blksz %d)\n",
+			pr_debug("%s: can't do non-word sized block transfers (blksz %d)\n",
 				__func__, data->blksz);
 			return -EINVAL;
 		}
@@ -1746,7 +1746,7 @@ static int s3cmci_probe(struct platform_device *pdev)
 	s3cmci_debugfs_attach(host);
 
 	platform_set_drvdata(pdev, mmc);
-	dev_info(&pdev->dev, "%s - using %s, %s SDIO IRQ\n", mmc_hostname(mmc),
+	dev_dbg(&pdev->dev, "%s - using %s, %s SDIO IRQ\n", mmc_hostname(mmc),
 		 s3cmci_host_usedma(host) ? "dma" : "pio",
 		 mmc->caps & MMC_CAP_SDIO_IRQ ? "hw" : "sw");
 

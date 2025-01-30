@@ -131,7 +131,7 @@ static int qtnf_trans_event_enqueue(struct qtnf_bus *bus, struct sk_buff *skb)
 		skb_queue_tail(&trans->event_queue, skb);
 		queue_work(bus->workqueue, &bus->event_work);
 	} else {
-		pr_warn("event dropped due to queue overflow\n");
+		pr_debug("event dropped due to queue overflow\n");
 		dev_kfree_skb(skb);
 		return -1;
 	}
@@ -184,13 +184,13 @@ int qtnf_trans_handle_rx_ctl_packet(struct qtnf_bus *bus, struct sk_buff *skb)
 	int ret = -1;
 
 	if (unlikely(skb->len < sizeof(*header))) {
-		pr_warn("packet is too small: %u\n", skb->len);
+		pr_debug("packet is too small: %u\n", skb->len);
 		dev_kfree_skb(skb);
 		return -EINVAL;
 	}
 
 	if (unlikely(skb->len != le16_to_cpu(header->len))) {
-		pr_warn("cmd reply length mismatch: %u != %u\n",
+		pr_debug("cmd reply length mismatch: %u != %u\n",
 			skb->len, le16_to_cpu(header->len));
 		dev_kfree_skb(skb);
 		return -EFAULT;
@@ -199,7 +199,7 @@ int qtnf_trans_handle_rx_ctl_packet(struct qtnf_bus *bus, struct sk_buff *skb)
 	switch (le16_to_cpu(header->type)) {
 	case QLINK_MSG_TYPE_CMDRSP:
 		if (unlikely(skb->len < sizeof(struct qlink_cmd))) {
-			pr_warn("cmd reply too short: %u\n", skb->len);
+			pr_debug("cmd reply too short: %u\n", skb->len);
 			dev_kfree_skb(skb);
 			break;
 		}
@@ -208,7 +208,7 @@ int qtnf_trans_handle_rx_ctl_packet(struct qtnf_bus *bus, struct sk_buff *skb)
 		break;
 	case QLINK_MSG_TYPE_EVENT:
 		if (unlikely(skb->len < sizeof(struct qlink_event))) {
-			pr_warn("event too short: %u\n", skb->len);
+			pr_debug("event too short: %u\n", skb->len);
 			dev_kfree_skb(skb);
 			break;
 		}
@@ -216,7 +216,7 @@ int qtnf_trans_handle_rx_ctl_packet(struct qtnf_bus *bus, struct sk_buff *skb)
 		ret = qtnf_trans_event_enqueue(bus, skb);
 		break;
 	default:
-		pr_warn("unknown packet type: %x\n", le16_to_cpu(header->type));
+		pr_debug("unknown packet type: %x\n", le16_to_cpu(header->type));
 		dev_kfree_skb(skb);
 		break;
 	}

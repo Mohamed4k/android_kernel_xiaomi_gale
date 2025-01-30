@@ -612,21 +612,21 @@ static int rtl8192eu_parse_efuse(struct rtl8xxxu_priv *priv)
 	priv->has_xtalk = 1;
 	priv->xtalk = priv->efuse_wifi.efuse8192eu.xtal_k & 0x3f;
 
-	dev_info(&priv->udev->dev, "Vendor: %.7s\n", efuse->vendor_name);
-	dev_info(&priv->udev->dev, "Product: %.11s\n", efuse->device_name);
+	dev_dbg(&priv->udev->dev, "Vendor: %.7s\n", efuse->vendor_name);
+	dev_dbg(&priv->udev->dev, "Product: %.11s\n", efuse->device_name);
 	if (memchr_inv(efuse->serial, 0xff, 11))
-		dev_info(&priv->udev->dev, "Serial: %.11s\n", efuse->serial);
+		dev_dbg(&priv->udev->dev, "Serial: %.11s\n", efuse->serial);
 	else
-		dev_info(&priv->udev->dev, "Serial not available.\n");
+		dev_dbg(&priv->udev->dev, "Serial not available.\n");
 
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_EFUSE) {
 		unsigned char *raw = priv->efuse_wifi.raw;
 
-		dev_info(&priv->udev->dev,
+		dev_dbg(&priv->udev->dev,
 			 "%s: dumping efuse (0x%02zx bytes):\n",
 			 __func__, sizeof(struct rtl8192eu_efuse));
 		for (i = 0; i < sizeof(struct rtl8192eu_efuse); i += 8)
-			dev_info(&priv->udev->dev, "%02x: %8ph\n", i, &raw[i]);
+			dev_dbg(&priv->udev->dev, "%02x: %8ph\n", i, &raw[i]);
 	}
 	return 0;
 }

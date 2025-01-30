@@ -769,12 +769,12 @@ static int be_set_dump(struct net_device *netdev, struct ethtool_dump *dump)
 	case LANCER_INITIATE_FW_DUMP:
 		status = lancer_initiate_dump(adapter);
 		if (!status)
-			dev_info(dev, "FW dump initiated successfully\n");
+			dev_dbg(dev, "FW dump initiated successfully\n");
 		break;
 	case LANCER_DELETE_FW_DUMP:
 		status = lancer_delete_dump(adapter);
 		if (!status)
-			dev_info(dev, "FW dump deleted successfully\n");
+			dev_dbg(dev, "FW dump deleted successfully\n");
 	break;
 	default:
 		dev_err(dev, "Invalid dump level: 0x%x\n", dump->flag);
@@ -1111,7 +1111,7 @@ static int be_get_rxnfc(struct net_device *netdev, struct ethtool_rxnfc *cmd,
 	struct be_adapter *adapter = netdev_priv(netdev);
 
 	if (!be_multi_rxq(adapter)) {
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "ethtool::get_rxnfc: RX flow hashing is disabled\n");
 		return -EINVAL;
 	}
@@ -1399,11 +1399,11 @@ static int be_set_priv_flags(struct net_device *netdev, u32 flags)
 	if (tpe_old != tpe_new) {
 		if (tpe_new) {
 			adapter->priv_flags |= BE_DISABLE_TPE_RECOVERY;
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "HW error recovery is disabled\n");
 		} else {
 			adapter->priv_flags &= ~BE_DISABLE_TPE_RECOVERY;
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "HW error recovery is enabled\n");
 		}
 	}

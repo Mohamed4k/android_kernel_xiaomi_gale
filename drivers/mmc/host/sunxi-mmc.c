@@ -1422,7 +1422,7 @@ static int sunxi_mmc_probe(struct platform_device *pdev)
 	if (ret)
 		goto error_free_dma;
 
-	dev_info(&pdev->dev, "initialized, max. request size: %u KB%s\n",
+	dev_dbg(&pdev->dev, "initialized, max. request size: %u KB%s\n",
 		 mmc->max_req_size >> 10,
 		 host->use_new_timings ? ", uses new timings mode" : "");
 

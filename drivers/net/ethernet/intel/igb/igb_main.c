@@ -345,12 +345,12 @@ static void igb_regdump(struct e1000_hw *hw, struct igb_reg_info *reginfo)
 			regs[n] = rd32(E1000_TXDCTL(n));
 		break;
 	default:
-		pr_info("%-15s %08x\n", reginfo->name, rd32(reginfo->ofs));
+		pr_debug("%-15s %08x\n", reginfo->name, rd32(reginfo->ofs));
 		return;
 	}
 
 	snprintf(rname, 16, "%s%s", reginfo->name, "[0-3]");
-	pr_info("%-15s %08x %08x %08x %08x\n", rname, regs[0], regs[1],
+	pr_debug("%-15s %08x %08x %08x %08x\n", rname, regs[0], regs[1],
 		regs[2], regs[3]);
 }
 
@@ -373,15 +373,15 @@ static void igb_dump(struct igb_adapter *adapter)
 
 	/* Print netdevice Info */
 	if (netdev) {
-		dev_info(&adapter->pdev->dev, "Net device Info\n");
-		pr_info("Device Name     state            trans_start\n");
-		pr_info("%-15s %016lX %016lX\n", netdev->name,
+		dev_dbg(&adapter->pdev->dev, "Net device Info\n");
+		pr_debug("Device Name     state            trans_start\n");
+		pr_debug("%-15s %016lX %016lX\n", netdev->name,
 			netdev->state, dev_trans_start(netdev));
 	}
 
 	/* Print Registers */
-	dev_info(&adapter->pdev->dev, "Register Dump\n");
-	pr_info(" Register Name   Value\n");
+	dev_dbg(&adapter->pdev->dev, "Register Dump\n");
+	pr_debug(" Register Name   Value\n");
 	for (reginfo = (struct igb_reg_info *)igb_reg_info_tbl;
 	     reginfo->name; reginfo++) {
 		igb_regdump(hw, reginfo);
@@ -391,13 +391,13 @@ static void igb_dump(struct igb_adapter *adapter)
 	if (!netdev || !netif_running(netdev))
 		goto exit;
 
-	dev_info(&adapter->pdev->dev, "TX Rings Summary\n");
-	pr_info("Queue [NTU] [NTC] [bi(ntc)->dma  ] leng ntw timestamp\n");
+	dev_dbg(&adapter->pdev->dev, "TX Rings Summary\n");
+	pr_debug("Queue [NTU] [NTC] [bi(ntc)->dma  ] leng ntw timestamp\n");
 	for (n = 0; n < adapter->num_tx_queues; n++) {
 		struct igb_tx_buffer *buffer_info;
 		tx_ring = adapter->tx_ring[n];
 		buffer_info = &tx_ring->tx_buffer_info[tx_ring->next_to_clean];
-		pr_info(" %5d %5X %5X %016llX %04X %p %016llX\n",
+		pr_debug(" %5d %5X %5X %016llX %04X %p %016llX\n",
 			n, tx_ring->next_to_use, tx_ring->next_to_clean,
 			(u64)dma_unmap_addr(buffer_info, dma),
 			dma_unmap_len(buffer_info, len),
@@ -409,7 +409,7 @@ static void igb_dump(struct igb_adapter *adapter)
 	if (!netif_msg_tx_done(adapter))
 		goto rx_ring_summary;
 
-	dev_info(&adapter->pdev->dev, "TX Rings Dump\n");
+	dev_dbg(&adapter->pdev->dev, "TX Rings Dump\n");
 
 	/* Transmit Descriptor Formats
 	 *
@@ -424,10 +424,10 @@ static void igb_dump(struct igb_adapter *adapter)
 
 	for (n = 0; n < adapter->num_tx_queues; n++) {
 		tx_ring = adapter->tx_ring[n];
-		pr_info("------------------------------------\n");
-		pr_info("TX QUEUE INDEX = %d\n", tx_ring->queue_index);
-		pr_info("------------------------------------\n");
-		pr_info("T [desc]     [address 63:0  ] [PlPOCIStDDM Ln] [bi->dma       ] leng  ntw timestamp        bi->skb\n");
+		pr_debug("------------------------------------\n");
+		pr_debug("TX QUEUE INDEX = %d\n", tx_ring->queue_index);
+		pr_debug("------------------------------------\n");
+		pr_debug("T [desc]     [address 63:0  ] [PlPOCIStDDM Ln] [bi->dma       ] leng  ntw timestamp        bi->skb\n");
 
 		for (i = 0; tx_ring->desc && (i < tx_ring->count); i++) {
 			const char *next_desc;
@@ -445,7 +445,7 @@ static void igb_dump(struct igb_adapter *adapter)
 			else
 				next_desc = "";
 
-			pr_info("T [0x%03X]    %016llX %016llX %016llX %04X  %p %016llX %p%s\n",
+			pr_debug("T [0x%03X]    %016llX %016llX %016llX %04X  %p %016llX %p%s\n",
 				i, le64_to_cpu(u0->a),
 				le64_to_cpu(u0->b),
 				(u64)dma_unmap_addr(buffer_info, dma),
@@ -465,11 +465,11 @@ static void igb_dump(struct igb_adapter *adapter)
 
 	/* Print RX Rings Summary */
 rx_ring_summary:
-	dev_info(&adapter->pdev->dev, "RX Rings Summary\n");
-	pr_info("Queue [NTU] [NTC]\n");
+	dev_dbg(&adapter->pdev->dev, "RX Rings Summary\n");
+	pr_debug("Queue [NTU] [NTC]\n");
 	for (n = 0; n < adapter->num_rx_queues; n++) {
 		rx_ring = adapter->rx_ring[n];
-		pr_info(" %5d %5X %5X\n",
+		pr_debug(" %5d %5X %5X\n",
 			n, rx_ring->next_to_use, rx_ring->next_to_clean);
 	}
 
@@ -477,7 +477,7 @@ rx_ring_summary:
 	if (!netif_msg_rx_status(adapter))
 		goto exit;
 
-	dev_info(&adapter->pdev->dev, "RX Rings Dump\n");
+	dev_dbg(&adapter->pdev->dev, "RX Rings Dump\n");
 
 	/* Advanced Receive Descriptor (Read) Format
 	 *    63                                           1        0
@@ -502,11 +502,11 @@ rx_ring_summary:
 
 	for (n = 0; n < adapter->num_rx_queues; n++) {
 		rx_ring = adapter->rx_ring[n];
-		pr_info("------------------------------------\n");
-		pr_info("RX QUEUE INDEX = %d\n", rx_ring->queue_index);
-		pr_info("------------------------------------\n");
-		pr_info("R  [desc]      [ PktBuf     A0] [  HeadBuf   DD] [bi->dma       ] [bi->skb] <-- Adv Rx Read format\n");
-		pr_info("RWB[desc]      [PcsmIpSHl PtRs] [vl er S cks ln] ---------------- [bi->skb] <-- Adv Rx Write-Back format\n");
+		pr_debug("------------------------------------\n");
+		pr_debug("RX QUEUE INDEX = %d\n", rx_ring->queue_index);
+		pr_debug("------------------------------------\n");
+		pr_debug("R  [desc]      [ PktBuf     A0] [  HeadBuf   DD] [bi->dma       ] [bi->skb] <-- Adv Rx Read format\n");
+		pr_debug("RWB[desc]      [PcsmIpSHl PtRs] [vl er S cks ln] ---------------- [bi->skb] <-- Adv Rx Write-Back format\n");
 
 		for (i = 0; i < rx_ring->count; i++) {
 			const char *next_desc;
@@ -525,13 +525,13 @@ rx_ring_summary:
 
 			if (staterr & E1000_RXD_STAT_DD) {
 				/* Descriptor Done */
-				pr_info("%s[0x%03X]     %016llX %016llX ---------------- %s\n",
+				pr_debug("%s[0x%03X]     %016llX %016llX ---------------- %s\n",
 					"RWB", i,
 					le64_to_cpu(u0->a),
 					le64_to_cpu(u0->b),
 					next_desc);
 			} else {
-				pr_info("%s[0x%03X]     %016llX %016llX %016llX %s\n",
+				pr_debug("%s[0x%03X]     %016llX %016llX %016llX %s\n",
 					"R  ", i,
 					le64_to_cpu(u0->a),
 					le64_to_cpu(u0->b),
@@ -666,9 +666,9 @@ static int __init igb_init_module(void)
 {
 	int ret;
 
-	pr_info("%s - version %s\n",
+	pr_debug("%s - version %s\n",
 	       igb_driver_string, igb_driver_version);
-	pr_info("%s\n", igb_copyright);
+	pr_debug("%s\n", igb_copyright);
 
 #ifdef CONFIG_IGB_DCA
 	dca_register_notify(&dca_notifier);
@@ -1150,7 +1150,7 @@ msi_only:
 		wr32(E1000_IOVCTL, E1000_IOVCTL_REUSE_VFQ);
 		wrfl();
 		msleep(100);
-		dev_info(&adapter->pdev->dev, "IOV Disabled\n");
+		dev_dbg(&adapter->pdev->dev, "IOV Disabled\n");
 	}
 #endif
 	adapter->vfs_allocated_count = 0;
@@ -2088,7 +2088,7 @@ static void igb_check_swap_media(struct igb_adapter *adapter)
 
 	switch (hw->phy.media_type) {
 	case e1000_media_type_copper:
-		netdev_info(adapter->netdev,
+		netdev_dbg(adapter->netdev,
 			"MAS: changing media to fiber/serdes\n");
 		ctrl_ext |=
 			E1000_CTRL_EXT_LINK_MODE_PCIE_SERDES;
@@ -2097,7 +2097,7 @@ static void igb_check_swap_media(struct igb_adapter *adapter)
 		break;
 	case e1000_media_type_internal_serdes:
 	case e1000_media_type_fiber:
-		netdev_info(adapter->netdev,
+		netdev_dbg(adapter->netdev,
 			"MAS: changing media to copper\n");
 		ctrl_ext &=
 			~E1000_CTRL_EXT_LINK_MODE_PCIE_SERDES;
@@ -2947,7 +2947,7 @@ static void igb_init_mas(struct igb_adapter *adapter)
 	case E1000_FUNC_0:
 		if (eeprom_data & IGB_MAS_ENABLE_0) {
 			adapter->flags |= IGB_FLAG_MAS_ENABLE;
-			netdev_info(adapter->netdev,
+			netdev_dbg(adapter->netdev,
 				"MAS: Enabling Media Autosense for port %d\n",
 				hw->bus.func);
 		}
@@ -2955,7 +2955,7 @@ static void igb_init_mas(struct igb_adapter *adapter)
 	case E1000_FUNC_1:
 		if (eeprom_data & IGB_MAS_ENABLE_1) {
 			adapter->flags |= IGB_FLAG_MAS_ENABLE;
-			netdev_info(adapter->netdev,
+			netdev_dbg(adapter->netdev,
 				"MAS: Enabling Media Autosense for port %d\n",
 				hw->bus.func);
 		}
@@ -2963,7 +2963,7 @@ static void igb_init_mas(struct igb_adapter *adapter)
 	case E1000_FUNC_2:
 		if (eeprom_data & IGB_MAS_ENABLE_2) {
 			adapter->flags |= IGB_FLAG_MAS_ENABLE;
-			netdev_info(adapter->netdev,
+			netdev_dbg(adapter->netdev,
 				"MAS: Enabling Media Autosense for port %d\n",
 				hw->bus.func);
 		}
@@ -2971,7 +2971,7 @@ static void igb_init_mas(struct igb_adapter *adapter)
 	case E1000_FUNC_3:
 		if (eeprom_data & IGB_MAS_ENABLE_3) {
 			adapter->flags |= IGB_FLAG_MAS_ENABLE;
-			netdev_info(adapter->netdev,
+			netdev_dbg(adapter->netdev,
 				"MAS: Enabling Media Autosense for port %d\n",
 				hw->bus.func);
 		}
@@ -3134,7 +3134,7 @@ static int igb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	}
 
 	if (igb_check_reset_block(hw))
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			"PHY reset is blocked due to SOL/IDER session.\n");
 
 	/* features is initialized to 0 in allocation, it might have bits
@@ -3374,7 +3374,7 @@ static int igb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 #ifdef CONFIG_IGB_DCA
 	if (dca_add_requester(&pdev->dev) == 0) {
 		adapter->flags |= IGB_FLAG_DCA_ENABLED;
-		dev_info(&pdev->dev, "DCA enabled\n");
+		dev_dbg(&pdev->dev, "DCA enabled\n");
 		igb_setup_dca(adapter);
 	}
 
@@ -3407,10 +3407,10 @@ static int igb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	/* do hw tstamp init after resetting */
 	igb_ptp_init(adapter);
 
-	dev_info(&pdev->dev, "Intel(R) Gigabit Ethernet Network Connection\n");
+	dev_dbg(&pdev->dev, "Intel(R) Gigabit Ethernet Network Connection\n");
 	/* print bus type/speed/width info, not applicable to i354 */
 	if (hw->mac.type != e1000_i354) {
-		dev_info(&pdev->dev, "%s: (PCIe:%s:%s) %pM\n",
+		dev_dbg(&pdev->dev, "%s: (PCIe:%s:%s) %pM\n",
 			 netdev->name,
 			 ((hw->bus.speed == e1000_bus_speed_2500) ? "2.5Gb/s" :
 			  (hw->bus.speed == e1000_bus_speed_5000) ? "5.0Gb/s" :
@@ -3433,8 +3433,8 @@ static int igb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	if (ret_val)
 		strcpy(part_str, "Unknown");
-	dev_info(&pdev->dev, "%s: PBA No: %s\n", netdev->name, part_str);
-	dev_info(&pdev->dev,
+	dev_dbg(&pdev->dev, "%s: PBA No: %s\n", netdev->name, part_str);
+	dev_dbg(&pdev->dev,
 		"Using %s interrupts. %d rx queue(s), %d tx queue(s)\n",
 		(adapter->flags & IGB_FLAG_HAS_MSIX) ? "MSI-X" :
 		(adapter->flags & IGB_FLAG_HAS_MSI) ? "MSI" : "legacy",
@@ -3529,7 +3529,7 @@ static int igb_disable_sriov(struct pci_dev *pdev)
 		wr32(E1000_IOVCTL, E1000_IOVCTL_REUSE_VFQ);
 		wrfl();
 		msleep(100);
-		dev_info(&pdev->dev, "IOV Disabled\n");
+		dev_dbg(&pdev->dev, "IOV Disabled\n");
 
 		/* Re-enable DMA Coalescing flag since IOV is turned off */
 		adapter->flags |= IGB_FLAG_DMAC;
@@ -3555,7 +3555,7 @@ static int igb_enable_sriov(struct pci_dev *pdev, int num_vfs)
 		goto out;
 
 	if (old_vfs) {
-		dev_info(&pdev->dev, "%d pre-allocated VFs found - override max_vfs setting of %d\n",
+		dev_dbg(&pdev->dev, "%d pre-allocated VFs found - override max_vfs setting of %d\n",
 			 old_vfs, max_vfs);
 		adapter->vfs_allocated_count = old_vfs;
 	} else
@@ -3609,7 +3609,7 @@ static int igb_enable_sriov(struct pci_dev *pdev, int num_vfs)
 		if (err)
 			goto err_out;
 	}
-	dev_info(&pdev->dev, "%d VFs allocated\n",
+	dev_dbg(&pdev->dev, "%d VFs allocated\n",
 		 adapter->vfs_allocated_count);
 	for (i = 0; i < adapter->vfs_allocated_count; i++)
 		igb_vf_configure(adapter, i);
@@ -3672,7 +3672,7 @@ static void igb_remove(struct pci_dev *pdev)
 
 #ifdef CONFIG_IGB_DCA
 	if (adapter->flags & IGB_FLAG_DCA_ENABLED) {
-		dev_info(&pdev->dev, "DCA disabled\n");
+		dev_dbg(&pdev->dev, "DCA disabled\n");
 		dca_remove_requester(&pdev->dev);
 		adapter->flags &= ~IGB_FLAG_DCA_ENABLED;
 		wr32(E1000_DCA_CTRL, E1000_DCA_CTRL_DCA_MODE_DISABLE);
@@ -5294,7 +5294,7 @@ static void igb_watchdog_task(struct work_struct *work)
 
 			ctrl = rd32(E1000_CTRL);
 			/* Links status message must follow this format */
-			netdev_info(netdev,
+			netdev_dbg(netdev,
 			       "igb: %s NIC Link is Up %d Mbps %s Duplex, Flow Control: %s\n",
 			       netdev->name,
 			       adapter->link_speed,
@@ -5308,7 +5308,7 @@ static void igb_watchdog_task(struct work_struct *work)
 			/* disable EEE if enabled */
 			if ((adapter->flags & IGB_FLAG_EEE) &&
 				(adapter->link_duplex == HALF_DUPLEX)) {
-				dev_info(&adapter->pdev->dev,
+				dev_dbg(&adapter->pdev->dev,
 				"EEE Disabled: unsupported at half duplex. Re-enable using ethtool when at full duplex.\n");
 				adapter->hw.dev_spec._82575.eee_disable = true;
 				adapter->flags &= ~IGB_FLAG_EEE;
@@ -5322,7 +5322,7 @@ static void igb_watchdog_task(struct work_struct *work)
 			/* check for thermal sensor event */
 			if (igb_thermal_sensor_event(hw,
 			    E1000_THSTAT_LINK_THROTTLE))
-				netdev_info(netdev, "The network adapter link speed was downshifted because it overheated\n");
+				netdev_dbg(netdev, "The network adapter link speed was downshifted because it overheated\n");
 
 			/* adjust timeout factor according to speed/duplex */
 			adapter->tx_timeout_factor = 1;
@@ -5376,7 +5376,7 @@ no_wait:
 			}
 
 			/* Links status message must follow this format */
-			netdev_info(netdev, "igb: %s NIC Link is Down\n",
+			netdev_dbg(netdev, "igb: %s NIC Link is Down\n",
 			       netdev->name);
 			netif_carrier_off(netdev);
 
@@ -6282,7 +6282,7 @@ static int igb_change_mtu(struct net_device *netdev, int new_mtu)
 	if (netif_running(netdev))
 		igb_down(adapter);
 
-	dev_info(&pdev->dev, "changing MTU from %d to %d\n",
+	dev_dbg(&pdev->dev, "changing MTU from %d to %d\n",
 		 netdev->mtu, new_mtu);
 	netdev->mtu = new_mtu;
 
@@ -6723,7 +6723,7 @@ static int __igb_notify_dca(struct device *dev, void *data)
 			break;
 		if (dca_add_requester(dev) == 0) {
 			adapter->flags |= IGB_FLAG_DCA_ENABLED;
-			dev_info(&pdev->dev, "DCA enabled\n");
+			dev_dbg(&pdev->dev, "DCA enabled\n");
 			igb_setup_dca(adapter);
 			break;
 		}
@@ -6734,7 +6734,7 @@ static int __igb_notify_dca(struct device *dev, void *data)
 			 * hanging around in the sysfs model
 			 */
 			dca_remove_requester(dev);
-			dev_info(&pdev->dev, "DCA disabled\n");
+			dev_dbg(&pdev->dev, "DCA disabled\n");
 			adapter->flags &= ~IGB_FLAG_DCA_ENABLED;
 			wr32(E1000_DCA_CTRL, E1000_DCA_CTRL_DCA_MODE_DISABLE);
 		}
@@ -7041,7 +7041,7 @@ static int igb_enable_port_vlan(struct igb_adapter *adapter, int vf,
 	adapter->vf_data[vf].pf_vlan = vlan;
 	adapter->vf_data[vf].pf_qos = qos;
 	igb_set_vf_vlan_strip(adapter, vf, true);
-	dev_info(&adapter->pdev->dev,
+	dev_dbg(&adapter->pdev->dev,
 		 "Setting VLAN %d, QOS 0x%x on VF %d\n", vlan, qos, vf);
 	if (test_bit(__IGB_DOWN, &adapter->state)) {
 		dev_warn(&adapter->pdev->dev,
@@ -9208,14 +9208,14 @@ static int igb_ndo_set_vf_mac(struct net_device *netdev, int vf, u8 *mac)
 	 */
 	if (is_zero_ether_addr(mac)) {
 		adapter->vf_data[vf].flags &= ~IGB_VF_FLAG_PF_SET_MAC;
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "remove administratively set MAC on VF %d\n",
 			 vf);
 	} else if (is_valid_ether_addr(mac)) {
 		adapter->vf_data[vf].flags |= IGB_VF_FLAG_PF_SET_MAC;
-		dev_info(&adapter->pdev->dev, "setting MAC %pM on VF %d\n",
+		dev_dbg(&adapter->pdev->dev, "setting MAC %pM on VF %d\n",
 			 mac, vf);
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "Reload the VF driver to make this change effective.");
 		/* Generate additional warning if PF is down */
 		if (test_bit(__IGB_DOWN, &adapter->state)) {
@@ -9285,7 +9285,7 @@ static void igb_check_vf_rate_limit(struct igb_adapter *adapter)
 	if (actual_link_speed != adapter->vf_rate_link_speed) {
 		reset_rate = true;
 		adapter->vf_rate_link_speed = 0;
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "Link speed has been changed. VF Transmit rate is disabled\n");
 	}
 
@@ -9364,7 +9364,7 @@ static int igb_ndo_set_vf_trust(struct net_device *netdev, int vf, bool setting)
 
 	adapter->vf_data[vf].trusted = setting;
 
-	dev_info(&adapter->pdev->dev, "VF %u is %strusted\n",
+	dev_dbg(&adapter->pdev->dev, "VF %u is %strusted\n",
 		 vf, setting ? "" : "not ");
 	return 0;
 }

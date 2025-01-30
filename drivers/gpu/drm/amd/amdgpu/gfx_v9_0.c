@@ -3355,7 +3355,7 @@ static int gfx_v9_0_soft_reset(void *handle)
 		if (grbm_soft_reset) {
 			tmp = RREG32_SOC15(GC, 0, mmGRBM_SOFT_RESET);
 			tmp |= grbm_soft_reset;
-			dev_info(adev->dev, "GRBM_SOFT_RESET=0x%08X\n", tmp);
+			dev_dbg(adev->dev, "GRBM_SOFT_RESET=0x%08X\n", tmp);
 			WREG32_SOC15(GC, 0, mmGRBM_SOFT_RESET, tmp);
 			tmp = RREG32_SOC15(GC, 0, mmGRBM_SOFT_RESET);
 

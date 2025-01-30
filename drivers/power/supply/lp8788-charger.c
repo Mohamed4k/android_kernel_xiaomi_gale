@@ -376,7 +376,7 @@ static int lp8788_update_charger_params(struct platform_device *pdev,
 	int ret;
 
 	if (!pdata || !pdata->chg_params) {
-		dev_info(&pdev->dev, "skip updating charger parameters\n");
+		dev_dbg(&pdev->dev, "skip updating charger parameters\n");
 		return 0;
 	}
 

@@ -1651,7 +1651,7 @@ static void sdhci_msm_set_regulator_caps(struct sdhci_msm_host *msm_host)
 			caps |= CORE_3_0V_SUPPORT;
 
 		if (!caps)
-			pr_warn("%s: 1.8/3V not supported for vqmmc\n",
+			pr_debug("%s: 1.8/3V not supported for vqmmc\n",
 					mmc_hostname(mmc));
 	}
 

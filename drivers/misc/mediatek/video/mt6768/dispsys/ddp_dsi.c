@@ -2776,7 +2776,7 @@ static char string_to_hex(const char *str)
 {
 	char val_l = 0;
 	char val_h = 0;
-	pr_info("[%s]: display add", __func__);
+	pr_debug("[%s]: display add", __func__);
 	if (str[0] >= '0' && str[0] <= '9')
 		val_h = str[0] - '0';
 	else if (str[0] <= 'f' && str[0] >= 'a')
@@ -2796,14 +2796,14 @@ static int string_merge_into_buf(const char *str, int len, char *buf)
 	int buf_size = 0;
 	int i = 0;
 	const char *p = str;
-	pr_info("[%s]: display add start", __func__);
+	pr_debug("[%s]: display add start", __func__);
 	while (i < len) {
 		if (((p[0] >= '0' && p[0] <= '9') ||
 			(p[0] <= 'f' && p[0] >= 'a') ||
 			(p[0] <= 'F' && p[0] >= 'A'))
 			&& ((i + 1) < len)) {
 			buf[buf_size] = string_to_hex(p);
-			pr_info("0x%02x ", buf[buf_size]);
+			pr_debug("0x%02x ", buf[buf_size]);
 			buf_size++;
 			i += 2;
 			p += 2;
@@ -2812,7 +2812,7 @@ static int string_merge_into_buf(const char *str, int len, char *buf)
 			p++;
 		}
 	}
-	pr_info("[%s]: display add end", __func__);
+	pr_debug("[%s]: display add end", __func__);
 	return buf_size;
 }
 long  lcm_mipi_reg_write(char *buf, unsigned long  count)
@@ -2828,7 +2828,7 @@ long  lcm_mipi_reg_write(char *buf, unsigned long  count)
 	unsigned int  i = 0;
 	struct dsi_cmd_desc cmd_tab;
 	struct ddp_lcm_write_cmd_table lcm_adb_cmd;
-	pr_info("[%s]: lcm_mipi_reg_write source: count  = %ld,buf = %s ", __func__, count, buf);
+	pr_debug("[%s]: lcm_mipi_reg_write source: count  = %ld,buf = %s ", __func__, count, buf);
 	input = buf;
 	memcpy(pbuf, input, 2);
 	pbuf[2] = '\0';
@@ -2856,7 +2856,7 @@ long  lcm_mipi_reg_write(char *buf, unsigned long  count)
 		cmd_tab.payload = lcm_mipi_read_write.read_buffer;
 		cmd_tab.dlen = lcm_mipi_read_write.read_count;
 		do_lcm_vdo_lp_read_6785(&cmd_tab, 1);
-		pr_info("read lcm addr:0x%x, len:%d, val:0x%x\n",
+		pr_debug("read lcm addr:0x%x, len:%d, val:0x%x\n",
 				cmd_tab.dtype, cmd_tab.dlen, *cmd_tab.payload);
 		goto exit;
 	} else {
@@ -2879,19 +2879,19 @@ long  lcm_mipi_reg_write(char *buf, unsigned long  count)
 		for(i=0;i<1;i++)//lcm_mipi_read_write.lcm_setting_table.count
 		{
 			lcm_adb_cmd.para_list[i] = lcm_mipi_read_write.lcm_setting_table.para_list[i];
-			pr_info("display add: lcm_adb_cmd.para_list[%d] = 0x%x ", i, lcm_adb_cmd.para_list[i]);
+			pr_debug("display add: lcm_adb_cmd.para_list[%d] = 0x%x ", i, lcm_adb_cmd.para_list[i]);
 		}
 		do_lcm_vdo_lp_write(&lcm_adb_cmd,1);
 		vfree(lcm_adb_cmd.para_list);
 	}
-	pr_info("[%s]: mipi_write done!\n", __func__);
-	pr_info("[%s]: write cmd = 0x%x,len = %d\n", __func__,lcm_mipi_read_write.lcm_setting_table.cmd,lcm_mipi_read_write.lcm_setting_table.count);
-	pr_info("[%s]: mipi_write data: ", __func__);
+	pr_debug("[%s]: mipi_write done!\n", __func__);
+	pr_debug("[%s]: write cmd = 0x%x,len = %d\n", __func__,lcm_mipi_read_write.lcm_setting_table.cmd,lcm_mipi_read_write.lcm_setting_table.count);
+	pr_debug("[%s]: mipi_write data: ", __func__);
 	for(i=0;i<lcm_mipi_read_write.lcm_setting_table.count;i++)
 	{
-		pr_info("display add: lcm_setting_table.para_list[%d] = 0x%x ", i, lcm_mipi_read_write.lcm_setting_table.para_list[i]);
+		pr_debug("display add: lcm_setting_table.para_list[%d] = 0x%x ", i, lcm_mipi_read_write.lcm_setting_table.para_list[i]);
 	}
-	pr_info("\n ");
+	pr_debug("\n ");
 	if(count > 11)
 	{
 		kfree(data);

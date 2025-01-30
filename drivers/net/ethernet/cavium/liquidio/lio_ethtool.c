@@ -581,7 +581,7 @@ lio_irq_reallocate_irqs(struct octeon_device *oct, uint32_t num_ioqs)
 	}
 
 	if (octeon_setup_interrupt(oct, num_ioqs)) {
-		dev_info(&oct->pci_dev->dev, "Setup interrupt failed\n");
+		dev_dbg(&oct->pci_dev->dev, "Setup interrupt failed\n");
 		return -1;
 	}
 
@@ -1098,7 +1098,7 @@ static int lio_23xx_reconfigure_queue_count(struct lio *lio)
 	lio->rxq = lio->linfo.rxpciq[0].s.q_no;
 
 	octeon_free_soft_command(oct, sc);
-	dev_info(&oct->pci_dev->dev, "Queue count updated to %d\n",
+	dev_dbg(&oct->pci_dev->dev, "Queue count updated to %d\n",
 		 lio->linfo.num_rxpciq);
 
 	return 0;
@@ -2166,7 +2166,7 @@ static int octnet_set_intrmod_cfg(struct lio *lio,
 				"intrmod config failed. Status: %llx\n",
 				CVM_CAST64(retval));
 		else
-			dev_info(&oct_dev->pci_dev->dev,
+			dev_dbg(&oct_dev->pci_dev->dev,
 				 "Rx-Adaptive Interrupt moderation %s\n",
 				 (intr_cfg->rx_enable) ?
 				 "enabled" : "disabled");

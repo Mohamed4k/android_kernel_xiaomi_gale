@@ -543,12 +543,12 @@ static int el3_common_init(struct net_device *dev)
 		return err;
 	}
 
-	pr_info("%s: 3c5x9 found at %#3.3lx, %s port, address %pM, IRQ %d.\n",
+	pr_debug("%s: 3c5x9 found at %#3.3lx, %s port, address %pM, IRQ %d.\n",
 	       dev->name, dev->base_addr, if_names[(dev->if_port & 0x03)],
 	       dev->dev_addr, dev->irq);
 
 	if (el3_debug > 0)
-		pr_info("%s", version);
+		pr_debug("%s", version);
 	return 0;
 
 }
@@ -694,7 +694,7 @@ el3_tx_timeout (struct net_device *dev)
 	int ioaddr = dev->base_addr;
 
 	/* Transmitter timeout, serious problems. */
-	pr_warn("%s: transmit timed out, Tx_status %2.2x status %4.4x Tx FIFO room %d\n",
+	pr_debug("%s: transmit timed out, Tx_status %2.2x status %4.4x Tx FIFO room %d\n",
 		dev->name, inb(ioaddr + TX_STATUS), inw(ioaddr + EL3_STATUS),
 		inw(ioaddr + TX_FREE));
 	dev->stats.tx_errors++;
@@ -1258,7 +1258,7 @@ el3_up(struct net_device *dev)
 		EL3WINDOW(4);
 		net_diag = inw(ioaddr + WN4_NETDIAG);
 		net_diag = (net_diag | FD_ENABLE); /* temporarily assume full-duplex will be set */
-		pr_info("%s: ", dev->name);
+		pr_debug("%s: ", dev->name);
 		switch (dev->if_port & 0x0c) {
 			case 12:
 				/* force full-duplex mode if 3c5x9b */

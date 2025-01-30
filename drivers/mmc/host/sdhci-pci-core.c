@@ -870,7 +870,7 @@ static void glk_rpm_retune_wa(struct sdhci_pci_chip *chip, bool susp)
 	intel_host->rpm_retune_ok = true;
 	chip->rpm_retune = true;
 	mmc_retune_needed(host->mmc);
-	pr_info("%s: Requiring re-tune after rpm resume", mmc_hostname(host->mmc));
+	pr_debug("%s: Requiring re-tune after rpm resume", mmc_hostname(host->mmc));
 }
 
 static void glk_rpm_retune_chk(struct sdhci_pci_chip *chip, bool susp)
@@ -1161,7 +1161,7 @@ static int jmicron_probe(struct sdhci_pci_chip *chip)
 
 		if (sd_dev) {
 			pci_dev_put(sd_dev);
-			dev_info(&chip->pdev->dev, "Refusing to bind to "
+			dev_dbg(&chip->pdev->dev, "Refusing to bind to "
 				"secondary interface.\n");
 			return -ENODEV;
 		}
@@ -1343,7 +1343,7 @@ static int syskt_probe_slot(struct sdhci_pci_slot *slot)
 
 	u8 board_rev = readb(slot->host->ioaddr + SYSKT_BOARD_REV);
 	u8  chip_rev = readb(slot->host->ioaddr + SYSKT_CHIP_REV);
-	dev_info(&slot->chip->pdev->dev, "SysKonnect CardBus2SDIO, "
+	dev_dbg(&slot->chip->pdev->dev, "SysKonnect CardBus2SDIO, "
 					 "board rev %d.%d, chip rev %d.%d\n",
 					 board_rev >> 4, board_rev & 0xf,
 					 chip_rev >> 4,  chip_rev & 0xf);
@@ -1979,7 +1979,7 @@ static int sdhci_pci_probe(struct pci_dev *pdev,
 	BUG_ON(pdev == NULL);
 	BUG_ON(ent == NULL);
 
-	dev_info(&pdev->dev, "SDHCI controller found [%04x:%04x] (rev %x)\n",
+	dev_dbg(&pdev->dev, "SDHCI controller found [%04x:%04x] (rev %x)\n",
 		 (int)pdev->vendor, (int)pdev->device, (int)pdev->revision);
 
 	ret = pci_read_config_byte(pdev, PCI_SLOT_INFO, &slots);

@@ -368,7 +368,7 @@ static bool qt2160_identify(struct i2c_client *client)
 		return false;
 	}
 
-	dev_info(&client->dev, "AT42QT2160 firmware version %d.%d.%d\n",
+	dev_dbg(&client->dev, "AT42QT2160 firmware version %d.%d.%d\n",
 			ver >> 4, ver & 0xf, rev);
 
 	return true;

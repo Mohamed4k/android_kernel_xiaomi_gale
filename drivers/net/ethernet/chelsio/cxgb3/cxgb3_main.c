@@ -157,7 +157,7 @@ struct workqueue_struct *cxgb3_wq;
 static void link_report(struct net_device *dev)
 {
 	if (!netif_carrier_ok(dev))
-		netdev_info(dev, "link down\n");
+		netdev_dbg(dev, "link down\n");
 	else {
 		const char *s = "10Mbps";
 		const struct port_info *p = netdev_priv(dev);
@@ -174,7 +174,7 @@ static void link_report(struct net_device *dev)
 			break;
 		}
 
-		netdev_info(dev, "link up, %s, %s-duplex\n",
+		netdev_dbg(dev, "link up, %s, %s-duplex\n",
 			    s, p->link_config.duplex == DUPLEX_FULL
 			    ? "full" : "half");
 	}
@@ -323,9 +323,9 @@ void t3_os_phymod_changed(struct adapter *adap, int port_id)
 	const struct port_info *pi = netdev_priv(dev);
 
 	if (pi->phy.modtype == phy_modtype_none)
-		netdev_info(dev, "PHY module unplugged\n");
+		netdev_dbg(dev, "PHY module unplugged\n");
 	else
-		netdev_info(dev, "%s PHY module inserted\n",
+		netdev_dbg(dev, "%s PHY module inserted\n",
 			    mod_str[pi->phy.modtype]);
 }
 
@@ -1089,7 +1089,7 @@ static int upgrade_fw(struct adapter *adap)
 	release_firmware(fw);
 
 	if (ret == 0)
-		dev_info(dev, "successful upgrade to firmware %d.%d.%d\n",
+		dev_dbg(dev, "successful upgrade to firmware %d.%d.%d\n",
 			 FW_VERSION_MAJOR, FW_VERSION_MINOR, FW_VERSION_MICRO);
 	else
 		dev_err(dev, "failed to upgrade to firmware %d.%d.%d\n",
@@ -1141,7 +1141,7 @@ static int update_tpsram(struct adapter *adap)
 
 	ret = t3_set_proto_sram(adap, tpsram->data);
 	if (ret == 0)
-		dev_info(dev,
+		dev_dbg(dev,
 			 "successful update of protocol engine "
 			 "to %d.%d.%d\n",
 			 TP_VERSION_MAJOR, TP_VERSION_MINOR, TP_VERSION_MICRO);
@@ -1431,7 +1431,7 @@ static int cxgb_open(struct net_device *dev)
 	if (is_offload(adapter) && !ofld_disable) {
 		err = offload_open(dev);
 		if (err)
-			pr_warn("Could not initialize offload capabilities\n");
+			pr_debug("Could not initialize offload capabilities\n");
 	}
 
 	netif_set_real_num_tx_queues(dev, pi->nqsets);
@@ -3110,7 +3110,7 @@ static void set_nqsets(struct adapter *adap)
 		pi->nqsets = nqsets;
 		j = pi->first_qset + nqsets;
 
-		dev_info(&adap->pdev->dev,
+		dev_dbg(&adap->pdev->dev,
 			 "Port %d using %d queue sets.\n", i, nqsets);
 	}
 }
@@ -3161,13 +3161,13 @@ static void print_port_info(struct adapter *adap, const struct adapter_info *ai)
 
 		if (!test_bit(i, &adap->registered_device_map))
 			continue;
-		netdev_info(dev, "%s %s %sNIC (rev %d) %s%s\n",
+		netdev_dbg(dev, "%s %s %sNIC (rev %d) %s%s\n",
 			    ai->desc, pi->phy.desc,
 			    is_offload(adap) ? "R" : "", adap->params.rev, buf,
 			    (adap->flags & USING_MSIX) ? " MSI-X" :
 			    (adap->flags & USING_MSI) ? " MSI" : "");
 		if (adap->name == dev->name && adap->params.vpd.mclk)
-			pr_info("%s: %uMB CM, %uMB PMTX, %uMB PMRX, S/N: %s\n",
+			pr_debug("%s: %uMB CM, %uMB PMTX, %uMB PMRX, S/N: %s\n",
 			       adap->name, t3_mc7_size(&adap->cm) >> 20,
 			       t3_mc7_size(&adap->pmtx) >> 20,
 			       t3_mc7_size(&adap->pmrx) >> 20,
@@ -3230,7 +3230,7 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	err = pci_request_regions(pdev, DRV_NAME);
 	if (err) {
 		/* Just info, some other driver may have claimed the device. */
-		dev_info(&pdev->dev, "cannot obtain PCI resources\n");
+		dev_dbg(&pdev->dev, "cannot obtain PCI resources\n");
 		goto out_disable_device;
 	}
 

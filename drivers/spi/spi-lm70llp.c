@@ -203,7 +203,7 @@ static void spi_lm70llp_attach(struct parport *p)
 	struct pardev_cb	lm70llp_cb;
 
 	if (lm70llp) {
-		pr_warn("spi_lm70llp instance already loaded. Aborting.\n");
+		pr_debug("spi_lm70llp instance already loaded. Aborting.\n");
 		return;
 	}
 
@@ -299,7 +299,7 @@ out_parport_unreg:
 out_free_master:
 	spi_master_put(master);
 out_fail:
-	pr_info("spi_lm70llp probe fail, status %d\n", status);
+	pr_debug("spi_lm70llp probe fail, status %d\n", status);
 }
 
 static void spi_lm70llp_detach(struct parport *p)

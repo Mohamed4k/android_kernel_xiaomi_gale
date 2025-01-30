@@ -106,7 +106,7 @@ int mtk_atoi(const char *str)
 		num += (int)(str[i] - '0');
 	}
 
-	pr_notice("[debug] num=%d sign=%d\n",
+	pr_debug("[debug] num=%d sign=%d\n",
 			num, sign);
 
 	return num * sign;
@@ -114,7 +114,7 @@ int mtk_atoi(const char *str)
 
 void disp_drm_debug(const char *opt)
 {
-	pr_notice("[debug] opt=%s\n", opt);
+	pr_debug("[debug] opt=%s\n", opt);
 	if (strncmp(opt, "shift:", 6) == 0) {
 		int len = strlen(opt);
 		#define BUF_LEN 100
@@ -125,17 +125,17 @@ void disp_drm_debug(const char *opt)
 			strcpy(buf, opt + 6);
 			buf[len - 6] = '\0';
 
-			pr_notice("[debug] buf=%s\n",
+			pr_debug("[debug] buf=%s\n",
 				buf);
 
 			manual_shift = mtk_atoi(buf);
 
-			pr_notice("[debug] manual_shift=%d\n",
+			pr_debug("[debug] manual_shift=%d\n",
 				manual_shift);
 		}
 	} else if (strncmp(opt, "no_shift:", 9) == 0) {
 		no_shift = strncmp(opt + 9, "1", 1) == 0;
-		pr_notice("[debug] no_shift=%d\n",
+		pr_debug("[debug] no_shift=%d\n",
 			no_shift);
 	}
 }
@@ -2526,7 +2526,7 @@ void mtk_drm_top_clk_disable_unprepare(struct drm_device *drm)
 		while (atomic_read(&top_isr_ref) > 0 &&
 		       cnt++ < 10) {
 			spin_unlock_irqrestore(&top_clk_lock, flags);
-			pr_notice("%s waiting for isr job, %d\n",
+			pr_debug("%s waiting for isr job, %d\n",
 				  __func__, cnt);
 			usleep_range(20, 40);
 			spin_lock_irqsave(&top_clk_lock, flags);
@@ -2986,7 +2986,7 @@ int mtk_drm_ioctl_get_lcm_index(struct drm_device *dev, void *data,
 		*info = params->lcm_index;
 	} else {
 		*info = 0;
-		pr_info("Cannot get lcm_ext_params\n");
+		pr_debug("Cannot get lcm_ext_params\n");
 	}
 
 	return ret;
@@ -3216,7 +3216,7 @@ static const struct drm_ioctl_desc mtk_ioctls[] = {
 	DRM_IOCTL_DEF_DRV(MTK_SEC_HND_TO_GEM_HND, mtk_drm_sec_hnd_to_gem_hnd,
 			  DRM_UNLOCKED | DRM_AUTH | DRM_RENDER_ALLOW),
 #ifdef CONFIG_MTK_HDMI_SUPPORT
-	DRM_IOCTL_DEF_DRV(MTK_HDMI_GET_DEV_INFO, mtk_drm_dp_get_dev_info,
+	DRM_IOCTL_DEF_DRV(MTK_HDMI_GET_DEV_INFO, mtk_drm_dp_get_dev_dbg,
 			  DRM_UNLOCKED | DRM_AUTH | DRM_RENDER_ALLOW),
 	DRM_IOCTL_DEF_DRV(MTK_HDMI_AUDIO_ENABLE, mtk_drm_dp_audio_enable,
 			  DRM_UNLOCKED | DRM_AUTH | DRM_RENDER_ALLOW),
@@ -3740,7 +3740,7 @@ static int mtk_drm_probe(struct platform_device *pdev)
 	private->reg_data = mtk_ddp_get_mmsys_reg_data(private->data->mmsys_id);
 	if (IS_ERR(private->reg_data)) {
 		ret = PTR_ERR(private->config_regs);
-		pr_info("Failed to get mmsys register data: %d\n", ret);
+		pr_debug("Failed to get mmsys register data: %d\n", ret);
 		return ret;
 	}
 
@@ -3887,7 +3887,7 @@ static int mtk_drm_probe(struct platform_device *pdev)
 		    || comp_type == MTK_DP_INTF || comp_type == MTK_DISP_DPTX
 #endif
 		    ) {
-			dev_info(dev, "Adding component match for %s, comp_id:%d\n",
+			dev_dbg(dev, "Adding component match for %s, comp_id:%d\n",
 				 node->full_name, comp_id);
 			component_match_add(dev, &match, compare_of, node);
 		} else {

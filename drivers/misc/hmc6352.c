@@ -123,7 +123,7 @@ static int hmc6352_probe(struct i2c_client *client,
 		dev_err(&client->dev, "device_create_file failed\n");
 		return res;
 	}
-	dev_info(&client->dev, "%s HMC6352 compass chip found\n",
+	dev_dbg(&client->dev, "%s HMC6352 compass chip found\n",
 							client->name);
 	return 0;
 }

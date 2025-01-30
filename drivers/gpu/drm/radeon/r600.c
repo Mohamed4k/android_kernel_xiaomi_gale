@@ -1094,7 +1094,7 @@ void r600_pcie_gart_tlb_flush(struct radeon_device *rdev)
 		tmp = RREG32(VM_CONTEXT0_REQUEST_RESPONSE);
 		tmp = (tmp & RESPONSE_TYPE_MASK) >> RESPONSE_TYPE_SHIFT;
 		if (tmp == 2) {
-			pr_warn("[drm] r600 flush TLB failed\n");
+			pr_debug("[drm] r600 flush TLB failed\n");
 			return;
 		}
 		if (tmp) {
@@ -1410,7 +1410,7 @@ static void r600_vram_gtt_location(struct radeon_device *rdev, struct radeon_mc 
 			mc->vram_start = mc->gtt_end + 1;
 		}
 		mc->vram_end = mc->vram_start + mc->mc_vram_size - 1;
-		dev_info(rdev->dev, "VRAM: %lluM 0x%08llX - 0x%08llX (%lluM used)\n",
+		dev_dbg(rdev->dev, "VRAM: %lluM 0x%08llX - 0x%08llX (%lluM used)\n",
 				mc->mc_vram_size >> 20, mc->vram_start,
 				mc->vram_end, mc->real_vram_size >> 20);
 	} else {
@@ -1560,21 +1560,21 @@ void r600_set_bios_scratch_engine_hung(struct radeon_device *rdev, bool hung)
 
 static void r600_print_gpu_status_regs(struct radeon_device *rdev)
 {
-	dev_info(rdev->dev, "  R_008010_GRBM_STATUS      = 0x%08X\n",
+	dev_dbg(rdev->dev, "  R_008010_GRBM_STATUS      = 0x%08X\n",
 		 RREG32(R_008010_GRBM_STATUS));
-	dev_info(rdev->dev, "  R_008014_GRBM_STATUS2     = 0x%08X\n",
+	dev_dbg(rdev->dev, "  R_008014_GRBM_STATUS2     = 0x%08X\n",
 		 RREG32(R_008014_GRBM_STATUS2));
-	dev_info(rdev->dev, "  R_000E50_SRBM_STATUS      = 0x%08X\n",
+	dev_dbg(rdev->dev, "  R_000E50_SRBM_STATUS      = 0x%08X\n",
 		 RREG32(R_000E50_SRBM_STATUS));
-	dev_info(rdev->dev, "  R_008674_CP_STALLED_STAT1 = 0x%08X\n",
+	dev_dbg(rdev->dev, "  R_008674_CP_STALLED_STAT1 = 0x%08X\n",
 		 RREG32(CP_STALLED_STAT1));
-	dev_info(rdev->dev, "  R_008678_CP_STALLED_STAT2 = 0x%08X\n",
+	dev_dbg(rdev->dev, "  R_008678_CP_STALLED_STAT2 = 0x%08X\n",
 		 RREG32(CP_STALLED_STAT2));
-	dev_info(rdev->dev, "  R_00867C_CP_BUSY_STAT     = 0x%08X\n",
+	dev_dbg(rdev->dev, "  R_00867C_CP_BUSY_STAT     = 0x%08X\n",
 		 RREG32(CP_BUSY_STAT));
-	dev_info(rdev->dev, "  R_008680_CP_STAT          = 0x%08X\n",
+	dev_dbg(rdev->dev, "  R_008680_CP_STAT          = 0x%08X\n",
 		 RREG32(CP_STAT));
-	dev_info(rdev->dev, "  R_00D034_DMA_STATUS_REG   = 0x%08X\n",
+	dev_dbg(rdev->dev, "  R_00D034_DMA_STATUS_REG   = 0x%08X\n",
 		RREG32(DMA_STATUS_REG));
 }
 
@@ -1685,7 +1685,7 @@ static void r600_gpu_soft_reset(struct radeon_device *rdev, u32 reset_mask)
 	if (reset_mask == 0)
 		return;
 
-	dev_info(rdev->dev, "GPU softreset: 0x%08X\n", reset_mask);
+	dev_dbg(rdev->dev, "GPU softreset: 0x%08X\n", reset_mask);
 
 	r600_print_gpu_status_regs(rdev);
 
@@ -1778,7 +1778,7 @@ static void r600_gpu_soft_reset(struct radeon_device *rdev, u32 reset_mask)
 	if (grbm_soft_reset) {
 		tmp = RREG32(R_008020_GRBM_SOFT_RESET);
 		tmp |= grbm_soft_reset;
-		dev_info(rdev->dev, "R_008020_GRBM_SOFT_RESET=0x%08X\n", tmp);
+		dev_dbg(rdev->dev, "R_008020_GRBM_SOFT_RESET=0x%08X\n", tmp);
 		WREG32(R_008020_GRBM_SOFT_RESET, tmp);
 		tmp = RREG32(R_008020_GRBM_SOFT_RESET);
 
@@ -1792,7 +1792,7 @@ static void r600_gpu_soft_reset(struct radeon_device *rdev, u32 reset_mask)
 	if (srbm_soft_reset) {
 		tmp = RREG32(SRBM_SOFT_RESET);
 		tmp |= srbm_soft_reset;
-		dev_info(rdev->dev, "SRBM_SOFT_RESET=0x%08X\n", tmp);
+		dev_dbg(rdev->dev, "SRBM_SOFT_RESET=0x%08X\n", tmp);
 		WREG32(SRBM_SOFT_RESET, tmp);
 		tmp = RREG32(SRBM_SOFT_RESET);
 
@@ -1817,7 +1817,7 @@ static void r600_gpu_pci_config_reset(struct radeon_device *rdev)
 	struct rv515_mc_save save;
 	u32 tmp, i;
 
-	dev_info(rdev->dev, "GPU pci config reset\n");
+	dev_dbg(rdev->dev, "GPU pci config reset\n");
 
 	/* disable dpm? */
 

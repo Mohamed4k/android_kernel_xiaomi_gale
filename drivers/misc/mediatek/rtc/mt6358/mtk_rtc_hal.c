@@ -28,7 +28,7 @@
 #include "include/pmic.h"
 
 #define hal_rtc_xinfo(fmt, args...)		\
-	pr_notice(fmt, ##args)
+	pr_debug(fmt, ##args)
 
 /*TODO extern bool pmic_chrdet_status(void);*/
 
@@ -192,7 +192,7 @@ void rtc_enable_k_eosc(void)
 #endif
 	if (rtc_eosc_cali_td != 8) {
 
-		pr_notice("%s set eosc_cali_td = %d\n",
+		pr_debug("%s set eosc_cali_td = %d\n",
 						__func__, rtc_eosc_cali_td);
 
 		switch (rtc_eosc_cali_td) {

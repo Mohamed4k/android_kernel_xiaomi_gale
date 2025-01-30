@@ -1626,8 +1626,8 @@ static void __qed_get_vport_pstats_addrlen(struct qed_hwfn *p_hwfn,
 		struct qed_vf_iov *p_iov = p_hwfn->vf_iov_info;
 		struct pfvf_acquire_resp_tlv *p_resp = &p_iov->acquire_resp;
 
-		*p_addr = p_resp->pfdev_info.stats_info.pstats.address;
-		*p_len = p_resp->pfdev_info.stats_info.pstats.len;
+		*p_addr = p_resp->pfdev_dbg.stats_info.pstats.address;
+		*p_len = p_resp->pfdev_dbg.stats_info.pstats.len;
 	}
 }
 
@@ -1675,8 +1675,8 @@ __qed_get_vport_tstats(struct qed_hwfn *p_hwfn, struct qed_ptt *p_ptt,
 		struct qed_vf_iov *p_iov = p_hwfn->vf_iov_info;
 		struct pfvf_acquire_resp_tlv *p_resp = &p_iov->acquire_resp;
 
-		tstats_addr = p_resp->pfdev_info.stats_info.tstats.address;
-		tstats_len = p_resp->pfdev_info.stats_info.tstats.len;
+		tstats_addr = p_resp->pfdev_dbg.stats_info.tstats.address;
+		tstats_len = p_resp->pfdev_dbg.stats_info.tstats.len;
 	}
 
 	memset(&tstats, 0, sizeof(tstats));
@@ -1702,8 +1702,8 @@ static void __qed_get_vport_ustats_addrlen(struct qed_hwfn *p_hwfn,
 		struct qed_vf_iov *p_iov = p_hwfn->vf_iov_info;
 		struct pfvf_acquire_resp_tlv *p_resp = &p_iov->acquire_resp;
 
-		*p_addr = p_resp->pfdev_info.stats_info.ustats.address;
-		*p_len = p_resp->pfdev_info.stats_info.ustats.len;
+		*p_addr = p_resp->pfdev_dbg.stats_info.ustats.address;
+		*p_len = p_resp->pfdev_dbg.stats_info.ustats.len;
 	}
 }
 
@@ -1743,8 +1743,8 @@ static void __qed_get_vport_mstats_addrlen(struct qed_hwfn *p_hwfn,
 		struct qed_vf_iov *p_iov = p_hwfn->vf_iov_info;
 		struct pfvf_acquire_resp_tlv *p_resp = &p_iov->acquire_resp;
 
-		*p_addr = p_resp->pfdev_info.stats_info.mstats.address;
-		*p_len = p_resp->pfdev_info.stats_info.mstats.len;
+		*p_addr = p_resp->pfdev_dbg.stats_info.mstats.address;
+		*p_len = p_resp->pfdev_dbg.stats_info.mstats.len;
 	}
 }
 
@@ -2194,7 +2194,7 @@ out:
 	return rc;
 }
 
-static int qed_fill_eth_dev_info(struct qed_dev *cdev,
+static int qed_fill_eth_dev_dbg(struct qed_dev *cdev,
 				 struct qed_dev_eth_info *info)
 {
 	struct qed_hwfn *p_hwfn = QED_LEADING_HWFN(cdev);
@@ -2285,7 +2285,7 @@ static int qed_fill_eth_dev_info(struct qed_dev *cdev,
 		info->is_legacy = !!cdev->hwfns[0].vf_iov_info->b_pre_fp_hsi;
 	}
 
-	qed_fill_dev_info(cdev, &info->common);
+	qed_fill_dev_dbg(cdev, &info->common);
 
 	if (IS_VF(cdev))
 		eth_zero_addr(info->common.hw_mac);
@@ -2916,7 +2916,7 @@ static const struct qed_eth_ops qed_eth_ops_pass = {
 	.dcb = &qed_dcbnl_ops_pass,
 #endif
 	.ptp = &qed_ptp_ops_pass,
-	.fill_dev_info = &qed_fill_eth_dev_info,
+	.fill_dev_dbg = &qed_fill_eth_dev_dbg,
 	.register_ops = &qed_register_eth_ops,
 	.check_mac = &qed_check_mac,
 	.vport_start = &qed_start_vport,

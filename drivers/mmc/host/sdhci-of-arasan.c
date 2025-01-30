@@ -157,7 +157,7 @@ static int sdhci_arasan_syscon_write(struct sdhci_host *host,
 
 	/* Yell about (unexpected) regmap errors */
 	if (ret)
-		pr_warn("%s: Regmap write fail: %d\n",
+		pr_debug("%s: Regmap write fail: %d\n",
 			 mmc_hostname(host->mmc), ret);
 
 	return ret;
@@ -530,7 +530,7 @@ static void sdhci_arasan_update_clockmultiplier(struct sdhci_host *host,
 
 	/* If we have a map, we expect to have a syscon */
 	if (!sdhci_arasan->soc_ctl_base) {
-		pr_warn("%s: Have regmap, but no soc-ctl-syscon\n",
+		pr_debug("%s: Have regmap, but no soc-ctl-syscon\n",
 			mmc_hostname(host->mmc));
 		return;
 	}
@@ -569,7 +569,7 @@ static void sdhci_arasan_update_baseclkfreq(struct sdhci_host *host)
 
 	/* If we have a map, we expect to have a syscon */
 	if (!sdhci_arasan->soc_ctl_base) {
-		pr_warn("%s: Have regmap, but no soc-ctl-syscon\n",
+		pr_debug("%s: Have regmap, but no soc-ctl-syscon\n",
 			mmc_hostname(host->mmc));
 		return;
 	}

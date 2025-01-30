@@ -132,12 +132,12 @@ static int pl111_modeset_init(struct drm_device *dev)
 		}
 
 		if (tmp_panel) {
-			dev_info(dev->dev,
+			dev_dbg(dev->dev,
 				 "found panel on endpoint %d\n", i);
 			panel = tmp_panel;
 		}
 		if (tmp_bridge) {
-			dev_info(dev->dev,
+			dev_dbg(dev->dev,
 				 "found bridge on endpoint %d\n", i);
 			bridge = tmp_bridge;
 		}
@@ -161,7 +161,7 @@ static int pl111_modeset_init(struct drm_device *dev)
 			goto out_config;
 		}
 	} else if (bridge) {
-		dev_info(dev->dev, "Using non-panel bridge\n");
+		dev_dbg(dev->dev, "Using non-panel bridge\n");
 	} else {
 		dev_err(dev->dev, "No bridge, exiting\n");
 		return -ENODEV;
@@ -281,13 +281,13 @@ static int pl111_amba_probe(struct amba_device *amba_dev,
 
 	ret = of_reserved_mem_device_init(dev);
 	if (!ret) {
-		dev_info(dev, "using device-specific reserved memory\n");
+		dev_dbg(dev, "using device-specific reserved memory\n");
 		priv->use_device_memory = true;
 	}
 
 	if (of_property_read_u32(dev->of_node, "max-memory-bandwidth",
 				 &priv->memory_bw)) {
-		dev_info(dev, "no max memory bandwidth specified, assume unlimited\n");
+		dev_dbg(dev, "no max memory bandwidth specified, assume unlimited\n");
 		priv->memory_bw = 0;
 	}
 

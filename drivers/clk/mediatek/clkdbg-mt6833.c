@@ -423,7 +423,7 @@ void warn_vcore(int opp, const char *clk_name, int rate, int id)
 {
 	if ((opp >= 0) && (id >= 0) && (vf_table[id].freq_table[opp] > 0) &&
 			((rate/1000) > (vf_table[id].freq_table[opp]))) {
-		pr_notice("%s Choose %d FAIL!!!![MAX(%d/%d): %d]\r\n",
+		pr_debug("%s Choose %d FAIL!!!![MAX(%d/%d): %d]\r\n",
 				clk_name, rate/1000, id, opp,
 				vf_table[id].freq_table[opp]);
 
@@ -666,7 +666,7 @@ void print_subsys_reg(enum dbg_sys_id id)
 		return;
 
 	if (id >= dbg_sys_num || id < 0) {
-		pr_info("wrong id:%d\n", id);
+		pr_debug("wrong id:%d\n", id);
 		return;
 	}
 
@@ -680,7 +680,7 @@ void print_subsys_reg(enum dbg_sys_id id)
 		if (rns->base != rb_dump)
 			continue;
 
-		pr_info("%-18s: [0x%08x] = 0x%08x\n",
+		pr_debug("%-18s: [0x%08x] = 0x%08x\n",
 			rns->name, PHYSADDR(rns), clk_readl(ADDR(rns)));
 	}
 }

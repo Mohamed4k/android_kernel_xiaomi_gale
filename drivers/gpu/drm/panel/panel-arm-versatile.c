@@ -332,11 +332,11 @@ static int versatile_panel_probe(struct platform_device *pdev)
 
 	/* No panel detected or VGA, let's leave this show */
 	if (i == ARRAY_SIZE(versatile_panels)) {
-		dev_info(dev, "no panel detected\n");
+		dev_dbg(dev, "no panel detected\n");
 		return -ENODEV;
 	}
 
-	dev_info(dev, "detected: %s\n", vpanel->panel_type->name);
+	dev_dbg(dev, "detected: %s\n", vpanel->panel_type->name);
 	vpanel->dev = dev;
 	vpanel->map = map;
 
@@ -347,7 +347,7 @@ static int versatile_panel_probe(struct platform_device *pdev)
 		if (IS_ERR(vpanel->ib2_map))
 			vpanel->ib2_map = NULL;
 		else
-			dev_info(dev, "panel mounted on IB2 daughterboard\n");
+			dev_dbg(dev, "panel mounted on IB2 daughterboard\n");
 	}
 
 	drm_panel_init(&vpanel->panel);

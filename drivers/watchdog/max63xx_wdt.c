@@ -240,7 +240,7 @@ static int max63xx_wdt_probe(struct platform_device *pdev)
 	if (err)
 		return err;
 
-	dev_info(&pdev->dev, "using %ds heartbeat with %ds initial delay\n",
+	dev_dbg(&pdev->dev, "using %ds heartbeat with %ds initial delay\n",
 		 wdt->timeout->twd, wdt->timeout->tdelay);
 	return 0;
 }

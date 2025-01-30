@@ -56,7 +56,7 @@ static void spi_slave_time_complete(void *arg)
 	return;
 
 terminate:
-	dev_info(&priv->spi->dev, "Terminating\n");
+	dev_dbg(&priv->spi->dev, "Terminating\n");
 	complete(&priv->finished);
 }
 

@@ -100,7 +100,7 @@ mt76_eeprom_override(struct mt76_dev *dev)
 
 	if (!is_valid_ether_addr(dev->macaddr)) {
 		eth_random_addr(dev->macaddr);
-		dev_info(dev->dev,
+		dev_dbg(dev->dev,
 			 "Invalid MAC address, using random address %pM\n",
 			 dev->macaddr);
 	}

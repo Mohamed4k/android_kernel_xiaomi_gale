@@ -2803,7 +2803,7 @@ static int sky2_status_intr(struct sky2_hw *hw, int to_do, u16 idx)
 
 		default:
 			if (net_ratelimit())
-				pr_warn("unknown status opcode 0x%x\n", opcode);
+				pr_debug("unknown status opcode 0x%x\n", opcode);
 		}
 	} while (hw->st_idx != idx);
 
@@ -2822,7 +2822,7 @@ static void sky2_hw_error(struct sky2_hw *hw, unsigned port, u32 status)
 	struct net_device *dev = hw->dev[port];
 
 	if (net_ratelimit())
-		netdev_info(dev, "hw error interrupt status 0x%x\n", status);
+		netdev_dbg(dev, "hw error interrupt status 0x%x\n", status);
 
 	if (status & Y2_IS_PAR_RD1) {
 		if (net_ratelimit())
@@ -2994,7 +2994,7 @@ static void sky2_watchdog(struct timer_list *t)
 			/* For chips with Rx FIFO, check if stuck */
 			if ((hw->flags & SKY2_HW_RAM_BUFFER) &&
 			     sky2_rx_hung(dev)) {
-				netdev_info(dev, "receiver hang detected\n");
+				netdev_dbg(dev, "receiver hang detected\n");
 				schedule_work(&hw->restart_work);
 				return;
 			}
@@ -3289,7 +3289,7 @@ static void sky2_reset(struct sky2_hw *hw)
 
 		/* If error bit is stuck on ignore it */
 		if (sky2_read32(hw, B0_HWE_ISRC) & Y2_IS_PCI_EXP)
-			dev_info(&pdev->dev, "ignoring stuck error report bit\n");
+			dev_dbg(&pdev->dev, "ignoring stuck error report bit\n");
 		else
 			hwe_mask |= Y2_IS_PCI_EXP;
 	}
@@ -3460,7 +3460,7 @@ static int sky2_reattach(struct net_device *dev)
 	if (netif_running(dev)) {
 		err = sky2_open(dev);
 		if (err) {
-			netdev_info(dev, "could not restart %d\n", err);
+			netdev_dbg(dev, "could not restart %d\n", err);
 			dev_close(dev);
 		} else {
 			netif_device_attach(dev);
@@ -4380,7 +4380,7 @@ static netdev_features_t sky2_fix_features(struct net_device *dev,
 	 * transmit store/forward. Therefore checksum offload won't work.
 	 */
 	if (dev->mtu > ETH_DATA_LEN && hw->chip_id == CHIP_ID_YUKON_EC_U) {
-		netdev_info(dev, "checksum offload not possible with jumbo frames\n");
+		netdev_dbg(dev, "checksum offload not possible with jumbo frames\n");
 		features &= ~(NETIF_F_TSO | NETIF_F_SG | NETIF_F_CSUM_MASK);
 	}
 
@@ -4388,7 +4388,7 @@ static netdev_features_t sky2_fix_features(struct net_device *dev,
 	if ( (features & NETIF_F_RXHASH) &&
 	     !(features & NETIF_F_RXCSUM) &&
 	     (sky2->hw->flags & SKY2_HW_RSS_CHKSUM)) {
-		netdev_info(dev, "receive hashing forces receive checksum\n");
+		netdev_dbg(dev, "receive hashing forces receive checksum\n");
 		features |= NETIF_F_RXCSUM;
 	}
 
@@ -4892,7 +4892,7 @@ static int sky2_test_msi(struct sky2_hw *hw)
 
 	if (!(hw->flags & SKY2_HW_USE_MSI)) {
 		/* MSI test failed, go back to INTx mode */
-		dev_info(&pdev->dev, "No interrupt generated using MSI, "
+		dev_dbg(&pdev->dev, "No interrupt generated using MSI, "
 			 "switching to INTx mode.\n");
 
 		err = -EOPNOTSUPP;
@@ -5064,7 +5064,7 @@ static int sky2_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		goto err_out_reset;
 	}
 
-	dev_info(&pdev->dev, "Yukon-2 %s chip revision %d\n",
+	dev_dbg(&pdev->dev, "Yukon-2 %s chip revision %d\n",
 		 sky2_name(hw->chip_id, buf1, sizeof(buf1)), hw->chip_rev);
 
 	sky2_reset(hw);
@@ -5293,7 +5293,7 @@ static struct pci_driver sky2_driver = {
 
 static int __init sky2_init_module(void)
 {
-	pr_info("driver version " DRV_VERSION "\n");
+	pr_debug("driver version " DRV_VERSION "\n");
 
 	sky2_debug_init();
 	return pci_register_driver(&sky2_driver);

@@ -82,7 +82,7 @@ static int is_subsys_pwr_on(struct mtk_clk_pll *pll)
 			regmap_read(pll->pwr_regmap, pwr->pwr_ofs, &val);
 			regmap_read(pll->pwr_regmap, pwr->pwr2_ofs, &val2);
 
-			pr_notice("stat: 0x%x, msk: 0x%x\n", val, pwr->mask);
+			pr_debug("stat: 0x%x, msk: 0x%x\n", val, pwr->mask);
 			if ((val & pwr->mask) != pwr->val &&
 					(val2 & pwr->mask) != pwr->val)
 				return false;
@@ -554,7 +554,7 @@ static void mtk_pll_unprepare_unused(struct clk_hw *hw)
 {
 	const char *c_n = clk_hw_get_name(hw);
 
-	pr_notice("disable_unused - %s\n", c_n);
+	pr_debug("disable_unused - %s\n", c_n);
 
 	mtk_pll_unprepare(hw);
 }

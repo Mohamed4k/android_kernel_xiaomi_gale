@@ -88,7 +88,7 @@ static int i40evf_get_link_ksettings(struct net_device *netdev,
 #ifdef SPEED_25000
 		cmd->base.speed = SPEED_25000;
 #else
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "Speed is 25G, display not supported by this version of ethtool.\n");
 #endif
 		break;
@@ -620,7 +620,7 @@ static int i40evf_get_rxnfc(struct net_device *netdev,
 		ret = 0;
 		break;
 	case ETHTOOL_GRXFH:
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "RSS hash info is not available to vf, use pf.\n");
 		break;
 	default:
@@ -669,13 +669,13 @@ static int i40evf_set_channels(struct net_device *netdev,
 	if (num_req != adapter->num_active_queues &&
 	    !(adapter->vf_res->vf_cap_flags &
 	      VIRTCHNL_VF_OFFLOAD_REQ_QUEUES)) {
-		dev_info(&adapter->pdev->dev, "PF is not capable of queue negotiation.\n");
+		dev_dbg(&adapter->pdev->dev, "PF is not capable of queue negotiation.\n");
 		return -EINVAL;
 	}
 
 	if ((adapter->vf_res->vf_cap_flags & VIRTCHNL_VF_OFFLOAD_ADQ) &&
 	    adapter->num_tc) {
-		dev_info(&adapter->pdev->dev, "Cannot set channels since ADq is enabled.\n");
+		dev_dbg(&adapter->pdev->dev, "Cannot set channels since ADq is enabled.\n");
 		return -EINVAL;
 	}
 

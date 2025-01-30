@@ -249,7 +249,7 @@ static void ov8856_fusion_id_read(void)
 	int i;
 	for (i=0; i<16; i++) {
 		fusion_id_front[i] = read_cmos_sensor_ov8856(0x10+i);
-		//pr_info("zengx %s addr = 0x%4x fusion_id_front[%d]=0x%2x\n",__func__, 0x10 + i, i, fusion_id_front[i]);
+		//pr_debug("zengx %s addr = 0x%4x fusion_id_front[%d]=0x%2x\n",__func__, 0x10 + i, i, fusion_id_front[i]);
 	}
 }
 static void ov8856_sn_read(void)
@@ -257,7 +257,7 @@ static void ov8856_sn_read(void)
 	int i;
 	for (i=0; i<14; i++) {
 		sn_front[i] = read_cmos_sensor_ov8856(0x1F92+i);
-		//pr_info("zengx %s addr = 0x%4x sn_front[%d]=0x%2x\n",__func__, 0x1F92 + i, i, sn_front[i]);
+		//pr_debug("zengx %s addr = 0x%4x sn_front[%d]=0x%2x\n",__func__, 0x1F92 + i, i, sn_front[i]);
 	}
 }
 static void set_dummy(void)

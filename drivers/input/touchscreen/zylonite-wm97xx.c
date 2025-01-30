@@ -158,7 +158,7 @@ static int wm97xx_acc_startup(struct wm97xx *wm)
 	}
 	wm->acc_rate = cinfo[sp_idx].code;
 	wm->acc_slot = ac97_touch_slot;
-	dev_info(wm->dev,
+	dev_dbg(wm->dev,
 		 "zylonite accelerated touchscreen driver, %d samples/sec\n",
 		 cinfo[sp_idx].speed);
 

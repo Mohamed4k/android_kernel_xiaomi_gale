@@ -179,7 +179,7 @@ static int bgmac_probe(struct bcma_device *core)
 		err = -ENODEV;
 		goto err;
 	}
-	dev_info(bgmac->dev, "Found PHY addr: %d%s\n", bgmac->phyaddr,
+	dev_dbg(bgmac->dev, "Found PHY addr: %d%s\n", bgmac->phyaddr,
 		 bgmac->phyaddr == BGMAC_PHY_NOREGS ? " (NOREGS)" : "");
 
 	if (!bgmac_is_bcm4707_family(core) &&
@@ -340,7 +340,7 @@ static int __init bgmac_init(void)
 	err = bcma_driver_register(&bgmac_bcma_driver);
 	if (err)
 		return err;
-	pr_info("Broadcom 47xx GBit MAC driver loaded\n");
+	pr_debug("Broadcom 47xx GBit MAC driver loaded\n");
 
 	return 0;
 }

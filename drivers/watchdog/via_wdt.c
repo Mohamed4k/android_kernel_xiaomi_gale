@@ -185,7 +185,7 @@ static int wdt_probe(struct pci_dev *pdev,
 
 	pci_read_config_dword(pdev, VIA_WDT_MMIO_BASE, &mmio);
 	if (mmio) {
-		dev_info(&pdev->dev, "VIA Chipset watchdog MMIO: %x\n", mmio);
+		dev_dbg(&pdev->dev, "VIA Chipset watchdog MMIO: %x\n", mmio);
 	} else {
 		dev_err(&pdev->dev, "MMIO setting failed. Check BIOS.\n");
 		goto err_out_resource;

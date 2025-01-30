@@ -415,7 +415,7 @@ static int isl29003_probe(struct i2c_client *client,
 	if (err)
 		goto exit_kfree;
 
-	dev_info(&client->dev, "driver version %s enabled\n", DRIVER_VERSION);
+	dev_dbg(&client->dev, "driver version %s enabled\n", DRIVER_VERSION);
 	return 0;
 
 exit_kfree:

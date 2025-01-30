@@ -147,7 +147,7 @@ doit:
 	ret = ehea_set_portspeed(port, sp);
 
 	if (!ret)
-		netdev_info(dev,
+		netdev_dbg(dev,
 			    "Port speed successfully set: %dMbps %s Duplex\n",
 			    port->port_speed,
 			    port->full_duplex == 1 ? "Full" : "Half");
@@ -163,7 +163,7 @@ static int ehea_nway_reset(struct net_device *dev)
 	ret = ehea_set_portspeed(port, EHEA_SPEED_AUTONEG);
 
 	if (!ret)
-		netdev_info(port->netdev,
+		netdev_dbg(port->netdev,
 			    "Port speed successfully set: %dMbps %s Duplex\n",
 			    port->port_speed,
 			    port->full_duplex == 1 ? "Full" : "Half");

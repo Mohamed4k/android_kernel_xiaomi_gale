@@ -40,7 +40,7 @@ void t21142_media_task(struct work_struct *work)
 	if ((csr14 & 0x80) && (csr12 & 0x7000) != 0x5000)
 		csr12 |= 6;
 	if (tulip_debug > 2)
-		dev_info(&dev->dev, "21143 negotiation status %08x, %s\n",
+		dev_dbg(&dev->dev, "21143 negotiation status %08x, %s\n",
 			 csr12, medianame[dev->if_port]);
 	if (tulip_media_cap[dev->if_port] & MediaIsMII) {
 		if (tulip_check_duplex(dev) < 0) {
@@ -53,7 +53,7 @@ void t21142_media_task(struct work_struct *work)
 	} else if (tp->nwayset) {
 		/* Don't screw up a negotiated session! */
 		if (tulip_debug > 1)
-			dev_info(&dev->dev,
+			dev_dbg(&dev->dev,
 				 "Using NWay-set %s media, csr12 %08x\n",
 				 medianame[dev->if_port], csr12);
 	} else if (tp->medialock) {
@@ -61,7 +61,7 @@ void t21142_media_task(struct work_struct *work)
 	} else if (dev->if_port == 3) {
 		if (csr12 & 2) {	/* No 100mbps link beat, revert to 10mbps. */
 			if (tulip_debug > 1)
-				dev_info(&dev->dev,
+				dev_dbg(&dev->dev,
 					 "No 21143 100baseTx link beat, %08x, trying NWay\n",
 					 csr12);
 			t21142_start_nway(dev);
@@ -70,7 +70,7 @@ void t21142_media_task(struct work_struct *work)
 	} else if ((csr12 & 0x7000) != 0x5000) {
 		/* Negotiation failed.  Search media types. */
 		if (tulip_debug > 1)
-			dev_info(&dev->dev,
+			dev_dbg(&dev->dev,
 				 "21143 negotiation failed, status %08x\n",
 				 csr12);
 		if (!(csr12 & 4)) {		/* 10mbps link beat good. */
@@ -90,7 +90,7 @@ void t21142_media_task(struct work_struct *work)
 			iowrite32(1, ioaddr + CSR13);
 		}
 		if (tulip_debug > 1)
-			dev_info(&dev->dev, "Testing new 21143 media %s\n",
+			dev_dbg(&dev->dev, "Testing new 21143 media %s\n",
 				 medianame[dev->if_port]);
 		if (new_csr6 != (tp->csr6 & ~0x00D5)) {
 			tp->csr6 &= 0x00D5;
@@ -147,7 +147,7 @@ void t21142_lnk_change(struct net_device *dev, int csr5)
 	if ((csr14 & 0x80) && (csr12 & 0x7000) != 0x5000)
 		csr12 |= 6;
 	if (tulip_debug > 1)
-		dev_info(&dev->dev,
+		dev_dbg(&dev->dev,
 			 "21143 link status interrupt %08x, CSR5 %x, %08x\n",
 			 csr12, csr5, csr14);
 
@@ -172,13 +172,13 @@ void t21142_lnk_change(struct net_device *dev, int csr5)
 
 		if (tulip_debug > 1) {
 			if (tp->nwayset)
-				dev_info(&dev->dev,
+				dev_dbg(&dev->dev,
 					 "Switching to %s based on link negotiation %04x & %04x = %04x\n",
 					 medianame[dev->if_port],
 					 tp->sym_advertise, tp->lpar,
 					 negotiated);
 			else
-				dev_info(&dev->dev,
+				dev_dbg(&dev->dev,
 					 "Autonegotiation failed, using %s, link beat status %04x\n",
 					 medianame[dev->if_port], csr12);
 		}
@@ -222,7 +222,7 @@ void t21142_lnk_change(struct net_device *dev, int csr5)
 		add_timer(&tp->timer);
 	} else if (dev->if_port == 3  ||  dev->if_port == 5) {
 		if (tulip_debug > 1)
-			dev_info(&dev->dev, "21143 %s link beat %s\n",
+			dev_dbg(&dev->dev, "21143 %s link beat %s\n",
 				 medianame[dev->if_port],
 				 (csr12 & 2) ? "failed" : "good");
 		if ((csr12 & 2)  &&  ! tp->medialock) {
@@ -234,18 +234,18 @@ void t21142_lnk_change(struct net_device *dev, int csr5)
 			iowrite32(csr14 & ~0x080, ioaddr + CSR14);
 	} else if (dev->if_port == 0  ||  dev->if_port == 4) {
 		if ((csr12 & 4) == 0)
-			dev_info(&dev->dev, "21143 10baseT link beat good\n");
+			dev_dbg(&dev->dev, "21143 10baseT link beat good\n");
 	} else if (!(csr12 & 4)) {		/* 10mbps link beat good. */
 		if (tulip_debug)
-			dev_info(&dev->dev, "21143 10mbps sensed media\n");
+			dev_dbg(&dev->dev, "21143 10mbps sensed media\n");
 		dev->if_port = 0;
 	} else if (tp->nwayset) {
 		if (tulip_debug)
-			dev_info(&dev->dev, "21143 using NWay-set %s, csr6 %08x\n",
+			dev_dbg(&dev->dev, "21143 using NWay-set %s, csr6 %08x\n",
 				 medianame[dev->if_port], tp->csr6);
 	} else {		/* 100mbps link beat good. */
 		if (tulip_debug)
-			dev_info(&dev->dev, "21143 100baseTx sensed media\n");
+			dev_dbg(&dev->dev, "21143 100baseTx sensed media\n");
 		dev->if_port = 3;
 		tp->csr6 = 0x838E0000 | (tp->csr6 & 0x20ff);
 		iowrite32(0x0003FF7F, ioaddr + CSR14);

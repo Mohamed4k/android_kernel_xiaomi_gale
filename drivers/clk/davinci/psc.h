@@ -17,7 +17,7 @@
 #define LPSC_FORCE		BIT(2) /* requires MDCTL FORCE bit */
 #define LPSC_LOCAL_RESET	BIT(3) /* acts as reset provider */
 
-struct davinci_lpsc_clkdev_info {
+struct davinci_lpsc_clkdev_dbg {
 	const char *con_id;
 	const char *dev_id;
 };
@@ -28,20 +28,20 @@ struct davinci_lpsc_clkdev_info {
 }
 
 #define LPSC_CLKDEV1(n, c, d) \
-static const struct davinci_lpsc_clkdev_info n[] __initconst = {	\
+static const struct davinci_lpsc_clkdev_dbg n[] __initconst = {	\
 	LPSC_CLKDEV((c), (d)),						\
 	{ }								\
 }
 
 #define LPSC_CLKDEV2(n, c1, d1, c2, d2) \
-static const struct davinci_lpsc_clkdev_info n[] __initconst = {	\
+static const struct davinci_lpsc_clkdev_dbg n[] __initconst = {	\
 	LPSC_CLKDEV((c1), (d1)),					\
 	LPSC_CLKDEV((c2), (d2)),					\
 	{ }								\
 }
 
 #define LPSC_CLKDEV3(n, c1, d1, c2, d2, c3, d3) \
-static const struct davinci_lpsc_clkdev_info n[] __initconst = {	\
+static const struct davinci_lpsc_clkdev_dbg n[] __initconst = {	\
 	LPSC_CLKDEV((c1), (d1)),					\
 	LPSC_CLKDEV((c2), (d2)),					\
 	LPSC_CLKDEV((c3), (d3)),					\
@@ -60,7 +60,7 @@ static const struct davinci_lpsc_clkdev_info n[] __initconst = {	\
 struct davinci_lpsc_clk_info {
 	const char *name;
 	const char *parent;
-	const struct davinci_lpsc_clkdev_info *cdevs;
+	const struct davinci_lpsc_clkdev_dbg *cdevs;
 	u32 md;
 	u32 pd;
 	unsigned long flags;

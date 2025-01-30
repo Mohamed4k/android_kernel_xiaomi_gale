@@ -832,7 +832,7 @@ static int wsm_startup_indication(struct cw1200_common *priv,
 	if (WARN_ON(priv->wsm_caps.fw_type > 4))
 		return -EINVAL;
 
-	pr_info("CW1200 WSM init done.\n"
+	pr_debug("CW1200 WSM init done.\n"
 		"   Input buffers: %d x %d bytes\n"
 		"   Hardware: %d.%d\n"
 		"   %s firmware [%s], ver: %d, build: %d,"
@@ -1024,7 +1024,7 @@ underflow:
 static int wsm_find_complete_indication(struct cw1200_common *priv,
 					struct wsm_buf *buf)
 {
-	pr_warn("Implement find_complete_indication\n");
+	pr_debug("Implement find_complete_indication\n");
 	return 0;
 }
 
@@ -1041,7 +1041,7 @@ static int wsm_ba_timeout_indication(struct cw1200_common *priv,
 	dummy2 = WSM_GET8(buf);
 	WSM_GET(buf, addr, ETH_ALEN);
 
-	pr_info("BlockACK timeout, tid %d, addr %pM\n",
+	pr_debug("BlockACK timeout, tid %d, addr %pM\n",
 		tid, addr);
 
 	return 0;
@@ -1445,7 +1445,7 @@ int wsm_handle_rx(struct cw1200_common *priv, u16 id,
 			ret = wsm_join_complete_indication(priv, &wsm_buf);
 			break;
 		default:
-			pr_warn("Unrecognised WSM ID %04x\n", id);
+			pr_debug("Unrecognised WSM ID %04x\n", id);
 		}
 	} else {
 		WARN_ON(1);

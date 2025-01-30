@@ -83,7 +83,7 @@ enum bnx2x_int_mode {
 
 /* regular debug print */
 #define DP_INNER(fmt, ...)					\
-	pr_notice("[%s:%d(%s)]" fmt,				\
+	pr_debug("[%s:%d(%s)]" fmt,				\
 		  __func__, __LINE__,				\
 		  bp->dev ? (bp->dev->name) : "?",		\
 		  ##__VA_ARGS__);
@@ -128,11 +128,11 @@ do {								\
 #define BNX2X_ERROR(fmt, ...)					\
 	pr_err("[%s:%d]" fmt, __func__, __LINE__, ##__VA_ARGS__)
 
-/* before we have a dev->name use dev_info() */
+/* before we have a dev->name use dev_dbg() */
 #define BNX2X_DEV_INFO(fmt, ...)				 \
 do {								 \
 	if (unlikely(netif_msg_probe(bp)))			 \
-		dev_info(&bp->pdev->dev, fmt, ##__VA_ARGS__);	 \
+		dev_dbg(&bp->pdev->dev, fmt, ##__VA_ARGS__);	 \
 } while (0)
 
 /* Error handling */

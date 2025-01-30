@@ -7493,7 +7493,7 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	}
 
 	if (pcim_set_mwi(pdev) < 0)
-		dev_info(&pdev->dev, "Mem-Wr-Inval unavailable\n");
+		dev_dbg(&pdev->dev, "Mem-Wr-Inval unavailable\n");
 
 	/* use first MMIO region */
 	region = ffs(pci_select_bars(pdev, IORESOURCE_MEM)) - 1;
@@ -7517,7 +7517,7 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	tp->mmio_addr = pcim_iomap_table(pdev)[region];
 
 	if (!pci_is_pcie(pdev))
-		dev_info(&pdev->dev, "not PCI Express\n");
+		dev_dbg(&pdev->dev, "not PCI Express\n");
 
 	/* Identify chip attached to board */
 	rtl8169_get_mac_version(tp, cfg->default_ver);

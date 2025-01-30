@@ -67,7 +67,7 @@ static void scx200_wdt_ping(void)
 
 static void scx200_wdt_update_margin(void)
 {
-	pr_info("timer margin %d seconds\n", margin);
+	pr_debug("timer margin %d seconds\n", margin);
 	wdto_restart = margin * W_SCALE;
 }
 
@@ -108,7 +108,7 @@ static int scx200_wdt_open(struct inode *inode, struct file *file)
 static int scx200_wdt_release(struct inode *inode, struct file *file)
 {
 	if (expect_close != 42)
-		pr_warn("watchdog device closed unexpectedly, will not disable the watchdog timer\n");
+		pr_debug("watchdog device closed unexpectedly, will not disable the watchdog timer\n");
 	else if (!nowayout)
 		scx200_wdt_disable();
 	expect_close = 0;
@@ -226,7 +226,7 @@ static int __init scx200_wdt_init(void)
 	if (!request_region(scx200_cb_base + SCx200_WDT_OFFSET,
 			    SCx200_WDT_SIZE,
 			    "NatSemi SCx200 Watchdog")) {
-		pr_warn("watchdog I/O region busy\n");
+		pr_debug("watchdog I/O region busy\n");
 		return -EBUSY;
 	}
 

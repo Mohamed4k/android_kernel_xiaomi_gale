@@ -108,13 +108,13 @@ static int qlcnic_83xx_init_mgmt_vnic(struct qlcnic_adapter *adapter)
 		npar = adapter->npars;
 
 		for (i = 0; i < ahw->total_nic_func; i++, npar++) {
-			dev_info(dev, "id:%d active:%d type:%d port:%d min_bw:%d max_bw:%d mac_addr:%pM\n",
+			dev_dbg(dev, "id:%d active:%d type:%d port:%d min_bw:%d max_bw:%d mac_addr:%pM\n",
 				 npar->pci_func, npar->active, npar->type,
 				 npar->phy_port, npar->min_bw, npar->max_bw,
 				 npar->mac);
 		}
 
-		dev_info(dev, "Max functions = %d, active functions = %d\n",
+		dev_dbg(dev, "Max functions = %d, active functions = %d\n",
 			 ahw->max_pci_func, ahw->total_nic_func);
 
 		if (qlcnic_83xx_set_vnic_opmode(adapter))
@@ -135,7 +135,7 @@ static int qlcnic_83xx_init_mgmt_vnic(struct qlcnic_adapter *adapter)
 	adapter->flags |= QLCNIC_ADAPTER_INITIALIZED;
 	qlcnic_83xx_enable_vnic_mode(adapter, 1);
 
-	dev_info(dev, "HAL Version: %d, Management function\n",
+	dev_dbg(dev, "HAL Version: %d, Management function\n",
 		 ahw->fw_hal_version);
 
 	return 0;
@@ -153,7 +153,7 @@ static int qlcnic_83xx_init_privileged_vnic(struct qlcnic_adapter *adapter)
 	adapter->ahw->msix_supported = !!qlcnic_use_msi_x;
 	adapter->flags |= QLCNIC_ADAPTER_INITIALIZED;
 
-	dev_info(&adapter->pdev->dev,
+	dev_dbg(&adapter->pdev->dev,
 		 "HAL Version: %d, Privileged function\n",
 		 adapter->ahw->fw_hal_version);
 	return 0;
@@ -174,7 +174,7 @@ static int qlcnic_83xx_init_non_privileged_vnic(struct qlcnic_adapter *adapter)
 	adapter->ahw->msix_supported = !!qlcnic_use_msi_x;
 	adapter->flags |= QLCNIC_ADAPTER_INITIALIZED;
 
-	dev_info(&adapter->pdev->dev, "HAL Version: %d, Virtual function\n",
+	dev_dbg(&adapter->pdev->dev, "HAL Version: %d, Virtual function\n",
 		 adapter->ahw->fw_hal_version);
 
 	return 0;

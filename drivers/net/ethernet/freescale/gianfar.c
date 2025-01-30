@@ -1140,7 +1140,7 @@ static void gfar_detect_errata(struct gfar_private *priv)
 #endif
 
 	if (priv->errata)
-		dev_info(dev, "enabled errata workarounds, flags: 0x%x\n",
+		dev_dbg(dev, "enabled errata workarounds, flags: 0x%x\n",
 			 priv->errata);
 }
 
@@ -1458,17 +1458,17 @@ static int gfar_probe(struct platform_device *ofdev)
 	gfar_init_filer_table(priv);
 
 	/* Print out the device info */
-	netdev_info(dev, "mac: %pM\n", dev->dev_addr);
+	netdev_dbg(dev, "mac: %pM\n", dev->dev_addr);
 
 	/* Even more device info helps when determining which kernel
 	 * provided which set of benchmarks.
 	 */
-	netdev_info(dev, "Running with NAPI enabled\n");
+	netdev_dbg(dev, "Running with NAPI enabled\n");
 	for (i = 0; i < priv->num_rx_queues; i++)
-		netdev_info(dev, "RX BD ring size for Q[%d]: %d\n",
+		netdev_dbg(dev, "RX BD ring size for Q[%d]: %d\n",
 			    i, priv->rx_queue[i]->rx_ring_size);
 	for (i = 0; i < priv->num_tx_queues; i++)
-		netdev_info(dev, "TX BD ring size for Q[%d]: %d\n",
+		netdev_dbg(dev, "TX BD ring size for Q[%d]: %d\n",
 			    i, priv->tx_queue[i]->tx_ring_size);
 
 	return 0;

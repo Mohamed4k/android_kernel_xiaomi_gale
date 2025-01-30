@@ -1712,16 +1712,16 @@ static int tda998x_create(struct device *dev)
 
 	switch (priv->rev) {
 	case TDA9989N2:
-		dev_info(dev, "found TDA9989 n2");
+		dev_dbg(dev, "found TDA9989 n2");
 		break;
 	case TDA19989:
-		dev_info(dev, "found TDA19989");
+		dev_dbg(dev, "found TDA19989");
 		break;
 	case TDA19989N2:
-		dev_info(dev, "found TDA19989 n2");
+		dev_dbg(dev, "found TDA19989 n2");
 		break;
 	case TDA19988:
-		dev_info(dev, "found TDA19988");
+		dev_dbg(dev, "found TDA19988");
 		break;
 	default:
 		dev_err(dev, "found unsupported device: %04x\n", priv->rev);

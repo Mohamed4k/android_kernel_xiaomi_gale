@@ -282,25 +282,25 @@ static int __init coh901327_probe(struct platform_device *pdev)
 	val = readw(virtbase + U300_WDOG_SR);
 	switch (val) {
 	case U300_WDOG_SR_STATUS_TIMED_OUT:
-		dev_info(dev, "watchdog timed out since last chip reset!\n");
+		dev_dbg(dev, "watchdog timed out since last chip reset!\n");
 		coh901327_wdt.bootstatus |= WDIOF_CARDRESET;
 		/* Status will be cleared below */
 		break;
 	case U300_WDOG_SR_STATUS_NORMAL:
-		dev_info(dev, "in normal status, no timeouts have occurred.\n");
+		dev_dbg(dev, "in normal status, no timeouts have occurred.\n");
 		break;
 	default:
-		dev_info(dev, "contains an illegal status code (%08x)\n", val);
+		dev_dbg(dev, "contains an illegal status code (%08x)\n", val);
 		break;
 	}
 
 	val = readw(virtbase + U300_WDOG_D2R);
 	switch (val) {
 	case U300_WDOG_D2R_DISABLE_STATUS_DISABLED:
-		dev_info(dev, "currently disabled.\n");
+		dev_dbg(dev, "currently disabled.\n");
 		break;
 	case U300_WDOG_D2R_DISABLE_STATUS_ENABLED:
-		dev_info(dev, "currently enabled! (disabling it now)\n");
+		dev_dbg(dev, "currently enabled! (disabling it now)\n");
 		coh901327_disable();
 		break;
 	default:
@@ -326,7 +326,7 @@ static int __init coh901327_probe(struct platform_device *pdev)
 	if (ret)
 		goto out_no_wdog;
 
-	dev_info(dev, "initialized. (timeout=%d sec)\n",
+	dev_dbg(dev, "initialized. (timeout=%d sec)\n",
 			coh901327_wdt.timeout);
 	return 0;
 

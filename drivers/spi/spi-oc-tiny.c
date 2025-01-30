@@ -309,7 +309,7 @@ static int tiny_spi_probe(struct platform_device *pdev)
 	err = spi_bitbang_start(&hw->bitbang);
 	if (err)
 		goto exit;
-	dev_info(&pdev->dev, "base %p, irq %d\n", hw->base, hw->irq);
+	dev_dbg(&pdev->dev, "base %p, irq %d\n", hw->base, hw->irq);
 
 	return 0;
 

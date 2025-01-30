@@ -360,7 +360,7 @@ static void etnaviv_hw_identify(struct etnaviv_gpu *gpu)
 		}
 	}
 
-	dev_info(gpu->dev, "model: GC%x, revision: %x\n",
+	dev_dbg(gpu->dev, "model: GC%x, revision: %x\n",
 		 gpu->identity.model, gpu->identity.revision);
 
 	/*
@@ -708,7 +708,7 @@ int etnaviv_gpu_init(struct etnaviv_gpu *gpu)
 	/* Exclude VG cores with FE2.0 */
 	if (gpu->identity.features & chipFeatures_PIPE_VG &&
 	    gpu->identity.features & chipFeatures_FE20) {
-		dev_info(gpu->dev, "Ignoring GPU with VG and FE2.0\n");
+		dev_dbg(gpu->dev, "Ignoring GPU with VG and FE2.0\n");
 		ret = -ENXIO;
 		goto fail;
 	}
@@ -730,7 +730,7 @@ int etnaviv_gpu_init(struct etnaviv_gpu *gpu)
 		else
 			gpu->memory_base = dma_mask - SZ_2G + 1;
 	} else if (PHYS_OFFSET >= SZ_2G) {
-		dev_info(gpu->dev, "Need to move linear window on MC1.0, disabling TS\n");
+		dev_dbg(gpu->dev, "Need to move linear window on MC1.0, disabling TS\n");
 		gpu->memory_base = PHYS_OFFSET;
 		gpu->identity.features &= ~chipFeatures_FAST_CLEAR;
 	}

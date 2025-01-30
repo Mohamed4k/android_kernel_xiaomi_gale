@@ -548,7 +548,7 @@ static int lbs_thread(void *data)
 		if (priv->cmd_timed_out && priv->cur_cmd) {
 			struct cmd_ctrl_node *cmdnode = priv->cur_cmd;
 
-			netdev_info(dev, "Timeout submitting command 0x%04x\n",
+			netdev_dbg(dev, "Timeout submitting command 0x%04x\n",
 				    le16_to_cpu(cmdnode->cmdbuf->command));
 			lbs_complete_command(priv, cmdnode, -ETIMEDOUT);
 
@@ -732,7 +732,7 @@ static void lbs_cmd_timeout_handler(struct timer_list *t)
 	if (!priv->cur_cmd)
 		goto out;
 
-	netdev_info(priv->dev, "command 0x%04x timed out\n",
+	netdev_dbg(priv->dev, "command 0x%04x timed out\n",
 		    le16_to_cpu(priv->cur_cmd->cmdbuf->command));
 
 	priv->cmd_timed_out = 1;
@@ -763,7 +763,7 @@ static void lbs_tx_lockup_handler(struct timer_list *t)
 
 	spin_lock_irqsave(&priv->driver_lock, flags);
 
-	netdev_info(priv->dev, "TX lockup detected\n");
+	netdev_dbg(priv->dev, "TX lockup detected\n");
 	if (priv->reset_card)
 		priv->reset_card(priv);
 
@@ -1052,7 +1052,7 @@ int lbs_start_card(struct lbs_private *priv)
 	if (!lbs_disablemesh)
 		lbs_init_mesh(priv);
 	else
-		pr_info("%s: mesh disabled\n", dev->name);
+		pr_debug("%s: mesh disabled\n", dev->name);
 
 	ret = lbs_cfg_register(priv);
 	if (ret) {
@@ -1065,7 +1065,7 @@ int lbs_start_card(struct lbs_private *priv)
 
 	lbs_debugfs_init_one(priv, dev);
 
-	netdev_info(dev, "Marvell WLAN 802.11 adapter\n");
+	netdev_dbg(dev, "Marvell WLAN 802.11 adapter\n");
 
 	ret = 0;
 

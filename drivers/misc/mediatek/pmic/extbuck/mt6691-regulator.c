@@ -40,13 +40,13 @@ int is_mt6691_exist(void)
 	struct regulator *reg;
 
 	reg = regulator_get(NULL, MT6691_IS_EXIST_NAME);
-	pr_info("%s: regulator_get=%s\n", __func__, MT6691_IS_EXIST_NAME);
+	pr_debug("%s: regulator_get=%s\n", __func__, MT6691_IS_EXIST_NAME);
 	if (reg == NULL)
 		return 0;
 	regulator_put(reg);
 	return 1;
 #else
-	pr_notice("g_is_mt6691_exist=%d\n", g_is_mt6691_exist);
+	pr_debug("g_is_mt6691_exist=%d\n", g_is_mt6691_exist);
 	return g_is_mt6691_exist;
 #endif
 }
@@ -104,7 +104,7 @@ int mt6691_read_byte(void *client,
 
 	ret = mt6691_read_device(i2c, addr, 1, val);
 	if (ret < 0)
-		pr_notice("%s read 0x%02x fail\n", __func__, addr);
+		pr_debug("%s read 0x%02x fail\n", __func__, addr);
 	return ret;
 }
 
@@ -115,7 +115,7 @@ int mt6691_write_byte(void *client, uint32_t addr, uint32_t value)
 
 	ret = mt6691_write_device(i2c, addr, 1, &value);
 	if (ret < 0)
-		pr_notice("%s write 0x%02x fail\n", __func__, addr);
+		pr_debug("%s write 0x%02x fail\n", __func__, addr);
 	return ret;
 }
 
@@ -130,7 +130,7 @@ int mt6691_assign_bit(void *client, uint32_t reg, int32_t  mask, uint32_t data)
 	mutex_lock(&ri->io_lock);
 	ret = mt6691_read_byte(i2c, reg, &regval);
 	if (ret < 0) {
-		pr_notice("%s read fail reg0x%02x data0x%02x\n",
+		pr_debug("%s read fail reg0x%02x data0x%02x\n",
 				__func__, reg, data);
 		goto OUT_ASSIGN;
 	}
@@ -139,7 +139,7 @@ int mt6691_assign_bit(void *client, uint32_t reg, int32_t  mask, uint32_t data)
 	tmp |= (data & mask);
 	ret = mt6691_write_byte(i2c, reg, tmp);
 	if (ret < 0)
-		pr_notice("%s write fail reg0x%02x data0x%02x\n",
+		pr_debug("%s write fail reg0x%02x data0x%02x\n",
 				__func__, reg, tmp);
 OUT_ASSIGN:
 	mutex_unlock(&ri->io_lock);
@@ -195,7 +195,7 @@ static int mt6691_get_voltage(struct regulator_dev *rdev)
 
 	ret = mt6691_read_byte(info->i2c, info->reg_chip->vol_reg, &reg_val);
 	if (ret < 0) {
-		pr_notice("%s read voltage fail\n", __func__);
+		pr_debug("%s read voltage fail\n", __func__);
 		return ret;
 	}
 
@@ -223,7 +223,7 @@ static int hl7593_get_voltage(struct regulator_dev *rdev)
 
 	ret = mt6691_read_byte(info->i2c, info->reg_chip->vol_reg, &reg_val);
 	if (ret < 0) {
-		pr_notice("%s read voltage fail\n", __func__);
+		pr_debug("%s read voltage fail\n", __func__);
 		return ret;
 	}
 
@@ -259,7 +259,7 @@ static unsigned int mt6691_get_mode(struct regulator_dev *rdev)
 
 	ret = mt6691_read_byte(info->i2c, info->reg_chip->mode_reg, &regval);
 	if (ret < 0) {
-		pr_notice("%s read mode fail\n", __func__);
+		pr_debug("%s read mode fail\n", __func__);
 		return ret;
 	}
 
@@ -281,7 +281,7 @@ static int mt6691_disable(struct regulator_dev *rdev)
 	struct mt6691_regulator_info *info = rdev_get_drvdata(rdev);
 
 	if (rdev->use_count == 0) {
-		pr_info("ext_buck should not be disable (use_count=%d)\n"
+		pr_debug("ext_buck should not be disable (use_count=%d)\n"
 			, rdev->use_count);
 		return -1;
 	}
@@ -396,7 +396,7 @@ static int mt6691_i2c_probe(struct i2c_client *i2c,
 	case 0x56: /* MT6691OTP */
 		break;
 	default:
-		dev_info(&i2c->dev, "%s invalid Slave Addr\n", __func__);
+		dev_dbg(&i2c->dev, "%s invalid Slave Addr\n", __func__);
 		return -ENODEV;
 	}
 
@@ -408,13 +408,13 @@ static int mt6691_i2c_probe(struct i2c_client *i2c,
 	init_data = of_get_regulator_init_data(&i2c->dev, i2c->dev.of_node,
 					       NULL);
 	if (init_data) {
-		dev_info(&i2c->dev,
+		dev_dbg(&i2c->dev,
 			 "regulator_name = %s, min_uV =%d, max_uV = %d\n",
 			 init_data->constraints.name,
 			 init_data->constraints.min_uV,
 			 init_data->constraints.max_uV);
 	} else {
-		dev_info(&i2c->dev, "%s: no init data\n", __func__);
+		dev_dbg(&i2c->dev, "%s: no init data\n", __func__);
 		return -EINVAL;
 	}
 
@@ -431,7 +431,7 @@ static int mt6691_i2c_probe(struct i2c_client *i2c,
 		g_is_mt6691_exist &= 1;
 	else
 		g_is_mt6691_exist &= 0;
-	dev_info(&i2c->dev, "i2c_slv=0x%x ret=0x%x g_is_mt6691_exist=%d\n",
+	dev_dbg(&i2c->dev, "i2c_slv=0x%x ret=0x%x g_is_mt6691_exist=%d\n",
 		 i2c->addr, ret, g_is_mt6691_exist);
 	return 0;
 #else
@@ -451,7 +451,7 @@ static int mt6691_i2c_probe(struct i2c_client *i2c,
 			info->reg_chip = &mt6691_datas[5];
 			break;
 		default:
-			pr_notice("mt6691 register regulator fail\n");
+			pr_debug("mt6691 register regulator fail\n");
 			return -EINVAL;
 		}
 		info->regulator =
@@ -460,7 +460,7 @@ static int mt6691_i2c_probe(struct i2c_client *i2c,
 						  init_data,
 						  info);
 		if (IS_ERR(info->regulator)) {
-			pr_notice("mt6691 register regulator fail\n");
+			pr_debug("mt6691 register regulator fail\n");
 			return -EINVAL;
 		}
 	}
@@ -473,11 +473,11 @@ static int mt6691_i2c_probe(struct i2c_client *i2c,
 
 	ret = mt6691_regmap_init(info);
 	if (ret < 0) {
-		dev_info(&i2c->dev, "%s mt6691 regmap init fail\n", __func__);
+		dev_dbg(&i2c->dev, "%s mt6691 regmap init fail\n", __func__);
 		return -EINVAL;
 	}
 
-	pr_info("%s Successfully\n", __func__);
+	pr_debug("%s Successfully\n", __func__);
 
 	return 0;
 #endif
@@ -534,7 +534,7 @@ static struct i2c_driver mt6691_i2c_driver = {
 
 static int __init mt6691_i2c_init(void)
 {
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 	return i2c_add_driver(&mt6691_i2c_driver);
 }
 subsys_initcall(mt6691_i2c_init);

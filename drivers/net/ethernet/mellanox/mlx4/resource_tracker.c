@@ -4414,7 +4414,7 @@ int mlx4_QP_FLOW_STEERING_ATTACH_wrapper(struct mlx4_dev *dev, int slave,
 	case MLX4_NET_TRANS_RULE_ID_IPV4:
 	case MLX4_NET_TRANS_RULE_ID_TCP:
 	case MLX4_NET_TRANS_RULE_ID_UDP:
-		pr_warn("Can't attach FS rule without L2 headers, adding L2 header\n");
+		pr_debug("Can't attach FS rule without L2 headers, adding L2 header\n");
 		if (add_eth_header(dev, slave, inbox, rlist, header_id)) {
 			err = -EINVAL;
 			goto err_put_qp;

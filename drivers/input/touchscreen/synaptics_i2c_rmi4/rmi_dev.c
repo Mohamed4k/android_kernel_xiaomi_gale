@@ -187,7 +187,7 @@ static ssize_t rmidev_sysfs_data_show(struct device *dev,
 			rmidev->fn_ptr->read(rmidev->rmi4_data, rmidev->address,
 					     (unsigned char *)buf, data_length);
 		if (retval < 0) {
-			dev_info(&rmidev->rmi4_data->i2c_client->dev,
+			dev_dbg(&rmidev->rmi4_data->i2c_client->dev,
 				"%s: Failed to read data\n", __func__);
 			return retval;
 		}
@@ -213,7 +213,7 @@ static ssize_t rmidev_sysfs_data_store(struct device *dev,
 			rmidev->rmi4_data, rmidev->address,
 			(unsigned char *)buf, data_length);
 		if (retval < 0) {
-			dev_info(&rmidev->rmi4_data->i2c_client->dev,
+			dev_dbg(&rmidev->rmi4_data->i2c_client->dev,
 				"%s: Failed to write data\n", __func__);
 			return retval;
 		}
@@ -260,7 +260,7 @@ static loff_t rmidev_llseek(struct file *filp, loff_t off, int whence)
 	struct rmidev_data *dev_data = filp->private_data;
 
 	if (IS_ERR(dev_data)) {
-		pr_info("%s: Pointer of char device data is invalid", __func__);
+		pr_debug("%s: Pointer of char device data is invalid", __func__);
 		return -EBADF;
 	}
 
@@ -282,7 +282,7 @@ static loff_t rmidev_llseek(struct file *filp, loff_t off, int whence)
 	}
 
 	if (newpos < 0 || newpos > REG_ADDR_LIMIT) {
-		dev_info(&rmidev->rmi4_data->i2c_client->dev,
+		dev_dbg(&rmidev->rmi4_data->i2c_client->dev,
 			"%s: New position 0x%04x is invalid\n", __func__,
 			(unsigned int)newpos);
 		newpos = -EINVAL;
@@ -313,7 +313,7 @@ static ssize_t rmidev_read(struct file *filp, char __user *buf, size_t count,
 	struct rmidev_data *dev_data = filp->private_data;
 
 	if (IS_ERR(dev_data)) {
-		pr_info("%s: Pointer of char device data is invalid", __func__);
+		pr_debug("%s: Pointer of char device data is invalid", __func__);
 		return -EBADF;
 	}
 
@@ -356,7 +356,7 @@ static ssize_t rmidev_write(struct file *filp, const char __user *buf,
 	struct rmidev_data *dev_data = filp->private_data;
 
 	if (IS_ERR(dev_data)) {
-		pr_info("%s: Pointer of char device data is invalid", __func__);
+		pr_debug("%s: Pointer of char device data is invalid", __func__);
 		return -EBADF;
 	}
 
@@ -484,7 +484,7 @@ static int rmidev_create_device_class(void)
 	rmidev_device_class = class_create(THIS_MODULE, DEVICE_CLASS_NAME);
 
 	if (IS_ERR(rmidev_device_class)) {
-		pr_info("%s: Failed to create /dev/%s\n", __func__,
+		pr_debug("%s: Failed to create /dev/%s\n", __func__,
 		       CHAR_DEVICE_NAME);
 		return -ENODEV;
 	}
@@ -562,7 +562,7 @@ static int rmidev_init_device(struct i2c_client *client)
 	rmidev->rmi4_data =
 		kzalloc(sizeof(struct synaptics_rmi4_data), GFP_KERNEL);
 	if (!rmidev->rmi4_data) {
-		/*dev_info(&client->dev, "%s: Failed to alloc mem for*/
+		/*dev_dbg(&client->dev, "%s: Failed to alloc mem for*/
 		 /* rmi4_data\n", __func__);*/
 		retval = -ENOMEM;
 		goto err_fn_ptr;
@@ -585,7 +585,7 @@ static int rmidev_init_device(struct i2c_client *client)
 
 	retval = rmidev_create_device_class();
 	if (retval < 0) {
-		dev_info(&client->dev, "%s: Failed to create device class\n",
+		dev_dbg(&client->dev, "%s: Failed to create device class\n",
 			__func__);
 		goto err_device_class;
 	}
@@ -597,7 +597,7 @@ static int rmidev_init_device(struct i2c_client *client)
 	} else {
 		retval = alloc_chrdev_region(&dev_no, 0, 1, CHAR_DEVICE_NAME);
 		if (retval < 0) {
-			dev_info(&client->dev,
+			dev_dbg(&client->dev,
 				"%s: Failed to allocate char device region\n",
 				__func__);
 			goto err_device_region;
@@ -623,7 +623,7 @@ static int rmidev_init_device(struct i2c_client *client)
 
 	retval = cdev_add(&dev_data->main_dev, dev_no, 1);
 	if (retval < 0) {
-		dev_info(&client->dev, "%s: Failed to add rmi char device\n",
+		dev_dbg(&client->dev, "%s: Failed to add rmi char device\n",
 			__func__);
 		goto err_char_device;
 	}
@@ -637,7 +637,7 @@ static int rmidev_init_device(struct i2c_client *client)
 	TPD_DMESG("%s:after devicecreate\n", __func__);
 
 	if (IS_ERR(device_ptr)) {
-		dev_info(&client->dev, "%s: Failed to create rmi char device\n",
+		dev_dbg(&client->dev, "%s: Failed to create rmi char device\n",
 			__func__);
 		retval = -ENODEV;
 		goto err_char_device;
@@ -646,7 +646,7 @@ static int rmidev_init_device(struct i2c_client *client)
 	properties_kobj_rmidev =
 		kobject_create_and_add("rmidev", properties_kobj_synap);
 	if (!properties_kobj_rmidev) {
-		dev_info(&rmidev->rmi4_data->i2c_client->dev,
+		dev_dbg(&rmidev->rmi4_data->i2c_client->dev,
 			"%s: Failed to create sysfs directory\n", __func__);
 		goto err_sysfs_dir;
 	}
@@ -658,7 +658,7 @@ static int rmidev_init_device(struct i2c_client *client)
 					   &attrs[attr_count].attr);
 
 		if (retval < 0) {
-			dev_info(&rmidev->rmi4_data->input_dev->dev,
+			dev_dbg(&rmidev->rmi4_data->input_dev->dev,
 				"%s: Failed to create sysfs attributes\n",
 				__func__);
 			retval = -ENODEV;

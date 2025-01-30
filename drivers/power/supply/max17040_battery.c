@@ -128,7 +128,7 @@ static void max17040_get_version(struct i2c_client *client)
 
 	version = max17040_read_reg(client, MAX17040_VER);
 
-	dev_info(&client->dev, "MAX17040 Fuel-Gauge Ver 0x%x\n", version);
+	dev_dbg(&client->dev, "MAX17040 Fuel-Gauge Ver 0x%x\n", version);
 }
 
 static void max17040_get_online(struct i2c_client *client)

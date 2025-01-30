@@ -26,7 +26,7 @@ int pmic_get_auxadc_value(u8 list)
 		value = mt_get_auxadc_value(list);
 		return value;
 	}
-	pr_info("%s Invalid AUXADC LIST\n", __func__);
+	pr_debug("%s Invalid AUXADC LIST\n", __func__);
 	return -EINVAL;
 }
 
@@ -58,7 +58,7 @@ void mtk_auxadc_init(void)
 	pmic_auxadc_intf.channel_num = pmic_get_auxadc_channel_max();
 
 	if (register_mtk_auxadc_intf(&pmic_auxadc_intf) < 0)
-		pr_notice("[%s] register MTK Auxadc Intf Fail\n", __func__);
+		pr_debug("[%s] register MTK Auxadc Intf Fail\n", __func__);
 }
 
 static ssize_t mtk_auxadc_store(struct device *dev,
@@ -108,7 +108,7 @@ static ssize_t mtk_auxadc_store(struct device *dev,
 	case AUXADC_CHANNEL:
 		ret = get_parameters((char *)buf, &val, 1);
 		if (ret < 0) {
-			pr_notice("get parameter fail\n");
+			pr_debug("get parameter fail\n");
 			return -EINVAL;
 		}
 		auxadc_intf->dbg_chl = val;
@@ -190,12 +190,12 @@ static int mtk_auxadc_intf_probe(struct platform_device *pdev)
 {
 	int ret;
 
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 
 	platform_set_drvdata(pdev, auxadc_intf);
 	ret = create_sysfs_interface(&pdev->dev);
 	if (ret < 0) {
-		pr_notice("%s create sysfs fail\n", __func__);
+		pr_debug("%s create sysfs fail\n", __func__);
 		return -EINVAL;
 	}
 

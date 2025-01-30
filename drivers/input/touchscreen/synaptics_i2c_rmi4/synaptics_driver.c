@@ -260,7 +260,7 @@ static ssize_t synaptics_rmi4_f51_enables_show(struct device *dev,
 			f51->proximity_enables_addr,
 		&proximity_enables, sizeof(proximity_enables));
 	if (retval < 0) {
-		dev_info(dev,
+		dev_dbg(dev,
 			"%s: Failed to read proximity enables, error = %d\n",
 			__func__, retval);
 		return retval;
@@ -289,7 +289,7 @@ static ssize_t synaptics_rmi4_f51_enables_store(struct device *dev,
 			f51->proximity_enables_addr,
 			&proximity_enables, sizeof(proximity_enables));
 	if (retval < 0) {
-		dev_info(dev,
+		dev_dbg(dev,
 			"%s: Failed to write proximity enables, error = %d\n",
 			__func__, retval);
 		return retval;
@@ -316,7 +316,7 @@ static int tpd_set_page(struct i2c_client *client,
 			buf, PAGE_SELECT_LEN);
 
 			if (retval != PAGE_SELECT_LEN) {
-				dev_info(&client->dev, "%s: I2C retry %d\n",
+				dev_dbg(&client->dev, "%s: I2C retry %d\n",
 				__func__, retry + 1);
 				msleep(20);
 			} else {
@@ -357,7 +357,7 @@ int tpd_i2c_read_data(struct i2c_client *client,
 			retval = i2c_master_send(client, pData, 1);
 
 			if (retval <= 0) {
-				dev_info(&client->dev, "%s: I2C retry %d\n",
+				dev_dbg(&client->dev, "%s: I2C retry %d\n",
 				__func__, retry + 1);
 				msleep(20);
 				continue;
@@ -370,7 +370,7 @@ int tpd_i2c_read_data(struct i2c_client *client,
 			pData, left_len);
 
 			if (retval <= 0) {
-				dev_info(&client->dev, "%s: I2C retry %d\n",
+				dev_dbg(&client->dev, "%s: I2C retry %d\n",
 				__func__, retry + 1);
 				msleep(20);
 				continue;
@@ -1053,7 +1053,7 @@ static int tpd_clear_interrupt(struct i2c_client *client)
 	retval = tpd_i2c_read_data(client, ts->f01.data_base + 1,
 	&status, 1);
 	if (retval < 0)
-		dev_info(&client->dev,
+		dev_dbg(&client->dev,
 	"%s: Failed to enable attention interrupt\n", __func__);
 
 	return retval;
@@ -1115,13 +1115,13 @@ static int tpd_probe(struct i2c_client *client,
 
 	retval = regulator_enable(tpd->reg);
 	if (retval != 0) {
-		dev_info(&client->dev,
+		dev_dbg(&client->dev,
 		"Failed to enable reg-vgp6: %d\n", retval);
 		goto err_query_device;
 	}
 	retval = regulator_enable(tpd->io_reg);
 	if (retval != 0) {
-		dev_info(&client->dev,
+		dev_dbg(&client->dev,
 		"Failed to enable reg-vgp4: %d\n", retval);
 		goto err_query_device;
 	}
@@ -1138,14 +1138,14 @@ static int tpd_probe(struct i2c_client *client,
 	0xEE, &data, 1)) < 0) {
 		if (reset_count-- > 0)
 			goto TPD_RESET_PROBE;
-		dev_info(&client->dev,
+		dev_dbg(&client->dev,
 		"Can't connect touch panel.\n");
 		return -1;
 	}
 
 	retval = tpd_rmi4_read_pdt(ts);
 	if (retval < 0) {
-		dev_info(&client->dev, "Failed to query device\n");
+		dev_dbg(&client->dev, "Failed to query device\n");
 		goto err_query_device;
 	}
 
@@ -1191,7 +1191,7 @@ static int tpd_probe(struct i2c_client *client,
 		&attrs[attr_count].attr);
 
 		if (retval < 0) {
-			dev_info(&client->dev,
+			dev_dbg(&client->dev,
 			"%s: Failed to create sysfs attributes\n", __func__);
 			goto err_sysfs;
 		}

@@ -549,7 +549,7 @@ qcaspi_spi_thread(void *data)
 	struct qcaspi *qca = data;
 	u16 intr_cause = 0;
 
-	netdev_info(qca->net_dev, "SPI thread created\n");
+	netdev_dbg(qca->net_dev, "SPI thread created\n");
 	while (!kthread_should_stop()) {
 		set_current_state(TASK_INTERRUPTIBLE);
 		if ((qca->intr_req == qca->intr_svc) &&
@@ -621,7 +621,7 @@ qcaspi_spi_thread(void *data)
 			qcaspi_transmit(qca);
 	}
 	set_current_state(TASK_RUNNING);
-	netdev_info(qca->net_dev, "SPI thread exit\n");
+	netdev_dbg(qca->net_dev, "SPI thread exit\n");
 
 	return 0;
 }
@@ -768,7 +768,7 @@ qcaspi_netdev_tx_timeout(struct net_device *dev)
 {
 	struct qcaspi *qca = netdev_priv(dev);
 
-	netdev_info(qca->net_dev, "Transmit timeout at %ld, latency %ld\n",
+	netdev_dbg(qca->net_dev, "Transmit timeout at %ld, latency %ld\n",
 		    jiffies, jiffies - dev_trans_start(dev));
 	qca->net_dev->stats.tx_errors++;
 	/* Trigger tx queue flush and QCA7000 reset */
@@ -801,7 +801,7 @@ qcaspi_netdev_init(struct net_device *dev)
 						VLAN_ETH_HLEN);
 	if (!qca->rx_skb) {
 		kfree(qca->rx_buffer);
-		netdev_info(qca->net_dev, "Failed to allocate RX sk_buff.\n");
+		netdev_dbg(qca->net_dev, "Failed to allocate RX sk_buff.\n");
 		return -ENOBUFS;
 	}
 
@@ -903,7 +903,7 @@ qca_spi_probe(struct spi_device *spi)
 		return -EINVAL;
 	}
 
-	dev_info(&spi->dev, "ver=%s, clkspeed=%d, burst_len=%d, pluggable=%d\n",
+	dev_dbg(&spi->dev, "ver=%s, clkspeed=%d, burst_len=%d, pluggable=%d\n",
 		 QCASPI_DRV_VERSION,
 		 qcaspi_clkspeed,
 		 qcaspi_burst_len,
@@ -942,7 +942,7 @@ qca_spi_probe(struct spi_device *spi)
 
 	if (!is_valid_ether_addr(qca->net_dev->dev_addr)) {
 		eth_hw_addr_random(qca->net_dev);
-		dev_info(&spi->dev, "Using random MAC address: %pM\n",
+		dev_dbg(&spi->dev, "Using random MAC address: %pM\n",
 			 qca->net_dev->dev_addr);
 	}
 

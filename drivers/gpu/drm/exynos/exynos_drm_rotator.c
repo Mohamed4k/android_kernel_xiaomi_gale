@@ -250,7 +250,7 @@ static int rotator_bind(struct device *dev, struct device *master, void *data)
 			   DRM_EXYNOS_IPP_CAP_CROP | DRM_EXYNOS_IPP_CAP_ROTATE,
 			   rot->formats, rot->num_formats, "rotator");
 
-	dev_info(dev, "The exynos rotator has been probed successfully\n");
+	dev_dbg(dev, "The exynos rotator has been probed successfully\n");
 
 	return 0;
 }

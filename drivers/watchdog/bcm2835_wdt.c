@@ -214,7 +214,7 @@ static int bcm2835_wdt_probe(struct platform_device *pdev)
 	if (pm_power_off == NULL)
 		pm_power_off = bcm2835_power_off;
 
-	dev_info(dev, "Broadcom BCM2835 watchdog timer");
+	dev_dbg(dev, "Broadcom BCM2835 watchdog timer");
 	return 0;
 }
 

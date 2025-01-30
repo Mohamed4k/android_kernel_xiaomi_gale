@@ -142,7 +142,7 @@ bool sxgbe_eee_init(struct sxgbe_priv_data * const priv)
 					     SXGBE_DEFAULT_LPI_TIMER,
 					     priv->tx_lpi_timer);
 
-		pr_info("Energy-Efficient Ethernet initialized\n");
+		pr_debug("Energy-Efficient Ethernet initialized\n");
 
 		ret = true;
 	}
@@ -934,7 +934,7 @@ static void sxgbe_check_ether_addr(struct sxgbe_priv_data *priv)
 		if (!is_valid_ether_addr(priv->dev->dev_addr))
 			eth_hw_addr_random(priv->dev);
 	}
-	dev_info(priv->device, "device MAC address %pM\n",
+	dev_dbg(priv->device, "device MAC address %pM\n",
 		 priv->dev->dev_addr);
 }
 
@@ -2011,18 +2011,18 @@ static int sxgbe_hw_init(struct sxgbe_priv_data * const priv)
 	ctrl_ids = priv->hw->mac->get_controller_version(priv->ioaddr);
 	priv->hw->ctrl_uid = (ctrl_ids & 0x00ff0000) >> 16;
 	priv->hw->ctrl_id = (ctrl_ids & 0x000000ff);
-	pr_info("user ID: 0x%x, Controller ID: 0x%x\n",
+	pr_debug("user ID: 0x%x, Controller ID: 0x%x\n",
 		priv->hw->ctrl_uid, priv->hw->ctrl_id);
 
 	/* get the H/W features */
 	if (!sxgbe_get_hw_features(priv))
-		pr_info("Hardware features not found\n");
+		pr_debug("Hardware features not found\n");
 
 	if (priv->hw_cap.tx_csum_offload)
-		pr_info("TX Checksum offload supported\n");
+		pr_debug("TX Checksum offload supported\n");
 
 	if (priv->hw_cap.rx_csum_offload)
-		pr_info("RX Checksum offload supported\n");
+		pr_debug("RX Checksum offload supported\n");
 
 	return 0;
 }
@@ -2135,7 +2135,7 @@ struct sxgbe_priv_data *sxgbe_drv_probe(struct device *device,
 	/* Rx Watchdog is available, enable depend on platform data */
 	if (!priv->plat->riwt_off) {
 		priv->use_riwt = 1;
-		pr_info("Enable RX Mitigation via HW Watchdog Timer\n");
+		pr_debug("Enable RX Mitigation via HW Watchdog Timer\n");
 	}
 
 	netif_napi_add(ndev, &priv->napi, sxgbe_poll, 64);
@@ -2203,7 +2203,7 @@ int sxgbe_drv_remove(struct net_device *ndev)
 	struct sxgbe_priv_data *priv = netdev_priv(ndev);
 	u8 queue_num;
 
-	netdev_info(ndev, "%s: removing driver\n", __func__);
+	netdev_dbg(ndev, "%s: removing driver\n", __func__);
 
 	SXGBE_FOR_EACH_QUEUE(SXGBE_RX_QUEUES, queue_num) {
 		priv->hw->mac->disable_rxqueue(priv->ioaddr, queue_num);

@@ -79,7 +79,7 @@ static void lcm_dcs_write(struct lcm *ctx, const void *data, size_t len)
 	else
 		ret = mipi_dsi_generic_write(dsi, data, len);
 	if (ret < 0) {
-		dev_info(ctx->dev, "error %zd writing seq: %ph\n", ret, data);
+		dev_dbg(ctx->dev, "error %zd writing seq: %ph\n", ret, data);
 		ctx->error = ret;
 	}
 }
@@ -95,7 +95,7 @@ static int lcm_dcs_read(struct lcm *ctx, u8 cmd, void *data, size_t len)
 
 	ret = mipi_dsi_dcs_read(dsi, cmd, data, len);
 	if (ret < 0) {
-		dev_info(ctx->dev, "error %d reading dcs seq:(%#x)\n",
+		dev_dbg(ctx->dev, "error %d reading dcs seq:(%#x)\n",
 		ret, cmd);
 		ctx->error = ret;
 	}
@@ -110,7 +110,7 @@ static void lcm_panel_get_data(struct lcm *ctx)
 
 	if (ret == 0) {
 		ret = lcm_dcs_read(ctx,  0x0A, buffer, 1);
-		dev_info(ctx->dev, "return %d data(0x%08x) to dsi engine\n",
+		dev_dbg(ctx->dev, "return %d data(0x%08x) to dsi engine\n",
 			ret, buffer[0] | (buffer[1] << 8));
 	}
 }
@@ -133,14 +133,14 @@ static int lcm_panel_bias_regulator_init(void)
 	disp_bias_pos = regulator_get(NULL, "dsv_pos");
 	if (IS_ERR(disp_bias_pos)) { /* handle return value */
 		ret = PTR_ERR(disp_bias_pos);
-		dev_info("get dsv_pos fail, error: %d\n", ret);
+		dev_dbg("get dsv_pos fail, error: %d\n", ret);
 		return ret;
 	}
 
 	disp_bias_neg = regulator_get(NULL, "dsv_neg");
 	if (IS_ERR(disp_bias_neg)) { /* handle return value */
 		ret = PTR_ERR(disp_bias_neg);
-		dev_info("get dsv_neg fail, error: %d\n", ret);
+		dev_dbg("get dsv_neg fail, error: %d\n", ret);
 		return ret;
 	}
 
@@ -159,24 +159,24 @@ static int lcm_panel_bias_enable(void)
 	/* set voltage with min & max*/
 	ret = regulator_set_voltage(disp_bias_pos, 5400000, 5400000);
 	if (ret < 0)
-		dev_info("set voltage disp_bias_pos fail, ret = %d\n", ret);
+		dev_dbg("set voltage disp_bias_pos fail, ret = %d\n", ret);
 	retval |= ret;
 
 	ret = regulator_set_voltage(disp_bias_neg, 5400000, 5400000);
 	if (ret < 0)
-		dev_info("set voltage disp_bias_neg fail, ret = %d\n", ret);
+		dev_dbg("set voltage disp_bias_neg fail, ret = %d\n", ret);
 	retval |= ret;
 
 	/* enable regulator */
 	ret = regulator_enable(disp_bias_pos);
 	if (ret < 0)
-		dev_info("enable regulator disp_bias_pos fail, ret = %d\n",
+		dev_dbg("enable regulator disp_bias_pos fail, ret = %d\n",
 			ret);
 	retval |= ret;
 
 	ret = regulator_enable(disp_bias_neg);
 	if (ret < 0)
-		dev_info("enable regulator disp_bias_neg fail, ret = %d\n",
+		dev_dbg("enable regulator disp_bias_neg fail, ret = %d\n",
 			ret);
 	retval |= ret;
 
@@ -192,13 +192,13 @@ static int lcm_panel_bias_disable(void)
 
 	ret = regulator_disable(disp_bias_neg);
 	if (ret < 0)
-		dev_info("disable regulator disp_bias_neg fail, ret = %d\n",
+		dev_dbg("disable regulator disp_bias_neg fail, ret = %d\n",
 			ret);
 	retval |= ret;
 
 	ret = regulator_disable(disp_bias_pos);
 	if (ret < 0)
-		dev_info("disable regulator disp_bias_pos fail, ret = %d\n",
+		dev_dbg("disable regulator disp_bias_pos fail, ret = %d\n",
 			ret);
 	retval |= ret;
 
@@ -297,7 +297,7 @@ static int lcm_prepare(struct drm_panel *panel)
 	struct lcm *ctx = panel_to_lcm(panel);
 	int ret;
 
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 	if (ctx->prepared)
 		return 0;
 
@@ -419,11 +419,11 @@ static int panel_ata_check(struct drm_panel *panel)
 	unsigned char id[3] = {0x00, 0x00, 0x00};
 	ssize_t ret;
 
-	pr_info("%s success\n", __func__);
+	pr_debug("%s success\n", __func__);
 #if 0
 	ret = mipi_dsi_dcs_read(dsi, 0x4, data, 3);
 	if (ret < 0)
-		dev_info("%s error\n", __func__);
+		dev_dbg("%s error\n", __func__);
 
 	DDPINFO("ATA read data %x %x %x\n", data[0], data[1], data[2]);
 
@@ -693,7 +693,7 @@ static int lcm_get_modes(struct drm_panel *panel)
 
 	mode = drm_mode_duplicate(panel->drm, &default_mode);
 	if (!mode) {
-		dev_info(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
+		dev_dbg(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
 			default_mode.hdisplay, default_mode.vdisplay,
 			default_mode.vrefresh);
 		return -ENOMEM;
@@ -706,7 +706,7 @@ static int lcm_get_modes(struct drm_panel *panel)
 #if (DSC_ENABLE == 2)
 	mode2 = drm_mode_duplicate(panel->drm, &performance_mode);
 	if (!mode2) {
-		dev_info(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
+		dev_dbg(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
 			performance_mode.hdisplay,
 			performance_mode.vdisplay,
 			performance_mode.vrefresh);
@@ -765,7 +765,7 @@ static int lcm_probe(struct mipi_dsi_device *dsi)
 
 	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
 	if (IS_ERR(ctx->reset_gpio)) {
-		dev_info(dev, "cannot get reset-gpios %ld\n",
+		dev_dbg(dev, "cannot get reset-gpios %ld\n",
 			PTR_ERR(ctx->reset_gpio));
 		return PTR_ERR(ctx->reset_gpio);
 	}
@@ -792,7 +792,7 @@ static int lcm_probe(struct mipi_dsi_device *dsi)
 		return ret;
 #endif
 
-	pr_info("%s-\n", __func__);
+	pr_debug("%s-\n", __func__);
 
 	return ret;
 }

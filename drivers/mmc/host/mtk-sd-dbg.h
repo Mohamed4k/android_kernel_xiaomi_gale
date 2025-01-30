@@ -63,7 +63,7 @@ enum {
 
 #ifndef MTK_MMC_PRINT_PERIOD
 #define ERR_MSG(fmt, args...) \
-	pr_info(TAGMSDC"%d -> "fmt" <- %s() : L<%d> PID<%s><0x%x>\n", \
+	pr_debug(TAGMSDC"%d -> "fmt" <- %s() : L<%d> PID<%s><0x%x>\n", \
 		host->id, ##args, __func__, __LINE__, current->comm, \
 		current->pid)
 
@@ -75,7 +75,7 @@ do { \
 	if (print_nums == 0) { \
 		print_nums++; \
 		msdc_print_start_time = sched_clock(); \
-		pr_info(TAGMSDC"MSDC", TAG"%d -> "fmt" <- %s() : L<%d> " \
+		pr_debug(TAGMSDC"MSDC", TAG"%d -> "fmt" <- %s() : L<%d> " \
 			"PID<%s><0x%x>\n", \
 			host->id, ##args, __func__, __LINE__, \
 			current->comm, current->pid); \
@@ -83,7 +83,7 @@ do { \
 		msdc_print_end_time = sched_clock();    \
 		if ((msdc_print_end_time - msdc_print_start_time) >= \
 			MAX_PRINT_PERIOD) { \
-			pr_info( \
+			pr_debug( \
 			TAGMSDC"MSDC", TAG"%d -> "fmt" <- %s() : L<%d> " \
 				"PID<%s><0x%x>\n", \
 				host->id, ##args, __func__, __LINE__, \
@@ -91,7 +91,7 @@ do { \
 			print_nums = 0; \
 		} \
 		if (print_nums <= MAX_PRINT_NUMS_OVER_PERIOD) { \
-			pr_info(TAGMSDC"MSDC", TAG"%d -> "fmt" <- %s() : " \
+			pr_debug(TAGMSDC"MSDC", TAG"%d -> "fmt" <- %s() : " \
 				"L<%d> PID<%s><0x%x>\n", \
 				host->id, ##args, __func__, \
 				__LINE__, current->comm, current->pid); \
@@ -102,7 +102,7 @@ do { \
 #endif
 
 #define INIT_MSG(fmt, args...) \
-	pr_info(TAGMSDC"%d -> "fmt" <- %s() : L<%d> PID<%s><0x%x>\n", \
+	pr_debug(TAGMSDC"%d -> "fmt" <- %s() : L<%d> PID<%s><0x%x>\n", \
 		host->id, ##args, __func__, __LINE__, current->comm, \
 		current->pid)
 
@@ -114,7 +114,7 @@ do { \
 #ifdef MTK_MMC_PRINT_IRQ_MSG
 /* PID in ISR in not corrent */
 #define IRQ_MSG(fmt, args...) \
-	pr_info(TAGMSDC"%d -> "fmt" <- %s() : L<%d>\n", \
+	pr_debug(TAGMSDC"%d -> "fmt" <- %s() : L<%d>\n", \
 		host->id, ##args, __func__, __LINE__)
 #else
 #define IRQ_MSG(fmt, args...)
@@ -139,7 +139,7 @@ do { \
 	if (evt) \
 		seq_printf(evt, fmt, ##args); \
 	if (!buff && !evt) { \
-		pr_info(fmt, ##args); \
+		pr_debug(fmt, ##args); \
 	} \
 } while (0)
 

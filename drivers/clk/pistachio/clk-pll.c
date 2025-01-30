@@ -215,15 +215,15 @@ static int pll_gf40lp_frac_set_rate(struct clk_hw *hw, unsigned long rate,
 	vco = div64_u64(vco, params->refdiv << 24);
 
 	if (vco < MIN_VCO_FRAC_FRAC || vco > MAX_VCO_FRAC_FRAC)
-		pr_warn("%s: VCO %llu is out of range %lu..%lu\n", name, vco,
+		pr_debug("%s: VCO %llu is out of range %lu..%lu\n", name, vco,
 			MIN_VCO_FRAC_FRAC, MAX_VCO_FRAC_FRAC);
 
 	val = div64_u64(params->fref, params->refdiv);
 	if (val < MIN_PFD)
-		pr_warn("%s: PFD %llu is too low (min %lu)\n",
+		pr_debug("%s: PFD %llu is too low (min %lu)\n",
 			name, val, MIN_PFD);
 	if (val > vco / 16)
-		pr_warn("%s: PFD %llu is too high (max %llu)\n",
+		pr_debug("%s: PFD %llu is too high (max %llu)\n",
 			name, val, vco / 16);
 
 	val = pll_readl(pll, PLL_CTRL1);
@@ -242,10 +242,10 @@ static int pll_gf40lp_frac_set_rate(struct clk_hw *hw, unsigned long rate,
 	if (enabled &&
 	    (params->postdiv1 != old_postdiv1 ||
 	     params->postdiv2 != old_postdiv2))
-		pr_warn("%s: changing postdiv while PLL is enabled\n", name);
+		pr_debug("%s: changing postdiv while PLL is enabled\n", name);
 
 	if (params->postdiv2 > params->postdiv1)
-		pr_warn("%s: postdiv2 should not exceed postdiv1\n", name);
+		pr_debug("%s: postdiv2 should not exceed postdiv1\n", name);
 
 	val &= ~((PLL_FRAC_CTRL2_FRAC_MASK << PLL_FRAC_CTRL2_FRAC_SHIFT) |
 		 (PLL_FRAC_CTRL2_POSTDIV1_MASK <<
@@ -368,15 +368,15 @@ static int pll_gf40lp_laint_set_rate(struct clk_hw *hw, unsigned long rate,
 
 	vco = div_u64(params->fref * params->fbdiv, params->refdiv);
 	if (vco < MIN_VCO_LA || vco > MAX_VCO_LA)
-		pr_warn("%s: VCO %u is out of range %lu..%lu\n", name, vco,
+		pr_debug("%s: VCO %u is out of range %lu..%lu\n", name, vco,
 			MIN_VCO_LA, MAX_VCO_LA);
 
 	val = div_u64(params->fref, params->refdiv);
 	if (val < MIN_PFD)
-		pr_warn("%s: PFD %u is too low (min %lu)\n",
+		pr_debug("%s: PFD %u is too low (min %lu)\n",
 			name, val, MIN_PFD);
 	if (val > vco / 16)
-		pr_warn("%s: PFD %u is too high (max %u)\n",
+		pr_debug("%s: PFD %u is too high (max %u)\n",
 			name, val, vco / 16);
 
 	val = pll_readl(pll, PLL_CTRL1);
@@ -388,10 +388,10 @@ static int pll_gf40lp_laint_set_rate(struct clk_hw *hw, unsigned long rate,
 	if (enabled &&
 	    (params->postdiv1 != old_postdiv1 ||
 	     params->postdiv2 != old_postdiv2))
-		pr_warn("%s: changing postdiv while PLL is enabled\n", name);
+		pr_debug("%s: changing postdiv while PLL is enabled\n", name);
 
 	if (params->postdiv2 > params->postdiv1)
-		pr_warn("%s: postdiv2 should not exceed postdiv1\n", name);
+		pr_debug("%s: postdiv2 should not exceed postdiv1\n", name);
 
 	val &= ~((PLL_CTRL1_REFDIV_MASK << PLL_CTRL1_REFDIV_SHIFT) |
 		 (PLL_CTRL1_FBDIV_MASK << PLL_CTRL1_FBDIV_SHIFT) |

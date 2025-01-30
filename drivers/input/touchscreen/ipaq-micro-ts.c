@@ -117,7 +117,7 @@ static int micro_ts_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, ts);
 
-	dev_info(&pdev->dev, "iPAQ micro touchscreen\n");
+	dev_dbg(&pdev->dev, "iPAQ micro touchscreen\n");
 
 	return 0;
 }

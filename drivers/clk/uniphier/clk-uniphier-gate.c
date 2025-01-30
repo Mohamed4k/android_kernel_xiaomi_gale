@@ -45,7 +45,7 @@ static int uniphier_clk_gate_enable(struct clk_hw *hw)
 static void uniphier_clk_gate_disable(struct clk_hw *hw)
 {
 	if (uniphier_clk_gate_endisable(hw, 0) < 0)
-		pr_warn("failed to disable clk\n");
+		pr_debug("failed to disable clk\n");
 }
 
 static int uniphier_clk_gate_is_enabled(struct clk_hw *hw)
@@ -54,7 +54,7 @@ static int uniphier_clk_gate_is_enabled(struct clk_hw *hw)
 	unsigned int val;
 
 	if (regmap_read(gate->regmap, gate->reg, &val) < 0)
-		pr_warn("is_enabled() may return wrong result\n");
+		pr_debug("is_enabled() may return wrong result\n");
 
 	return !!(val & BIT(gate->bit));
 }

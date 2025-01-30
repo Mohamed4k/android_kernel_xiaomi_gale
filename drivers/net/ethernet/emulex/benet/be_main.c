@@ -375,7 +375,7 @@ static int be_mac_addr_set(struct net_device *netdev, void *p)
 	ether_addr_copy(adapter->dev_mac, addr->sa_data);
 done:
 	ether_addr_copy(netdev->dev_addr, addr->sa_data);
-	dev_info(dev, "MAC address changed to %pM\n", addr->sa_data);
+	dev_dbg(dev, "MAC address changed to %pM\n", addr->sa_data);
 	return 0;
 err:
 	dev_warn(dev, "MAC address change to %pM failed\n", addr->sa_data);
@@ -736,7 +736,7 @@ void be_link_status_update(struct be_adapter *adapter, u8 link_status)
 	else
 		netif_carrier_off(netdev);
 
-	netdev_info(netdev, "Link is %s\n", link_status ? "Up" : "Down");
+	netdev_dbg(netdev, "Link is %s\n", link_status ? "Up" : "Down");
 }
 
 static int be_gso_hdr_len(struct sk_buff *skb)
@@ -1433,7 +1433,7 @@ static void be_tx_timeout(struct net_device *netdev)
 	int i, j;
 
 	for_all_tx_queues(adapter, txo, i) {
-		dev_info(dev, "TXQ Dump: %d H: %d T: %d used: %d, qid: 0x%x\n",
+		dev_dbg(dev, "TXQ Dump: %d H: %d T: %d used: %d, qid: 0x%x\n",
 			 i, txo->q.head, txo->q.tail,
 			 atomic_read(&txo->q.used), txo->q.id);
 
@@ -1441,20 +1441,20 @@ static void be_tx_timeout(struct net_device *netdev)
 		for (j = 0; j < TX_Q_LEN * 4; j += 4) {
 			if (entry[j] != 0 || entry[j + 1] != 0 ||
 			    entry[j + 2] != 0 || entry[j + 3] != 0) {
-				dev_info(dev, "Entry %d 0x%x 0x%x 0x%x 0x%x\n",
+				dev_dbg(dev, "Entry %d 0x%x 0x%x 0x%x 0x%x\n",
 					 j, entry[j], entry[j + 1],
 					 entry[j + 2], entry[j + 3]);
 			}
 		}
 
 		entry = txo->cq.dma_mem.va;
-		dev_info(dev, "TXCQ Dump: %d  H: %d T: %d used: %d\n",
+		dev_dbg(dev, "TXCQ Dump: %d  H: %d T: %d used: %d\n",
 			 i, txo->cq.head, txo->cq.tail,
 			 atomic_read(&txo->cq.used));
 		for (j = 0; j < TX_CQ_LEN * 4; j += 4) {
 			if (entry[j] != 0 || entry[j + 1] != 0 ||
 			    entry[j + 2] != 0 || entry[j + 3] != 0) {
-				dev_info(dev, "Entry %d 0x%x 0x%x 0x%x 0x%x\n",
+				dev_dbg(dev, "Entry %d 0x%x 0x%x 0x%x 0x%x\n",
 					 j, entry[j], entry[j + 1],
 					 entry[j + 2], entry[j + 3]);
 			}
@@ -1465,31 +1465,31 @@ static void be_tx_timeout(struct net_device *netdev)
 				skb = txo->sent_skb_list[j];
 				if (ip_hdr(skb)->protocol == IPPROTO_TCP) {
 					tcphdr = tcp_hdr(skb);
-					dev_info(dev, "TCP source port %d\n",
+					dev_dbg(dev, "TCP source port %d\n",
 						 ntohs(tcphdr->source));
-					dev_info(dev, "TCP dest port %d\n",
+					dev_dbg(dev, "TCP dest port %d\n",
 						 ntohs(tcphdr->dest));
-					dev_info(dev, "TCP sequence num %d\n",
+					dev_dbg(dev, "TCP sequence num %d\n",
 						 ntohs(tcphdr->seq));
-					dev_info(dev, "TCP ack_seq %d\n",
+					dev_dbg(dev, "TCP ack_seq %d\n",
 						 ntohs(tcphdr->ack_seq));
 				} else if (ip_hdr(skb)->protocol ==
 					   IPPROTO_UDP) {
 					udphdr = udp_hdr(skb);
-					dev_info(dev, "UDP source port %d\n",
+					dev_dbg(dev, "UDP source port %d\n",
 						 ntohs(udphdr->source));
-					dev_info(dev, "UDP dest port %d\n",
+					dev_dbg(dev, "UDP dest port %d\n",
 						 ntohs(udphdr->dest));
 				}
-				dev_info(dev, "skb[%d] %p len %d proto 0x%x\n",
+				dev_dbg(dev, "skb[%d] %p len %d proto 0x%x\n",
 					 j, skb, skb->len, skb->protocol);
 			}
 		}
 	}
 
 	if (lancer_chip(adapter)) {
-		dev_info(dev, "Initiating reset due to tx timeout\n");
-		dev_info(dev, "Resetting adapter\n");
+		dev_dbg(dev, "Initiating reset due to tx timeout\n");
+		dev_dbg(dev, "Resetting adapter\n");
 		status = lancer_physdev_ctrl(adapter,
 					     PHYSDEV_CONTROL_FW_RESET_MASK);
 		if (status)
@@ -1513,7 +1513,7 @@ static int be_set_vlan_promisc(struct be_adapter *adapter)
 
 	status = be_cmd_rx_filter(adapter, BE_IF_FLAGS_VLAN_PROMISCUOUS, ON);
 	if (!status) {
-		dev_info(dev, "Enabled VLAN promiscuous mode\n");
+		dev_dbg(dev, "Enabled VLAN promiscuous mode\n");
 		adapter->if_flags |= BE_IF_FLAGS_VLAN_PROMISCUOUS;
 	} else {
 		dev_err(dev, "Failed to enable VLAN promiscuous mode\n");
@@ -1528,7 +1528,7 @@ static int be_clear_vlan_promisc(struct be_adapter *adapter)
 
 	status = be_cmd_rx_filter(adapter, BE_IF_FLAGS_VLAN_PROMISCUOUS, OFF);
 	if (!status) {
-		dev_info(dev, "Disabling VLAN promiscuous mode\n");
+		dev_dbg(dev, "Disabling VLAN promiscuous mode\n");
 		adapter->if_flags &= ~BE_IF_FLAGS_VLAN_PROMISCUOUS;
 	}
 	return status;
@@ -1936,7 +1936,7 @@ static int be_set_vf_tvt(struct be_adapter *adapter, int vf, u16 vlan)
 	vids[0] = 0;
 	status = be_cmd_vlan_config(adapter, vf_if_id, vids, 1, vf + 1);
 	if (!status)
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "Cleared guest VLANs on VF%d", vf);
 
 	/* After TVT is enabled, disallow VFs to program VLAN filters */
@@ -1967,11 +1967,11 @@ static int be_clear_vf_tvt(struct be_adapter *adapter, int vf)
 						  BE_PRIV_FILTMGMT, vf + 1);
 		if (!status) {
 			vf_cfg->privileges |= BE_PRIV_FILTMGMT;
-			dev_info(dev, "VF%d: FILTMGMT priv enabled", vf);
+			dev_dbg(dev, "VF%d: FILTMGMT priv enabled", vf);
 		}
 	}
 
-	dev_info(dev,
+	dev_dbg(dev,
 		 "Disable/re-enable i/f in VM to clear Transparent VLAN tag");
 	return 0;
 }
@@ -2912,7 +2912,7 @@ static void be_tx_compl_clean(struct be_adapter *adapter)
 		txq = &txo->q;
 
 		if (atomic_read(&txq->used)) {
-			dev_info(dev, "txq%d: cleaning %d pending tx-wrbs\n",
+			dev_dbg(dev, "txq%d: cleaning %d pending tx-wrbs\n",
 				 i, atomic_read(&txq->used));
 			notified_idx = txq->tail;
 			end_idx = txq->tail;
@@ -3098,7 +3098,7 @@ static int be_tx_qs_create(struct be_adapter *adapter)
 				    eqo->idx);
 	}
 
-	dev_info(&adapter->pdev->dev, "created %d TX queue(s)\n",
+	dev_dbg(&adapter->pdev->dev, "created %d TX queue(s)\n",
 		 adapter->num_tx_qs);
 	return 0;
 }
@@ -3154,7 +3154,7 @@ static int be_rx_cqs_create(struct be_adapter *adapter)
 			return rc;
 	}
 
-	dev_info(&adapter->pdev->dev,
+	dev_dbg(&adapter->pdev->dev,
 		 "created %d RX queue(s)\n", adapter->num_rx_qs);
 	return 0;
 }
@@ -3359,7 +3359,7 @@ void be_detect_error(struct be_adapter *adapter)
 			/* Do not log error messages if its a FW reset */
 			if (sliport_err1 == SLIPORT_ERROR_FW_RESET1 &&
 			    sliport_err2 == SLIPORT_ERROR_FW_RESET2) {
-				dev_info(dev, "Reset is in progress\n");
+				dev_dbg(dev, "Reset is in progress\n");
 			} else {
 				dev_err(dev, "Error detected in the card\n");
 				dev_err(dev, "ERR: sliport status 0x%x\n",
@@ -3456,13 +3456,13 @@ static int be_msix_enable(struct be_adapter *adapter)
 
 	if (be_roce_supported(adapter) && num_vec > MIN_MSIX_VECTORS) {
 		adapter->num_msix_roce_vec = num_vec / 2;
-		dev_info(dev, "enabled %d MSI-x vector(s) for RoCE\n",
+		dev_dbg(dev, "enabled %d MSI-x vector(s) for RoCE\n",
 			 adapter->num_msix_roce_vec);
 	}
 
 	adapter->num_msix_vec = num_vec - adapter->num_msix_roce_vec;
 
-	dev_info(dev, "enabled %d MSI-x vector(s) for NIC\n",
+	dev_dbg(dev, "enabled %d MSI-x vector(s) for NIC\n",
 		 adapter->num_msix_vec);
 	return 0;
 
@@ -4001,7 +4001,7 @@ static int be_enable_vxlan_offloads(struct be_adapter *adapter)
 				   NETIF_F_TSO | NETIF_F_TSO6 |
 				   NETIF_F_GSO_UDP_TUNNEL;
 
-	dev_info(dev, "Enabled VxLAN offloads for UDP port %d\n",
+	dev_dbg(dev, "Enabled VxLAN offloads for UDP port %d\n",
 		 be16_to_cpu(port));
 	return 0;
 }
@@ -4246,7 +4246,7 @@ static int be_vf_setup(struct be_adapter *adapter)
 							  vf + 1);
 			if (!status) {
 				vf_cfg->privileges |= BE_PRIV_FILTMGMT;
-				dev_info(dev, "VF%d has FILTMGMT privilege\n",
+				dev_dbg(dev, "VF%d has FILTMGMT privilege\n",
 					 vf);
 			}
 		}
@@ -4444,7 +4444,7 @@ static int be_get_sriov_config(struct be_adapter *adapter)
 	 */
 	old_vfs = pci_num_vf(adapter->pdev);
 	if (old_vfs) {
-		dev_info(&adapter->pdev->dev, "%d VFs are already enabled\n",
+		dev_dbg(&adapter->pdev->dev, "%d VFs are already enabled\n",
 			 old_vfs);
 
 		adapter->pool_res.max_vfs =
@@ -4454,7 +4454,7 @@ static int be_get_sriov_config(struct be_adapter *adapter)
 
 	if (skyhawk_chip(adapter) && be_max_vfs(adapter) && !old_vfs) {
 		be_calculate_pf_pool_rss_tables(adapter);
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "RSS can be enabled for all VFs if num_vfs <= %d\n",
 			 be_max_pf_pool_rss_tables(adapter));
 	}
@@ -4521,11 +4521,11 @@ static int be_get_resources(struct be_adapter *adapter)
 	adapter->need_def_rxq = (be_if_cap_flags(adapter) &
 				 BE_IF_FLAGS_DEFQ_RSS) ? 0 : 1;
 
-	dev_info(dev, "Max: txqs %d, rxqs %d, rss %d, eqs %d, vfs %d\n",
+	dev_dbg(dev, "Max: txqs %d, rxqs %d, rss %d, eqs %d, vfs %d\n",
 		 be_max_txqs(adapter), be_max_rxqs(adapter),
 		 be_max_rss(adapter), be_max_nic_eqs(adapter),
 		 be_max_vfs(adapter));
-	dev_info(dev, "Max: uc-macs %d, mc-macs %d, vlans %d\n",
+	dev_dbg(dev, "Max: uc-macs %d, mc-macs %d, vlans %d\n",
 		 be_max_uc(adapter), be_max_mc(adapter),
 		 be_max_vlans(adapter));
 
@@ -4568,7 +4568,7 @@ static int be_get_config(struct be_adapter *adapter)
 	if (be_physfn(adapter)) {
 		status = be_cmd_get_active_profile(adapter, &profile_id);
 		if (!status)
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "Using profile 0x%x\n", profile_id);
 	}
 
@@ -4861,7 +4861,7 @@ static int be_setup(struct be_adapter *adapter)
 		goto err;
 
 	be_cmd_get_fw_ver(adapter);
-	dev_info(dev, "FW version is %s\n", adapter->fw_ver);
+	dev_dbg(dev, "FW version is %s\n", adapter->fw_ver);
 
 	if (BE2_chip(adapter) && fw_major_num(adapter->fw_ver) < 4) {
 		dev_err(dev, "Firmware on card is old(%s), IRQs may not work",
@@ -4875,7 +4875,7 @@ static int be_setup(struct be_adapter *adapter)
 		be_cmd_get_flow_control(adapter, &adapter->tx_fc,
 					&adapter->rx_fc);
 
-	dev_info(&adapter->pdev->dev, "HW Flow control - TX:%d RX:%d\n",
+	dev_dbg(&adapter->pdev->dev, "HW Flow control - TX:%d RX:%d\n",
 		 adapter->tx_fc, adapter->rx_fc);
 
 	if (be_physfn(adapter))
@@ -4938,7 +4938,7 @@ int be_load_fw(struct be_adapter *adapter, u8 *fw_file)
 	if (status)
 		goto fw_exit;
 
-	dev_info(&adapter->pdev->dev, "Flashing firmware file %s\n", fw_file);
+	dev_dbg(&adapter->pdev->dev, "Flashing firmware file %s\n", fw_file);
 
 	if (lancer_chip(adapter))
 		status = lancer_fw_download(adapter, fw);
@@ -4991,7 +4991,7 @@ static int be_ndo_bridge_setlink(struct net_device *dev, struct nlmsghdr *nlh,
 		if (status)
 			goto err;
 
-		dev_info(&adapter->pdev->dev, "enabled switch mode: %s\n",
+		dev_dbg(&adapter->pdev->dev, "enabled switch mode: %s\n",
 			 mode == BRIDGE_MODE_VEPA ? "VEPA" : "VEB");
 
 		return status;
@@ -5097,9 +5097,9 @@ static void be_work_add_vxlan_port(struct work_struct *work)
 	adapter->vxlan_port_count++;
 
 	if (adapter->flags & BE_FLAGS_VXLAN_OFFLOADS) {
-		dev_info(dev,
+		dev_dbg(dev,
 			 "Only one UDP port supported for VxLAN offloads\n");
-		dev_info(dev, "Disabling VxLAN offloads\n");
+		dev_dbg(dev, "Disabling VxLAN offloads\n");
 		goto err;
 	}
 
@@ -5144,7 +5144,7 @@ static void be_work_del_vxlan_port(struct work_struct *work)
 	if (adapter->vxlan_port == vxlan_port->port) {
 		WARN_ON(adapter->vxlan_port_count);
 		be_disable_vxlan_offloads(adapter);
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "Disabled VxLAN offloads for UDP port %d\n",
 			 be16_to_cpu(port));
 		goto out;
@@ -5384,7 +5384,7 @@ static void be_soft_reset(struct be_adapter *adapter)
 {
 	u32 val;
 
-	dev_info(&adapter->pdev->dev, "Initiating chip soft reset\n");
+	dev_dbg(&adapter->pdev->dev, "Initiating chip soft reset\n");
 	val = ioread32(adapter->pcicfg + SLIPORT_SOFTRESET_OFFSET);
 	val |= SLIPORT_SOFTRESET_SR_MASK;
 	iowrite32(val, adapter->pcicfg + SLIPORT_SOFTRESET_OFFSET);
@@ -5561,7 +5561,7 @@ static void be_err_detection_task(struct work_struct *work)
 	if (!recovery_status) {
 		err_rec->recovery_retries = 0;
 		err_rec->recovery_state = ERR_RECOVERY_ST_NONE;
-		dev_info(dev, "Adapter recovery successful\n");
+		dev_dbg(dev, "Adapter recovery successful\n");
 		goto reschedule_task;
 	} else if (!lancer_chip(adapter) && err_rec->resched_delay) {
 		/* BEx/SH recovery state machine */
@@ -5948,7 +5948,7 @@ static int be_probe(struct pci_dev *pdev, const struct pci_device_id *pdev_id)
 	struct net_device *netdev;
 	int status = 0;
 
-	dev_info(&pdev->dev, "%s version is %s\n", DRV_NAME, DRV_VER);
+	dev_dbg(&pdev->dev, "%s version is %s\n", DRV_NAME, DRV_VER);
 
 	status = pci_enable_device(pdev);
 	if (status)
@@ -5983,7 +5983,7 @@ static int be_probe(struct pci_dev *pdev, const struct pci_device_id *pdev_id)
 
 	status = pci_enable_pcie_error_reporting(pdev);
 	if (!status)
-		dev_info(&pdev->dev, "PCIe error reporting enabled\n");
+		dev_dbg(&pdev->dev, "PCIe error reporting enabled\n");
 
 	status = be_map_pci_bars(adapter);
 	if (status)
@@ -6017,7 +6017,7 @@ static int be_probe(struct pci_dev *pdev, const struct pci_device_id *pdev_id)
 		adapter->hwmon_info.be_on_die_temp = BE_INVALID_DIE_TEMP;
 	}
 
-	dev_info(&pdev->dev, "%s: %s %s port %c\n", nic_name(pdev),
+	dev_dbg(&pdev->dev, "%s: %s %s port %c\n", nic_name(pdev),
 		 func_name(adapter), mc_name(adapter), adapter->port_name);
 
 	return 0;
@@ -6134,7 +6134,7 @@ static pci_ers_result_t be_eeh_reset(struct pci_dev *pdev)
 	struct be_adapter *adapter = pci_get_drvdata(pdev);
 	int status;
 
-	dev_info(&adapter->pdev->dev, "EEH reset\n");
+	dev_dbg(&adapter->pdev->dev, "EEH reset\n");
 
 	status = pci_enable_device(pdev);
 	if (status)
@@ -6144,7 +6144,7 @@ static pci_ers_result_t be_eeh_reset(struct pci_dev *pdev)
 	pci_restore_state(pdev);
 
 	/* Check if card is ok and fw is ready */
-	dev_info(&adapter->pdev->dev,
+	dev_dbg(&adapter->pdev->dev,
 		 "Waiting for FW to be ready after EEH reset\n");
 	status = be_fw_wait_ready(adapter);
 	if (status)
@@ -6160,7 +6160,7 @@ static void be_eeh_resume(struct pci_dev *pdev)
 	int status = 0;
 	struct be_adapter *adapter = pci_get_drvdata(pdev);
 
-	dev_info(&adapter->pdev->dev, "EEH resume\n");
+	dev_dbg(&adapter->pdev->dev, "EEH resume\n");
 
 	pci_save_state(pdev);
 
@@ -6262,20 +6262,20 @@ static int __init be_init_module(void)
 	}
 
 	if (num_vfs > 0) {
-		pr_info(DRV_NAME " : Module param num_vfs is obsolete.");
-		pr_info(DRV_NAME " : Use sysfs method to enable VFs\n");
+		pr_debug(DRV_NAME " : Module param num_vfs is obsolete.");
+		pr_debug(DRV_NAME " : Use sysfs method to enable VFs\n");
 	}
 
 	be_wq = create_singlethread_workqueue("be_wq");
 	if (!be_wq) {
-		pr_warn(DRV_NAME "workqueue creation failed\n");
+		pr_debug(DRV_NAME "workqueue creation failed\n");
 		return -1;
 	}
 
 	be_err_recovery_workq =
 		create_singlethread_workqueue("be_err_recover");
 	if (!be_err_recovery_workq)
-		pr_warn(DRV_NAME "Could not create error recovery workqueue\n");
+		pr_debug(DRV_NAME "Could not create error recovery workqueue\n");
 
 	status = pci_register_driver(&be_driver);
 	if (status) {

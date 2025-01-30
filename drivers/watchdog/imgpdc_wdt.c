@@ -259,23 +259,23 @@ static int pdc_wdt_probe(struct platform_device *pdev)
 	case PDC_WDT_TICKLE_STATUS_TICKLE:
 	case PDC_WDT_TICKLE_STATUS_TIMEOUT:
 		pdc_wdt->wdt_dev.bootstatus |= WDIOF_CARDRESET;
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "watchdog module last reset due to timeout\n");
 		break;
 	case PDC_WDT_TICKLE_STATUS_HRESET:
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "watchdog module last reset due to hard reset\n");
 		break;
 	case PDC_WDT_TICKLE_STATUS_SRESET:
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "watchdog module last reset due to soft reset\n");
 		break;
 	case PDC_WDT_TICKLE_STATUS_USER:
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "watchdog module last reset due to user reset\n");
 		break;
 	default:
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "contains an illegal status code (%08x)\n", val);
 		break;
 	}

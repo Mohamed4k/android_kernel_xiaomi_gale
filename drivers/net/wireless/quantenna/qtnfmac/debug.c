@@ -24,7 +24,7 @@ void qtnf_debugfs_init(struct qtnf_bus *bus, const char *name)
 	bus->dbg_dir = debugfs_create_dir(name, NULL);
 
 	if (IS_ERR_OR_NULL(bus->dbg_dir)) {
-		pr_warn("failed to create debugfs root dir\n");
+		pr_debug("failed to create debugfs root dir\n");
 		bus->dbg_dir = NULL;
 	}
 }
@@ -42,5 +42,5 @@ void qtnf_debugfs_add_entry(struct qtnf_bus *bus, const char *name,
 
 	entry = debugfs_create_devm_seqfile(bus->dev, name, bus->dbg_dir, fn);
 	if (IS_ERR_OR_NULL(entry))
-		pr_warn("failed to add entry (%s)\n", name);
+		pr_debug("failed to add entry (%s)\n", name);
 }

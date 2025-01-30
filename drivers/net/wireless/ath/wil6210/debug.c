@@ -71,7 +71,7 @@ void __wil_info(struct wil6210_priv *wil, const char *fmt, ...)
 	va_start(args, fmt);
 	vaf.fmt = fmt;
 	vaf.va = &args;
-	netdev_info(wil->main_ndev, "%pV", &vaf);
+	netdev_dbg(wil->main_ndev, "%pV", &vaf);
 	trace_wil6210_log_info(&vaf);
 	va_end(args);
 }

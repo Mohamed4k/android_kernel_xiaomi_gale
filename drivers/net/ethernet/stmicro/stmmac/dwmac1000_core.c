@@ -306,11 +306,11 @@ static void dwmac1000_rgsmii(void __iomem *ioaddr, struct stmmac_extra_stats *x)
 
 		x->pcs_duplex = (status & GMAC_RGSMIIIS_LNKMOD_MASK);
 
-		pr_info("Link is Up - %d/%s\n", (int)x->pcs_speed,
+		pr_debug("Link is Up - %d/%s\n", (int)x->pcs_speed,
 			x->pcs_duplex ? "Full" : "Half");
 	} else {
 		x->pcs_link = 0;
-		pr_info("Link is Down\n");
+		pr_debug("Link is Down\n");
 	}
 }
 
@@ -534,7 +534,7 @@ int dwmac1000_setup(struct stmmac_priv *priv)
 {
 	struct mac_device_info *mac = priv->hw;
 
-	dev_info(priv->device, "\tDWMAC1000\n");
+	dev_dbg(priv->device, "\tDWMAC1000\n");
 
 	priv->dev->priv_flags |= IFF_UNICAST_FLT;
 	mac->pcsr = priv->ioaddr;

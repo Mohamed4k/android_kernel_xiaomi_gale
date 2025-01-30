@@ -50,7 +50,7 @@ void pistachio_clk_register_provider(struct pistachio_clk_provider *p)
 
 	for (i = 0; i < p->clk_data.clk_num; i++) {
 		if (IS_ERR(p->clk_data.clks[i]))
-			pr_warn("Failed to register clock %d: %ld\n", i,
+			pr_debug("Failed to register clock %d: %ld\n", i,
 				PTR_ERR(p->clk_data.clks[i]));
 	}
 

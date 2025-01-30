@@ -424,7 +424,7 @@ static int isp1704_charger_probe(struct platform_device *pdev)
 		}
 		pdata->enable_gpio = gpio;
 
-		dev_info(&pdev->dev, "init gpio %d\n", pdata->enable_gpio);
+		dev_dbg(&pdev->dev, "init gpio %d\n", pdata->enable_gpio);
 
 		ret = devm_gpio_request_one(&pdev->dev, pdata->enable_gpio,
 					GPIOF_OUT_INIT_HIGH, "isp1704_reset");
@@ -495,7 +495,7 @@ static int isp1704_charger_probe(struct platform_device *pdev)
 		goto fail2;
 	}
 
-	dev_info(isp->dev, "registered with product id %s\n", isp->model);
+	dev_dbg(isp->dev, "registered with product id %s\n", isp->model);
 
 	/*
 	 * Taking over the D+ pullup.

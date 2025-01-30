@@ -321,7 +321,7 @@ static int __init mtkfb_get_white_point(char *p)
 
 	strlcpy(wpoint, p, sizeof(wpoint));
 
-	pr_info("[%s]: white_point = %s\n", __func__, wpoint);
+	pr_debug("[%s]: white_point = %s\n", __func__, wpoint);
 
 	lcd_gale_para.white_point_x = (wpoint[0]-'0') * 100
 		+ (wpoint[1]-'0') * 10 + (wpoint[2]-'0');
@@ -466,9 +466,9 @@ static ssize_t disp_param_store(struct device *dev,
 {
 	int param;
 	sscanf(buf, "0x%x", &param);
-	pr_info("fb_set_dispparam:0x%x Start\n", param);
+	pr_debug("fb_set_dispparam:0x%x Start\n", param);
 	primary_display_set_panel_param(param);
-	pr_info("fb_set_dispparam End\n");
+	pr_debug("fb_set_dispparam End\n");
 	return size;
 }
 
@@ -1507,7 +1507,7 @@ static int mtkfb_ioctl(struct fb_info *info, unsigned int cmd,
 
 		if (copy_to_user(argp, &power_state,
 				sizeof(power_state))) {
-			pr_info("MTKFB_GET_POWERSTATE failed\n");
+			pr_debug("MTKFB_GET_POWERSTATE failed\n");
 			return -EFAULT;
 		}
 
@@ -1696,7 +1696,7 @@ static int mtkfb_ioctl(struct fb_info *info, unsigned int cmd,
 	}
 	case MTKFB_ERROR_INDEX_UPDATE_TIMEOUT:
 	{
-		pr_info("[DDP] %s():MTKFB_ERROR_INDEX_UPDATE_TIMEOUT\n",
+		pr_debug("[DDP] %s():MTKFB_ERROR_INDEX_UPDATE_TIMEOUT\n",
 			__func__);
 		/* call info dump function here */
 		/* mtkfb_dump_layer_info(); */
@@ -1704,7 +1704,7 @@ static int mtkfb_ioctl(struct fb_info *info, unsigned int cmd,
 	}
 	case MTKFB_ERROR_INDEX_UPDATE_TIMEOUT_AEE:
 	{
-		pr_info("[DDP] %s():MTKFB_ERROR_INDEX_UPDATE_TIMEOUT\n",
+		pr_debug("[DDP] %s():MTKFB_ERROR_INDEX_UPDATE_TIMEOUT\n",
 			__func__);
 		/* call info dump function here */
 		/* mtkfb_dump_layer_info(); */
@@ -1979,7 +1979,7 @@ static int mtkfb_compat_ioctl(struct fb_info *info, unsigned int cmd,
 		data32 = compat_ptr(arg);
 		data = (__u32) fb_pa;
 		if (put_user(data, data32)) {
-			pr_info("MTKFB_FRAMEBUFFER_MVA failed\n");
+			pr_debug("MTKFB_FRAMEBUFFER_MVA failed\n");
 			ret = -EFAULT;
 		}
 		DISPDBG("MTKFB_FRAMEBUFFER_MVA success 0x%lx\n", fb_pa);
@@ -1992,11 +1992,11 @@ static int mtkfb_compat_ioctl(struct fb_info *info, unsigned int cmd,
 
 		data32 = compat_ptr(arg);
 		if (get_user(displayid, data32)) {
-			pr_info("COMPAT_MTKFB_GET_DISPLAY_IF_INFORMATION failed\n");
+			pr_debug("COMPAT_MTKFB_GET_DISPLAY_IF_INFORMATION failed\n");
 			return -EFAULT;
 		}
 		if (displayid >= MTKFB_MAX_DISPLAY_COUNT) {
-			pr_info("[FB]: invalid display id:%d\n", displayid);
+			pr_debug("[FB]: invalid display id:%d\n", displayid);
 			return -EFAULT;
 		}
 		if (displayid == 0) {
@@ -2019,7 +2019,7 @@ static int mtkfb_compat_ioctl(struct fb_info *info, unsigned int cmd,
 
 		if (copy_to_user((void __user *)arg, &(dispif_info[displayid]),
 			sizeof(struct compat_mtk_dispif_info))) {
-			pr_info("[FB]: copy_to_user failed! line:%d\n",
+			pr_debug("[FB]: copy_to_user failed! line:%d\n",
 				__LINE__);
 			return -EFAULT;
 		}
@@ -2046,7 +2046,7 @@ static int mtkfb_compat_ioctl(struct fb_info *info, unsigned int cmd,
 		else
 			power_state = 1;
 		if (put_user(power_state, data32)) {
-			pr_info("MTKFB_GET_POWERSTATE failed\n");
+			pr_debug("MTKFB_GET_POWERSTATE failed\n");
 			ret = -EFAULT;
 		}
 		DISPDBG("MTKFB_GET_POWERSTATE success %d\n", power_state);
@@ -2170,7 +2170,7 @@ static int mtkfb_compat_ioctl(struct fb_info *info, unsigned int cmd,
 
 		data32 = compat_ptr(arg);
 		if (put_user(dal_en, data32)) {
-			pr_info("MTKFB_GET_POWERSTATE failed\n");
+			pr_debug("MTKFB_GET_POWERSTATE failed\n");
 			ret = -EFAULT;
 		}
 		break;
@@ -2184,7 +2184,7 @@ static int mtkfb_compat_ioctl(struct fb_info *info, unsigned int cmd,
 		result = mtkfb_fm_auto_test();
 		data32 = compat_ptr(arg);
 		if (put_user(result, data32)) {
-			pr_info("MTKFB_GET_POWERSTATE failed\n");
+			pr_debug("MTKFB_GET_POWERSTATE failed\n");
 			ret = -EFAULT;
 		}
 		break;
@@ -2861,13 +2861,13 @@ static int lcd_info_create_sysfs(void)
 	int ret;
 	lcd_name = kobject_create_and_add("android_lcd", NULL);
 	if(lcd_name == NULL) {
-		pr_info(" lcd_name_create_sysfs_ failed\n");
+		pr_debug(" lcd_name_create_sysfs_ failed\n");
 		ret=-ENOMEM;
 		return ret;
    }
 	ret=sysfs_create_file(lcd_name, &dev_attr_lcd_name.attr);
 	if(ret) {
-		pr_info("%s failed \n", __func__);
+		pr_debug("%s failed \n", __func__);
 		kobject_del(lcd_name);
    }
 
@@ -3043,13 +3043,13 @@ static int mtkfb_probe(struct platform_device *pdev)
 		pr_err("sysfs group creat failed, rc = %d\n", r);
 
 	MSG_FUNC_LEAVE();
-	pr_info("disp driver(2) %s end\n", __func__);
+	pr_debug("disp driver(2) %s end\n", __func__);
 	return 0;
 
 cleanup:
 	mtkfb_free_resources(fbdev, init_state);
 
-	pr_info("disp driver(2) %s end\n", __func__);
+	pr_debug("disp driver(2) %s end\n", __func__);
 	return r;
 }
 

@@ -1858,7 +1858,7 @@ void igbvf_update_stats(struct igbvf_adapter *adapter)
 
 static void igbvf_print_link_info(struct igbvf_adapter *adapter)
 {
-	dev_info(&adapter->pdev->dev, "Link is Up %d Mbps %s Duplex\n",
+	dev_dbg(&adapter->pdev->dev, "Link is Up %d Mbps %s Duplex\n",
 		 adapter->link_speed,
 		 adapter->link_duplex == FULL_DUPLEX ? "Full" : "Half");
 }
@@ -1928,7 +1928,7 @@ static void igbvf_watchdog_task(struct work_struct *work)
 		if (netif_carrier_ok(netdev)) {
 			adapter->link_speed = 0;
 			adapter->link_duplex = 0;
-			dev_info(&adapter->pdev->dev, "Link is Down\n");
+			dev_dbg(&adapter->pdev->dev, "Link is Down\n");
 			netif_carrier_off(netdev);
 			netif_stop_queue(netdev);
 		}
@@ -2438,7 +2438,7 @@ static int igbvf_change_mtu(struct net_device *netdev, int new_mtu)
 		adapter->rx_buffer_len = ETH_FRAME_LEN + VLAN_HLEN +
 					 ETH_FCS_LEN;
 
-	dev_info(&adapter->pdev->dev, "changing MTU from %d to %d\n",
+	dev_dbg(&adapter->pdev->dev, "changing MTU from %d to %d\n",
 		 netdev->mtu, new_mtu);
 	netdev->mtu = new_mtu;
 
@@ -2624,10 +2624,10 @@ static void igbvf_print_device_info(struct igbvf_adapter *adapter)
 	struct pci_dev *pdev = adapter->pdev;
 
 	if (hw->mac.type == e1000_vfadapt_i350)
-		dev_info(&pdev->dev, "Intel(R) I350 Virtual Function\n");
+		dev_dbg(&pdev->dev, "Intel(R) I350 Virtual Function\n");
 	else
-		dev_info(&pdev->dev, "Intel(R) 82576 Virtual Function\n");
-	dev_info(&pdev->dev, "Address: %pM\n", netdev->dev_addr);
+		dev_dbg(&pdev->dev, "Intel(R) 82576 Virtual Function\n");
+	dev_dbg(&pdev->dev, "Address: %pM\n", netdev->dev_addr);
 }
 
 static int igbvf_set_features(struct net_device *netdev,
@@ -2834,14 +2834,14 @@ static int igbvf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	/*reset the controller to put the device in a known good state */
 	err = hw->mac.ops.reset_hw(hw);
 	if (err) {
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "PF still in reset state. Is the PF interface up?\n");
 	} else {
 		err = hw->mac.ops.read_mac_addr(hw);
 		if (err)
-			dev_info(&pdev->dev, "Error reading MAC address.\n");
+			dev_dbg(&pdev->dev, "Error reading MAC address.\n");
 		else if (is_zero_ether_addr(adapter->hw.mac.addr))
-			dev_info(&pdev->dev,
+			dev_dbg(&pdev->dev,
 				 "MAC address not assigned by administrator.\n");
 		memcpy(netdev->dev_addr, adapter->hw.mac.addr,
 		       netdev->addr_len);
@@ -2850,7 +2850,7 @@ static int igbvf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	spin_unlock_bh(&hw->mbx_lock);
 
 	if (!is_valid_ether_addr(netdev->dev_addr)) {
-		dev_info(&pdev->dev, "Assigning random MAC address.\n");
+		dev_dbg(&pdev->dev, "Assigning random MAC address.\n");
 		eth_hw_addr_random(netdev);
 		memcpy(adapter->hw.mac.addr, netdev->dev_addr,
 		       netdev->addr_len);
@@ -2988,8 +2988,8 @@ static int __init igbvf_init_module(void)
 {
 	int ret;
 
-	pr_info("%s - version %s\n", igbvf_driver_string, igbvf_driver_version);
-	pr_info("%s\n", igbvf_copyright);
+	pr_debug("%s - version %s\n", igbvf_driver_string, igbvf_driver_version);
+	pr_debug("%s\n", igbvf_copyright);
 
 	ret = pci_register_driver(&igbvf_driver);
 

@@ -213,7 +213,7 @@ INT32 osal_dbg_print(const PINT8 str, ...)
 	va_end(args);
 
 	if (ret > 0)
-		pr_debug("%s", tempString);
+		pr_info("%s", tempString);
 
 	return ret;
 }
@@ -229,7 +229,7 @@ INT32 osal_warn_print(const PINT8 str, ...)
 	va_end(args);
 
 	if (ret > 0)
-		pr_warn("%s", tempString);
+		pr_info("%s", tempString);
 
 	return ret;
 }
@@ -237,12 +237,12 @@ INT32 osal_warn_print(const PINT8 str, ...)
 INT32 osal_dbg_assert(INT32 expr, const PINT8 file, INT32 line)
 {
 	if (!expr) {
-		pr_warn("%s (%d)\n", file, line);
+		pr_info("%s (%d)\n", file, line);
 		/*BUG_ON(!expr); */
 #ifdef CFG_COMMON_GPIO_DBG_PIN
 /* package this part */
 		gpio_direction_output(GPIO_ASSERT, 0);
-		pr_warn("toggle GPIO_ASSERT = %d\n", GPIO_ASSERT);
+		pr_info("toggle GPIO_ASSERT = %d\n", GPIO_ASSERT);
 		udelay(10);
 		gpio_set_value(GPIO_ASSERT, 1);
 #endif

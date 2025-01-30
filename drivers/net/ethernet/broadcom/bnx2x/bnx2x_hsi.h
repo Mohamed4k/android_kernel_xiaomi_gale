@@ -1126,7 +1126,7 @@ struct port_feat_cfg {		    /* port 0: 0x454  port 1: 0x4c8 */
 /****************************************************************************
  * Device Information                                                       *
  ****************************************************************************/
-struct shm_dev_info {				/* size */
+struct shm_dev_dbg {				/* size */
 
 	u32    bc_rev; /* 8 bits each: major, minor, build */	       /* 4 */
 
@@ -1648,7 +1648,7 @@ struct shmem_region {		       /*   SharedMem Offset (size) */
 	#define SHR_MEM_VALIDITY_ACTIVE_MFW_NCSI            0x000000c0
 	#define SHR_MEM_VALIDITY_ACTIVE_MFW_NONE            0x000001c0
 
-	struct shm_dev_info dev_info;	     /* 0x8     (0x438) */
+	struct shm_dev_dbg dev_dbg;	     /* 0x8     (0x438) */
 
 	struct license_key       drv_lic_key[PORT_MAX]; /* 0x440 (52*2=0x68) */
 
@@ -2218,7 +2218,7 @@ struct shmem2_region {
 	#define DRV_FLAGS_PORT_MASK	((1 << DRV_FLAGS_DCB_CONFIGURED) | \
 			(1 << DRV_FLAGS_DCB_CONFIGURATION_ABORTED) | \
 			(1 << DRV_FLAGS_DCB_MFW_CONFIGURED))
-	/* pointer to extended dev_info shared data copied from nvm image */
+	/* pointer to extended dev_dbg shared data copied from nvm image */
 	u32 extended_dev_info_shared_addr;
 	u32 ncsi_oem_data_addr;
 

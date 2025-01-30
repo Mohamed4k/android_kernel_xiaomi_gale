@@ -422,7 +422,7 @@ int pxa2xx_pinctrl_init(struct platform_device *pdev,
 		return PTR_ERR(pctl->pctl_dev);
 	}
 
-	dev_info(&pdev->dev, "initialized pxa2xx pinctrl driver\n");
+	dev_dbg(&pdev->dev, "initialized pxa2xx pinctrl driver\n");
 
 	return 0;
 }

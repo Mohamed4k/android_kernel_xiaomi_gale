@@ -583,7 +583,7 @@ static int fealnx_init_one(struct pci_dev *pdev,
 
 			if (mii_status != 0xffff && mii_status != 0x0000) {
 				np->phys[phy_idx++] = phy;
-				dev_info(&pdev->dev,
+				dev_dbg(&pdev->dev,
 				       "MII PHY found at address %d, status "
 				       "0x%4.4x.\n", phy, mii_status);
 				/* get phy type */
@@ -637,7 +637,7 @@ static int fealnx_init_one(struct pci_dev *pdev,
 		np->mii.full_duplex = full_duplex[card_idx];
 
 	if (np->mii.full_duplex) {
-		dev_info(&pdev->dev, "Media type forced to Full Duplex.\n");
+		dev_dbg(&pdev->dev, "Media type forced to Full Duplex.\n");
 /* 89/6/13 add, (begin) */
 //      if (np->PHYType==MarvellPHY)
 		if ((np->PHYType == MarvellPHY) || (np->PHYType == LevelOnePHY)) {

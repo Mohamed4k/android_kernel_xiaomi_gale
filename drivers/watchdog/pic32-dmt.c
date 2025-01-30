@@ -202,7 +202,7 @@ static int pic32_dmt_probe(struct platform_device *pdev)
 		goto out_disable_clk;
 	}
 
-	dev_info(&pdev->dev, "timeout %d\n", wdd->timeout);
+	dev_dbg(&pdev->dev, "timeout %d\n", wdd->timeout);
 
 	wdd->bootstatus = pic32_dmt_bootstatus(dmt) ? WDIOF_CARDRESET : 0;
 

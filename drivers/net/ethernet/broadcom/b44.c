@@ -427,7 +427,7 @@ static void b44_wap54g10_workaround(struct b44 *bp)
 	}
 	return;
 error:
-	pr_warn("PHY: cannot reset MII transceiver isolate bit\n");
+	pr_debug("PHY: cannot reset MII transceiver isolate bit\n");
 }
 #else
 static inline void b44_wap54g10_workaround(struct b44 *bp)
@@ -524,13 +524,13 @@ static void b44_stats_update(struct b44 *bp)
 static void b44_link_report(struct b44 *bp)
 {
 	if (!netif_carrier_ok(bp->dev)) {
-		netdev_info(bp->dev, "Link is down\n");
+		netdev_dbg(bp->dev, "Link is down\n");
 	} else {
-		netdev_info(bp->dev, "Link is up at %d Mbps, %s duplex\n",
+		netdev_dbg(bp->dev, "Link is up at %d Mbps, %s duplex\n",
 			    (bp->flags & B44_FLAG_100_BASE_T) ? 100 : 10,
 			    (bp->flags & B44_FLAG_FULL_DUPLEX) ? "full" : "half");
 
-		netdev_info(bp->dev, "Flow control is %s for TX and %s for RX\n",
+		netdev_dbg(bp->dev, "Flow control is %s for TX and %s for RX\n",
 			    (bp->flags & B44_FLAG_TX_PAUSE) ? "on" : "off",
 			    (bp->flags & B44_FLAG_RX_PAUSE) ? "on" : "off");
 	}
@@ -930,7 +930,7 @@ static irqreturn_t b44_interrupt(int irq, void *dev_id)
 		handled = 1;
 
 		if (unlikely(!netif_running(dev))) {
-			netdev_info(dev, "late interrupt\n");
+			netdev_dbg(dev, "late interrupt\n");
 			goto irq_ack;
 		}
 
@@ -1353,7 +1353,7 @@ static void b44_halt(struct b44 *bp)
 	/* reset PHY */
 	b44_phy_reset(bp);
 	/* power down PHY */
-	netdev_info(bp->dev, "powering down PHY\n");
+	netdev_dbg(bp->dev, "powering down PHY\n");
 	bw32(bp, B44_MAC_CTRL, MAC_CTRL_PHY_PDOWN);
 	/* now reset the chip, but without enabling the MAC&PHY
 	 * part of it. This has to be done _after_ we shut down the PHY */
@@ -2284,7 +2284,7 @@ static int b44_register_phy_one(struct b44 *bp)
 	if (!mdiobus_is_registered_device(bp->mii_bus, bp->phy_addr) &&
 	    (sprom->boardflags_lo & (B44_BOARDFLAG_ROBO | B44_BOARDFLAG_ADM))) {
 
-		dev_info(sdev->dev,
+		dev_dbg(sdev->dev,
 			 "could not find PHY at %i, use fixed one\n",
 			 bp->phy_addr);
 
@@ -2454,7 +2454,7 @@ static int b44_init_one(struct ssb_device *sdev,
 	}
 
 	device_set_wakeup_capable(sdev->dev, true);
-	netdev_info(dev, "%s %pM\n", DRV_DESCRIPTION, dev->dev_addr);
+	netdev_dbg(dev, "%s %pM\n", DRV_DESCRIPTION, dev->dev_addr);
 
 	return 0;
 

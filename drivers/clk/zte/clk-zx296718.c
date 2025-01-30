@@ -580,7 +580,7 @@ static int __init top_clocks_init(struct device_node *np)
 		name = zx296718_pll_clk[i].hw.init->name;
 		ret = clk_hw_register(NULL, &zx296718_pll_clk[i].hw);
 		if (ret)
-			pr_warn("top clk %s init error!\n", name);
+			pr_debug("top clk %s init error!\n", name);
 	}
 
 	for (i = 0; i < ARRAY_SIZE(top_ffactor_clk); i++) {
@@ -591,7 +591,7 @@ static int __init top_clocks_init(struct device_node *np)
 		name = top_ffactor_clk[i].factor.hw.init->name;
 		ret = clk_hw_register(NULL, &top_ffactor_clk[i].factor.hw);
 		if (ret)
-			pr_warn("top clk %s init error!\n", name);
+			pr_debug("top clk %s init error!\n", name);
 	}
 
 	for (i = 0; i < ARRAY_SIZE(top_mux_clk); i++) {
@@ -603,7 +603,7 @@ static int __init top_clocks_init(struct device_node *np)
 		name = top_mux_clk[i].mux.hw.init->name;
 		ret = clk_hw_register(NULL, &top_mux_clk[i].mux.hw);
 		if (ret)
-			pr_warn("top clk %s init error!\n", name);
+			pr_debug("top clk %s init error!\n", name);
 	}
 
 	for (i = 0; i < ARRAY_SIZE(top_gate_clk); i++) {
@@ -615,7 +615,7 @@ static int __init top_clocks_init(struct device_node *np)
 		name = top_gate_clk[i].gate.hw.init->name;
 		ret = clk_hw_register(NULL, &top_gate_clk[i].gate.hw);
 		if (ret)
-			pr_warn("top clk %s init error!\n", name);
+			pr_debug("top clk %s init error!\n", name);
 	}
 
 	for (i = 0; i < ARRAY_SIZE(top_div_clk); i++) {
@@ -627,7 +627,7 @@ static int __init top_clocks_init(struct device_node *np)
 		name = top_div_clk[i].div.hw.init->name;
 		ret = clk_hw_register(NULL, &top_div_clk[i].div.hw);
 		if (ret)
-			pr_warn("top clk %s init error!\n", name);
+			pr_debug("top clk %s init error!\n", name);
 	}
 
 	ret = of_clk_add_hw_provider(np, of_clk_hw_onecell_get,
@@ -770,7 +770,7 @@ static int __init lsp0_clocks_init(struct device_node *np)
 		name = lsp0_mux_clk[i].mux.hw.init->name;
 		ret = clk_hw_register(NULL, &lsp0_mux_clk[i].mux.hw);
 		if (ret)
-			pr_warn("lsp0 clk %s init error!\n", name);
+			pr_debug("lsp0 clk %s init error!\n", name);
 	}
 
 	for (i = 0; i < ARRAY_SIZE(lsp0_gate_clk); i++) {
@@ -782,7 +782,7 @@ static int __init lsp0_clocks_init(struct device_node *np)
 		name = lsp0_gate_clk[i].gate.hw.init->name;
 		ret = clk_hw_register(NULL, &lsp0_gate_clk[i].gate.hw);
 		if (ret)
-			pr_warn("lsp0 clk %s init error!\n", name);
+			pr_debug("lsp0 clk %s init error!\n", name);
 	}
 
 	for (i = 0; i < ARRAY_SIZE(lsp0_div_clk); i++) {
@@ -794,7 +794,7 @@ static int __init lsp0_clocks_init(struct device_node *np)
 		name = lsp0_div_clk[i].div.hw.init->name;
 		ret = clk_hw_register(NULL, &lsp0_div_clk[i].div.hw);
 		if (ret)
-			pr_warn("lsp0 clk %s init error!\n", name);
+			pr_debug("lsp0 clk %s init error!\n", name);
 	}
 
 	ret = of_clk_add_hw_provider(np, of_clk_hw_onecell_get,
@@ -876,7 +876,7 @@ static int __init lsp1_clocks_init(struct device_node *np)
 		name = lsp1_mux_clk[i].mux.hw.init->name;
 		ret = clk_hw_register(NULL, &lsp1_mux_clk[i].mux.hw);
 		if (ret)
-			pr_warn("lsp1 clk %s init error!\n", name);
+			pr_debug("lsp1 clk %s init error!\n", name);
 	}
 
 	for (i = 0; i < ARRAY_SIZE(lsp1_gate_clk); i++) {
@@ -888,7 +888,7 @@ static int __init lsp1_clocks_init(struct device_node *np)
 		name = lsp1_gate_clk[i].gate.hw.init->name;
 		ret = clk_hw_register(NULL, &lsp1_gate_clk[i].gate.hw);
 		if (ret)
-			pr_warn("lsp1 clk %s init error!\n", name);
+			pr_debug("lsp1 clk %s init error!\n", name);
 	}
 
 	for (i = 0; i < ARRAY_SIZE(lsp1_div_clk); i++) {
@@ -900,7 +900,7 @@ static int __init lsp1_clocks_init(struct device_node *np)
 		name = lsp1_div_clk[i].div.hw.init->name;
 		ret = clk_hw_register(NULL, &lsp1_div_clk[i].div.hw);
 		if (ret)
-			pr_warn("lsp1 clk %s init error!\n", name);
+			pr_debug("lsp1 clk %s init error!\n", name);
 	}
 
 	ret = of_clk_add_hw_provider(np, of_clk_hw_onecell_get,
@@ -991,7 +991,7 @@ static int __init audio_clocks_init(struct device_node *np)
 		name = audio_mux_clk[i].mux.hw.init->name;
 		ret = clk_hw_register(NULL, &audio_mux_clk[i].mux.hw);
 		if (ret)
-			pr_warn("audio clk %s init error!\n", name);
+			pr_debug("audio clk %s init error!\n", name);
 	}
 
 	for (i = 0; i < ARRAY_SIZE(audio_adiv_clk); i++) {
@@ -1003,7 +1003,7 @@ static int __init audio_clocks_init(struct device_node *np)
 		name = audio_adiv_clk[i].hw.init->name;
 		ret = clk_hw_register(NULL, &audio_adiv_clk[i].hw);
 		if (ret)
-			pr_warn("audio clk %s init error!\n", name);
+			pr_debug("audio clk %s init error!\n", name);
 	}
 
 	for (i = 0; i < ARRAY_SIZE(audio_div_clk); i++) {
@@ -1015,7 +1015,7 @@ static int __init audio_clocks_init(struct device_node *np)
 		name = audio_div_clk[i].div.hw.init->name;
 		ret = clk_hw_register(NULL, &audio_div_clk[i].div.hw);
 		if (ret)
-			pr_warn("audio clk %s init error!\n", name);
+			pr_debug("audio clk %s init error!\n", name);
 	}
 
 	for (i = 0; i < ARRAY_SIZE(audio_gate_clk); i++) {
@@ -1027,7 +1027,7 @@ static int __init audio_clocks_init(struct device_node *np)
 		name = audio_gate_clk[i].gate.hw.init->name;
 		ret = clk_hw_register(NULL, &audio_gate_clk[i].gate.hw);
 		if (ret)
-			pr_warn("audio clk %s init error!\n", name);
+			pr_debug("audio clk %s init error!\n", name);
 	}
 
 	ret = of_clk_add_hw_provider(np, of_clk_hw_onecell_get,

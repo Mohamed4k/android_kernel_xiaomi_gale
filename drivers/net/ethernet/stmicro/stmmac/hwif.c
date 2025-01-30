@@ -13,11 +13,11 @@ static u32 stmmac_get_id(struct stmmac_priv *priv, u32 id_reg)
 	u32 reg = readl(priv->ioaddr + id_reg);
 
 	if (!reg) {
-		dev_info(priv->device, "Version ID not available\n");
+		dev_dbg(priv->device, "Version ID not available\n");
 		return 0x0;
 	}
 
-	dev_info(priv->device, "User ID: 0x%x, Synopsys ID: 0x%x\n",
+	dev_dbg(priv->device, "User ID: 0x%x, Synopsys ID: 0x%x\n",
 			(unsigned int)(reg & GENMASK(15, 8)) >> 8,
 			(unsigned int)(reg & GENMASK(7, 0)));
 	return reg & GENMASK(7, 0);
@@ -28,11 +28,11 @@ static void stmmac_dwmac_mode_quirk(struct stmmac_priv *priv)
 	struct mac_device_info *mac = priv->hw;
 
 	if (priv->chain_mode) {
-		dev_info(priv->device, "Chain mode enabled\n");
+		dev_dbg(priv->device, "Chain mode enabled\n");
 		priv->mode = STMMAC_CHAIN_MODE;
 		mac->mode = &chain_mode_ops;
 	} else {
-		dev_info(priv->device, "Ring mode enabled\n");
+		dev_dbg(priv->device, "Ring mode enabled\n");
 		priv->mode = STMMAC_RING_MODE;
 		mac->mode = &ring_mode_ops;
 	}
@@ -43,11 +43,11 @@ static int stmmac_dwmac1_quirks(struct stmmac_priv *priv)
 	struct mac_device_info *mac = priv->hw;
 
 	if (priv->plat->enh_desc) {
-		dev_info(priv->device, "Enhanced/Alternate descriptors\n");
+		dev_dbg(priv->device, "Enhanced/Alternate descriptors\n");
 
 		/* GMAC older than 3.50 has no extended descriptors */
 		if (priv->synopsys_id >= DWMAC_CORE_3_50) {
-			dev_info(priv->device, "Enabled extended descriptors\n");
+			dev_dbg(priv->device, "Enabled extended descriptors\n");
 			priv->extend_desc = 1;
 		} else {
 			dev_warn(priv->device, "Extended descriptors not supported\n");
@@ -55,7 +55,7 @@ static int stmmac_dwmac1_quirks(struct stmmac_priv *priv)
 
 		mac->desc = &enh_desc_ops;
 	} else {
-		dev_info(priv->device, "Normal descriptors\n");
+		dev_dbg(priv->device, "Normal descriptors\n");
 		mac->desc = &ndesc_ops;
 	}
 

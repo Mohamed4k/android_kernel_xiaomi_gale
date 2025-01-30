@@ -1007,7 +1007,7 @@ bnx2_report_link(struct bnx2 *bp)
 {
 	if (bp->link_up) {
 		netif_carrier_on(bp->dev);
-		netdev_info(bp->dev, "NIC %s Link is Up, %d Mbps %s duplex",
+		netdev_dbg(bp->dev, "NIC %s Link is Up, %d Mbps %s duplex",
 			    bnx2_xceiver_str(bp),
 			    bp->line_speed,
 			    bp->duplex == DUPLEX_FULL ? "full" : "half");
@@ -6430,9 +6430,9 @@ bnx2_open(struct net_device *dev)
 		}
 	}
 	if (bp->flags & BNX2_FLAG_USING_MSI)
-		netdev_info(dev, "using MSI\n");
+		netdev_dbg(dev, "using MSI\n");
 	else if (bp->flags & BNX2_FLAG_USING_MSIX)
-		netdev_info(dev, "using MSIX\n");
+		netdev_dbg(dev, "using MSIX\n");
 
 	netif_tx_start_all_queues(dev);
 out:
@@ -8573,7 +8573,7 @@ bnx2_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	char str[40];
 
 	if (version_printed++ == 0)
-		pr_info("%s", version);
+		pr_debug("%s", version);
 
 	/* dev zeroed in init_etherdev */
 	dev = alloc_etherdev_mq(sizeof(*bp), TX_MAX_RINGS);
@@ -8625,7 +8625,7 @@ bnx2_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		goto error;
 	}
 
-	netdev_info(dev, "%s (%c%d) %s found at mem %lx, IRQ %d, "
+	netdev_dbg(dev, "%s (%c%d) %s found at mem %lx, IRQ %d, "
 		    "node addr %pM\n", board_info[ent->driver_data].name,
 		    ((BNX2_CHIP_ID(bp) & 0xf000) >> 12) + 'A',
 		    ((BNX2_CHIP_ID(bp) & 0x0ff0) >> 4),

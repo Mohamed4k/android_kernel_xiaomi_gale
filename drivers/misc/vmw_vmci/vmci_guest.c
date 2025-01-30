@@ -453,7 +453,7 @@ static int vmci_guest_probe_device(struct pci_dev *pdev,
 
 	iobase = pcim_iomap_table(pdev)[0];
 
-	dev_info(&pdev->dev, "Found VMCI PCI device at %#lx, irq %u\n",
+	dev_dbg(&pdev->dev, "Found VMCI PCI device at %#lx, irq %u\n",
 		 (unsigned long)iobase, pdev->irq);
 
 	vmci_dev = devm_kzalloc(&pdev->dev, sizeof(*vmci_dev), GFP_KERNEL);
@@ -514,7 +514,7 @@ static int vmci_guest_probe_device(struct pci_dev *pdev,
 		}
 	}
 
-	dev_info(&pdev->dev, "Using capabilities 0x%x\n", capabilities);
+	dev_dbg(&pdev->dev, "Using capabilities 0x%x\n", capabilities);
 
 	/* Let the host know which capabilities we intend to use. */
 	iowrite32(capabilities, vmci_dev->iobase + VMCI_CAPS_ADDR);

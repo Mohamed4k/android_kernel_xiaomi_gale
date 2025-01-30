@@ -759,7 +759,7 @@ static int armada_37xx_irqchip_register(struct platform_device *pdev,
 	ret = gpiochip_irqchip_add(gc, irqchip, 0,
 				   handle_edge_irq, IRQ_TYPE_NONE);
 	if (ret) {
-		dev_info(&pdev->dev, "could not add irqchip\n");
+		dev_dbg(&pdev->dev, "could not add irqchip\n");
 		return ret;
 	}
 

@@ -1346,7 +1346,7 @@ static int pe4_dcs_set_charger(struct chg_alg_device *alg)
 	if (pe4->input_current_limit1 == 0 ||
 		pe4->charging_current_limit1 == 0 ||
 		pe4->charging_current_limit2 == 0) {
-		pr_notice("input/charging current is 0, end PD\n");
+		pr_debug("input/charging current is 0, end PD\n");
 		return -1;
 	}
 
@@ -1857,14 +1857,14 @@ static void mtk_pe4_parse_dt(struct mtk_pe40 *pe4,
 	if (of_property_read_u32(np, "dual_polling_ieoc", &val) >= 0)
 		pe4->dual_polling_ieoc = val;
 	else {
-		pr_notice("use default dual_polling_ieoc :%d\n", 750000);
+		pr_debug("use default dual_polling_ieoc :%d\n", 750000);
 		pe4->dual_polling_ieoc = 750000;
 	}
 
 	if (of_property_read_u32(np, "slave_mivr_diff", &val) >= 0)
 		pe4->slave_mivr_diff = val;
 	else {
-		pr_notice("use default slave_mivr_diff:%d\n",
+		pr_debug("use default slave_mivr_diff:%d\n",
 			PE4_SLAVE_MIVR_DIFF);
 		pe4->slave_mivr_diff = PE4_SLAVE_MIVR_DIFF;
 	}
@@ -1875,11 +1875,11 @@ int _pe4_get_status(struct chg_alg_device *alg,
 		enum chg_alg_props s, int *value)
 {
 
-	pr_notice("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 	if (s == ALG_MAX_VBUS)
 		*value = 10000;
 	else
-		pr_notice("%s does not support prop:%d\n", __func__, s);
+		pr_debug("%s does not support prop:%d\n", __func__, s);
 	return 0;
 }
 
@@ -1927,7 +1927,7 @@ int _pe4_set_setting(struct chg_alg_device *alg_dev,
 int _pe4_set_prop(struct chg_alg_device *alg,
 		enum chg_alg_props s, int value)
 {
-	pr_notice("%s %d %d\n", __func__, s, value);
+	pr_debug("%s %d %d\n", __func__, s, value);
 	return 0;
 }
 
@@ -1947,7 +1947,7 @@ static int mtk_pe4_probe(struct platform_device *pdev)
 {
 	struct mtk_pe40 *pe4 = NULL;
 
-	pr_notice("%s: starts\n", __func__);
+	pr_debug("%s: starts\n", __func__);
 
 	pe4 = devm_kzalloc(&pdev->dev, sizeof(*pe4), GFP_KERNEL);
 	if (!pe4)

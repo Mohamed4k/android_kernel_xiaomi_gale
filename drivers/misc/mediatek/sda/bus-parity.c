@@ -69,7 +69,7 @@ struct bus_parity {
 
 #define BPR_LOG(fmt, ...) \
 	do { \
-		pr_notice(fmt, __VA_ARGS__); \
+		pr_debug(fmt, __VA_ARGS__); \
 		aee_sram_printk(fmt, __VA_ARGS__); \
 	} while (0)
 
@@ -423,7 +423,7 @@ static int bus_parity_probe(struct platform_device *pdev)
 	size_t size;
 	int ret, i;
 
-	dev_info(dev, "driver probed\n");
+	dev_dbg(dev, "driver probed\n");
 
 	mcu_bp.nr_err = 0;
 	infra_bp.nr_err = 0;
@@ -445,7 +445,7 @@ static int bus_parity_probe(struct platform_device *pdev)
 	}
 	infra_bp.nr_bpm = ret;
 
-	dev_info(dev, "%s=%d, %s=%d\n", "nr_mcu_bpm", mcu_bp.nr_bpm,
+	dev_dbg(dev, "%s=%d, %s=%d\n", "nr_mcu_bpm", mcu_bp.nr_bpm,
 			"nr_infra_bpm", infra_bp.nr_bpm);
 
 	size = sizeof(struct bus_parity_elem) * mcu_bp.nr_bpm;
@@ -563,7 +563,7 @@ static int bus_parity_probe(struct platform_device *pdev)
 
 static int bus_parity_remove(struct platform_device *pdev)
 {
-	dev_info(&pdev->dev, "driver removed\n");
+	dev_dbg(&pdev->dev, "driver removed\n");
 
 	flush_work(&mcu_bp.wk);
 	flush_work(&infra_bp.wk);

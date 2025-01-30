@@ -203,7 +203,7 @@ static int pic32_sdhci_probe(struct platform_device *pdev)
 	if (ret)
 		goto err_base_clk;
 
-	dev_info(&pdev->dev, "Successfully added sdhci host\n");
+	dev_dbg(&pdev->dev, "Successfully added sdhci host\n");
 	return 0;
 
 err_base_clk:

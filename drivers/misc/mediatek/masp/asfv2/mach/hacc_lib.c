@@ -121,6 +121,6 @@ error:
 	/* try to release hacc lock */
 	osal_hacc_unlock();
 
-	pr_notice("[%s] %s error (0x%x)\n", MOD, __func__, err);
+	pr_debug("[%s] %s error (0x%x)\n", MOD, __func__, err);
 	WARN_ON(!(0));
 }

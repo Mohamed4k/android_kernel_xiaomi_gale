@@ -9,7 +9,7 @@
 extern struct musb *musb;
 
 #define yprintk(facility, format, args...) \
-		pr_notice("[MUSB]%s %d: " format, \
+		pr_debug("[MUSB]%s %d: " format, \
 		__func__, __LINE__, ## args)
 
 /* workaroud for redefine warning in usb_dump.c */
@@ -32,7 +32,7 @@ extern struct musb *musb;
 #define xprintk(level,  format, args...) do { \
 	if (_dbg_level(level)) { \
 		if (musb_uart_debug) {\
-			pr_notice("[MUSB]%s %d: " format, \
+			pr_debug("[MUSB]%s %d: " format, \
 				__func__, __LINE__, ## args); \
 		} \
 		else {\

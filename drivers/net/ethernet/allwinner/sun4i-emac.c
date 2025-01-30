@@ -688,7 +688,7 @@ static irqreturn_t emac_interrupt(int irq, void *dev_id)
 		emac_tx_done(dev, db, int_status);
 
 	if (int_status & (0x04 | 0x08))
-		netdev_info(dev, " ab : %x\n", int_status);
+		netdev_dbg(dev, " ab : %x\n", int_status);
 
 	/* Re-enable interrupt mask */
 	if (db->emacrx_completed_flag == 1) {
@@ -901,7 +901,7 @@ static int emac_probe(struct platform_device *pdev)
 		goto out_release_sram;
 	}
 
-	dev_info(&pdev->dev, "%s: at %p, IRQ %d MAC: %pM\n",
+	dev_dbg(&pdev->dev, "%s: at %p, IRQ %d MAC: %pM\n",
 		 ndev->name, db->membase, ndev->irq, ndev->dev_addr);
 
 	return 0;

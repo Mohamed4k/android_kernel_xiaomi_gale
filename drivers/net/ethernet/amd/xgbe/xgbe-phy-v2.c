@@ -3115,7 +3115,7 @@ static int xgbe_phy_init(struct xgbe_prv_data *pdata)
 
 	/* Check if enabled */
 	if (!xgbe_phy_port_enabled(pdata)) {
-		dev_info(pdata->dev, "device is not enabled\n");
+		dev_dbg(pdata->dev, "device is not enabled\n");
 		return -ENODEV;
 	}
 

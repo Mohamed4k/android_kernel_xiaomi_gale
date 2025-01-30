@@ -941,7 +941,7 @@ static int lantiq_ssc_probe(struct platform_device *pdev)
 
 	lantiq_ssc_hw_init(spi);
 
-	dev_info(dev,
+	dev_dbg(dev,
 		"Lantiq SSC SPI controller (Rev %i, TXFS %u, RXFS %u, DMA %u)\n",
 		revision, spi->tx_fifo_size, spi->rx_fifo_size, supports_dma);
 

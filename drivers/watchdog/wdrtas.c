@@ -128,7 +128,7 @@ static int wdrtas_get_interval(int fallback_value)
 	spin_unlock(&rtas_data_buf_lock);
 
 	if (value[0] != 0 || value[1] != 2 || value[3] != 0 || result < 0) {
-		pr_warn("could not get sp_spi watchdog timeout (%li). Continuing\n",
+		pr_debug("could not get sp_spi watchdog timeout (%li). Continuing\n",
 			result);
 		return fallback_value;
 	}
@@ -200,7 +200,7 @@ static int wdrtas_get_temperature(void)
 	result = rtas_get_sensor(WDRTAS_THERMAL_SENSOR, 0, &temperature);
 
 	if (result < 0)
-		pr_warn("reading the thermal sensor failed: %i\n", result);
+		pr_debug("reading the thermal sensor failed: %i\n", result);
 	else
 		temperature = ((temperature * 9) / 5) + 32; /* fahrenheit */
 
@@ -394,7 +394,7 @@ static int wdrtas_close(struct inode *inode, struct file *file)
 	if (wdrtas_expect_close == WDRTAS_MAGIC_CHAR)
 		wdrtas_timer_stop();
 	else {
-		pr_warn("got unexpected close. Watchdog not stopped.\n");
+		pr_debug("got unexpected close. Watchdog not stopped.\n");
 		wdrtas_timer_keepalive();
 	}
 
@@ -526,12 +526,12 @@ static int wdrtas_get_tokens(void)
 {
 	wdrtas_token_get_sensor_state = rtas_token("get-sensor-state");
 	if (wdrtas_token_get_sensor_state == RTAS_UNKNOWN_SERVICE) {
-		pr_warn("couldn't get token for get-sensor-state. Trying to continue without temperature support.\n");
+		pr_debug("couldn't get token for get-sensor-state. Trying to continue without temperature support.\n");
 	}
 
 	wdrtas_token_get_sp = rtas_token("ibm,get-system-parameter");
 	if (wdrtas_token_get_sp == RTAS_UNKNOWN_SERVICE) {
-		pr_warn("couldn't get token for ibm,get-system-parameter. Trying to continue with a default timeout value of %i seconds.\n",
+		pr_debug("couldn't get token for ibm,get-system-parameter. Trying to continue with a default timeout value of %i seconds.\n",
 			WDRTAS_DEFAULT_INTERVAL);
 	}
 
@@ -584,7 +584,7 @@ static int wdrtas_register_devs(void)
 	if (wdrtas_token_get_sensor_state != RTAS_UNKNOWN_SERVICE) {
 		result = misc_register(&wdrtas_tempdev);
 		if (result) {
-			pr_warn("couldn't register watchdog temperature misc device. Continuing without temperature support.\n");
+			pr_debug("couldn't register watchdog temperature misc device. Continuing without temperature support.\n");
 			wdrtas_token_get_sensor_state = RTAS_UNKNOWN_SERVICE;
 		}
 	}

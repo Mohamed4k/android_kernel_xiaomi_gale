@@ -718,13 +718,13 @@ static int octeon_mgmt_ioctl_hwtstamp(struct net_device *netdev,
 			u64 clock_comp = (NSEC_PER_SEC << 32) /	octeon_get_io_clock_rate();
 			if (!ptp.s.ptp_en)
 				cvmx_write_csr(CVMX_MIO_PTP_CLOCK_COMP, clock_comp);
-			netdev_info(netdev,
+			netdev_dbg(netdev,
 				    "PTP Clock using sclk reference @ %lldHz\n",
 				    (NSEC_PER_SEC << 32) / clock_comp);
 		} else {
 			/* The clock is already programmed to use a GPIO */
 			u64 clock_comp = cvmx_read_csr(CVMX_MIO_PTP_CLOCK_COMP);
-			netdev_info(netdev,
+			netdev_dbg(netdev,
 				    "PTP Clock using GPIO%d @ %lld Hz\n",
 				    ptp.s.ext_clk_in, (NSEC_PER_SEC << 32) / clock_comp);
 		}
@@ -941,10 +941,10 @@ static void octeon_mgmt_adjust_link(struct net_device *netdev)
 
 	if (link_changed != 0) {
 		if (link_changed > 0)
-			netdev_info(netdev, "Link is up - %d/%s\n",
+			netdev_dbg(netdev, "Link is up - %d/%s\n",
 				    phydev->speed, phydev->duplex == DUPLEX_FULL ? "Full" : "Half");
 		else
-			netdev_info(netdev, "Link is down\n");
+			netdev_dbg(netdev, "Link is down\n");
 	}
 }
 
@@ -1521,7 +1521,7 @@ static int octeon_mgmt_probe(struct platform_device *pdev)
 	if (result)
 		goto err;
 
-	dev_info(&pdev->dev, "Version " DRV_VERSION "\n");
+	dev_dbg(&pdev->dev, "Version " DRV_VERSION "\n");
 	return 0;
 
 err:

@@ -193,7 +193,7 @@ static inline void musb_try_b_hnp_enable(struct musb *musb)
 	devctl = musb_readb(mbase, MUSB_DEVCTL);
 	u8 opstate = musb_readb(mbase, MUSB_OPSTATE);
 
-	pr_info("HNP: Setting HR Done - DEVCTL: 0x%x, OPSTATE: 0x%x\n"
+	pr_debug("HNP: Setting HR Done - DEVCTL: 0x%x, OPSTATE: 0x%x\n"
 			, devctl, opstate);
 #endif
 }
@@ -265,7 +265,7 @@ __acquires(musb->lock)
 					musb_ep = &ep->ep_out;
 
 				if (!ep) {
-					pr_notice("ep %d is null, is_in=%d\n"
+					pr_debug("ep %d is null, is_in=%d\n"
 						, epnum, is_in);
 					break;
 				}
@@ -486,7 +486,7 @@ stall:
 					musb_ep = &ep->ep_out;
 
 				if (!ep) {
-					pr_notice("ep %d is null, is_in=%d\n",
+					pr_debug("ep %d is null, is_in=%d\n",
 						epnum, is_in);
 					break;
 				}
@@ -693,7 +693,7 @@ musb_read_setup(struct musb *musb, struct usb_ctrlrequest *req)
 				& MUSB_CSR0_RXPKTRDY) != 0 && time_count--)
 			mdelay(1);
 		if (time_count <= 0)
-			pr_notice("%s, timeout\n", __func__);
+			pr_debug("%s, timeout\n", __func__);
 		musb->ackpend = 0;
 	} else
 		musb->ep0_state = MUSB_EP0_STAGE_RX;
@@ -777,7 +777,7 @@ irqreturn_t musb_g_ep0_irq(struct musb *musb)
 			musb->ep0_state = MUSB_EP0_STAGE_STATUSIN;
 			break;
 		default:
-			pr_notice("SetupEnd came in a wrong ep0stage %s\n"
+			pr_debug("SetupEnd came in a wrong ep0stage %s\n"
 					"SetupEnd, csr = %x\n",
 				decode_ep0stage(musb->ep0_state), csr);
 			setup_end_err = true;
@@ -785,7 +785,7 @@ irqreturn_t musb_g_ep0_irq(struct musb *musb)
 		csr = musb_readw(regs, MUSB_CSR0);
 		/* NOTE:  request may need completion */
 		if (unlikely(setup_end_err))
-			pr_notice("SetupEnd, csr2 = %x\n", csr);
+			pr_debug("SetupEnd, csr2 = %x\n", csr);
 	}
 
 	/* docs from Mentor only describe tx, rx, and idle/setup states.
@@ -841,14 +841,14 @@ irqreturn_t musb_g_ep0_irq(struct musb *musb)
 			struct musb_request	*req;
 
 			if (unlikely(setup_end_err))
-				pr_notice("SetupEnd, ep0 giveback\n");
+				pr_debug("SetupEnd, ep0 giveback\n");
 
 			req = next_ep0_request(musb);
 			if (req)
 				musb_g_ep0_giveback(musb, &req->request);
 
 			if (unlikely(setup_end_err))
-				pr_notice("SetupEnd, ep0 giveback done\n");
+				pr_debug("SetupEnd, ep0 giveback done\n");
 		}
 
 		/*
@@ -859,7 +859,7 @@ irqreturn_t musb_g_ep0_irq(struct musb *musb)
 			goto setup;
 
 		if (unlikely(setup_end_err))
-			pr_notice("SetupEnd, ep0 idle\n");
+			pr_debug("SetupEnd, ep0 idle\n");
 
 		retval = IRQ_HANDLED;
 		musb->ep0_state = MUSB_EP0_STAGE_IDLE;
@@ -883,7 +883,7 @@ setup:
 			int			handled = 0;
 
 			if (len != 8) {
-				pr_notice("SETUP packet len %d != 8 ?\n", len);
+				pr_debug("SETUP packet len %d != 8 ?\n", len);
 				break;
 			}
 			musb_read_setup(musb, &setup);

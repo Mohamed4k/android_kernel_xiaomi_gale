@@ -444,7 +444,7 @@ static u32 qlcnic_dump_ctrl(struct qlcnic_adapter *adapter,
 					timeout++;
 				}
 				if (timeout > ctr->timeout) {
-					dev_info(&adapter->pdev->dev,
+					dev_dbg(&adapter->pdev->dev,
 					"Timed out, aborting poll CRB\n");
 					return -EINVAL;
 				}
@@ -488,7 +488,7 @@ static u32 qlcnic_dump_ctrl(struct qlcnic_adapter *adapter,
 						       ctr->index_v, data);
 				break;
 			default:
-				dev_info(&adapter->pdev->dev,
+				dev_dbg(&adapter->pdev->dev,
 					 "Unknown opcode\n");
 				break;
 			}
@@ -669,7 +669,7 @@ static u32 qlcnic_read_memory_test_agent(struct qlcnic_adapter *adapter,
 	addr = mem->addr;
 	/* check for data size of multiple of 16 and 16 byte alignment */
 	if ((addr & 0xf) || (reg_read%16)) {
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "Unaligned memory addr:0x%x size:0x%x\n",
 			 addr, reg_read);
 		*ret = -EINVAL;
@@ -758,7 +758,7 @@ static int qlcnic_start_pex_dma(struct qlcnic_adapter *adapter,
 	}
 
 	if (i >= 400) {
-		dev_info(dev, "PEX DMA operation timed out");
+		dev_dbg(dev, "PEX DMA operation timed out");
 		ret = -EIO;
 	}
 
@@ -787,7 +787,7 @@ static u32 qlcnic_read_memory_pexdma(struct qlcnic_adapter *adapter,
 			     dma_base_addr + QLC_DMA_CMD_STATUS_CTRL);
 
 	if (!(temp & BIT_31)) {
-		dev_info(dev, "%s: DMA engine is not available\n", __func__);
+		dev_dbg(dev, "%s: DMA engine is not available\n", __func__);
 		*ret = -EIO;
 		return 0;
 	}
@@ -830,14 +830,14 @@ static u32 qlcnic_read_memory_pexdma(struct qlcnic_adapter *adapter,
 		*ret = qlcnic_ms_mem_write128(adapter, mem->desc_card_addr,
 					      (u32 *)dma_descr, temp);
 		if (*ret) {
-			dev_info(dev, "Failed to write DMA descriptor to MS memory at address 0x%x\n",
+			dev_dbg(dev, "Failed to write DMA descriptor to MS memory at address 0x%x\n",
 				 mem->desc_card_addr);
 			goto free_dma_descr;
 		}
 
 		*ret = qlcnic_start_pex_dma(adapter, mem);
 		if (*ret) {
-			dev_info(dev, "Failed to start PEX DMA operation\n");
+			dev_dbg(dev, "Failed to start PEX DMA operation\n");
 			goto free_dma_descr;
 		}
 
@@ -865,7 +865,7 @@ static u32 qlcnic_read_memory(struct qlcnic_adapter *adapter,
 		data_size = qlcnic_read_memory_pexdma(adapter, mem, buffer,
 						      &ret);
 		if (ret)
-			dev_info(dev,
+			dev_dbg(dev,
 				 "Failed to read memory dump using PEX DMA: mask[0x%x]\n",
 				 entry->hdr.mask);
 		else
@@ -874,7 +874,7 @@ static u32 qlcnic_read_memory(struct qlcnic_adapter *adapter,
 
 	data_size = qlcnic_read_memory_test_agent(adapter, mem, buffer, &ret);
 	if (ret) {
-		dev_info(dev,
+		dev_dbg(dev,
 			 "Failed to read memory dump using test agent method: mask[0x%x]\n",
 			 entry->hdr.mask);
 		return 0;
@@ -1274,7 +1274,7 @@ flash_temp:
 	}
 
 
-	dev_info(&adapter->pdev->dev,
+	dev_dbg(&adapter->pdev->dev,
 		 "Default minidump capture mask 0x%x\n",
 		 fw_dump->cap_mask);
 
@@ -1307,12 +1307,12 @@ int qlcnic_dump_fw(struct qlcnic_adapter *adapter)
 		return -EIO;
 
 	if (!qlcnic_check_fw_dump_state(adapter)) {
-		dev_info(&adapter->pdev->dev, "Dump not enabled\n");
+		dev_dbg(&adapter->pdev->dev, "Dump not enabled\n");
 		return -EIO;
 	}
 
 	if (fw_dump->clr) {
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "Previous dump not cleared, not capturing dump\n");
 		return -EIO;
 	}
@@ -1366,7 +1366,7 @@ int qlcnic_dump_fw(struct qlcnic_adapter *adapter)
 		}
 
 		if (ops_index == ops_cnt) {
-			dev_info(dev, "Skipping unknown entry opcode %d\n",
+			dev_dbg(dev, "Skipping unknown entry opcode %d\n",
 				 entry->hdr.type);
 			entry->hdr.flags |= QLCNIC_DUMP_SKIP;
 			entry_offset += entry->hdr.offset;
@@ -1389,7 +1389,7 @@ int qlcnic_dump_fw(struct qlcnic_adapter *adapter)
 
 	fw_dump->clr = 1;
 	snprintf(mesg, sizeof(mesg), "FW_DUMP=%s", adapter->netdev->name);
-	netdev_info(adapter->netdev,
+	netdev_dbg(adapter->netdev,
 		    "Dump data %d bytes captured, dump data address = %p, template header size %d bytes, template address = %p\n",
 		    fw_dump->size, fw_dump->data, fw_dump->tmpl_hdr_size,
 		    fw_dump->tmpl_hdr);
@@ -1435,7 +1435,7 @@ void qlcnic_83xx_get_minidump_template(struct qlcnic_adapter *adapter)
 		if (ret)
 			return;
 
-		dev_info(&pdev->dev, "Supports FW dump capability\n");
+		dev_dbg(&pdev->dev, "Supports FW dump capability\n");
 
 		/* Once we have minidump template with extended iSCSI dump
 		 * capability, update the minidump capture mask to 0x1f as
@@ -1449,7 +1449,7 @@ void qlcnic_83xx_get_minidump_template(struct qlcnic_adapter *adapter)
 				return;
 			hdr->drv_cap_mask = 0x1f;
 			fw_dump->cap_mask = 0x1f;
-			dev_info(&pdev->dev,
+			dev_dbg(&pdev->dev,
 				 "Extended iSCSI dump capability and updated capture mask to 0x1f\n");
 		}
 	}

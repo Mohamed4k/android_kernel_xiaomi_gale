@@ -282,16 +282,16 @@ static int gem_pcs_interrupt(struct net_device *dev, struct gem *gp, u32 gem_sta
 		 * when autoneg has completed.
 		 */
 		if (pcs_miistat & PCS_MIISTAT_RF)
-			netdev_info(dev, "PCS AutoNEG complete, RemoteFault\n");
+			netdev_dbg(dev, "PCS AutoNEG complete, RemoteFault\n");
 		else
-			netdev_info(dev, "PCS AutoNEG complete\n");
+			netdev_dbg(dev, "PCS AutoNEG complete\n");
 	}
 
 	if (pcs_miistat & PCS_MIISTAT_LS) {
-		netdev_info(dev, "PCS link is now up\n");
+		netdev_dbg(dev, "PCS link is now up\n");
 		netif_carrier_on(gp->dev);
 	} else {
-		netdev_info(dev, "PCS link is now down\n");
+		netdev_dbg(dev, "PCS link is now down\n");
 		netif_carrier_off(gp->dev);
 		/* If this happens and the link timer is not running,
 		 * reset so we re-negotiate.
@@ -876,7 +876,7 @@ static int gem_rx(struct gem *gp, int work_to_do)
 	gp->rx_new = entry;
 
 	if (drops)
-		netdev_info(gp->dev, "Memory squeeze, deferring packet\n");
+		netdev_dbg(gp->dev, "Memory squeeze, deferring packet\n");
 
 	return work_done;
 }
@@ -1442,13 +1442,13 @@ static int gem_set_link_modes(struct gem *gp)
 
 	if (netif_msg_link(gp)) {
 		if (pause) {
-			netdev_info(gp->dev,
+			netdev_dbg(gp->dev,
 				    "Pause is enabled (rxfifo: %d off: %d on: %d)\n",
 				    gp->rx_fifo_sz,
 				    gp->rx_pause_off,
 				    gp->rx_pause_on);
 		} else {
-			netdev_info(gp->dev, "Pause is disabled\n");
+			netdev_dbg(gp->dev, "Pause is disabled\n");
 		}
 	}
 
@@ -1537,7 +1537,7 @@ static void gem_link_timer(struct timer_list *t)
 			gp->last_forced_speed = gp->phy_mii.speed;
 			gp->timer_ticks = 5;
 			if (netif_msg_link(gp))
-				netdev_info(dev,
+				netdev_dbg(dev,
 					    "Got link after fallback, retrying autoneg once...\n");
 			gp->phy_mii.def->ops->setup_aneg(&gp->phy_mii, gp->phy_mii.advertising);
 		} else if (gp->lstate != link_up) {
@@ -1742,7 +1742,7 @@ static void gem_init_phy(struct gem *gp)
 	/* Print things out */
 	if (gp->phy_type == phy_mii_mdio0 ||
 	    gp->phy_type == phy_mii_mdio1)
-		netdev_info(gp->dev, "Found %s PHY\n",
+		netdev_dbg(gp->dev, "Found %s PHY\n",
 			    gp->phy_mii.def ? gp->phy_mii.def->name : "no");
 
 	gem_begin_auto_negotiation(gp, NULL);
@@ -2335,7 +2335,7 @@ static int gem_suspend(struct pci_dev *pdev, pm_message_t state)
 		rtnl_unlock();
 		return 0;
 	}
-	netdev_info(dev, "suspending, WakeOnLan %s\n",
+	netdev_dbg(dev, "suspending, WakeOnLan %s\n",
 		    (gp->wake_on_lan && netif_running(dev)) ?
 		    "enabled" : "disabled");
 
@@ -3010,7 +3010,7 @@ static int gem_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	gem_put_cell(gp);
 	rtnl_unlock();
 
-	netdev_info(dev, "Sun GEM (PCI) 10/100/1000BaseT Ethernet %pM\n",
+	netdev_dbg(dev, "Sun GEM (PCI) 10/100/1000BaseT Ethernet %pM\n",
 		    dev->dev_addr);
 	return 0;
 

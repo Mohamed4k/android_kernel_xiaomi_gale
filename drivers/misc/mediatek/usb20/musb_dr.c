@@ -100,7 +100,7 @@ static void mt_usb_set_mailbox(struct otg_switch_mtk *otg_sx,
 	struct musb *musb = glue->mtk_musb;
 	int i;
 
-	dev_info(musb->controller, "mailbox %s\n", mailbox_state_string(status));
+	dev_dbg(musb->controller, "mailbox %s\n", mailbox_state_string(status));
 	switch (status) {
 	case MUSB_ID_GROUND:
 		mt_usb_set_vbus(otg_sx, 1);
@@ -261,7 +261,7 @@ static int mt_usb_role_sx_set(struct device *dev, enum usb_role role)
 	bool id_event, vbus_event;
 	static bool first_init = true;
 
-	dev_info(dev, "role_sx_set role %d, latest_role: %d\n",
+	dev_dbg(dev, "role_sx_set role %d, latest_role: %d\n",
 		role, otg_sx->latest_role);
 
 	/* Avoid transit from HOST -> DEV with NONE state */
@@ -274,7 +274,7 @@ static int mt_usb_role_sx_set(struct device *dev, enum usb_role role)
 	otg_sx->latest_role = role;
 
 	if (otg_sx->op_mode != MUSB_DR_OPERATION_NORMAL) {
-		dev_info(dev, "op_mode %d, skip set role\n", otg_sx->op_mode);
+		dev_dbg(dev, "op_mode %d, skip set role\n", otg_sx->op_mode);
 		return 0;
 	}
 
@@ -293,7 +293,7 @@ static int mt_usb_role_sx_set(struct device *dev, enum usb_role role)
 
 	if (!!(otg_sx->sw_state & MUSB_VBUS_VALID) ^ vbus_event) {
 		if (vbus_event) {
-			dev_info(dev, "%s: if vbus_event true\n", __func__);
+			dev_dbg(dev, "%s: if vbus_event true\n", __func__);
 #ifdef CONFIG_MACH_MT6761
 			// phy_set_mode(glue->phy, PHY_MODE_USB_DEVICE);
 			set_usb_phy_clear();
@@ -304,14 +304,14 @@ static int mt_usb_role_sx_set(struct device *dev, enum usb_role role)
 			mt_usb_set_mailbox(otg_sx, MUSB_VBUS_VALID);
 		} else {
 			mt_usb_set_mailbox(otg_sx, MUSB_VBUS_OFF);
-			dev_info(dev, "%s: if vbus_event false\n", __func__);
+			dev_dbg(dev, "%s: if vbus_event false\n", __func__);
 			phy_power_off(glue->phy);
 		}
 	}
 
 	if (!!(otg_sx->sw_state & MUSB_ID_GROUND) ^ id_event) {
 		if (id_event) {
-			dev_info(dev, "%s: if id_event true\n", __func__);
+			dev_dbg(dev, "%s: if id_event true\n", __func__);
 
 			phy_power_on(glue->phy);
 
@@ -386,7 +386,7 @@ static ssize_t cmode_store(struct device *dev,
 	if (kstrtoint(buf, 10, &mode))
 		return -EINVAL;
 
-	dev_info(dev, "store cmode %d op_mode %d\n", mode, otg_sx->op_mode);
+	dev_dbg(dev, "store cmode %d op_mode %d\n", mode, otg_sx->op_mode);
 
 	if (otg_sx->op_mode != mode) {
 		/* set switch role */
@@ -460,7 +460,7 @@ int mt_usb_otg_switch_init(struct mt_usb_glue *glue)
 
 	ret = sysfs_create_group(&mtk_musb->controller->kobj, &mt_usb_dr_group);
 	if (ret)
-		dev_info(mtk_musb->controller, "error creating sysfs attributes\n");
+		dev_dbg(mtk_musb->controller, "error creating sysfs attributes\n");
 
 #ifdef CONFIG_DEBUG_FS
 	if (otg_sx->manual_drd_enabled)

@@ -329,7 +329,7 @@ static int __init it87_wdt_init(void)
 
 	if (timeout < 1 || timeout > max_units * 60) {
 		timeout = DEFAULT_TIMEOUT;
-		pr_warn("Timeout value out of range, use default %d sec\n",
+		pr_debug("Timeout value out of range, use default %d sec\n",
 			DEFAULT_TIMEOUT);
 	}
 
@@ -346,7 +346,7 @@ static int __init it87_wdt_init(void)
 		return rc;
 	}
 
-	pr_info("Chip IT%04x revision %d initialized. timeout=%d sec (nowayout=%d testmode=%d)\n",
+	pr_debug("Chip IT%04x revision %d initialized. timeout=%d sec (nowayout=%d testmode=%d)\n",
 		chip_type, chip_rev, timeout, nowayout, testmode);
 
 	return 0;

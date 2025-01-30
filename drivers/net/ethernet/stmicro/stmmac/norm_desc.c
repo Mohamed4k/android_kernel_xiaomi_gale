@@ -91,7 +91,7 @@ static int ndesc_get_rx_status(void *data, struct stmmac_extra_stats *x,
 		return dma_own;
 
 	if (unlikely(!(rdes0 & RDES0_LAST_DESCRIPTOR))) {
-		pr_warn("%s: Oversized frame spanned multiple buffers\n",
+		pr_debug("%s: Oversized frame spanned multiple buffers\n",
 			__func__);
 		stats->rx_length_errors++;
 		return discard_frame;
@@ -282,19 +282,19 @@ static void ndesc_display_ring(void *head, unsigned int size, bool rx)
 	struct dma_desc *p = (struct dma_desc *)head;
 	int i;
 
-	pr_info("%s descriptor ring:\n", rx ? "RX" : "TX");
+	pr_debug("%s descriptor ring:\n", rx ? "RX" : "TX");
 
 	for (i = 0; i < size; i++) {
 		u64 x;
 
 		x = *(u64 *)p;
-		pr_info("%03d [0x%x]: 0x%x 0x%x 0x%x 0x%x",
+		pr_debug("%03d [0x%x]: 0x%x 0x%x 0x%x 0x%x",
 			i, (unsigned int)virt_to_phys(p),
 			(unsigned int)x, (unsigned int)(x >> 32),
 			p->des2, p->des3);
 		p++;
 	}
-	pr_info("\n");
+	pr_debug("\n");
 }
 
 static void ndesc_get_addr(struct dma_desc *p, unsigned int *addr)

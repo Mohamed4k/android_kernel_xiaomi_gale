@@ -1455,7 +1455,7 @@ netdev_tx_t qede_start_xmit(struct sk_buff *skb, struct net_device *ndev)
 
 	/* Get tx-queue context and netdev index */
 	txq_index = skb_get_queue_mapping(skb);
-	WARN_ON(txq_index >= QEDE_TSS_COUNT(edev) * edev->dev_info.num_tc);
+	WARN_ON(txq_index >= QEDE_TSS_COUNT(edev) * edev->dev_dbg.num_tc);
 	txq = QEDE_NDEV_TXQ_ID_TO_TXQ(edev, txq_index);
 	netdev_txq = netdev_get_tx_queue(ndev, txq_index);
 
@@ -1702,7 +1702,7 @@ u16 qede_select_queue(struct net_device *dev, struct sk_buff *skb,
 	struct qede_dev *edev = netdev_priv(dev);
 	int total_txq;
 
-	total_txq = QEDE_TSS_COUNT(edev) * edev->dev_info.num_tc;
+	total_txq = QEDE_TSS_COUNT(edev) * edev->dev_dbg.num_tc;
 
 	return QEDE_TSS_COUNT(edev) ?
 		fallback(dev, skb, NULL) % total_txq :  0;

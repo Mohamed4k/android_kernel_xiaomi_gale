@@ -54,7 +54,7 @@ static int dwmac1000_validate_mcast_bins(int mcast_bins)
 		break;
 	default:
 		x = 0;
-		pr_info("Hash table entries set to unexpected value %d",
+		pr_debug("Hash table entries set to unexpected value %d",
 			mcast_bins);
 		break;
 	}
@@ -83,7 +83,7 @@ static int dwmac1000_validate_ucast_entries(int ucast_entries)
 		break;
 	default:
 		x = 1;
-		pr_info("Unicast table entries set to unexpected value %d\n",
+		pr_debug("Unicast table entries set to unexpected value %d\n",
 			ucast_entries);
 		break;
 	}
@@ -519,7 +519,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
 	plat->force_thresh_dma_mode = of_property_read_bool(np, "snps,force_thresh_dma_mode");
 	if (plat->force_thresh_dma_mode) {
 		plat->force_sf_dma_mode = 0;
-		pr_warn("force_sf_dma_mode is ignored if force_thresh_dma_mode is set.");
+		pr_debug("force_sf_dma_mode is ignored if force_thresh_dma_mode is set.");
 	}
 
 	of_property_read_u32(np, "snps,ps-speed", &plat->mac_port_sel_speed);
@@ -567,7 +567,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
 		if (PTR_ERR(plat->stmmac_rst) == -EPROBE_DEFER)
 			goto error_hw_init;
 
-		dev_info(&pdev->dev, "no reset control found\n");
+		dev_dbg(&pdev->dev, "no reset control found\n");
 		plat->stmmac_rst = NULL;
 	}
 

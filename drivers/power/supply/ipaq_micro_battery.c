@@ -63,7 +63,7 @@ static void micro_battery_work(struct work_struct *work)
 	/* First send battery message */
 	ipaq_micro_tx_msg_sync(mb->micro, &msg_battery);
 	if (msg_battery.rx_len < 4)
-		pr_info("ERROR");
+		pr_debug("ERROR");
 
 	/*
 	 * Returned message format:
@@ -257,7 +257,7 @@ static int micro_batt_probe(struct platform_device *pdev)
 		goto ac_err;
 	}
 
-	dev_info(&pdev->dev, "iPAQ micro battery driver\n");
+	dev_dbg(&pdev->dev, "iPAQ micro battery driver\n");
 	return 0;
 
 ac_err:

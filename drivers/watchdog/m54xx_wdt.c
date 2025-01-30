@@ -196,10 +196,10 @@ static struct miscdevice m54xx_wdt_miscdev = {
 static int __init m54xx_wdt_init(void)
 {
 	if (!request_mem_region(MCF_GPT_GCIR0, 4, "Coldfire M54xx Watchdog")) {
-		pr_warn("I/O region busy\n");
+		pr_debug("I/O region busy\n");
 		return -EBUSY;
 	}
-	pr_info("driver is loaded\n");
+	pr_debug("driver is loaded\n");
 
 	return misc_register(&m54xx_wdt_miscdev);
 }

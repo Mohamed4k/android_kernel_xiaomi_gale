@@ -662,7 +662,7 @@ static int vce_v3_0_soft_reset(void *handle)
 
 		tmp = RREG32(mmSRBM_SOFT_RESET);
 		tmp |= srbm_soft_reset;
-		dev_info(adev->dev, "SRBM_SOFT_RESET=0x%08X\n", tmp);
+		dev_dbg(adev->dev, "SRBM_SOFT_RESET=0x%08X\n", tmp);
 		WREG32(mmSRBM_SOFT_RESET, tmp);
 		tmp = RREG32(mmSRBM_SOFT_RESET);
 

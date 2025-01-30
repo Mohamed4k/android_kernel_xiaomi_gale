@@ -283,7 +283,7 @@ static int tc_init(struct stmmac_priv *priv)
 
 	tc_fill_all_pass_entry(&priv->tc_entries[count - 1]);
 
-	dev_info(priv->device, "Enabling HW TC (entries=%d, max_off=%d)\n",
+	dev_dbg(priv->device, "Enabling HW TC (entries=%d, max_off=%d)\n",
 			priv->tc_entries_max, priv->tc_off_max);
 	return 0;
 }
@@ -348,7 +348,7 @@ static int tc_setup_cbs(struct stmmac_priv *priv,
 	if (ret)
 		return ret;
 
-	dev_info(priv->device, "CBS queue %d: send %d, idle %d, hi %d, lo %d\n",
+	dev_dbg(priv->device, "CBS queue %d: send %d, idle %d, hi %d, lo %d\n",
 			queue, qopt->sendslope, qopt->idleslope,
 			qopt->hicredit, qopt->locredit);
 	return 0;

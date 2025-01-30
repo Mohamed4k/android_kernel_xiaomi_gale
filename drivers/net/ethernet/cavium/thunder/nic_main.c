@@ -1263,7 +1263,7 @@ static int nic_sriov_init(struct pci_dev *pdev, struct nicpf *nic)
 		return err;
 	}
 
-	dev_info(&pdev->dev, "SRIOV enabled, number of VF available %d\n",
+	dev_dbg(&pdev->dev, "SRIOV enabled, number of VF available %d\n",
 		 vf_en);
 
 	nic->flags |= NIC_SRIOV_ENABLED;
@@ -1469,7 +1469,7 @@ static struct pci_driver nic_driver = {
 
 static int __init nic_init_module(void)
 {
-	pr_info("%s, ver %s\n", DRV_NAME, DRV_VERSION);
+	pr_debug("%s, ver %s\n", DRV_NAME, DRV_VERSION);
 
 	return pci_register_driver(&nic_driver);
 }

@@ -99,7 +99,7 @@ static int dsi_10nm_phy_enable(struct msm_dsi_phy *phy, int src_pll_id,
 	}
 
 	if (dsi_phy_hw_v3_0_is_pll_on(phy))
-		pr_warn("PLL turned on before configuring PHY\n");
+		pr_debug("PLL turned on before configuring PHY\n");
 
 	/* wait for REFGEN READY */
 	ret = readl_poll_timeout_atomic(base + REG_DSI_10nm_PHY_CMN_PHY_STATUS,

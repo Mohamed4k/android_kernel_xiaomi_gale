@@ -1701,7 +1701,7 @@ static int smsc911x_open(struct net_device *dev)
 	SMSC_TRACE(pdata, ifup, "IRQ handler passed test using IRQ %d",
 		   dev->irq);
 
-	netdev_info(dev, "SMSC911x/921x identified at %#08lx, IRQ: %d\n",
+	netdev_dbg(dev, "SMSC911x/921x identified at %#08lx, IRQ: %d\n",
 		    (unsigned long)pdata->ioaddr, dev->irq);
 
 	/* Reset the last known duplex and carrier */
@@ -1951,7 +1951,7 @@ static int smsc911x_set_mac_address(struct net_device *dev, void *p)
 	smsc911x_set_hw_mac_address(pdata, dev->dev_addr);
 	spin_unlock_irq(&pdata->mac_lock);
 
-	netdev_info(dev, "MAC Address: %pM\n", dev->dev_addr);
+	netdev_dbg(dev, "MAC Address: %pM\n", dev->dev_addr);
 
 	return 0;
 }
@@ -2436,7 +2436,7 @@ static int smsc911x_drv_probe(struct platform_device *pdev)
 	if (!res)
 		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res) {
-		pr_warn("Could not allocate resource\n");
+		pr_debug("Could not allocate resource\n");
 		retval = -ENODEV;
 		goto out_0;
 	}
@@ -2447,7 +2447,7 @@ static int smsc911x_drv_probe(struct platform_device *pdev)
 		retval = -EPROBE_DEFER;
 		goto out_0;
 	} else if (irq <= 0) {
-		pr_warn("Could not allocate irq resource\n");
+		pr_debug("Could not allocate irq resource\n");
 		retval = -ENODEV;
 		goto out_0;
 	}
@@ -2565,7 +2565,7 @@ static int smsc911x_drv_probe(struct platform_device *pdev)
 
 	spin_unlock_irq(&pdata->mac_lock);
 
-	netdev_info(dev, "MAC Address: %pM\n", dev->dev_addr);
+	netdev_dbg(dev, "MAC Address: %pM\n", dev->dev_addr);
 
 	return 0;
 

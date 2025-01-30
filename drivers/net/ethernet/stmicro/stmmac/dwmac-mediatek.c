@@ -308,7 +308,7 @@ static ssize_t stmmac_store(struct device *dev,
 	if (!strncmp(buf, "er", 2) &&
 	    (sscanf(buf + 2, "%x %x", &reg, &data) == 2)) {
 		for (i = 0; i < data / 0x10 + 1; i++) {
-			dev_info(dev,
+			dev_dbg(dev,
 				 "%08x:\t%08x\t%08x\t%08x\t%08x\t\n",
 				 reg + i * 16,
 				 readl(priv->ioaddr + reg + i * 0x10),
@@ -320,18 +320,18 @@ static ssize_t stmmac_store(struct device *dev,
 		   (sscanf(buf + 2, "%x %x", &reg, &data) == 2)) {
 		origin = readl(priv->ioaddr + reg);
 		writel(data, priv->ioaddr + reg);
-		dev_info(dev, "mac reg%#x, value:%#x -> %#x\n",
+		dev_dbg(dev, "mac reg%#x, value:%#x -> %#x\n",
 			 reg, origin, readl(priv->ioaddr + reg));
 	} else if (!strncmp(buf, "cl22r", 5) &&
 		   (sscanf(buf + 5, "%x", &reg) == 1)) {
-		dev_info(dev, "cl22 reg%#x, value:%#x\n",
+		dev_dbg(dev, "cl22 reg%#x, value:%#x\n",
 			 reg, priv->mii->read(priv->mii,
 			 phy_dev->mdio.addr, reg));
 	} else if (!strncmp(buf, "cl22w", 5) &&
 		   (sscanf(buf + 5, "%x %x", &reg, &data) == 2)) {
 		origin = priv->mii->read(priv->mii, phy_dev->mdio.addr, reg);
 		priv->mii->write(priv->mii, phy_dev->mdio.addr, reg, data);
-		dev_info(dev, "cl22 reg%#x, %#x -> %#x\n",
+		dev_dbg(dev, "cl22 reg%#x, %#x -> %#x\n",
 			 reg, origin, priv->mii->read(priv->mii,
 			 phy_dev->mdio.addr, reg));
 	} else if (!strncmp(buf, "cl45r", 5) &&
@@ -339,7 +339,7 @@ static ssize_t stmmac_store(struct device *dev,
 		reg_addr = MII_ADDR_C45 |
 			   ((devid & 0x1f) << 16) |
 			   (reg & 0xffff);
-		dev_info(dev, "cl45 reg:%#x-%#x, %#x\n", devid, reg,
+		dev_dbg(dev, "cl45 reg:%#x-%#x, %#x\n", devid, reg,
 			 priv->mii->read(priv->mii, phy_dev->mdio.addr,
 					 reg_addr));
 	} else if (!strncmp(buf, "cl45w", 5) &&
@@ -352,7 +352,7 @@ static ssize_t stmmac_store(struct device *dev,
 					 reg_addr);
 		priv->mii->write(priv->mii, phy_dev->mdio.addr,
 				 reg_addr, data);
-		dev_info(dev, "cl45 reg:%#x-%#x, %#x -> %#x\n",
+		dev_dbg(dev, "cl45 reg:%#x-%#x, %#x -> %#x\n",
 			 devid, reg, origin,
 			 priv->mii->read(priv->mii,
 					 phy_dev->mdio.addr,
@@ -361,17 +361,17 @@ static ssize_t stmmac_store(struct device *dev,
 		   (sscanf(buf + 2, "%x", &reg) == 1)) {
 		tmp_addr = ioremap_nocache(reg, 32);
 		data = readl(tmp_addr);
-		dev_info(dev, "rr reg%#x, value:%#x\n", reg, data);
+		dev_dbg(dev, "rr reg%#x, value:%#x\n", reg, data);
 	} else if (!strncmp(buf, "wr", 2) &&
 		   (sscanf(buf + 2, "%x %x", &reg, &data) == 2)) {
 		tmp_addr = ioremap_nocache(reg, 32);
 		origin = readl(tmp_addr);
 		writel(data, tmp_addr);
-		dev_info(dev, "reg%#x, value:%#x -> %#x\n",
+		dev_dbg(dev, "reg%#x, value:%#x -> %#x\n",
 			 reg, origin, readl(tmp_addr));
 	} else if (!strncmp(buf, "dump_mac", 8)) {
 		for (i = 0; i < 0x1300 / 0x10 + 1; i++) {
-			pr_info("%08x:\t%08x\t%08x\t%08x\t%08x\t\n",
+			pr_debug("%08x:\t%08x\t%08x\t%08x\t%08x\t\n",
 				reg + i * 16,
 				readl(priv->ioaddr + i * 0x10),
 				readl(priv->ioaddr + i * 0x10 + 0x4),
@@ -388,7 +388,7 @@ static ssize_t stmmac_store(struct device *dev,
 	} else if (!strncmp(buf, "carrier_off", 11)) {
 		netif_carrier_off(priv->dev);
 	} else {
-		dev_info(dev, "Error: command not support\n");
+		dev_dbg(dev, "Error: command not support\n");
 	}
 
 	return count;

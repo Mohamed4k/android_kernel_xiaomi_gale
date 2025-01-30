@@ -48,7 +48,7 @@ int protocol_early_init(int (*probe)(void), int (*start)(void))
 			return PTR_ERR(ops);
 
 		if (ops) {
-			mc_dev_info("running in a VM, name='%s'", ops->name);
+			mc_dev_dbg("running in a VM, name='%s'", ops->name);
 			l_ctx.ops = ops;
 			fe_ops = l_ctx.ops->fe_call_ops;
 			if (l_ctx.ops->early_init) {

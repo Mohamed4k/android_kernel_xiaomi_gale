@@ -810,7 +810,7 @@ int cw1200_set_key(struct ieee80211_hw *dev, enum set_key_cmd cmd,
 			}
 			break;
 		default:
-			pr_warn("Unhandled key type %d\n", key->cipher);
+			pr_debug("Unhandled key type %d\n", key->cipher);
 			cw1200_free_key(priv, idx);
 			ret = -EOPNOTSUPP;
 			goto finally;
@@ -833,7 +833,7 @@ int cw1200_set_key(struct ieee80211_hw *dev, enum set_key_cmd cmd,
 		cw1200_free_key(priv, wsm_key.index);
 		ret = wsm_remove_key(priv, &wsm_key);
 	} else {
-		pr_warn("Unhandled key command %d\n", cmd);
+		pr_debug("Unhandled key command %d\n", cmd);
 	}
 
 finally:
@@ -1024,10 +1024,10 @@ void cw1200_event_handler(struct work_struct *work)
 			break;
 		}
 		case WSM_EVENT_BT_INACTIVE:
-			pr_warn("Unhandled BT INACTIVE from LMAC\n");
+			pr_debug("Unhandled BT INACTIVE from LMAC\n");
 			break;
 		case WSM_EVENT_BT_ACTIVE:
-			pr_warn("Unhandled BT ACTIVE from LMAC\n");
+			pr_debug("Unhandled BT ACTIVE from LMAC\n");
 			break;
 		}
 	}
@@ -1072,14 +1072,14 @@ static int cw1200_parse_sdd_file(struct cw1200_common *priv)
 
 	while (p + 2 <= priv->sdd->data + priv->sdd->size) {
 		if (p + p[1] + 2 > priv->sdd->data + priv->sdd->size) {
-			pr_warn("Malformed sdd structure\n");
+			pr_debug("Malformed sdd structure\n");
 			return -1;
 		}
 		switch (p[0]) {
 		case SDD_PTA_CFG_ELT_ID: {
 			u16 v;
 			if (p[1] < 4) {
-				pr_warn("SDD_PTA_CFG_ELT_ID malformed\n");
+				pr_debug("SDD_PTA_CFG_ELT_ID malformed\n");
 				ret = -1;
 				break;
 			}
@@ -1096,7 +1096,7 @@ static int cw1200_parse_sdd_file(struct cw1200_common *priv)
 		case SDD_REFERENCE_FREQUENCY_ELT_ID: {
 			u16 clk = le16_to_cpu(*((__le16 *)(p + 2)));
 			if (clk != priv->hw_refclk)
-				pr_warn("SDD file doesn't match configured refclk (%d vs %d)\n",
+				pr_debug("SDD file doesn't match configured refclk (%d vs %d)\n",
 					clk, priv->hw_refclk);
 			break;
 		}
@@ -1220,7 +1220,7 @@ static void cw1200_do_join(struct cw1200_common *priv)
 							  conf->basic_rates),
 	};
 	if (delayed_work_pending(&priv->join_timeout)) {
-		pr_warn("[STA] - Join request already pending, skipping..\n");
+		pr_debug("[STA] - Join request already pending, skipping..\n");
 		wsm_unlock_tx(priv);
 		return;
 	}

@@ -222,7 +222,7 @@ static int uniphier_wdt_probe(struct platform_device *pdev)
 	if (ret)
 		return ret;
 
-	dev_info(dev, "watchdog driver (timeout=%d sec, nowayout=%d)\n",
+	dev_dbg(dev, "watchdog driver (timeout=%d sec, nowayout=%d)\n",
 		 wdev->wdt_dev.timeout, nowayout);
 
 	return 0;

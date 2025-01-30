@@ -381,7 +381,7 @@ static int ne2k_pci_init_one(struct pci_dev *pdev,
 	if (i)
 		goto err_out_free_netdev;
 
-	netdev_info(dev, "%s found at %#lx, IRQ %d, %pM.\n",
+	netdev_dbg(dev, "%s found at %#lx, IRQ %d, %pM.\n",
 		    pci_clone_list[chip_idx].name, ioaddr, dev->irq,
 		    dev->dev_addr);
 

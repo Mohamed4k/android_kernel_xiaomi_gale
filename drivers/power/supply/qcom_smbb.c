@@ -875,7 +875,7 @@ static int smbb_charger_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "v1 hardware not supported\n");
 		return -ENODEV;
 	}
-	dev_info(&pdev->dev, "Initializing SMBB rev %u", chg->revision);
+	dev_dbg(&pdev->dev, "Initializing SMBB rev %u", chg->revision);
 
 	chg->dc_disabled = of_property_read_bool(pdev->dev.of_node, "qcom,disable-dc");
 

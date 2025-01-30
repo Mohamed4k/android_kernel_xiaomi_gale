@@ -81,7 +81,7 @@ static void auo_panel_get_data(struct auo *ctx)
 
 	if (ret == 0) {
 		ret = auo_dcs_read(ctx, 0x0A, buffer, 1);
-		dev_info(ctx->dev, "return %d data(0x%08x) to dsi engine\n",
+		dev_dbg(ctx->dev, "return %d data(0x%08x) to dsi engine\n",
 			 ret, buffer[0] | (buffer[1] << 8));
 	}
 }
@@ -901,7 +901,7 @@ static int auo_probe(struct mipi_dsi_device *dsi)
 	struct device_node *backlight;
 	int ret;
 
-	pr_info("%s+\n", __func__);
+	pr_debug("%s+\n", __func__);
 	ctx = devm_kzalloc(dev, sizeof(struct auo), GFP_KERNEL);
 	if (!ctx)
 		return -ENOMEM;
@@ -945,7 +945,7 @@ static int auo_probe(struct mipi_dsi_device *dsi)
 	ret = mipi_dsi_attach(dsi);
 	if (ret < 0)
 		drm_panel_remove(&ctx->panel);
-	pr_info("%s-\n", __func__);
+	pr_debug("%s-\n", __func__);
 
 	return ret;
 }

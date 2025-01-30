@@ -177,7 +177,7 @@ int dwmac100_setup(struct stmmac_priv *priv)
 {
 	struct mac_device_info *mac = priv->hw;
 
-	dev_info(priv->device, "\tDWMAC100\n");
+	dev_dbg(priv->device, "\tDWMAC100\n");
 
 	mac->pcsr = priv->ioaddr;
 	mac->link.duplex = MAC_CONTROL_F;

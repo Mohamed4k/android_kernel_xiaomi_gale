@@ -2056,14 +2056,14 @@ int orinoco_init(struct orinoco_private *priv)
 	}
 
 	if (priv->has_port3)
-		dev_info(dev, "Ad-hoc demo mode supported\n");
+		dev_dbg(dev, "Ad-hoc demo mode supported\n");
 	if (priv->has_ibss)
-		dev_info(dev, "IEEE standard IBSS ad-hoc mode supported\n");
+		dev_dbg(dev, "IEEE standard IBSS ad-hoc mode supported\n");
 	if (priv->has_wep)
-		dev_info(dev, "WEP supported, %s-bit key\n",
+		dev_dbg(dev, "WEP supported, %s-bit key\n",
 			 priv->has_big_wep ? "104" : "40");
 	if (priv->has_wpa) {
-		dev_info(dev, "WPA-PSK supported\n");
+		dev_dbg(dev, "WPA-PSK supported\n");
 		if (orinoco_mic_init(priv)) {
 			dev_err(dev, "Failed to setup MIC crypto algorithm. "
 				"Disabling WPA support\n");

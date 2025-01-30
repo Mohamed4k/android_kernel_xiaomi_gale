@@ -348,7 +348,7 @@ static int silead_ts_get_id(struct i2c_client *client)
 		return error;
 
 	data->chip_id = le32_to_cpu(chip_id);
-	dev_info(&client->dev, "Silead chip ID: 0x%8X", data->chip_id);
+	dev_dbg(&client->dev, "Silead chip ID: 0x%8X", data->chip_id);
 
 	return 0;
 }

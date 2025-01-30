@@ -200,7 +200,7 @@ int igb_sysfs_init(struct igb_adapter *adapter)
 	/* init i2c_client */
 	client = i2c_new_device(&adapter->i2c_adap, &i350_sensor_info);
 	if (client == NULL) {
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "Failed to create new i2c device.\n");
 		rc = -ENODEV;
 		goto exit;

@@ -140,12 +140,12 @@ static void qtnf_pcie_init_irq(struct qtnf_pcie_bus_priv *priv)
 			pr_debug("MSI interrupt enabled\n");
 			priv->msi_enabled = 1;
 		} else {
-			pr_warn("failed to enable MSI interrupts");
+			pr_debug("failed to enable MSI interrupts");
 		}
 	}
 
 	if (!priv->msi_enabled) {
-		pr_warn("legacy PCIE interrupts enabled\n");
+		pr_debug("legacy PCIE interrupts enabled\n");
 		pci_intx(pdev, 1);
 	}
 }
@@ -211,7 +211,7 @@ static void qtnf_pcie_control_rx_callback(void *arg, const u8 *buf, size_t len)
 	struct sk_buff *skb;
 
 	if (unlikely(len == 0)) {
-		pr_warn("zero length packet received\n");
+		pr_debug("zero length packet received\n");
 		return;
 	}
 
@@ -853,12 +853,12 @@ static int qtnf_rx_poll(struct napi_struct *napi, int budget)
 		consume = 1;
 
 		if (!(descw & QTN_TXDONE_MASK)) {
-			pr_warn("skip invalid rxbd[%d]\n", r_idx);
+			pr_debug("skip invalid rxbd[%d]\n", r_idx);
 			consume = 0;
 		}
 
 		if (!skb) {
-			pr_warn("skip missing rx_skb[%d]\n", r_idx);
+			pr_debug("skip missing rx_skb[%d]\n", r_idx);
 			consume = 0;
 		}
 
@@ -1154,7 +1154,7 @@ qtnf_ep_fw_load(struct qtnf_pcie_bus_priv *priv, const u8 *fw, u32 fw_size)
 				qtnf_clear_state(&priv->bda->bda_ep_state,
 						 QTN_EP_FW_RETRY);
 
-				pr_warn("FW upload retry: block #%d\n", blk);
+				pr_debug("FW upload retry: block #%d\n", blk);
 				continue;
 			}
 
@@ -1203,9 +1203,9 @@ static void qtnf_fw_work_handler(struct work_struct *work)
 	qtnf_clear_state(&priv->bda->bda_ep_state, QTN_EP_FW_LOADRDY);
 
 	if (flashboot) {
-		pr_info("booting firmware from flash\n");
+		pr_debug("booting firmware from flash\n");
 	} else {
-		pr_info("starting firmware upload: %s\n", bus->fwname);
+		pr_debug("starting firmware upload: %s\n", bus->fwname);
 
 		ret = qtnf_ep_fw_load(priv, fw->data, fw->size);
 		release_firmware(fw);
@@ -1222,7 +1222,7 @@ static void qtnf_fw_work_handler(struct work_struct *work)
 	}
 
 	bus->fw_state = QTNF_FW_STATE_FW_DNLD_DONE;
-	pr_info("firmware is up and running\n");
+	pr_debug("firmware is up and running\n");
 
 	if (qtnf_poll_state(&priv->bda->bda_ep_state,
 			    QTN_EP_FW_QLINK_DONE, QTN_FW_QLINK_TIMEOUT_MS)) {
@@ -1476,13 +1476,13 @@ static struct pci_driver qtnf_pcie_drv_data = {
 
 static int __init qtnf_pcie_register(void)
 {
-	pr_info("register Quantenna QSR10g FullMAC PCIE driver\n");
+	pr_debug("register Quantenna QSR10g FullMAC PCIE driver\n");
 	return pci_register_driver(&qtnf_pcie_drv_data);
 }
 
 static void __exit qtnf_pcie_exit(void)
 {
-	pr_info("unregister Quantenna QSR10g FullMAC PCIE driver\n");
+	pr_debug("unregister Quantenna QSR10g FullMAC PCIE driver\n");
 	pci_unregister_driver(&qtnf_pcie_drv_data);
 }
 

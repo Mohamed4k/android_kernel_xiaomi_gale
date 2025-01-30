@@ -116,7 +116,7 @@ static int tve200_modeset_init(struct drm_device *dev)
 	priv->connector = panel->connector;
 	priv->bridge = bridge;
 
-	dev_info(dev->dev, "attached to panel %s\n",
+	dev_dbg(dev->dev, "attached to panel %s\n",
 		 dev_name(panel->dev));
 
 	ret = drm_vblank_init(dev, 1);

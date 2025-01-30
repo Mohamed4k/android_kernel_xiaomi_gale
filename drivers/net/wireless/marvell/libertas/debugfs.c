@@ -30,7 +30,7 @@ static ssize_t write_file_dummy(struct file *file, const char __user *buf,
 
 static const size_t len = PAGE_SIZE;
 
-static ssize_t lbs_dev_info(struct file *file, char __user *userbuf,
+static ssize_t lbs_dev_dbg(struct file *file, char __user *userbuf,
 				  size_t count, loff_t *ppos)
 {
 	struct lbs_private *priv = file->private_data;
@@ -140,7 +140,7 @@ static ssize_t lbs_host_sleep_write(struct file *file,
 		ret = lbs_set_host_sleep(priv, 0);
 	else if (host_sleep == 1) {
 		if (priv->wol_criteria == EHS_REMOVE_WAKEUP) {
-			netdev_info(priv->dev,
+			netdev_dbg(priv->dev,
 				    "wake parameters not configured\n");
 			ret = -EINVAL;
 			goto out_unlock;
@@ -658,7 +658,7 @@ struct lbs_debugfs_files {
 };
 
 static const struct lbs_debugfs_files debugfs_files[] = {
-	{ "info", 0444, FOPS(lbs_dev_info, write_file_dummy), },
+	{ "info", 0444, FOPS(lbs_dev_dbg, write_file_dummy), },
 	{ "sleepparams", 0644, FOPS(lbs_sleepparams_read,
 				lbs_sleepparams_write), },
 	{ "hostsleep", 0644, FOPS(lbs_host_sleep_read,

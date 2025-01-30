@@ -1398,7 +1398,7 @@ static int ads7846_probe(struct spi_device *spi)
 	err = request_threaded_irq(spi->irq, ads7846_hard_irq, ads7846_irq,
 				   irq_flags, spi->dev.driver->name, ts);
 	if (err && !pdata->irq_flags) {
-		dev_info(&spi->dev,
+		dev_dbg(&spi->dev,
 			"trying pin change workaround on irq %d\n", spi->irq);
 		irq_flags |= IRQF_TRIGGER_RISING;
 		err = request_threaded_irq(spi->irq,
@@ -1415,7 +1415,7 @@ static int ads7846_probe(struct spi_device *spi)
 	if (err)
 		goto err_free_irq;
 
-	dev_info(&spi->dev, "touchscreen, irq %d\n", spi->irq);
+	dev_dbg(&spi->dev, "touchscreen, irq %d\n", spi->irq);
 
 	/*
 	 * Take a first sample, leaving nPENIRQ active and vREF off; avoid

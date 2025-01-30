@@ -202,7 +202,7 @@ static void mtk_dvfsrc_setup_vopp_table(struct mtk_dvfsrc *dvfsrc)
 		}
 	}
 	for (i = 0; i < num_vopp; i++)
-		dev_info(dvfsrc->dev, "dvfsrc vopp[%d] = %d\n",
+		dev_dbg(dvfsrc->dev, "dvfsrc vopp[%d] = %d\n",
 			i, mtk_dvfsrc_vcore_uv_table(i));
 
 }
@@ -221,7 +221,7 @@ static void mtk_dvfsrc_vcore_check(struct mtk_dvfsrc *dvfsrc, u32 level)
 		level, NULL);
 
 	if (ret == NOTIFY_BAD) {
-		dev_info(dvfsrc->dev,
+		dev_dbg(dvfsrc->dev,
 			"DVFS FAIL= %d, 0x%08x 0x%08x\n",
 			level,
 			dvfsrc->dvd->get_current_level(dvfsrc),
@@ -452,7 +452,7 @@ static int mt6779_set_force_opp_level(struct mtk_dvfsrc *dvfsrc, u32 level)
 			val, val == (1 << level), STARTUP_TIME, POLL_TIMEOUT);
 
 	if (ret < 0) {
-		dev_info(dvfsrc->dev,
+		dev_dbg(dvfsrc->dev,
 			"[%s] wait idle, level: %d, last: %d -> %x\n",
 			__func__, level,
 			dvfsrc->dvd->get_current_level(dvfsrc),
@@ -585,7 +585,7 @@ static int mt6761_set_force_opp_level(struct mtk_dvfsrc *dvfsrc, u32 level)
 			STARTUP_TIME, POLL_TIMEOUT);
 
 	if (ret < 0) {
-		dev_info(dvfsrc->dev,
+		dev_dbg(dvfsrc->dev,
 			"[%s] wait idle, level: %d, last: %d -> %x\n",
 			__func__, level,
 			dvfsrc->dvd->get_current_level(dvfsrc),
@@ -972,7 +972,7 @@ static int mtk_dvfsrc_probe(struct platform_device *pdev)
 			ret = of_property_read_u32_index(node, "perf-domains",
 				i, &dvfsrc->domains[i].id);
 			if (ret)
-				dev_info(dvfsrc->dev,
+				dev_dbg(dvfsrc->dev,
 					"Invalid favor domain idx = %d\n", i);
 		}
 	} else
@@ -1011,7 +1011,7 @@ static int mtk_dvfsrc_probe(struct platform_device *pdev)
 	} else
 		return -ENODEV;
 
-	dev_info(dvfsrc->dev, "dram_type: %d\n", dvfsrc->dram_type);
+	dev_dbg(dvfsrc->dev, "dram_type: %d\n", dvfsrc->dram_type);
 	arm_smccc_smc(MTK_SIP_VCOREFS_CONTROL, MTK_SIP_SPM_DVFSRC_INIT,
 		dvfsrc->flag, dvfsrc->vmode, 0, 0, 0, 0,
 		&ares);
@@ -1019,7 +1019,7 @@ static int mtk_dvfsrc_probe(struct platform_device *pdev)
 	if (!ares.a0)
 		dvfsrc_init_settings(dvfsrc);
 	else
-		dev_info(dvfsrc->dev, "spm init fails: %lx\n", ares.a0);
+		dev_dbg(dvfsrc->dev, "spm init fails: %lx\n", ares.a0);
 
 	platform_set_drvdata(pdev, dvfsrc);
 	pstate_notifier_register(dvfsrc);

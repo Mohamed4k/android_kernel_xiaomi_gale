@@ -288,7 +288,7 @@ static int upload_firmware(struct zd_usb *usb)
 	fw_bcdDevice = get_word(ub_fw->data, E2P_DATA_OFFSET);
 
 	if (fw_bcdDevice != bcdDevice) {
-		dev_info(&udev->dev,
+		dev_dbg(&udev->dev,
 			"firmware version %#06x and device bootcode version "
 			"%#06x differ\n", fw_bcdDevice, bcdDevice);
 		if (bcdDevice <= 0x4313)
@@ -1313,7 +1313,7 @@ static int eject_installer(struct usb_interface *intf)
 	cmd[15] = 0x1b;	/* SCSI command: START STOP UNIT */
 	cmd[19] = 0x2;	/* eject disc */
 
-	dev_info(&udev->dev, "Ejecting virtual installer media...\n");
+	dev_dbg(&udev->dev, "Ejecting virtual installer media...\n");
 	r = usb_bulk_msg(udev, usb_sndbulkpipe(udev, bulk_out_ep),
 		cmd, 31, NULL, 2000);
 	kfree(cmd);
@@ -1413,7 +1413,7 @@ static int probe(struct usb_interface *intf, const struct usb_device_id *id)
 	}
 
 	dev_dbg_f(&intf->dev, "successful\n");
-	dev_info(&intf->dev, "%s\n", wiphy_name(hw->wiphy));
+	dev_dbg(&intf->dev, "%s\n", wiphy_name(hw->wiphy));
 	return 0;
 error:
 	usb_reset_device(interface_to_usbdev(intf));

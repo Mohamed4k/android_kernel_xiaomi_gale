@@ -85,7 +85,7 @@ int sgm37604a_write_byte(unsigned char cmd, unsigned char writeData)
 	char write_data[2] = { 0 };
 	int ret = 0;
 
-	pr_notice("[KE/sgm37604a] cmd: %02x, data: %02x,%s\n", cmd, writeData, __func__);
+	pr_debug("[KE/sgm37604a] cmd: %02x, data: %02x,%s\n", cmd, writeData, __func__);
 
 	mutex_lock(&sgm37604a_i2c_access);
 
@@ -95,7 +95,7 @@ int sgm37604a_write_byte(unsigned char cmd, unsigned char writeData)
 	ret = i2c_master_send(new_client, write_data, 2);
 	if (ret < 0) {
 		mutex_unlock(&sgm37604a_i2c_access);
-		pr_notice("[sgm37604a] I2C write fail!!!\n");
+		pr_debug("[sgm37604a] I2C write fail!!!\n");
 
 		return 0;
 	}
@@ -110,7 +110,7 @@ static int sgm37604a_driver_probe(struct i2c_client *client,
 {
 	int err = 0;
 
-	pr_notice("[KE/sgm37604a] name=%s addr=0x%x\n",
+	pr_debug("[KE/sgm37604a] name=%s addr=0x%x\n",
 		client->name, client->addr);
 	new_client = kmalloc(sizeof(struct i2c_client), GFP_KERNEL);
 	if (!new_client) {
@@ -130,7 +130,7 @@ static int sgm37604a_driver_probe(struct i2c_client *client,
 
 static int sgm37604a_driver_remove(struct i2c_client *client)
 {
-	pr_notice("[KE/sgm37604a] %s\n", __func__);
+	pr_debug("[KE/sgm37604a] %s\n", __func__);
 
 	new_client = NULL;
 	i2c_unregister_device(client);
@@ -142,12 +142,12 @@ static int sgm37604a_driver_remove(struct i2c_client *client)
 
 static int __init sgm37604a_init(void)
 {
-	pr_notice("[KE/sgm37604a] %s\n", __func__);
+	pr_debug("[KE/sgm37604a] %s\n", __func__);
 
 	if (i2c_add_driver(&sgm37604a_driver) != 0)
-		pr_notice("[KE/sgm37604a] failed to register sgm37604a i2c driver.\n");
+		pr_debug("[KE/sgm37604a] failed to register sgm37604a i2c driver.\n");
 	else
-		pr_notice("[KE/sgm37604a] Success to register sgm37604a i2c driver.\n");
+		pr_debug("[KE/sgm37604a] Success to register sgm37604a i2c driver.\n");
 
 	return 0;
 }

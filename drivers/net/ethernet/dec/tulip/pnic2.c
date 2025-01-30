@@ -84,7 +84,7 @@ void pnic2_timer(struct timer_list *t)
 	int next_tick = 60*HZ;
 
 	if (tulip_debug > 3)
-		dev_info(&dev->dev, "PNIC2 negotiation status %08x\n",
+		dev_dbg(&dev->dev, "PNIC2 negotiation status %08x\n",
 			 ioread32(ioaddr + CSR12));
 
 	if (next_tick) {
@@ -177,7 +177,7 @@ void pnic2_lnk_change(struct net_device *dev, int csr5)
 	int csr12 = ioread32(ioaddr + CSR12);
 
 	if (tulip_debug > 1)
-		dev_info(&dev->dev,
+		dev_dbg(&dev->dev,
 			 "PNIC2 link status interrupt %08x,  CSR5 %x, %08x\n",
 			 csr12, csr5, ioread32(ioaddr + CSR14));
 
@@ -211,7 +211,7 @@ void pnic2_lnk_change(struct net_device *dev, int csr5)
 			else if (negotiated & 0x0020)	dev->if_port = 0;
 			else {
 			     if (tulip_debug > 1)
-				     dev_info(&dev->dev,
+				     dev_dbg(&dev->dev,
 					      "funny autonegotiate result csr12 %08x advertising %04x\n",
 					      csr12, tp->sym_advertise);
 			     tp->nwayset = 0;
@@ -227,7 +227,7 @@ void pnic2_lnk_change(struct net_device *dev, int csr5)
 
 			if (tulip_debug > 1) {
 			       if (tp->nwayset)
-				       dev_info(&dev->dev,
+				       dev_dbg(&dev->dev,
 						"Switching to %s based on link negotiation %04x & %04x = %04x\n",
 						medianame[dev->if_port],
 						tp->sym_advertise, tp->lpar,
@@ -280,7 +280,7 @@ void pnic2_lnk_change(struct net_device *dev, int csr5)
                         return;
 
 	        } else {
-	                dev_info(&dev->dev,
+	                dev_dbg(&dev->dev,
 				 "Autonegotiation failed, using %s, link beat status %04x\n",
 				 medianame[dev->if_port], csr12);
 
@@ -337,7 +337,7 @@ void pnic2_lnk_change(struct net_device *dev, int csr5)
 	        /* we are at 100mb and a potential link change occurred */
 
 		if (tulip_debug > 1)
-			dev_info(&dev->dev, "PNIC2 %s link beat %s\n",
+			dev_dbg(&dev->dev, "PNIC2 %s link beat %s\n",
 				 medianame[dev->if_port],
 				 (csr12 & 2) ? "failed" : "good");
 
@@ -362,7 +362,7 @@ void pnic2_lnk_change(struct net_device *dev, int csr5)
 	        /* we are at 10mb and a potential link change occurred */
 
 		if (tulip_debug > 1)
-			dev_info(&dev->dev, "PNIC2 %s link beat %s\n",
+			dev_dbg(&dev->dev, "PNIC2 %s link beat %s\n",
 				 medianame[dev->if_port],
 				 (csr12 & 4) ? "failed" : "good");
 
@@ -383,7 +383,7 @@ void pnic2_lnk_change(struct net_device *dev, int csr5)
 
 
 	if (tulip_debug > 1)
-		dev_info(&dev->dev, "PNIC2 Link Change Default?\n");
+		dev_dbg(&dev->dev, "PNIC2 Link Change Default?\n");
 
         /* if all else fails default to trying 10baseT-HD */
 	dev->if_port = 0;

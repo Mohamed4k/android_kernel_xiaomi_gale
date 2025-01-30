@@ -1305,7 +1305,7 @@ static int prism2_hw_init(struct net_device *dev, int initial)
 	ret = hfa384x_cmd_no_wait(dev, HFA384X_CMDCODE_INIT, 0);
 	if (ret) {
 		printk(KERN_INFO "%s: first command failed - assuming card "
-		       "does not have primary firmware\n", dev_info);
+		       "does not have primary firmware\n", dev_dbg);
 	}
 
 	if (first && (HFA384X_INW(HFA384X_EVSTAT_OFF) & HFA384X_EV_CMD)) {
@@ -1326,7 +1326,7 @@ static int prism2_hw_init(struct net_device *dev, int initial)
 	if (!(HFA384X_INW(HFA384X_EVSTAT_OFF) & HFA384X_EV_CMD)) {
 		printk(KERN_DEBUG "%s: assuming no Primary image in "
 		       "flash - card initialization not completed\n",
-		       dev_info);
+		       dev_dbg);
 		local->no_pri = 1;
 #ifdef PRISM2_DOWNLOAD_SUPPORT
 			if (local->sram_type == -1)
@@ -1435,7 +1435,7 @@ static int prism2_hw_init2(struct net_device *dev, int initial)
 
  failed:
 	if (!local->no_pri)
-		printk(KERN_WARNING "%s: Initialization failed\n", dev_info);
+		printk(KERN_WARNING "%s: Initialization failed\n", dev_dbg);
 	return 1;
 }
 
@@ -1535,7 +1535,7 @@ static void prism2_hw_shutdown(struct net_device *dev, int no_disable)
 
 	if ((no_disable & HOSTAP_HW_NO_DISABLE) == 0 &&
 	    hfa384x_cmd(dev, HFA384X_CMDCODE_DISABLE, 0, NULL, NULL))
-		printk(KERN_WARNING "%s: Shutdown failed\n", dev_info);
+		printk(KERN_WARNING "%s: Shutdown failed\n", dev_dbg);
 
 	hfa384x_disable_interrupts(dev);
 
@@ -1575,7 +1575,7 @@ static void prism2_hw_reset(struct net_device *dev)
 
 	if (local->hw_resetting) {
 		printk(KERN_WARNING "%s: %s: already resetting card - "
-		       "ignoring reset request\n", dev_info, dev->name);
+		       "ignoring reset request\n", dev_dbg, dev->name);
 		return;
 	}
 
@@ -1586,7 +1586,7 @@ static void prism2_hw_reset(struct net_device *dev)
 		return;
 	}
 
-	printk(KERN_WARNING "%s: %s: resetting card\n", dev_info, dev->name);
+	printk(KERN_WARNING "%s: %s: resetting card\n", dev_dbg, dev->name);
 	hfa384x_disable_interrupts(dev);
 	local->hw_resetting = 1;
 	if (local->func->cor_sreset) {
@@ -3231,10 +3231,10 @@ while (0)
 	rtnl_unlock();
 	if (ret < 0) {
 		printk(KERN_WARNING "%s: register netdevice failed!\n",
-		       dev_info);
+		       dev_dbg);
 		goto fail;
 	}
-	printk(KERN_INFO "%s: Registered netdevice %s\n", dev_info, dev->name);
+	printk(KERN_INFO "%s: Registered netdevice %s\n", dev_dbg, dev->name);
 
 	hostap_init_data(local);
 	return dev;

@@ -777,7 +777,7 @@ static int qp_host_map_queues(struct vmci_queue *produce_q,
 							 PAGE_SIZE);
 			result = VMCI_SUCCESS;
 		} else {
-			pr_warn("vmap failed\n");
+			pr_debug("vmap failed\n");
 			result = VMCI_ERROR_NO_MEM;
 		}
 	} else {
@@ -924,7 +924,7 @@ qp_guest_endpoint_create(struct vmci_handle handle,
 		entry->qp.handle = vmci_resource_handle(&entry->resource);
 		if ((result != VMCI_SUCCESS) ||
 		    qp_list_find(&qp_guest_endpoints, entry->qp.handle)) {
-			pr_warn("Failed to add new resource (handle=0x%x:0x%x), error: %d",
+			pr_debug("Failed to add new resource (handle=0x%x:0x%x), error: %d",
 				handle.context, handle.resource, result);
 			kfree(entry);
 			entry = NULL;
@@ -1161,14 +1161,14 @@ static int qp_alloc_guest_work(struct vmci_handle *handle,
 
 	my_produce_q = qp_alloc_queue(produce_size, flags);
 	if (!my_produce_q) {
-		pr_warn("Error allocating pages for produce queue\n");
+		pr_debug("Error allocating pages for produce queue\n");
 		result = VMCI_ERROR_NO_MEM;
 		goto error;
 	}
 
 	my_consume_q = qp_alloc_queue(consume_size, flags);
 	if (!my_consume_q) {
-		pr_warn("Error allocating pages for consume queue\n");
+		pr_debug("Error allocating pages for consume queue\n");
 		result = VMCI_ERROR_NO_MEM;
 		goto error;
 	}
@@ -1177,7 +1177,7 @@ static int qp_alloc_guest_work(struct vmci_handle *handle,
 						    produce_size, consume_size,
 						    my_produce_q, my_consume_q);
 	if (!queue_pair_entry) {
-		pr_warn("Error allocating memory in %s\n", __func__);
+		pr_debug("Error allocating memory in %s\n", __func__);
 		result = VMCI_ERROR_NO_MEM;
 		goto error;
 	}
@@ -1186,7 +1186,7 @@ static int qp_alloc_guest_work(struct vmci_handle *handle,
 				  num_consume_pages,
 				  &queue_pair_entry->ppn_set);
 	if (result < VMCI_SUCCESS) {
-		pr_warn("qp_alloc_ppn_set failed\n");
+		pr_debug("qp_alloc_ppn_set failed\n");
 		goto error;
 	}
 
@@ -1221,7 +1221,7 @@ static int qp_alloc_guest_work(struct vmci_handle *handle,
 	} else {
 		result = qp_alloc_hypercall(queue_pair_entry);
 		if (result < VMCI_SUCCESS) {
-			pr_warn("qp_alloc_hypercall result = %d\n", result);
+			pr_debug("qp_alloc_hypercall result = %d\n", result);
 			goto error;
 		}
 	}
@@ -1423,7 +1423,7 @@ static int qp_broker_create(struct vmci_handle handle,
 				   VMCI_RESOURCE_TYPE_QPAIR_HOST,
 				   handle);
 	if (result != VMCI_SUCCESS) {
-		pr_warn("Failed to add new resource (handle=0x%x:0x%x), error: %d",
+		pr_debug("Failed to add new resource (handle=0x%x:0x%x), error: %d",
 			handle.context, handle.resource, result);
 		goto error;
 	}
@@ -1488,7 +1488,7 @@ static int qp_notify_peer(bool attach,
 	rv = vmci_datagram_dispatch(VMCI_HYPERVISOR_CONTEXT_ID,
 				    &ev.msg.hdr, false);
 	if (rv < VMCI_SUCCESS)
-		pr_warn("Failed to enqueue queue_pair %s event datagram for context (ID=0x%x)\n",
+		pr_debug("Failed to enqueue queue_pair %s event datagram for context (ID=0x%x)\n",
 			attach ? "ATTACH" : "DETACH", peer_id);
 
 	return rv;
@@ -1671,7 +1671,7 @@ static int qp_broker_attach(struct qp_broker_entry *entry,
 		    qp_notify_peer(true, entry->qp.handle, context_id,
 				   entry->create_id);
 		if (result < VMCI_SUCCESS)
-			pr_warn("Failed to notify peer (ID=0x%x) of attach to queue pair (handle=0x%x:0x%x)\n",
+			pr_debug("Failed to notify peer (ID=0x%x) of attach to queue pair (handle=0x%x:0x%x)\n",
 				entry->create_id, entry->qp.handle.context,
 				entry->qp.handle.resource);
 	}
@@ -1988,7 +1988,7 @@ int vmci_qp_broker_set_page_store(struct vmci_handle handle,
 	mutex_lock(&qp_broker_list.mutex);
 
 	if (!vmci_ctx_qp_exists(context, handle)) {
-		pr_warn("Context (ID=0x%x) not attached to queue pair (handle=0x%x:0x%x)\n",
+		pr_debug("Context (ID=0x%x) not attached to queue pair (handle=0x%x:0x%x)\n",
 			context_id, handle.context, handle.resource);
 		result = VMCI_ERROR_NOT_FOUND;
 		goto out;
@@ -2042,7 +2042,7 @@ int vmci_qp_broker_set_page_store(struct vmci_handle handle,
 		result =
 		    qp_notify_peer(true, handle, context_id, entry->create_id);
 		if (result < VMCI_SUCCESS) {
-			pr_warn("Failed to notify peer (ID=0x%x) of attach to queue pair (handle=0x%x:0x%x)\n",
+			pr_debug("Failed to notify peer (ID=0x%x) of attach to queue pair (handle=0x%x:0x%x)\n",
 				entry->create_id, entry->qp.handle.context,
 				entry->qp.handle.resource);
 		}
@@ -2149,7 +2149,7 @@ int vmci_qp_broker_detach(struct vmci_handle handle, struct vmci_ctx *context)
 						 entry->produce_q,
 						 entry->consume_q);
 			if (result < VMCI_SUCCESS)
-				pr_warn("Failed to unmap queue headers for queue pair (handle=0x%x:0x%x,result=%d)\n",
+				pr_debug("Failed to unmap queue headers for queue pair (handle=0x%x:0x%x,result=%d)\n",
 					handle.context, handle.resource,
 					result);
 
@@ -2360,7 +2360,7 @@ int vmci_qp_broker_unmap(struct vmci_handle handle,
 		qp_acquire_queue_mutex(entry->produce_q);
 		result = qp_save_headers(entry);
 		if (result < VMCI_SUCCESS)
-			pr_warn("Failed to save queue headers for queue pair (handle=0x%x:0x%x,result=%d)\n",
+			pr_debug("Failed to save queue headers for queue pair (handle=0x%x:0x%x,result=%d)\n",
 				handle.context, handle.resource, result);
 
 		qp_host_unmap_queues(gid, entry->produce_q, entry->consume_q);

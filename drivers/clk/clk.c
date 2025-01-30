@@ -1383,7 +1383,7 @@ static int clk_disable_unused(void)
 #endif
 
 	if (clk_ignore_unused) {
-		pr_warn("clk: Not disabling unused clocks\n");
+		pr_debug("clk: Not disabling unused clocks\n");
 		return 0;
 	}
 
@@ -4028,11 +4028,11 @@ void clk_unregister(struct clk *clk)
 	hlist_del_init(&clk->core->child_node);
 
 	if (clk->core->prepare_count)
-		pr_warn("%s: unregistering prepared clock: %s\n",
+		pr_debug("%s: unregistering prepared clock: %s\n",
 					__func__, clk->core->name);
 
 	if (clk->core->protect_count)
-		pr_warn("%s: unregistering protected clock: %s\n",
+		pr_debug("%s: unregistering protected clock: %s\n",
 					__func__, clk->core->name);
 
 	kref_put(&clk->core->ref, __clk_release);
@@ -4137,7 +4137,7 @@ static int clk_add_and_print_opp(struct clk_hw *hw,
 
 		if (n == 0 || n == core->num_rate_max - 1 ||
 					rate == clk_hw_round_rate(hw, INT_MAX))
-			pr_info("%s: set OPP pair(%lu Hz: %u uV) on %s\n",
+			pr_debug("%s: set OPP pair(%lu Hz: %u uV) on %s\n",
 						core->name, rate, uv,
 						dev_name(device_list[j]));
 	}

@@ -147,7 +147,7 @@ qcaspi_init_device_debugfs(struct qcaspi *qca)
 	qca->device_root = device_root;
 
 	if (IS_ERR(device_root) || !device_root) {
-		pr_warn("failed to create debugfs directory for %s\n",
+		pr_debug("failed to create debugfs directory for %s\n",
 			dev_name(&qca->net_dev->dev));
 		return;
 	}

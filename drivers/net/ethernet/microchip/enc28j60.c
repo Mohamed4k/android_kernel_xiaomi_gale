@@ -1059,11 +1059,11 @@ static void enc28j60_check_link_status(struct net_device *ndev)
 	if (reg & PHSTAT2_LSTAT) {
 		netif_carrier_on(ndev);
 		if (netif_msg_ifup(priv))
-			dev_info(&ndev->dev, "link up - %s\n",
+			dev_dbg(&ndev->dev, "link up - %s\n",
 				duplex ? "Full duplex" : "Half duplex");
 	} else {
 		if (netif_msg_ifdown(priv))
-			dev_info(&ndev->dev, "link down\n");
+			dev_dbg(&ndev->dev, "link down\n");
 		netif_carrier_off(ndev);
 	}
 }
@@ -1415,16 +1415,16 @@ static void enc28j60_set_multicast_list(struct net_device *dev)
 
 	if (dev->flags & IFF_PROMISC) {
 		if (netif_msg_link(priv))
-			dev_info(&dev->dev, "promiscuous mode\n");
+			dev_dbg(&dev->dev, "promiscuous mode\n");
 		priv->rxfilter = RXFILTER_PROMISC;
 	} else if ((dev->flags & IFF_ALLMULTI) || !netdev_mc_empty(dev)) {
 		if (netif_msg_link(priv))
-			dev_info(&dev->dev, "%smulticast mode\n",
+			dev_dbg(&dev->dev, "%smulticast mode\n",
 				(dev->flags & IFF_ALLMULTI) ? "all-" : "");
 		priv->rxfilter = RXFILTER_MULTI;
 	} else {
 		if (netif_msg_link(priv))
-			dev_info(&dev->dev, "normal mode\n");
+			dev_dbg(&dev->dev, "normal mode\n");
 		priv->rxfilter = RXFILTER_NORMAL;
 	}
 
@@ -1468,7 +1468,7 @@ static void enc28j60_restart_work_handler(struct work_struct *work)
 		enc28j60_net_close(ndev);
 		ret = enc28j60_net_open(ndev);
 		if (unlikely(ret)) {
-			dev_info(&ndev->dev, " could not restart %d\n", ret);
+			dev_dbg(&ndev->dev, " could not restart %d\n", ret);
 			dev_close(ndev);
 		}
 	}
@@ -1558,7 +1558,7 @@ static int enc28j60_probe(struct spi_device *spi)
 	int ret = 0;
 
 	if (netif_msg_drv(&debug))
-		dev_info(&spi->dev, DRV_NAME " Ethernet driver %s loaded\n",
+		dev_dbg(&spi->dev, DRV_NAME " Ethernet driver %s loaded\n",
 			DRV_VERSION);
 
 	dev = alloc_etherdev(sizeof(struct enc28j60_net));
@@ -1582,7 +1582,7 @@ static int enc28j60_probe(struct spi_device *spi)
 
 	if (!enc28j60_chipset_init(dev)) {
 		if (netif_msg_probe(priv))
-			dev_info(&spi->dev, DRV_NAME " chip not found\n");
+			dev_dbg(&spi->dev, DRV_NAME " chip not found\n");
 		ret = -EIO;
 		goto error_irq;
 	}
@@ -1620,7 +1620,7 @@ static int enc28j60_probe(struct spi_device *spi)
 				" failed (ret = %d)\n", ret);
 		goto error_register;
 	}
-	dev_info(&dev->dev, DRV_NAME " driver registered\n");
+	dev_dbg(&dev->dev, DRV_NAME " driver registered\n");
 
 	return 0;
 

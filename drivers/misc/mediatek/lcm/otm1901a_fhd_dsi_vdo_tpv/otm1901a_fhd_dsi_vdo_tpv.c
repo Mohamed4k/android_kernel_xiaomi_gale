@@ -11,7 +11,7 @@
 #define LCM_LOGI(string, args...)  dprintf(0, "[LK/"LOG_TAG"]"string, ##args)
 #define LCM_LOGD(string, args...)  dprintf(1, "[LK/"LOG_TAG"]"string, ##args)
 #else
-#define LCM_LOGI(fmt, args...)  pr_notice("[KERNEL/"LOG_TAG"]"fmt, ##args)
+#define LCM_LOGI(fmt, args...)  pr_debug("[KERNEL/"LOG_TAG"]"fmt, ##args)
 #define LCM_LOGD(fmt, args...)  pr_debug("[KERNEL/"LOG_TAG"]"fmt, ##args)
 #endif
 
@@ -89,20 +89,20 @@ static void lcm_request_gpio_control(struct device *dev)
 {
 	GPIO_LCD_RST = of_get_named_gpio(dev->of_node, "gpio_lcd_rst", 0);
 	gpio_request(GPIO_LCD_RST, "GPIO_LCD_RST");
-	pr_notice("[KE/LCM] GPIO_LCD_RST = 0x%x\n", GPIO_LCD_RST);
+	pr_debug("[KE/LCM] GPIO_LCD_RST = 0x%x\n", GPIO_LCD_RST);
 
 	GPIO_LCD_PWR = of_get_named_gpio(dev->of_node, "gpio_lcd_pwr", 0);
 	gpio_request(GPIO_LCD_PWR, "GPIO_LCD_PWR");
-	pr_notice("[KE/LCM] GPIO_LCD_PWR = 0x%x\n", GPIO_LCD_PWR);
+	pr_debug("[KE/LCM] GPIO_LCD_PWR = 0x%x\n", GPIO_LCD_PWR);
 
 	GPIO_LCD_PWR_EN = of_get_named_gpio(dev->of_node, "gpio_lcd_pwr_en", 0);
 	gpio_request(GPIO_LCD_PWR_EN, "GPIO_LCD_PWR_EN");
-	pr_notice("[KE/LCM] GPIO_LCD_PWR_EN = 0x%x\n", GPIO_LCD_PWR_EN);
+	pr_debug("[KE/LCM] GPIO_LCD_PWR_EN = 0x%x\n", GPIO_LCD_PWR_EN);
 
 	GPIO_LCD_PWR2_EN = of_get_named_gpio(dev->of_node, "gpio_lcd_pwr2_en",
 					     0);
 	gpio_request(GPIO_LCD_PWR2_EN, "GPIO_LCD_PWR2_EN");
-	pr_notice("[KE/LCM] GPIO_LCD_PWR2_EN = 0x%x\n", GPIO_LCD_PWR2_EN);
+	pr_debug("[KE/LCM] GPIO_LCD_PWR2_EN = 0x%x\n", GPIO_LCD_PWR2_EN);
 }
 
 static int lcm_driver_probe(struct device *dev, void const *data)
@@ -146,7 +146,7 @@ static struct platform_driver lcm_driver = {
 static int __init lcm_init(void)
 {
 	if (platform_driver_register(&lcm_driver)) {
-		pr_notice("LCM: failed to register this driver!\n");
+		pr_debug("LCM: failed to register this driver!\n");
 		return -ENODEV;
 	}
 
@@ -538,7 +538,7 @@ static void lcm_init_power(void)
 	lcm_set_gpio_output(GPIO_LCD_RST, GPIO_OUT_ONE);
 	MDELAY(20);
 #else
-	pr_notice("[Kernel/LCM] %s enter\n", __func__);
+	pr_debug("[Kernel/LCM] %s enter\n", __func__);
 #endif
 }
 

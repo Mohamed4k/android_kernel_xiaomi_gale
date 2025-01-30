@@ -60,7 +60,7 @@
 #define cpsw_info(priv, type, format, ...)		\
 do {								\
 	if (netif_msg_##type(priv) && net_ratelimit())		\
-		dev_info(priv->dev, format, ## __VA_ARGS__);	\
+		dev_dbg(priv->dev, format, ## __VA_ARGS__);	\
 } while (0)
 
 #define cpsw_err(priv, type, format, ...)		\
@@ -1878,7 +1878,7 @@ static int cpsw_ndo_open(struct net_device *ndev)
 
 	reg = cpsw->version;
 
-	dev_info(priv->dev, "initializing cpsw version %d.%d (%d)\n",
+	dev_dbg(priv->dev, "initializing cpsw version %d.%d (%d)\n",
 		 CPSW_MAJOR_VERSION(reg), CPSW_MINOR_VERSION(reg),
 		 CPSW_RTL_VERSION(reg));
 
@@ -2366,7 +2366,7 @@ static int cpsw_ndo_vlan_rx_add_vid(struct net_device *ndev,
 		}
 	}
 
-	dev_info(priv->dev, "Adding vlanid %d to vlan filter\n", vid);
+	dev_dbg(priv->dev, "Adding vlanid %d to vlan filter\n", vid);
 	ret = cpsw_add_vlan_ale_entry(priv, vid);
 err:
 	pm_runtime_put(cpsw->dev);
@@ -2398,7 +2398,7 @@ static int cpsw_ndo_vlan_rx_kill_vid(struct net_device *ndev,
 		}
 	}
 
-	dev_info(priv->dev, "removing vlanid %d from vlan filter\n", vid);
+	dev_dbg(priv->dev, "removing vlanid %d from vlan filter\n", vid);
 	ret = cpsw_ale_del_vlan(cpsw->ale, vid, 0);
 	ret |= cpsw_ale_del_ucast(cpsw->ale, priv->mac_addr,
 				  HOST_PORT_NUM, ALE_VLAN, vid);
@@ -3268,11 +3268,11 @@ static int cpsw_probe_dual_emac(struct cpsw_priv *priv)
 	if (is_valid_ether_addr(data->slave_data[1].mac_addr)) {
 		memcpy(priv_sl2->mac_addr, data->slave_data[1].mac_addr,
 			ETH_ALEN);
-		dev_info(cpsw->dev, "cpsw: Detected MACID = %pM\n",
+		dev_dbg(cpsw->dev, "cpsw: Detected MACID = %pM\n",
 			 priv_sl2->mac_addr);
 	} else {
 		eth_random_addr(priv_sl2->mac_addr);
-		dev_info(cpsw->dev, "cpsw: Random MACID = %pM\n",
+		dev_dbg(cpsw->dev, "cpsw: Random MACID = %pM\n",
 			 priv_sl2->mac_addr);
 	}
 	memcpy(ndev->dev_addr, priv_sl2->mac_addr, ETH_ALEN);
@@ -3382,10 +3382,10 @@ static int cpsw_probe(struct platform_device *pdev)
 
 	if (is_valid_ether_addr(data->slave_data[0].mac_addr)) {
 		memcpy(priv->mac_addr, data->slave_data[0].mac_addr, ETH_ALEN);
-		dev_info(&pdev->dev, "Detected MACID = %pM\n", priv->mac_addr);
+		dev_dbg(&pdev->dev, "Detected MACID = %pM\n", priv->mac_addr);
 	} else {
 		eth_random_addr(priv->mac_addr);
-		dev_info(&pdev->dev, "Random MACID = %pM\n", priv->mac_addr);
+		dev_dbg(&pdev->dev, "Random MACID = %pM\n", priv->mac_addr);
 	}
 
 	memcpy(ndev->dev_addr, priv->mac_addr, ETH_ALEN);

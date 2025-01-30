@@ -914,7 +914,7 @@ mwifiex_reset_write(struct file *file,
 		return -EINVAL;
 
 	if (adapter->if_ops.card_reset) {
-		dev_info(adapter->dev, "Resetting per request\n");
+		dev_dbg(adapter->dev, "Resetting per request\n");
 		adapter->if_ops.card_reset(adapter);
 	}
 

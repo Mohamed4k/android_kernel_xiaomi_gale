@@ -266,7 +266,7 @@ static int sh_wdt_probe(struct platform_device *pdev)
 			 sh_wdt_dev.timeout);
 	}
 
-	dev_info(&pdev->dev, "configured with heartbeat=%d sec (nowayout=%d)\n",
+	dev_dbg(&pdev->dev, "configured with heartbeat=%d sec (nowayout=%d)\n",
 		 sh_wdt_dev.timeout, nowayout);
 
 	rc = watchdog_register_device(&sh_wdt_dev);
@@ -278,7 +278,7 @@ static int sh_wdt_probe(struct platform_device *pdev)
 	timer_setup(&wdt->timer, sh_wdt_ping, 0);
 	wdt->timer.expires	= next_ping_period(clock_division_ratio);
 
-	dev_info(&pdev->dev, "initialized.\n");
+	dev_dbg(&pdev->dev, "initialized.\n");
 
 	pm_runtime_enable(&pdev->dev);
 
@@ -315,7 +315,7 @@ static int __init sh_wdt_init(void)
 		     clock_division_ratio > 0x7)) {
 		clock_division_ratio = WTCSR_CKS_4096;
 
-		pr_info("divisor must be 0x5<=x<=0x7, using %d\n",
+		pr_debug("divisor must be 0x5<=x<=0x7, using %d\n",
 			clock_division_ratio);
 	}
 

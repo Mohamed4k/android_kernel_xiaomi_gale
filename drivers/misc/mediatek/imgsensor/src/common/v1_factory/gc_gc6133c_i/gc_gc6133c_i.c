@@ -109,12 +109,12 @@ static struct gc6133c *gc6133c_malloc_init(struct i2c_client *client)
 		return NULL;
 	}
 	gc6133c->i2c_client = client;
-	pr_info("%s gc6133center , client_addr = 0x%02x\n", __func__,gc6133c->i2c_client->addr);
+	pr_debug("%s gc6133center , client_addr = 0x%02x\n", __func__,gc6133c->i2c_client->addr);
 	return gc6133c;
 }
 static void GC6133C_Init(struct gc6133c *gc6133c)
 {
-    pr_info("%s:gc6133c init", __func__);
+    pr_debug("%s:gc6133c init", __func__);
 	/*SYS*/
 	gc6133c_i2c_write(gc6133c, 0xfe, 0xa0);
 	gc6133c_i2c_write(gc6133c, 0xfe, 0xa0);
@@ -265,7 +265,7 @@ static int GC6133C_GetSensorID(struct gc6133c *gc6133c)
     do {
 		len = gc6133c_i2c_read(gc6133c, 0xf0, &reg_data);
         if (reg_data == GC6133C_SENSOR_ID) {
-			qvga_dev_info(gc6133c->dev, "%s: GC6133C Read Sensor ID sucess = 0x%02x\n", __func__, reg_data);
+			qvga_dev_dbg(gc6133c->dev, "%s: GC6133C Read Sensor ID sucess = 0x%02x\n", __func__, reg_data);
 			driver_flag = 1;
 			return 0;
 		} else {
@@ -273,7 +273,7 @@ static int GC6133C_GetSensorID(struct gc6133c *gc6133c)
 			driver_flag = 0;
 		}
         retry--;
-		pr_info("%s gc6133c get sensorid retry %d time\n", __func__, retry);
+		pr_debug("%s gc6133c get sensorid retry %d time\n", __func__, retry);
     } while (retry > 0);
 	return -1;
 }
@@ -281,7 +281,7 @@ static int GC6133C_GetSensorID(struct gc6133c *gc6133c)
 static void gc6133c_avdd_control(struct gc6133c *gc6133c, bool flag)
 {
 	struct regulator *vcama;
-	qvga_dev_info(gc6133c->dev, "%s enter\n", __func__);
+	qvga_dev_dbg(gc6133c->dev, "%s enter\n", __func__);
 	vcama = regulator_get(gc6133c->dev,"vcama");
 	if (IS_ERR(vcama)) {
 		qvga_dev_err(gc6133c->dev, "%s AVDD get regulator failed\n", __func__);
@@ -301,7 +301,7 @@ static void gc6133c_avdd_control(struct gc6133c *gc6133c, bool flag)
 static void gc6133c_iovdd_control(struct gc6133c *gc6133c, bool flag)
 {
     struct regulator *vcamio;
-    qvga_dev_info(gc6133c->dev, "%s enter\n", __func__);
+    qvga_dev_dbg(gc6133c->dev, "%s enter\n", __func__);
     vcamio = regulator_get(gc6133c->dev,"vcamio");
     if (IS_ERR(vcamio)) {
         qvga_dev_err(gc6133c->dev, "%s  IOVDD get regulator failed\n", __func__);
@@ -319,7 +319,7 @@ static void gc6133c_iovdd_control(struct gc6133c *gc6133c, bool flag)
 
 static void gc6133c_hw_on_reset(struct gc6133c *gc6133c)
 {
-    qvga_dev_info(gc6133c->dev, "%s enter\n", __func__);
+    qvga_dev_dbg(gc6133c->dev, "%s enter\n", __func__);
     gc6133c_i2c_write(gc6133c, 0xf1, 0x03);
     gc6133c_i2c_write(gc6133c, 0xfc, 0x12);
     gc6133c_i2c_write(gc6133c, 0xfe, 0x02);
@@ -327,7 +327,7 @@ static void gc6133c_hw_on_reset(struct gc6133c *gc6133c)
 }
 static void gc6133c_hw_off_reset(struct gc6133c *gc6133c)
 {
-	qvga_dev_info(gc6133c->dev, "%s enter\n", __func__);
+	qvga_dev_dbg(gc6133c->dev, "%s enter\n", __func__);
     gc6133c_i2c_write(gc6133c, 0xf1, 0x00);
     gc6133c_i2c_write(gc6133c, 0xfc, 0x01);
     gc6133c_i2c_write(gc6133c, 0xfe, 0x02);
@@ -441,7 +441,7 @@ static ssize_t gc6133c_get_light(struct device *dev,
 		reg_data -= 1;
 /* code at 2022/08/31 end */
 	len += snprintf(buf + len, PAGE_SIZE - len, "%d\n",reg_data);
-	pr_info("%s start !!!!",__func__);
+	pr_debug("%s start !!!!",__func__);
 	return len;
 }
 static ssize_t gc6133c_set_light(struct device *dev,
@@ -460,12 +460,12 @@ static ssize_t gc6133c_set_light(struct device *dev,
 	if (state == 0)
 		{
             gc6133c_hw_off(g_gc6133c); /*OFF*/
-            pr_info(" %s failed, light_hw_off\n", __func__);
+            pr_debug(" %s failed, light_hw_off\n", __func__);
         }
 	else
 		{
             gc6133c_hw_on(g_gc6133c);
-            pr_info(" %s sucess ,light_hw_on\n", __func__);
+            pr_debug(" %s sucess ,light_hw_on\n", __func__);
          } /*ON*/
 	return len;
 }
@@ -487,7 +487,7 @@ static const struct attribute_group gc6133c_attribute_group = {
 /*static void gc6133c_parse_gpio_dt(struct gc6133c *gc6133c,
 					struct device_node *np)
 {
-	qvga_dev_info(gc6133c->dev, "%s enter, dev_i2c%d@0x%02X\n", __func__,
+	qvga_dev_dbg(gc6133c->dev, "%s enter, dev_i2c%d@0x%02X\n", __func__,
 			gc6133c->i2c_seq, gc6133c->i2c_addr);
 	gc6133c->reset_gpio = of_get_named_gpio(np, "reset-gpio", 0);
 	if (gc6133c->reset_gpio < 0) {
@@ -496,13 +496,13 @@ static const struct attribute_group gc6133c_attribute_group = {
 			__func__);
 		gc6133c->reset_gpio = -1;
 	} else {
-		qvga_dev_info(gc6133c->dev, "%s: reset gpio provided ok\n",
+		qvga_dev_dbg(gc6133c->dev, "%s: reset gpio provided ok\n",
 			 __func__);
 	}
 }
 static void gc6133c_parse_dt(struct gc6133c *gc6133c, struct device_node *np)
 {
-	qvga_dev_info(gc6133c->dev, "%s enter, dev_i2c%d@0x%02X\n", __func__,
+	qvga_dev_dbg(gc6133c->dev, "%s enter, dev_i2c%d@0x%02X\n", __func__,
 		    gc6133c->i2c_seq, gc6133c->i2c_addr);
 	gc6133c_parse_gpio_dt(gc6133c, np);
 }*/
@@ -517,7 +517,7 @@ static int gc6133c_i2c4_probe(struct i2c_client *client,
 	struct class *qvga_class;
 	struct device *dev;
 	int ret = -1;
-	pr_info("%s enter , %d@0x%02x\n", __func__,client->adapter->nr, client->addr);
+	pr_debug("%s enter , %d@0x%02x\n", __func__,client->adapter->nr, client->addr);
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
 		qvga_dev_err(&client->dev, "%s: check_functionality failed\n",__func__);
 		ret = -ENODEV;
@@ -636,7 +636,7 @@ static struct i2c_driver gc6133c_i2c_driver = {
 static int __init gc6133c_yuv_init(void)
 {
 	int ret;
-	pr_info("%s: driver version: %s\n", __func__,GC6133C_DRIVER_VERSION);
+	pr_debug("%s: driver version: %s\n", __func__,GC6133C_DRIVER_VERSION);
 	ret = i2c_add_driver(&gc6133c_i2c_driver);
 	if (ret) {
 		pr_err("[%s] Unable to register driver (%d)\n",__func__, ret);
@@ -646,7 +646,7 @@ static int __init gc6133c_yuv_init(void)
 }
 static void __exit gc6133c_yuv_exit(void)
 {
-	pr_info("%s enter\n", __func__);
+	pr_debug("%s enter\n", __func__);
 	i2c_del_driver(&gc6133c_i2c_driver);
 }
 module_init(gc6133c_yuv_init);

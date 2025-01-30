@@ -940,13 +940,13 @@ int arc_emac_probe(struct net_device *ndev, int interface)
 		err = -ENODEV;
 		goto out_clken;
 	}
-	dev_info(dev, "ARC EMAC detected with id: 0x%x\n", id);
+	dev_dbg(dev, "ARC EMAC detected with id: 0x%x\n", id);
 
 	/* Set poll rate so that it polls every 1 ms */
 	arc_reg_set(priv, R_POLLRATE, clock_frequency / 1000000);
 
 	ndev->irq = irq;
-	dev_info(dev, "IRQ is %d\n", ndev->irq);
+	dev_dbg(dev, "IRQ is %d\n", ndev->irq);
 
 	/* Register interrupt handler for device */
 	err = devm_request_irq(dev, ndev->irq, arc_emac_intr, 0,
@@ -965,7 +965,7 @@ int arc_emac_probe(struct net_device *ndev, int interface)
 		eth_hw_addr_random(ndev);
 
 	arc_emac_set_address_internal(ndev);
-	dev_info(dev, "MAC address is now %pM\n", ndev->dev_addr);
+	dev_dbg(dev, "MAC address is now %pM\n", ndev->dev_addr);
 
 	/* Do 1 allocation instead of 2 separate ones for Rx and Tx BD rings */
 	priv->rxbd = dmam_alloc_coherent(dev, RX_RING_SZ + TX_RING_SZ,
@@ -997,7 +997,7 @@ int arc_emac_probe(struct net_device *ndev, int interface)
 		goto out_mdio;
 	}
 
-	dev_info(dev, "connected to %s phy with id 0x%x\n",
+	dev_dbg(dev, "connected to %s phy with id 0x%x\n",
 		 phydev->drv->name, phydev->phy_id);
 
 	netif_napi_add(ndev, &priv->napi, arc_emac_poll, ARC_EMAC_NAPI_WEIGHT);

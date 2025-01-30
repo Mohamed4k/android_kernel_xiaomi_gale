@@ -816,7 +816,7 @@ struct cpsw_ale *cpsw_ale_create(struct cpsw_ale_params *params)
 	ale->version =
 		(ALE_VERSION_MAJOR(rev, ale->params.major_ver_mask) << 8) |
 		 ALE_VERSION_MINOR(rev);
-	dev_info(ale->params.dev, "initialized cpsw ale version %d.%d\n",
+	dev_dbg(ale->params.dev, "initialized cpsw ale version %d.%d\n",
 		 ALE_VERSION_MAJOR(rev, ale->params.major_ver_mask),
 		 ALE_VERSION_MINOR(rev));
 
@@ -841,7 +841,7 @@ struct cpsw_ale *cpsw_ale_create(struct cpsw_ale_params *params)
 			ale_entries *= ALE_TABLE_SIZE_MULTIPLIER;
 		ale->params.ale_entries = ale_entries;
 	}
-	dev_info(ale->params.dev,
+	dev_dbg(ale->params.dev,
 		 "ALE Table size %ld\n", ale->params.ale_entries);
 
 	/* set default bits for existing h/w */

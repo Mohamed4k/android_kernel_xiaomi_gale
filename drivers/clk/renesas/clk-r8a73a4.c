@@ -146,7 +146,7 @@ r8a73a4_cpg_register_clock(struct device_node *np, struct r8a73a4_cpg *cpg,
 			parent_name = "extal2";
 			break;
 		default:
-			pr_warn("%s: unexpected parent of %s\n", __func__,
+			pr_debug("%s: unexpected parent of %s\n", __func__,
 				name);
 			return ERR_PTR(-EINVAL);
 		}

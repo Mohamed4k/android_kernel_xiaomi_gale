@@ -419,7 +419,7 @@ static int max14577_muic_adc_handler(struct max14577_muic_info *info)
 		 * needed to detect additional accessory, should implement
 		 * proper operation when this accessory is attached/detached.
 		 */
-		dev_info(info->dev,
+		dev_dbg(info->dev,
 			"accessory is %s but it isn't used (adc:0x%x)\n",
 			attached ? "attached" : "detached", cable_type);
 		return -EAGAIN;
@@ -745,7 +745,7 @@ static int max14577_muic_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "failed to read revision number\n");
 		return ret;
 	}
-	dev_info(info->dev, "device ID : 0x%x\n", id);
+	dev_dbg(info->dev, "device ID : 0x%x\n", id);
 
 	/* Set ADC debounce time */
 	max14577_muic_set_debounce_time(info, ADC_DEBOUNCE_TIME_25MS);

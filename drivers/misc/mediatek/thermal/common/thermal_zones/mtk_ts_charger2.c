@@ -26,14 +26,14 @@
 #define mtktscharger2_dprintk(fmt, args...) \
 do { \
 	if (mtktscharger2_debug_log) \
-		pr_notice("[Thermal/tzcharger2]" fmt, ##args); \
+		pr_debug("[Thermal/tzcharger2]" fmt, ##args); \
 } while (0)
 
 #define mtktscharger2_dprintk_always(fmt, args...) \
-	pr_notice("[Thermal/tzcharger2]" fmt, ##args)
+	pr_debug("[Thermal/tzcharger2]" fmt, ##args)
 
 #define mtktscharger2_pr_notice(fmt, args...) \
-	pr_notice("[Thermal/tzcharger2]" fmt, ##args)
+	pr_debug("[Thermal/tzcharger2]" fmt, ##args)
 
 static kuid_t uid = KUIDT_INIT(0);
 static kgid_t gid = KGIDT_INIT(1000);
@@ -110,7 +110,7 @@ static struct power_supply *get_charger2_handle(void)
 		if (m_psy)
 			return m_psy;
 	}
-	pr_notice("%s is not dual charger project\n",
+	pr_debug("%s is not dual charger project\n",
 				__func__);
 	return NULL;
 }

@@ -1258,7 +1258,7 @@ static int sh_msiof_request_dma(struct sh_msiof_spi_priv *p)
 	if (dma_mapping_error(rx_dev, p->rx_dma_addr))
 		goto unmap_tx_page;
 
-	dev_info(dev, "DMA available");
+	dev_dbg(dev, "DMA available");
 	return 0;
 
 unmap_tx_page:

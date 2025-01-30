@@ -346,7 +346,7 @@ static void cpcap_charger_vbus_work(struct work_struct *work)
 	if (ddata->vbus_enabled) {
 		vbus = cpcap_charger_vbus_valid(ddata);
 		if (vbus) {
-			dev_info(ddata->dev, "VBUS already provided\n");
+			dev_dbg(ddata->dev, "VBUS already provided\n");
 
 			return;
 		}
@@ -543,7 +543,7 @@ static void cpcap_charger_init_optional_gpios(struct cpcap_charger_ddata *ddata)
 		ddata->gpio[i] = devm_gpiod_get_index(ddata->dev, "mode",
 						      i, GPIOD_OUT_HIGH);
 		if (IS_ERR(ddata->gpio[i])) {
-			dev_info(ddata->dev, "no mode change GPIO%i: %li\n",
+			dev_dbg(ddata->dev, "no mode change GPIO%i: %li\n",
 				 i, PTR_ERR(ddata->gpio[i]));
 				 ddata->gpio[i] = NULL;
 		}
@@ -652,7 +652,7 @@ static int cpcap_charger_probe(struct platform_device *pdev)
 	ddata->comparator.set_vbus = cpcap_charger_set_vbus;
 	error = omap_usb2_set_comparator(&ddata->comparator);
 	if (error == -ENODEV) {
-		dev_info(ddata->dev, "charger needs phy, deferring probe\n");
+		dev_dbg(ddata->dev, "charger needs phy, deferring probe\n");
 		return -EPROBE_DEFER;
 	}
 

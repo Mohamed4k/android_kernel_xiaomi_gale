@@ -124,7 +124,7 @@ static int dw_mci_zx_emmc_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
 	if (best < 0)
 		return -EIO;
 
-	dev_info(host->dev, "%s best range: start %d end %d\n", __func__,
+	dev_dbg(host->dev, "%s best range: start %d end %d\n", __func__,
 		 start, end);
 	return dw_mci_zx_emmc_set_delay(host, best, DELAY_TYPE_CLK);
 }

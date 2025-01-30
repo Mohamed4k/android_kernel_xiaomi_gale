@@ -155,7 +155,7 @@ static int max77686_set_suspend_mode(struct regulator_dev *rdev,
 		val = max77686_map_normal_mode(max77686, id);
 		break;
 	default:
-		pr_warn("%s: regulator_suspend_mode : 0x%x not supported\n",
+		pr_debug("%s: regulator_suspend_mode : 0x%x not supported\n",
 			rdev->desc->name, mode);
 		return -EINVAL;
 	}
@@ -189,7 +189,7 @@ static int max77686_ldo_set_suspend_mode(struct regulator_dev *rdev,
 		val = max77686_map_normal_mode(max77686, id);
 		break;
 	default:
-		pr_warn("%s: regulator_suspend_mode : 0x%x not supported\n",
+		pr_debug("%s: regulator_suspend_mode : 0x%x not supported\n",
 			rdev->desc->name, mode);
 		return -EINVAL;
 	}
@@ -237,7 +237,7 @@ static int max77686_set_ramp_delay(struct regulator_dev *rdev, int ramp_delay)
 	case 55001 ... 100000:
 		break;
 	default:
-		pr_warn("%s: ramp_delay: %d not supported, setting 100000\n",
+		pr_debug("%s: ramp_delay: %d not supported, setting 100000\n",
 			rdev->desc->name, ramp_delay);
 	}
 

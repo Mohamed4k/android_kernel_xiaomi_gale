@@ -157,7 +157,7 @@ static int isl91302a_set_voltage_sel(
 		unsigned int selector)
 {
 #ifdef CONFIG_MTK_TINYSYS_SSPM_SUPPORT
-	pr_notice("%s not support for sspm\n", __func__);
+	pr_debug("%s not support for sspm\n", __func__);
 	return 0;
 #else
 	struct isl91302a_regulator_info *info =
@@ -183,7 +183,7 @@ static int isl91302a_get_voltage_sel(
 			struct mtk_simple_regulator_desc *mreg_desc)
 {
 #ifdef CONFIG_MTK_TINYSYS_SSPM_SUPPORT
-	pr_notice("%s not support for sspm\n", __func__);
+	pr_debug("%s not support for sspm\n", __func__);
 	return 0;
 #else
 	struct isl91302a_regulator_info *info =
@@ -206,7 +206,7 @@ static int isl91302a_set_mode(
 		struct mtk_simple_regulator_desc *mreg_desc, unsigned int mode)
 {
 #ifdef CONFIG_MTK_TINYSYS_SSPM_SUPPORT
-	pr_notice("%s not support for sspm\n", __func__);
+	pr_debug("%s not support for sspm\n", __func__);
 	return 0;
 #else
 	struct isl91302a_regulator_info *info =
@@ -232,7 +232,7 @@ static unsigned int isl91302a_get_mode(
 		struct mtk_simple_regulator_desc *mreg_desc)
 {
 #ifdef CONFIG_MTK_TINYSYS_SSPM_SUPPORT
-	pr_notice("%s not support for sspm\n", __func__);
+	pr_debug("%s not support for sspm\n", __func__);
 	return 0;
 #else
 	struct isl91302a_regulator_info *info =
@@ -260,7 +260,7 @@ static int isl91302a_enable_ipi(struct mtk_simple_regulator_desc *mreg_desc)
 
 	buck_id = mreg_desc->rdesc.id;
 	if (buck_id != 1) {
-		pr_notice("%s only support proc2\n", __func__);
+		pr_debug("%s only support proc2\n", __func__);
 		return 0;
 	}
 
@@ -282,7 +282,7 @@ static int isl91302a_disable_ipi(struct mtk_simple_regulator_desc *mreg_desc)
 
 	buck_id = mreg_desc->rdesc.id;
 	if (buck_id != 1) {
-		pr_notice("%s only support proc2\n", __func__);
+		pr_debug("%s only support proc2\n", __func__);
 		return 0;
 	}
 
@@ -301,7 +301,7 @@ static int isl91302a_is_enabled_ipi(struct mtk_simple_regulator_desc *mreg_desc)
 
 	buck_id = mreg_desc->rdesc.id;
 	if (buck_id != 1) {
-		pr_notice("%s only support proc2\n", __func__);
+		pr_debug("%s only support proc2\n", __func__);
 		return 0;
 	}
 
@@ -394,7 +394,7 @@ static int isl91302a_buck_set_ramp_dly(
 
 	switch (ramp_dly) {
 	default:
-		pr_info("%s Invalid ramp delay, set to default 2.5 mV/us\n",
+		pr_debug("%s Invalid ramp delay, set to default 2.5 mV/us\n",
 			__func__);
 		ret = isl91302a_set_ramp_val(mreg_desc, 0, 0);
 		break;

@@ -115,7 +115,7 @@ static u32 charging_value_to_parameter(const u32 *parameter,
 	if (val < array_size)
 		return parameter[val];
 
-	pr_notice("Can't find the parameter\n");
+	pr_debug("Can't find the parameter\n");
 	return parameter[0];
 
 }
@@ -131,7 +131,7 @@ static u32 charging_parameter_to_value(const u32 *parameter,
 			return i;
 	}
 
-	pr_notice("no register value matched\n");
+	pr_debug("no register value matched\n");
 	return 0;
 }
 
@@ -149,12 +149,12 @@ static u32 bmt_find_closest_level(const u32 *pList, u32 number, u32 level)
 		/* max value in the last element */
 		for (i = (number - 1); i >= 0; i--) {
 			if (pList[i] <= level) {
-/* pr_notice("zzf_%d<=%d i=%d\n", pList[i], level, i); */
+/* pr_debug("zzf_%d<=%d i=%d\n", pList[i], level, i); */
 				return pList[i];
 			}
 		}
 
-		pr_notice("Can't find closest level\n");
+		pr_debug("Can't find closest level\n");
 		return pList[0];
 	}
 
@@ -164,7 +164,7 @@ static u32 bmt_find_closest_level(const u32 *pList, u32 number, u32 level)
 			return pList[i];
 	}
 
-	pr_notice("Can't find closest level\n");
+	pr_debug("Can't find closest level\n");
 	return pList[number - 1];
 }
 
@@ -194,7 +194,7 @@ static int mt6357_set_cv(struct charger_device *chg_dev, u32 cv)
 		PMIC_RG_VBAT_CV_VTH_MASK,
 		PMIC_RG_VBAT_CV_VTH_SHIFT,
 		register_value);
-	pr_notice("%s: cv = %d mV (0x%x)\n", __func__, set_cv, register_value);
+	pr_debug("%s: cv = %d mV (0x%x)\n", __func__, set_cv, register_value);
 
 	return ret;
 }
@@ -204,7 +204,7 @@ static int mt6357_kick_wdt(struct charger_device *chg_dev)
 	int ret = 0;
 	struct mt6357_charger *info = dev_get_drvdata(&chg_dev->dev);
 
-	pr_notice("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 
 	chr_set_register_value(info->regmap,
 		PMIC_RG_CHRWDT_WR_ADDR,
@@ -247,7 +247,7 @@ static int mt6357_set_ichg(struct charger_device *chg_dev, u32 ichg)
 		PMIC_RG_CS_VTH_MASK,
 		PMIC_RG_CS_VTH_SHIFT,
 		register_value);
-	pr_notice("%s: 0x%x %d %d\n", __func__, register_value, ichg, set_ichg);
+	pr_debug("%s: 0x%x %d %d\n", __func__, register_value, ichg, set_ichg);
 
 	return 0;
 }
@@ -285,7 +285,7 @@ static int mt6357_enable_charging(struct charger_device *chg_dev, bool en)
 	int ret = 0;
 	struct mt6357_charger *info = dev_get_drvdata(&chg_dev->dev);
 
-	pr_notice("[%s] en: %d\n", __func__, en);
+	pr_debug("[%s] en: %d\n", __func__, en);
 
 	if (en) {
 
@@ -387,14 +387,14 @@ static int mt6357_dump_register(struct charger_device *chg_dev)
 	ret = mt6357_is_charging_enabled(chg_dev, &chg_en);
 
 	for (i = MT6357_CHR_TOP_CON0; i <= MT6357_PCHR_ELR1; i += 2)
-		pr_notice("[0x%x]=0x%x\t", i, chg_get_register(info->regmap, i));
-	pr_notice("\n");
+		pr_debug("[0x%x]=0x%x\t", i, chg_get_register(info->regmap, i));
+	pr_debug("\n");
 
 	for (i = MT6357_CHR_CON0; i <= MT6357_CHR_CON9; i += 2)
-		pr_notice("[0x%x]=0x%x\t", i, chg_get_register(info->regmap, i));
-	pr_notice("\n");
+		pr_debug("[0x%x]=0x%x\t", i, chg_get_register(info->regmap, i));
+	pr_debug("\n");
 
-	pr_notice("ICHG = %dmA, CV = %dmV, CHG_EN = %d\n",
+	pr_debug("ICHG = %dmA, CV = %dmV, CHG_EN = %d\n",
 		ichg / 1000, cv / 1000, chg_en);
 
 	return ret;
@@ -424,10 +424,10 @@ static int mt6357_charger_parse_dt(struct mt6357_charger *info,
 	struct device_node *np = dev->of_node;
 	struct mt6357_charger_desc *desc = NULL;
 
-	pr_notice("%s: starts\n", __func__);
+	pr_debug("%s: starts\n", __func__);
 
 	if (!np) {
-		pr_notice("%s: no device node\n", __func__);
+		pr_debug("%s: no device node\n", __func__);
 		return -EINVAL;
 	}
 
@@ -442,31 +442,31 @@ static int mt6357_charger_parse_dt(struct mt6357_charger *info,
 
 	if (of_property_read_string(np, "charger_name",
 		&info->charger_dev_name) < 0) {
-		pr_notice("%s: no charger name\n", __func__);
+		pr_debug("%s: no charger name\n", __func__);
 		info->charger_dev_name = "primary_chg";
 	}
 
 	if (of_property_read_string(np, "alias_name",
 		&info->charger_prop.alias_name) < 0) {
-		pr_notice("%s: no alias name\n", __func__);
+		pr_debug("%s: no alias name\n", __func__);
 		info->charger_prop.alias_name = "mt6357";
 	}
 
 	if (of_property_read_u32(np, "ichg", &desc->ichg) < 0)
-		pr_notice("%s: no ichg\n", __func__);
+		pr_debug("%s: no ichg\n", __func__);
 
 	if (of_property_read_u32(np, "cv", &desc->cv) < 0)
-		pr_notice("%s: no cv\n", __func__);
+		pr_debug("%s: no cv\n", __func__);
 
 	if (of_property_read_u32(np, "vcdt_hv_thres", &desc->vcdt_hv_thres) < 0)
-		pr_notice("%s: no vcdt_hv_thres\n", __func__);
+		pr_debug("%s: no vcdt_hv_thres\n", __func__);
 
 	if (of_property_read_u32(np, "vbat_ov_thres", &desc->vbat_ov_thres) < 0)
-		pr_notice("%s: no vbat_ov_thres\n", __func__);
+		pr_debug("%s: no vbat_ov_thres\n", __func__);
 
 	info->desc = desc;
 
-	pr_notice("chr name:%s alias:%s\n",
+	pr_debug("chr name:%s alias:%s\n",
 		info->charger_dev_name, info->charger_prop.alias_name);
 
 	return 0;
@@ -481,7 +481,7 @@ static int mt6357_charger_init_setting(struct mt6357_charger *info)
 		PMIC_RG_VBAT_CV_VTH_ADDR,
 		PMIC_RG_VBAT_CV_VTH_MASK,
 		PMIC_RG_VBAT_CV_VTH_SHIFT);
-	pr_notice("[%s] VBAT_CV_VTH: 0x%x\n", __func__, val);
+	pr_debug("[%s] VBAT_CV_VTH: 0x%x\n", __func__, val);
 
 	chr_set_register_value(info->regmap,
 		PMIC_RG_CHRWDT_TD_ADDR,
@@ -570,7 +570,7 @@ static int mt6357_charger_probe(struct platform_device *pdev)
 	int ret = 0;
 	struct mt6357_charger *info = NULL;
 
-	pr_notice("%s: starts\n", __func__);
+	pr_debug("%s: starts\n", __func__);
 
 	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
 	if (!info)
@@ -597,7 +597,7 @@ static int mt6357_charger_probe(struct platform_device *pdev)
 	mt6357_charger_init_setting(info);
 
 
-	pr_notice("%s: done\n", __func__);
+	pr_debug("%s: done\n", __func__);
 
 	return 0;
 

@@ -186,7 +186,7 @@ static int gsbi_probe(struct platform_device *pdev)
 	/* not required, so default to 0 if not present */
 	of_property_read_u32(node, "qcom,crci", &gsbi->crci);
 
-	dev_info(&pdev->dev, "GSBI port protocol: %d crci: %d\n",
+	dev_dbg(&pdev->dev, "GSBI port protocol: %d crci: %d\n",
 		 gsbi->mode, gsbi->crci);
 	gsbi->hclk = devm_clk_get(&pdev->dev, "iface");
 	if (IS_ERR(gsbi->hclk))

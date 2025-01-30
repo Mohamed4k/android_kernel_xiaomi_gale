@@ -143,7 +143,7 @@ static int thunder_mmc_probe(struct pci_dev *pdev,
 		}
 		i++;
 	}
-	dev_info(dev, "probed\n");
+	dev_dbg(dev, "probed\n");
 	return 0;
 
 error:

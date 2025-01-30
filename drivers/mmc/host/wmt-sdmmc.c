@@ -865,7 +865,7 @@ static int wmt_mci_probe(struct platform_device *pdev)
 
 	mmc_add_host(mmc);
 
-	dev_info(&pdev->dev, "WMT SDHC Controller initialized\n");
+	dev_dbg(&pdev->dev, "WMT SDHC Controller initialized\n");
 
 	return 0;
 fail6:
@@ -919,7 +919,7 @@ static int wmt_mci_remove(struct platform_device *pdev)
 
 	mmc_free_host(mmc);
 
-	dev_info(&pdev->dev, "WMT MCI device removed\n");
+	dev_dbg(&pdev->dev, "WMT MCI device removed\n");
 
 	return 0;
 }

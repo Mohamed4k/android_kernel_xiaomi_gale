@@ -50,7 +50,7 @@ static int mt76x2u_probe(struct usb_interface *intf,
 		goto err;
 
 	dev->mt76.rev = mt76_rr(dev, MT_ASIC_VERSION);
-	dev_info(dev->mt76.dev, "ASIC revision: %08x\n", dev->mt76.rev);
+	dev_dbg(dev->mt76.dev, "ASIC revision: %08x\n", dev->mt76.rev);
 
 	err = mt76x2u_register_device(dev);
 	if (err < 0)

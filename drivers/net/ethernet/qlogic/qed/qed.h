@@ -89,7 +89,7 @@ enum qed_nvm_cmd {
 };
 
 struct qed_eth_cb_ops;
-struct qed_dev_info;
+struct qed_dev_dbg;
 union qed_mcp_protocol_stats;
 enum qed_mcp_protocol_type;
 enum qed_mfw_tlv_type;
@@ -912,8 +912,8 @@ u16 qed_get_cm_pq_idx_llt_mtc(struct qed_hwfn *p_hwfn, u8 tc);
 					  (cdev->doorbells) + (db_addr)))
 
 /* Prototypes */
-int qed_fill_dev_info(struct qed_dev *cdev,
-		      struct qed_dev_info *dev_info);
+int qed_fill_dev_dbg(struct qed_dev *cdev,
+		      struct qed_dev_dbg *dev_dbg);
 void qed_link_update(struct qed_hwfn *hwfn, struct qed_ptt *ptt);
 u32 qed_unzip_data(struct qed_hwfn *p_hwfn,
 		   u32 input_len, u8 *input_buf,

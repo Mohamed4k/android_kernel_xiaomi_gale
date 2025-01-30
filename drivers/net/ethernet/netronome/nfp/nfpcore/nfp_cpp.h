@@ -53,7 +53,7 @@
 #define nfp_warn(cpp, fmt, args...) \
 	dev_warn(nfp_cpp_device(cpp)->parent, NFP_SUBSYS ": " fmt, ## args)
 #define nfp_info(cpp, fmt, args...) \
-	dev_info(nfp_cpp_device(cpp)->parent, NFP_SUBSYS ": " fmt, ## args)
+	dev_dbg(nfp_cpp_device(cpp)->parent, NFP_SUBSYS ": " fmt, ## args)
 #define nfp_dbg(cpp, fmt, args...) \
 	dev_dbg(nfp_cpp_device(cpp)->parent, NFP_SUBSYS ": " fmt, ## args)
 

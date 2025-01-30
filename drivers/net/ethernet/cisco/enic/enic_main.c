@@ -187,14 +187,14 @@ static void enic_udp_tunnel_add(struct net_device *netdev,
 	spin_lock_bh(&enic->devcmd_lock);
 
 	if (ti->type != UDP_TUNNEL_TYPE_VXLAN) {
-		netdev_info(netdev, "udp_tnl: only vxlan tunnel offload supported");
+		netdev_dbg(netdev, "udp_tnl: only vxlan tunnel offload supported");
 		goto error;
 	}
 
 	switch (ti->sa_family) {
 	case AF_INET6:
 		if (!(enic->vxlan.flags & ENIC_VXLAN_OUTER_IPV6)) {
-			netdev_info(netdev, "vxlan: only IPv4 offload supported");
+			netdev_dbg(netdev, "vxlan: only IPv4 offload supported");
 			goto error;
 		}
 		/* Fall through */
@@ -208,13 +208,13 @@ static void enic_udp_tunnel_add(struct net_device *netdev,
 		if (ntohs(port) == enic->vxlan.vxlan_udp_port_number)
 			netdev_warn(netdev, "vxlan: udp port already offloaded");
 		else
-			netdev_info(netdev, "vxlan: offload supported for only one UDP port");
+			netdev_dbg(netdev, "vxlan: offload supported for only one UDP port");
 
 		goto error;
 	}
 	if ((vnic_dev_get_res_count(enic->vdev, RES_TYPE_WQ) != 1) &&
 	    !(enic->vxlan.flags & ENIC_VXLAN_MULTI_WQ)) {
-		netdev_info(netdev, "vxlan: vxlan offload with multi wq not supported on this adapter");
+		netdev_dbg(netdev, "vxlan: vxlan offload with multi wq not supported on this adapter");
 		goto error;
 	}
 
@@ -231,13 +231,13 @@ static void enic_udp_tunnel_add(struct net_device *netdev,
 
 	enic->vxlan.vxlan_udp_port_number = ntohs(port);
 
-	netdev_info(netdev, "vxlan fw-vers-%d: offload enabled for udp port: %d, sa_family: %d ",
+	netdev_dbg(netdev, "vxlan fw-vers-%d: offload enabled for udp port: %d, sa_family: %d ",
 		    (int)enic->vxlan.patch_level, ntohs(port), ti->sa_family);
 
 	goto unlock;
 
 error:
-	netdev_info(netdev, "failed to offload udp port: %d, sa_family: %d, type: %d",
+	netdev_dbg(netdev, "failed to offload udp port: %d, sa_family: %d, type: %d",
 		    ntohs(port), ti->sa_family, ti->type);
 unlock:
 	spin_unlock_bh(&enic->devcmd_lock);
@@ -253,7 +253,7 @@ static void enic_udp_tunnel_del(struct net_device *netdev,
 
 	if ((ntohs(ti->port) != enic->vxlan.vxlan_udp_port_number) ||
 	    ti->type != UDP_TUNNEL_TYPE_VXLAN) {
-		netdev_info(netdev, "udp_tnl: port:%d, sa_family: %d, type: %d not offloaded",
+		netdev_dbg(netdev, "udp_tnl: port:%d, sa_family: %d, type: %d not offloaded",
 			    ntohs(ti->port), ti->sa_family, ti->type);
 		goto unlock;
 	}
@@ -268,7 +268,7 @@ static void enic_udp_tunnel_del(struct net_device *netdev,
 
 	enic->vxlan.vxlan_udp_port_number = 0;
 
-	netdev_info(netdev, "vxlan: del offload udp port %d, family %d\n",
+	netdev_dbg(netdev, "vxlan: del offload udp port %d, family %d\n",
 		    ntohs(ti->port), ti->sa_family);
 
 unlock:
@@ -428,7 +428,7 @@ static void enic_msglvl_check(struct enic *enic)
 	u32 msg_enable = vnic_dev_msg_lvl(enic->vdev);
 
 	if (msg_enable != enic->msg_enable) {
-		netdev_info(enic->netdev, "msg lvl changed from 0x%x to 0x%x\n",
+		netdev_dbg(enic->netdev, "msg lvl changed from 0x%x to 0x%x\n",
 			enic->msg_enable, msg_enable);
 		enic->msg_enable = msg_enable;
 	}
@@ -462,10 +462,10 @@ static void enic_link_check(struct enic *enic)
 	int carrier_ok = netif_carrier_ok(enic->netdev);
 
 	if (link_status && !carrier_ok) {
-		netdev_info(enic->netdev, "Link UP\n");
+		netdev_dbg(enic->netdev, "Link UP\n");
 		netif_carrier_on(enic->netdev);
 	} else if (!link_status && carrier_ok) {
-		netdev_info(enic->netdev, "Link DOWN\n");
+		netdev_dbg(enic->netdev, "Link DOWN\n");
 		netif_carrier_off(enic->netdev);
 	}
 }
@@ -2099,7 +2099,7 @@ static void enic_change_mtu_work(struct work_struct *work)
 	(void)_enic_change_mtu(netdev, new_mtu);
 	rtnl_unlock();
 
-	netdev_info(netdev, "interface MTU set as %d\n", netdev->mtu);
+	netdev_dbg(netdev, "interface MTU set as %d\n", netdev->mtu);
 }
 
 #ifdef CONFIG_NET_POLL_CONTROLLER
@@ -2597,7 +2597,7 @@ static void enic_dev_deinit(struct enic *enic)
 static void enic_kdump_kernel_config(struct enic *enic)
 {
 	if (is_kdump_kernel()) {
-		dev_info(enic_get_dev(enic), "Running from within kdump kernel. Using minimal resources\n");
+		dev_dbg(enic_get_dev(enic), "Running from within kdump kernel. Using minimal resources\n");
 		enic->rq_count = 1;
 		enic->wq_count = 1;
 		enic->config.rq_desc_count = ENIC_MIN_RQ_DESCS;
@@ -2937,7 +2937,7 @@ static int enic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		netdev->features &= ~NETIF_F_HW_VLAN_CTAG_TX;
 		enic->loop_enable = 1;
 		enic->loop_tag = enic->config.loop_tag;
-		dev_info(dev, "loopback tag=0x%04x\n", enic->loop_tag);
+		dev_dbg(dev, "loopback tag=0x%04x\n", enic->loop_tag);
 	}
 	if (ENIC_SETTING(enic, TXCSUM))
 		netdev->hw_features |= NETIF_F_SG | NETIF_F_HW_CSUM;
@@ -3074,7 +3074,7 @@ static struct pci_driver enic_driver = {
 
 static int __init enic_init_module(void)
 {
-	pr_info("%s, ver %s\n", DRV_DESCRIPTION, DRV_VERSION);
+	pr_debug("%s, ver %s\n", DRV_DESCRIPTION, DRV_VERSION);
 
 	return pci_register_driver(&enic_driver);
 }

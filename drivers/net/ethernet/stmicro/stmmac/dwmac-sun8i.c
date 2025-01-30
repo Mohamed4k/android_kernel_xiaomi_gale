@@ -663,7 +663,7 @@ static void sun8i_dwmac_set_filter(struct mac_device_info *hw,
 			}
 		}
 	} else {
-		netdev_info(dev, "Too many address, switching to promiscuous\n");
+		netdev_dbg(dev, "Too many address, switching to promiscuous\n");
 		v = EMAC_FRM_FLT_RXALL;
 	}
 
@@ -754,7 +754,7 @@ static int get_ephy_nodes(struct stmmac_priv *priv)
 			}
 			continue;
 		}
-		dev_info(priv->device, "Found internal PHY node\n");
+		dev_dbg(priv->device, "Found internal PHY node\n");
 		of_node_put(iphynode);
 		of_node_put(mdio_internal);
 		return 0;
@@ -774,7 +774,7 @@ static int sun8i_dwmac_power_internal_phy(struct stmmac_priv *priv)
 		return 0;
 	}
 
-	dev_info(priv->device, "Powering internal PHY\n");
+	dev_dbg(priv->device, "Powering internal PHY\n");
 	ret = clk_prepare_enable(gmac->ephy_clk);
 	if (ret) {
 		dev_err(priv->device, "Cannot enable internal PHY\n");
@@ -831,12 +831,12 @@ static int mdio_mux_syscon_switch_fn(int current_child, int desired_child,
 		regmap_field_read(gmac->regmap_field, &reg);
 		switch (desired_child) {
 		case DWMAC_SUN8I_MDIO_MUX_INTERNAL_ID:
-			dev_info(priv->device, "Switch mux to internal PHY");
+			dev_dbg(priv->device, "Switch mux to internal PHY");
 			val = (reg & ~H3_EPHY_MUX_MASK) | H3_EPHY_SELECT;
 			gmac->use_internal_phy = true;
 			break;
 		case DWMAC_SUN8I_MDIO_MUX_EXTERNAL_ID:
-			dev_info(priv->device, "Switch mux to external PHY");
+			dev_dbg(priv->device, "Switch mux to external PHY");
 			val = (reg & ~H3_EPHY_MUX_MASK) | H3_EPHY_SHUTDOWN;
 			gmac->use_internal_phy = false;
 			break;
@@ -1126,7 +1126,7 @@ static int sun8i_dwmac_probe(struct platform_device *pdev)
 	if (IS_ERR(gmac->regulator)) {
 		if (PTR_ERR(gmac->regulator) == -EPROBE_DEFER)
 			return -EPROBE_DEFER;
-		dev_info(dev, "No regulator found\n");
+		dev_dbg(dev, "No regulator found\n");
 		gmac->regulator = NULL;
 	}
 

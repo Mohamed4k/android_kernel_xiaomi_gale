@@ -116,19 +116,19 @@ static int socfpga_dwmac_parse_data(struct socfpga_dwmac *dwmac, struct device *
 
 	sys_mgr_base_addr = syscon_regmap_lookup_by_phandle(np, "altr,sysmgr-syscon");
 	if (IS_ERR(sys_mgr_base_addr)) {
-		dev_info(dev, "No sysmgr-syscon node found\n");
+		dev_dbg(dev, "No sysmgr-syscon node found\n");
 		return PTR_ERR(sys_mgr_base_addr);
 	}
 
 	ret = of_property_read_u32_index(np, "altr,sysmgr-syscon", 1, &reg_offset);
 	if (ret) {
-		dev_info(dev, "Could not read reg_offset from sysmgr-syscon!\n");
+		dev_dbg(dev, "Could not read reg_offset from sysmgr-syscon!\n");
 		return -EINVAL;
 	}
 
 	ret = of_property_read_u32_index(np, "altr,sysmgr-syscon", 2, &reg_shift);
 	if (ret) {
-		dev_info(dev, "Could not read reg_shift from sysmgr-syscon!\n");
+		dev_dbg(dev, "Could not read reg_shift from sysmgr-syscon!\n");
 		return -EINVAL;
 	}
 
@@ -139,13 +139,13 @@ static int socfpga_dwmac_parse_data(struct socfpga_dwmac *dwmac, struct device *
 		ret = of_address_to_resource(np_splitter, 0, &res_splitter);
 		of_node_put(np_splitter);
 		if (ret) {
-			dev_info(dev, "Missing emac splitter address\n");
+			dev_dbg(dev, "Missing emac splitter address\n");
 			return -EINVAL;
 		}
 
 		dwmac->splitter_base = devm_ioremap_resource(dev, &res_splitter);
 		if (IS_ERR(dwmac->splitter_base)) {
-			dev_info(dev, "Failed to mapping emac splitter\n");
+			dev_dbg(dev, "Failed to mapping emac splitter\n");
 			return PTR_ERR(dwmac->splitter_base);
 		}
 	}

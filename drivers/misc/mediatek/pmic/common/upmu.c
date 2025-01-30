@@ -53,7 +53,7 @@ static int pmic_read_device(struct regmap *map,
 	int ret = 0;
 #if defined(CONFIG_PMIC_HW_ACCESS_EN)
 	if (!map) {
-		pr_notice("[%s] regmap not ready\n", __func__);
+		pr_debug("[%s] regmap not ready\n", __func__);
 		return -ENODEV;
 	}
 	ret = regmap_read(map, RegNum, val);
@@ -68,7 +68,7 @@ static int pmic_read_device(struct regmap *map,
 	PMICLOG("[%s] (0x%x,0x%x,0x%x,0x%x)\n",
 		__func__, RegNum, *val, MASK, SHIFT);
 #else
-	pr_info("[%s] Can not access HW PMIC(FPGA?/PWRAP?)\n", __func__);
+	pr_debug("[%s] Can not access HW PMIC(FPGA?/PWRAP?)\n", __func__);
 #endif	/*defined(CONFIG_PMIC_HW_ACCESS_EN)*/
 
 	return ret;
@@ -83,7 +83,7 @@ static int pmic_write_device(struct regmap *map,
 	int ret = 0;
 #if defined(CONFIG_PMIC_HW_ACCESS_EN)
 	if (!map) {
-		pr_notice("[%s] regmap not ready\n", __func__);
+		pr_debug("[%s] regmap not ready\n", __func__);
 		return -ENODEV;
 	}
 	ret = regmap_update_bits(map, RegNum, (MASK << SHIFT), (val << SHIFT));
@@ -110,7 +110,7 @@ unsigned int pmic_read_interface(unsigned int RegNum,
 	int ret;
 
 	if (!chip) {
-		pr_notice("[%s] PMIC not ready\n", __func__);
+		pr_debug("[%s] PMIC not ready\n", __func__);
 		return -ENODEV;
 	}
 	ret = pmic_read_device(chip->regmap, RegNum, val, MASK, SHIFT);
@@ -131,7 +131,7 @@ unsigned int pmic_config_interface(unsigned int RegNum,
 		return pmic_config_interface_nolock(RegNum, val, MASK, SHIFT);
 
 	if (!chip) {
-		pr_notice("[%s] PMIC not ready\n", __func__);
+		pr_debug("[%s] PMIC not ready\n", __func__);
 		return -ENODEV;
 	}
 	ret = pmic_write_device(chip->regmap, RegNum, val, MASK, SHIFT);
@@ -167,14 +167,14 @@ unsigned short pmic_set_register_value(PMU_FLAGS_LIST_ENUM flagname,
 	unsigned int ret = 0;
 
 	if (pFlag->flagname != flagname) {
-		pr_info("[%s]pmic flag idx error\n", __func__);
+		pr_debug("[%s]pmic flag idx error\n", __func__);
 		return 1;
 	}
 
 	ret = pmic_config_interface((unsigned int)(pFlag->offset), val,
 		(unsigned int)(pFlag->mask), (unsigned int)(pFlag->shift));
 	if (ret != 0) {
-		pr_info("[%s] error ret: %d when set Reg[0x%x]=0x%x\n",
+		pr_debug("[%s] error ret: %d when set Reg[0x%x]=0x%x\n",
 			__func__, ret, (pFlag->offset), val);
 		return ret;
 	}
@@ -191,7 +191,7 @@ unsigned short pmic_get_register_value(PMU_FLAGS_LIST_ENUM flagname)
 	ret = pmic_read_interface((unsigned int)pFlag->offset, &val,
 		(unsigned int)(pFlag->mask), (unsigned int)(pFlag->shift));
 	if (ret != 0) {
-		pr_info("[%s] error ret: %d when get Reg[0x%x]\n", __func__,
+		pr_debug("[%s] error ret: %d when get Reg[0x%x]\n", __func__,
 			ret, (pFlag->offset));
 		return ret;
 	}
@@ -206,14 +206,14 @@ unsigned short pmic_set_register_value_nolock(PMU_FLAGS_LIST_ENUM flagname,
 	unsigned int ret = 0;
 
 	if (pFlag->flagname != flagname) {
-		pr_info("[%s]pmic flag idx error\n", __func__);
+		pr_debug("[%s]pmic flag idx error\n", __func__);
 		return 1;
 	}
 
 	ret = pmic_config_interface_nolock((unsigned int)(pFlag->offset), val,
 		(unsigned int)(pFlag->mask), (unsigned int)(pFlag->shift));
 	if (ret != 0) {
-		pr_info("[%s] error ret: %d when set Reg[0x%x]=0x%x\n",
+		pr_debug("[%s] error ret: %d when set Reg[0x%x]=0x%x\n",
 			__func__, ret, (pFlag->offset), val);
 		return ret;
 	}
@@ -230,7 +230,7 @@ unsigned short pmic_get_register_value_nolock(PMU_FLAGS_LIST_ENUM flagname)
 	ret = pmic_read_interface_nolock((unsigned int)pFlag->offset, &val,
 		(unsigned int)(pFlag->mask), (unsigned int)(pFlag->shift));
 	if (ret != 0) {
-		pr_info("[%s] error ret: %d when get Reg[0x%x]\n", __func__,
+		pr_debug("[%s] error ret: %d when get Reg[0x%x]\n", __func__,
 			ret, (pFlag->offset));
 		return ret;
 	}
@@ -454,7 +454,7 @@ void __attribute__ ((weak)) record_md_vosel(void)
 void __attribute__ ((weak)) pmic_enable_smart_reset(unsigned char smart_en,
 	unsigned char smart_sdn_en)
 {
-	pr_notice("[%s] smart reset not support!\n", __func__);
+	pr_debug("[%s] smart reset not support!\n", __func__);
 }
 
 void __attribute__ ((weak)) enable_bat_temp_det(bool en)
@@ -473,13 +473,13 @@ static int pmic_ipi_reg_write(void *context, const void *data,
 	unsigned short reg = dout[0], val = dout[1];
 
 	if (count != 4) {
-		pr_notice("%s: reg=0x%x, val=0x%x, count=%zu\n",
+		pr_debug("%s: reg=0x%x, val=0x%x, count=%zu\n",
 			__func__, reg, val, count);
 		return -EINVAL;
 	}
 	ret = pmic_ipi_config_interface(reg, val, 0xFFFF, 0, 1);
 	if (ret) {
-		pr_info("[%s]fail with ret=%d, reg=0x%x val=0x%x\n",
+		pr_debug("[%s]fail with ret=%d, reg=0x%x val=0x%x\n",
 			__func__, ret, reg, val);
 		return -EINVAL;
 	}
@@ -495,7 +495,7 @@ static int pmic_ipi_reg_read(void *context,
 	int ret = 0;
 
 	if (reg_size != 2 || val_size != 2) {
-		pr_notice("%s: reg=0x%x, reg_size=%zu, val_size=%zu\n",
+		pr_debug("%s: reg=0x%x, reg_size=%zu, val_size=%zu\n",
 			__func__, reg, reg_size, val_size);
 		return -EINVAL;
 	}
@@ -511,7 +511,7 @@ static int pmic_ipi_reg_update_bits(void *context, unsigned int reg,
 
 	ret = pmic_ipi_config_interface(reg, val, mask, 0, 1);
 	if (ret) {
-		pr_info("[%s]fail with ret=%d, reg=0x%x mask=0x%x val=0x%x\n",
+		pr_debug("[%s]fail with ret=%d, reg=0x%x mask=0x%x val=0x%x\n",
 			__func__, ret, reg, mask, val);
 		return -EINVAL;
 	}
@@ -583,7 +583,7 @@ static int pmic_mt_probe(struct platform_device *pdev)
 	pmic_nolock_regmap = chip->regmap;
 #endif
 
-	pr_info("******** MT pmic driver probe!! ********\n");
+	pr_debug("******** MT pmic driver probe!! ********\n");
 	/*get PMIC CID */
 	PMICLOG("PMIC CID = 0x%x\n", pmic_get_register_value(PMIC_SWCID));
 
@@ -674,11 +674,11 @@ static int __init pmic_mt_init(void)
 
 	ret = platform_driver_register(&pmic_mt_driver);
 	if (ret) {
-		pr_info("****[%s] Unable to register driver (%d)\n",
+		pr_debug("****[%s] Unable to register driver (%d)\n",
 			__func__, ret);
 		return ret;
 	}
-	pr_info("****[%s] Initialization : DONE !!\n", __func__);
+	pr_debug("****[%s] Initialization : DONE !!\n", __func__);
 	return 0;
 }
 fs_initcall(pmic_mt_init);

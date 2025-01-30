@@ -212,7 +212,7 @@ qtnf_event_handle_bss_leave(struct qtnf_vif *vif,
 	}
 
 	if (vif->sta_state != QTNF_STA_CONNECTED)
-		pr_warn("VIF%u.%u: BSS_LEAVE event when STA is not connected\n",
+		pr_debug("VIF%u.%u: BSS_LEAVE event when STA is not connected\n",
 			vif->mac->macid, vif->vifid);
 
 	pr_debug("VIF%u.%u: disconnected\n", vif->mac->macid, vif->vifid);
@@ -431,7 +431,7 @@ static int qtnf_event_handle_radar(struct qtnf_vif *vif,
 		return -EINVAL;
 	}
 
-	pr_info("%s: radar event=%u f1=%u f2=%u bw=%u\n",
+	pr_debug("%s: radar event=%u f1=%u f2=%u bw=%u\n",
 		vif->netdev->name, ev->event,
 		chandef.center_freq1, chandef.center_freq2,
 		chandef.width);
@@ -466,7 +466,7 @@ static int qtnf_event_handle_radar(struct qtnf_vif *vif,
 				   NL80211_RADAR_CAC_STARTED, GFP_KERNEL);
 		break;
 	default:
-		pr_warn("%s: unhandled radar event %u\n",
+		pr_debug("%s: unhandled radar event %u\n",
 			vif->netdev->name, ev->event);
 		break;
 	}
@@ -533,7 +533,7 @@ static int qtnf_event_parse(struct qtnf_wmac *mac,
 					      event_len);
 		break;
 	default:
-		pr_warn("unknown event type: %x\n", event_id);
+		pr_debug("unknown event type: %x\n", event_id);
 		break;
 	}
 

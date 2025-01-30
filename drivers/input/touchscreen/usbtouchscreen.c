@@ -1166,7 +1166,7 @@ static void usbtouch_process_multi(struct usbtouch_usb *usbtouch,
 				   unsigned char *pkt, int len);
 #endif
 
-static struct usbtouch_device_info usbtouch_dev_info[] = {
+static struct usbtouch_device_info usbtouch_dev_dbg[] = {
 #ifdef CONFIG_TOUCHSCREEN_USB_ELO
 	[DEVTYPE_ELO] = {
 		.min_xc		= 0x0,
@@ -1675,7 +1675,7 @@ static int usbtouch_probe(struct usb_interface *intf,
 
 	mutex_init(&usbtouch->pm_mutex);
 
-	type = &usbtouch_dev_info[id->driver_info];
+	type = &usbtouch_dev_dbg[id->driver_info];
 	usbtouch->type = type;
 	if (!type->process_pkt)
 		type->process_pkt = usbtouch_process_pkt;

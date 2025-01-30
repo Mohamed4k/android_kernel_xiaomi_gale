@@ -577,7 +577,7 @@ static int plgpio_probe(struct platform_device *pdev)
 
 	irq = platform_get_irq(pdev, 0);
 	if (irq < 0) {
-		dev_info(&pdev->dev, "PLGPIO registered without IRQs\n");
+		dev_dbg(&pdev->dev, "PLGPIO registered without IRQs\n");
 		return 0;
 	}
 
@@ -596,12 +596,12 @@ static int plgpio_probe(struct platform_device *pdev)
 				     irq,
 				     plgpio_irq_handler);
 
-	dev_info(&pdev->dev, "PLGPIO registered with IRQs\n");
+	dev_dbg(&pdev->dev, "PLGPIO registered with IRQs\n");
 
 	return 0;
 
 remove_gpiochip:
-	dev_info(&pdev->dev, "Remove gpiochip\n");
+	dev_dbg(&pdev->dev, "Remove gpiochip\n");
 	gpiochip_remove(&plgpio->chip);
 unprepare_clk:
 	if (!IS_ERR(plgpio->clk))

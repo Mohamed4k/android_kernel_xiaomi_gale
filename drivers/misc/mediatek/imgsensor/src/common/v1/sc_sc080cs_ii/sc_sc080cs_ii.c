@@ -132,7 +132,7 @@ static struct sc080cs *sc080cs_malloc_init(struct i2c_client *client)
 		return NULL;
 	}
 	sc080cs->i2c_client = client;
-	pr_info("%s enter , client_addr = 0x%02x\n", __func__,
+	pr_debug("%s enter , client_addr = 0x%02x\n", __func__,
 		sc080cs->i2c_client->addr);
 	return sc080cs;
 }
@@ -244,7 +244,7 @@ int sc080cs_GetSensorID(struct sc080cs *sc080cs)
 static void sc080cs_avdd_control(struct sc080cs *sc080cs, bool flag)
 {
 	struct regulator *vcama;
-	qvga_dev_info(sc080cs->dev, "%s enter\n", __func__);
+	qvga_dev_dbg(sc080cs->dev, "%s enter\n", __func__);
 	vcama = regulator_get(sc080cs->dev,"vcama");
 	if (IS_ERR(vcama)) {
 		qvga_dev_err(sc080cs->dev, "%s AVDD get regulator failed\n", __func__);
@@ -264,7 +264,7 @@ static void sc080cs_avdd_control(struct sc080cs *sc080cs, bool flag)
 static void sc080cs_iovdd_control(struct sc080cs *sc080cs, bool flag)
 {
     struct regulator *vcamio;
-    qvga_dev_info(sc080cs->dev, "%s enter\n", __func__);
+    qvga_dev_dbg(sc080cs->dev, "%s enter\n", __func__);
     vcamio = regulator_get(sc080cs->dev,"vcamio");
     if (IS_ERR(vcamio)) {
         qvga_dev_err(sc080cs->dev, "%s  IOVDD get regulator failed\n", __func__);
@@ -281,21 +281,21 @@ static void sc080cs_iovdd_control(struct sc080cs *sc080cs, bool flag)
 }
 static void sc080cs_hw_on_reset(struct sc080cs *sc080cs)
 {
-	qvga_dev_info(sc080cs->dev, "%s enter\n", __func__);
+	qvga_dev_dbg(sc080cs->dev, "%s enter\n", __func__);
 	if (gpio_is_valid(sc080cs->reset_gpio)) {
 		gpio_set_value_cansleep(sc080cs->reset_gpio, 1);
 	}
 }
 static void sc080cs_hw_on_reset1(struct sc080cs *sc080cs)
 {
-	qvga_dev_info(sc080cs->dev, "%s enter\n", __func__);
+	qvga_dev_dbg(sc080cs->dev, "%s enter\n", __func__);
 	if (gpio_is_valid(sc080cs->reset_gpio1)) {
 		gpio_set_value_cansleep(sc080cs->reset_gpio1, 1);
 	}
 }
 static void sc080cs_hw_off_reset(struct sc080cs *sc080cs)
 {
-	qvga_dev_info(sc080cs->dev, "%s enter\n", __func__);
+	qvga_dev_dbg(sc080cs->dev, "%s enter\n", __func__);
 	if (gpio_is_valid(sc080cs->reset_gpio)) {
 		gpio_set_value_cansleep(sc080cs->reset_gpio, 0);
 		udelay(50);
@@ -306,7 +306,7 @@ static void sc080cs_hw_off_reset(struct sc080cs *sc080cs)
 }
 static void sc080cs_hw_off_reset1(struct sc080cs *sc080cs)
 {
-	qvga_dev_info(sc080cs->dev, "%s enter\n", __func__);
+	qvga_dev_dbg(sc080cs->dev, "%s enter\n", __func__);
 	if (gpio_is_valid(sc080cs->reset_gpio1)) {
 		gpio_set_value_cansleep(sc080cs->reset_gpio1, 0);
 	}
@@ -427,7 +427,7 @@ static struct attribute_group sc080cs_attribute_group = {
 static void sc080cs_parse_gpio_dt(struct sc080cs *sc080cs,
 					struct device_node *np)
 {
-	qvga_dev_info(sc080cs->dev, "%s enter, dev_i2c%d@0x%02X\n", __func__,
+	qvga_dev_dbg(sc080cs->dev, "%s enter, dev_i2c%d@0x%02X\n", __func__,
 			sc080cs->i2c_seq, sc080cs->i2c_addr);
 	sc080cs->reset_gpio = of_get_named_gpio(np, "reset-gpio", 0);
 	if (sc080cs->reset_gpio < 0) {
@@ -436,7 +436,7 @@ static void sc080cs_parse_gpio_dt(struct sc080cs *sc080cs,
 			__func__);
 		sc080cs->reset_gpio = -1;
 	} else {
-		qvga_dev_info(sc080cs->dev, "%s: reset gpio provided ok\n",
+		qvga_dev_dbg(sc080cs->dev, "%s: reset gpio provided ok\n",
 			 __func__);
 	}
 	sc080cs->reset_gpio1 = of_get_named_gpio(np, "reset-gpio1", 0);
@@ -446,13 +446,13 @@ static void sc080cs_parse_gpio_dt(struct sc080cs *sc080cs,
 			__func__);
 		sc080cs->reset_gpio1 = -1;
 	} else {
-		qvga_dev_info(sc080cs->dev, "%s: reset gpio1 provided ok\n",
+		qvga_dev_dbg(sc080cs->dev, "%s: reset gpio1 provided ok\n",
 			 __func__);
 	}
 }
 static void sc080cs_parse_dt(struct sc080cs *sc080cs, struct device_node *np)
 {
-	qvga_dev_info(sc080cs->dev, "%s enter, dev_i2c%d@0x%02X\n", __func__,
+	qvga_dev_dbg(sc080cs->dev, "%s enter, dev_i2c%d@0x%02X\n", __func__,
 		    sc080cs->i2c_seq, sc080cs->i2c_addr);
 	sc080cs_parse_gpio_dt(sc080cs, np);
 }
@@ -609,11 +609,11 @@ static struct i2c_driver sc080cs_i2c_driver = {
 static int __init sc080cs_yuv_init(void)
 {
 	int ret;
-	pr_info("%s: driver version: %s\n", __func__,
+	pr_debug("%s: driver version: %s\n", __func__,
 				SC080CS_DRIVER_VERSION);
 	ret = i2c_add_driver(&sc080cs_i2c_driver);
 	if (ret) {
-		pr_info("****[%s] Unable to register driver (%d)\n",
+		pr_debug("****[%s] Unable to register driver (%d)\n",
 			__func__, ret);
 		return ret;
 	}
@@ -621,7 +621,7 @@ static int __init sc080cs_yuv_init(void)
 }
 static void __exit sc080cs_yuv_exit(void)
 {
-	pr_info("%s enter\n", __func__);
+	pr_debug("%s enter\n", __func__);
 	i2c_del_driver(&sc080cs_i2c_driver);
 }
 module_init(sc080cs_yuv_init);

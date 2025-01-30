@@ -303,7 +303,7 @@ nx_update_dma_mask(struct netxen_adapter *adapter)
 			if (err)
 				goto err_out;
 		}
-		dev_info(&pdev->dev, "using %d-bit dma mask\n", 32+shift);
+		dev_dbg(&pdev->dev, "using %d-bit dma mask\n", 32+shift);
 	}
 
 	return 0;
@@ -419,12 +419,12 @@ static void netxen_pcie_strap_init(struct netxen_adapter *adapter)
 			/*  set chicken3.24 if gen1 */
 			chicken |= 0x01000000;
 		}
-		dev_info(&adapter->pdev->dev, "Gen2 strapping detected\n");
+		dev_dbg(&adapter->pdev->dev, "Gen2 strapping detected\n");
 		c8c9value = 0xF1000;
 	} else {
 		/* set chicken3.24 if gen1 */
 		chicken |= 0x01000000;
-		dev_info(&adapter->pdev->dev, "Gen1 strapping detected\n");
+		dev_dbg(&adapter->pdev->dev, "Gen1 strapping detected\n");
 		if (adapter->ahw.revision_id == NX_P3_B0)
 			c8c9value = 0xF1020;
 		else
@@ -537,7 +537,7 @@ static netdev_features_t netxen_fix_features(struct net_device *dev,
 	netdev_features_t features)
 {
 	if (!(features & NETIF_F_RXCSUM)) {
-		netdev_info(dev, "disabling LRO as RXCSUM is off\n");
+		netdev_dbg(dev, "disabling LRO as RXCSUM is off\n");
 
 		features &= ~NETIF_F_LRO;
 	}
@@ -639,7 +639,7 @@ static int netxen_setup_msi_interrupts(struct netxen_adapter *adapter,
 			if (adapter->rss_supported)
 				adapter->max_sds_rings = num_msix;
 
-			dev_info(&pdev->dev, "using msi-x interrupts\n");
+			dev_dbg(&pdev->dev, "using msi-x interrupts\n");
 			return 0;
 		}
 		/* fall through for msi */
@@ -650,7 +650,7 @@ static int netxen_setup_msi_interrupts(struct netxen_adapter *adapter,
 		adapter->flags |= NETXEN_NIC_MSI_ENABLED;
 		adapter->tgt_status_reg = netxen_get_ioaddr(adapter, value);
 		adapter->msix_entries[0].vector = pdev->irq;
-		dev_info(&pdev->dev, "using msi interrupts\n");
+		dev_dbg(&pdev->dev, "using msi interrupts\n");
 		return 0;
 	}
 
@@ -690,7 +690,7 @@ static int netxen_setup_intr(struct netxen_adapter *adapter)
 
 	if (!NETXEN_IS_MSI_FAMILY(adapter)) {
 		adapter->msix_entries[0].vector = pdev->irq;
-		dev_info(&pdev->dev, "using legacy interrupts\n");
+		dev_dbg(&pdev->dev, "using legacy interrupts\n");
 	}
 	return 0;
 }
@@ -784,7 +784,7 @@ netxen_setup_pci_map(struct netxen_adapter *adapter)
 
 	netxen_setup_hwops(adapter);
 
-	dev_info(&pdev->dev, "%dMB memory map\n", (int)(mem_len>>20));
+	dev_dbg(&pdev->dev, "%dMB memory map\n", (int)(mem_len>>20));
 
 	if (NX_IS_REVISION_P3P(adapter->ahw.revision_id)) {
 		adapter->ahw.ocm_win_crb = netxen_get_ioaddr(adapter,
@@ -875,7 +875,7 @@ netxen_check_options(struct netxen_adapter *adapter)
 						    brd_name))
 			strcpy(serial_num, "Unknown");
 
-		pr_info("%s: %s Board S/N %s  Chip rev 0x%x\n",
+		pr_debug("%s: %s Board S/N %s  Chip rev 0x%x\n",
 				module_name(THIS_MODULE),
 				brd_name, serial_num, adapter->ahw.revision_id);
 	}
@@ -892,7 +892,7 @@ netxen_check_options(struct netxen_adapter *adapter)
 		adapter->ahw.cut_through = (i & 0x8000) ? 1 : 0;
 	}
 
-	dev_info(&pdev->dev, "Driver v%s, firmware v%d.%d.%d [%s]\n",
+	dev_dbg(&pdev->dev, "Driver v%s, firmware v%d.%d.%d [%s]\n",
 		 NETXEN_NIC_LINUX_VERSIONID, fw_major, fw_minor, fw_build,
 		 adapter->ahw.cut_through ? "cut-through" : "legacy");
 
@@ -1414,10 +1414,10 @@ static void netxen_read_ula_info(struct netxen_adapter *adapter)
 	temp = NXRD32(adapter, NETXEN_ULA_KEY);
 	switch (temp) {
 	case NETXEN_ULA_ADAPTER_KEY:
-		dev_info(&adapter->pdev->dev, "ULA adapter");
+		dev_dbg(&adapter->pdev->dev, "ULA adapter");
 		break;
 	case NETXEN_NON_ULA_ADAPTER_KEY:
-		dev_info(&adapter->pdev->dev, "non ULA adapter");
+		dev_dbg(&adapter->pdev->dev, "non ULA adapter");
 		break;
 	default:
 		break;
@@ -1463,7 +1463,7 @@ netxen_nic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	u32 val;
 
 	if (pdev->revision >= NX_P3_A0 && pdev->revision <= NX_P3_B1) {
-		pr_warn("%s: chip revisions between 0x%x-0x%x will not be enabled\n",
+		pr_debug("%s: chip revisions between 0x%x-0x%x will not be enabled\n",
 			module_name(THIS_MODULE), NX_P3_A0, NX_P3_B1);
 		return -ENODEV;
 	}
@@ -1590,11 +1590,11 @@ netxen_nic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	switch (adapter->ahw.port_type) {
 	case NETXEN_NIC_GBE:
-		dev_info(&adapter->pdev->dev, "%s: GbE port initialized\n",
+		dev_dbg(&adapter->pdev->dev, "%s: GbE port initialized\n",
 				adapter->netdev->name);
 		break;
 	case NETXEN_NIC_XGBE:
-		dev_info(&adapter->pdev->dev, "%s: XGbE port initialized\n",
+		dev_dbg(&adapter->pdev->dev, "%s: XGbE port initialized\n",
 				adapter->netdev->name);
 		break;
 	}
@@ -3149,13 +3149,13 @@ netxen_create_diag_entries(struct netxen_adapter *adapter)
 
 	dev = &pdev->dev;
 	if (device_create_file(dev, &dev_attr_diag_mode))
-		dev_info(dev, "failed to create diag_mode sysfs entry\n");
+		dev_dbg(dev, "failed to create diag_mode sysfs entry\n");
 	if (device_create_bin_file(dev, &bin_attr_crb))
-		dev_info(dev, "failed to create crb sysfs entry\n");
+		dev_dbg(dev, "failed to create crb sysfs entry\n");
 	if (device_create_bin_file(dev, &bin_attr_mem))
-		dev_info(dev, "failed to create mem sysfs entry\n");
+		dev_dbg(dev, "failed to create mem sysfs entry\n");
 	if (device_create_bin_file(dev, &bin_attr_dimm))
-		dev_info(dev, "failed to create dimm sysfs entry\n");
+		dev_dbg(dev, "failed to create dimm sysfs entry\n");
 }
 
 

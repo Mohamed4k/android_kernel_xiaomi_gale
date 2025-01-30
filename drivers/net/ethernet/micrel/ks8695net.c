@@ -597,7 +597,7 @@ ks8695_link_irq(int irq, void *dev_id)
 	if (ctrl & WMC_WLS) {
 		netif_carrier_on(ndev);
 		if (netif_msg_link(ksp))
-			dev_info(ksp->dev,
+			dev_dbg(ksp->dev,
 				 "%s: Link is now up (10%sMbps/%s-duplex)\n",
 				 ndev->name,
 				 (ctrl & WMC_WSS) ? "0" : "",
@@ -605,7 +605,7 @@ ks8695_link_irq(int irq, void *dev_id)
 	} else {
 		netif_carrier_off(ndev);
 		if (netif_msg_link(ksp))
-			dev_info(ksp->dev, "%s: Link is now down.\n",
+			dev_dbg(ksp->dev, "%s: Link is now down.\n",
 				 ndev->name);
 	}
 
@@ -1531,7 +1531,7 @@ ks8695_probe(struct platform_device *pdev)
 		if (inv_mac_addr)
 			dev_warn(ksp->dev, "%s: Invalid ethernet MAC address. Please set using ip\n",
 				 ndev->name);
-		dev_info(ksp->dev, "ks8695 ethernet (%s) MAC: %pM\n",
+		dev_dbg(ksp->dev, "ks8695 ethernet (%s) MAC: %pM\n",
 			 ks8695_port_type(ksp), ndev->dev_addr);
 	} else {
 		/* Report the failure to register the net_device */

@@ -667,7 +667,7 @@ static int _wm97xx_probe(struct wm97xx *wm)
 
 	wm->variant = WM97xx_GENERIC;
 
-	dev_info(wm->dev, "detected a wm97%02x codec\n", wm->id & 0xff);
+	dev_dbg(wm->dev, "detected a wm97%02x codec\n", wm->id & 0xff);
 
 	switch (wm->id & 0xff) {
 #ifdef CONFIG_TOUCHSCREEN_WM9705

@@ -42,7 +42,7 @@ static void init_chip_id(unsigned int line)
 		return;
 
 	if (atomic_read(&g_cid_init) == CID_INITIALIZING) {
-		pr_notice("%s (%d) state(%d)\n", __func__, line,
+		pr_debug("%s (%d) state(%d)\n", __func__, line,
 			atomic_read(&g_cid_init));
 		return;
 	}
@@ -65,7 +65,7 @@ static void init_chip_id(unsigned int line)
 			atomic_set(&g_cid_init, CID_INITIALIZED);
 		} else {
 			atomic_set(&g_cid_init, CID_UNINIT);
-			pr_notice("node not found\n");
+			pr_debug("node not found\n");
 		}
 	}
 #endif

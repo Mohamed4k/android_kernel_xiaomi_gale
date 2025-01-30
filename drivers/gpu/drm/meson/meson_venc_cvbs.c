@@ -248,7 +248,7 @@ int meson_venc_cvbs_create(struct meson_drm *priv)
 	int ret;
 
 	if (!meson_venc_cvbs_connector_is_available(priv)) {
-		dev_info(drm->dev, "CVBS Output connector not available\n");
+		dev_dbg(drm->dev, "CVBS Output connector not available\n");
 		return 0;
 	}
 

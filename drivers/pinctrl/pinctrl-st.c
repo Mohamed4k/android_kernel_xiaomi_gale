@@ -474,7 +474,7 @@ static unsigned long st_pinconf_delay_to_bit(unsigned int delay,
 		}
 	}
 
-	pr_warn("Attempt to set delay %d, closest available %d\n",
+	pr_debug("Attempt to set delay %d, closest available %d\n",
 	     delay, delay_times[closest_index]);
 
 	return closest_index;
@@ -497,7 +497,7 @@ static unsigned long st_pinconf_bit_to_delay(unsigned int index,
 	if (index < num_delay_times) {
 		return delay_times[index];
 	} else {
-		pr_warn("Delay not found in/out delay list\n");
+		pr_debug("Delay not found in/out delay list\n");
 		return 0;
 	}
 }
@@ -850,7 +850,7 @@ static int st_pctl_dt_node_to_map(struct pinctrl_dev *pctldev,
 		new_map[i].data.configs.configs = &grp->pin_conf[i].config;
 		new_map[i].data.configs.num_configs = 1;
 	}
-	dev_info(pctldev->dev, "maps: function %s group %s num %d\n",
+	dev_dbg(pctldev->dev, "maps: function %s group %s num %d\n",
 		(*map)->data.mux.function, grp->name, map_num);
 
 	return 0;
@@ -1184,7 +1184,7 @@ static int st_pctl_dt_parse_groups(struct device_node *np,
 		if (pp->length / sizeof(__be32) >= OF_GPIO_ARGS_MIN) {
 			npins++;
 		} else {
-			pr_warn("Invalid st,pins in %s node\n", np->name);
+			pr_debug("Invalid st,pins in %s node\n", np->name);
 			return -EINVAL;
 		}
 	}
@@ -1263,7 +1263,7 @@ static int st_pctl_parse_functions(struct device_node *np,
 		if (ret)
 			return ret;
 	}
-	dev_info(info->dev, "Function[%d\t name:%s,\tgroups:%d]\n",
+	dev_dbg(info->dev, "Function[%d\t name:%s,\tgroups:%d]\n",
 				index, func->name, func->ngroups);
 
 	return 0;
@@ -1500,7 +1500,7 @@ static int st_gpiolib_register_bank(struct st_pinctrl *info,
 		dev_err(dev, "Failed to add gpiochip(%d)!\n", bank_num);
 		return err;
 	}
-	dev_info(dev, "%s bank added.\n", range->name);
+	dev_dbg(dev, "%s bank added.\n", range->name);
 
 	/**
 	 * GPIO bank can have one of the two possible types of
@@ -1533,11 +1533,11 @@ static int st_gpiolib_register_bank(struct st_pinctrl *info,
 					   IRQ_TYPE_NONE);
 		if (err) {
 			gpiochip_remove(&bank->gpio_chip);
-			dev_info(dev, "could not add irqchip\n");
+			dev_dbg(dev, "could not add irqchip\n");
 			return err;
 		}
 	} else {
-		dev_info(dev, "No IRQ support for %pOF bank\n", np);
+		dev_dbg(dev, "No IRQ support for %pOF bank\n", np);
 	}
 
 	return 0;
@@ -1569,9 +1569,9 @@ static int st_pctl_probe_dt(struct platform_device *pdev,
 		return -EINVAL;
 	}
 
-	dev_info(&pdev->dev, "nbanks = %d\n", info->nbanks);
-	dev_info(&pdev->dev, "nfunctions = %d\n", info->nfunctions);
-	dev_info(&pdev->dev, "ngroups = %d\n", info->ngroups);
+	dev_dbg(&pdev->dev, "nbanks = %d\n", info->nbanks);
+	dev_dbg(&pdev->dev, "nfunctions = %d\n", info->nfunctions);
+	dev_dbg(&pdev->dev, "ngroups = %d\n", info->ngroups);
 
 	info->functions = devm_kcalloc(&pdev->dev,
 		info->nfunctions, sizeof(*info->functions), GFP_KERNEL);

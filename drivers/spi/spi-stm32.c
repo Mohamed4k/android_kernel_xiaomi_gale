@@ -844,7 +844,7 @@ dma_desc_error:
 
 	spin_unlock_irqrestore(&spi->lock, flags);
 
-	dev_info(spi->dev, "DMA issue: fall back to irq transfer\n");
+	dev_dbg(spi->dev, "DMA issue: fall back to irq transfer\n");
 
 	return stm32_spi_transfer_one_irq(spi);
 }
@@ -1214,7 +1214,7 @@ static int stm32_spi_probe(struct platform_device *pdev)
 		}
 	}
 
-	dev_info(&pdev->dev, "driver initialized\n");
+	dev_dbg(&pdev->dev, "driver initialized\n");
 
 	return 0;
 

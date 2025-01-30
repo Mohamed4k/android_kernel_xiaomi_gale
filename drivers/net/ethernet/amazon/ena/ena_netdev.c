@@ -2241,7 +2241,7 @@ static void ena_config_host_info(struct ena_com_dev *ena_dev)
 	rc = ena_com_set_host_attributes(ena_dev);
 	if (rc) {
 		if (rc == -EOPNOTSUPP)
-			pr_warn("Cannot set host attributes\n");
+			pr_debug("Cannot set host attributes\n");
 		else
 			pr_err("Cannot set host attributes\n");
 
@@ -3168,7 +3168,7 @@ static int ena_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	dev_dbg(&pdev->dev, "%s\n", __func__);
 
 	if (version_printed++ == 0)
-		dev_info(&pdev->dev, "%s", version);
+		dev_dbg(&pdev->dev, "%s", version);
 
 	rc = pci_enable_device_mem(pdev);
 	if (rc) {
@@ -3241,7 +3241,7 @@ static int ena_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		goto err_device_destroy;
 	}
 
-	dev_info(&pdev->dev, "creating %d io queues. queue size: %d\n",
+	dev_dbg(&pdev->dev, "creating %d io queues. queue size: %d\n",
 		 io_queue_num, queue_size);
 
 	/* dev zeroed in init_etherdev */
@@ -3332,7 +3332,7 @@ static int ena_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	timer_setup(&adapter->timer_service, ena_timer_service, 0);
 	mod_timer(&adapter->timer_service, round_jiffies(jiffies + HZ));
 
-	dev_info(&pdev->dev, "%s found at mem %lx, mac addr %pM Queues %d\n",
+	dev_dbg(&pdev->dev, "%s found at mem %lx, mac addr %pM Queues %d\n",
 		 DEVICE_NAME, (long)pci_resource_start(pdev, 0),
 		 netdev->dev_addr, io_queue_num);
 
@@ -3483,7 +3483,7 @@ static struct pci_driver ena_pci_driver = {
 
 static int __init ena_init(void)
 {
-	pr_info("%s", version);
+	pr_debug("%s", version);
 
 	ena_wq = create_singlethread_workqueue(DRV_MODULE_NAME);
 	if (!ena_wq) {

@@ -20,7 +20,7 @@
 #include "hostap_wlan.h"
 
 
-static char *dev_info = "hostap_cs";
+static char *dev_dbg = "hostap_cs";
 
 MODULE_AUTHOR("Jouni Malinen");
 MODULE_DESCRIPTION("Support for Intersil Prism2-based 802.11 wireless LAN "
@@ -429,7 +429,7 @@ static int hostap_cs_probe(struct pcmcia_device *p_dev)
 {
 	int ret;
 
-	PDEBUG(DEBUG_HW, "%s: setting Vcc=33 (constant)\n", dev_info);
+	PDEBUG(DEBUG_HW, "%s: setting Vcc=33 (constant)\n", dev_dbg);
 
 	ret = prism2_config(p_dev);
 	if (ret) {
@@ -578,7 +578,7 @@ static int hostap_cs_suspend(struct pcmcia_device *link)
 
 	iface = netdev_priv(dev);
 
-	PDEBUG(DEBUG_EXTRA, "%s: CS_EVENT_PM_SUSPEND\n", dev_info);
+	PDEBUG(DEBUG_EXTRA, "%s: CS_EVENT_PM_SUSPEND\n", dev_dbg);
 	if (iface && iface->local)
 		dev_open = iface->local->num_dev_open > 0;
 	if (dev_open) {
@@ -601,7 +601,7 @@ static int hostap_cs_resume(struct pcmcia_device *link)
 
 	iface = netdev_priv(dev);
 
-	PDEBUG(DEBUG_EXTRA, "%s: CS_EVENT_PM_RESUME\n", dev_info);
+	PDEBUG(DEBUG_EXTRA, "%s: CS_EVENT_PM_RESUME\n", dev_dbg);
 
 	if (iface && iface->local)
 		dev_open = iface->local->num_dev_open > 0;

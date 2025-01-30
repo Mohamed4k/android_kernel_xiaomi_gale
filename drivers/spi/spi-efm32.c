@@ -310,7 +310,7 @@ static void efm32_spi_probe_dt(struct platform_device *pdev,
 		/* default to location configured in hardware */
 		location = efm32_spi_get_configured_location(ddata);
 
-		dev_info(&pdev->dev, "fall back to location %u\n", location);
+		dev_dbg(&pdev->dev, "fall back to location %u\n", location);
 	}
 
 	ddata->pdata.location = location;

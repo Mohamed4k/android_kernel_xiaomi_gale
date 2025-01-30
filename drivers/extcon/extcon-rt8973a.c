@@ -520,7 +520,7 @@ static void rt8973a_init_dev_type(struct rt8973a_muic_info *info)
 	version_id = ((data & RT8973A_REG_DEVICE_ID_VERSION_MASK) >>
 				RT8973A_REG_DEVICE_ID_VERSION_SHIFT);
 
-	dev_info(info->dev, "Device type: version: 0x%x, vendor: 0x%x\n",
+	dev_dbg(info->dev, "Device type: version: 0x%x, vendor: 0x%x\n",
 			    version_id, vendor_id);
 
 	/* Initiazle the register of RT8973A device to bring-up */
@@ -548,7 +548,7 @@ static void rt8973a_init_dev_type(struct rt8973a_muic_info *info)
 	data &= RT8973A_REG_CONTROL1_AUTO_CONFIG_MASK;
 	if (data) {
 		info->auto_config = true;
-		dev_info(info->dev,
+		dev_dbg(info->dev,
 			"Enable Auto-configuration for internal path\n");
 	}
 }

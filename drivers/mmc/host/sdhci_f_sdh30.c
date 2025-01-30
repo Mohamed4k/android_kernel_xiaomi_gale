@@ -70,7 +70,7 @@ static void sdhci_f_sdh30_soft_voltage_switch(struct sdhci_host *host)
 	usleep_range(2500, 3000);
 
 	if (priv->vendor_hs200) {
-		dev_info(priv->dev, "%s: setting hs200\n", __func__);
+		dev_dbg(priv->dev, "%s: setting hs200\n", __func__);
 		ctrl = sdhci_readl(host, F_SDH30_ESD_CONTROL);
 		ctrl |= priv->vendor_hs200;
 		sdhci_writel(host, ctrl, F_SDH30_ESD_CONTROL);

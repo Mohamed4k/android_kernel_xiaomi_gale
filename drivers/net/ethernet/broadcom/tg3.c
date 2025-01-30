@@ -1854,7 +1854,7 @@ static int tg3_poll_fw(struct tg3 *tp)
 		if (pci_channel_offline(tp->pdev)) {
 			if (!tg3_flag(tp, NO_FWARE_REPORTED)) {
 				tg3_flag_set(tp, NO_FWARE_REPORTED);
-				netdev_info(tp->dev, "No firmware running\n");
+				netdev_dbg(tp->dev, "No firmware running\n");
 			}
 
 			break;
@@ -1871,7 +1871,7 @@ static int tg3_poll_fw(struct tg3 *tp)
 	if (i >= 100000 && !tg3_flag(tp, NO_FWARE_REPORTED)) {
 		tg3_flag_set(tp, NO_FWARE_REPORTED);
 
-		netdev_info(tp->dev, "No firmware running\n");
+		netdev_dbg(tp->dev, "No firmware running\n");
 	}
 
 	if (tg3_chip_rev_id(tp) == CHIPREV_ID_57765_A0) {
@@ -1890,7 +1890,7 @@ static void tg3_link_report(struct tg3 *tp)
 		netif_info(tp, link, tp->dev, "Link is down\n");
 		tg3_ump_link_report(tp);
 	} else if (netif_msg_link(tp)) {
-		netdev_info(tp->dev, "Link is up at %d Mbps, %s duplex\n",
+		netdev_dbg(tp->dev, "Link is up at %d Mbps, %s duplex\n",
 			    (tp->link_config.active_speed == SPEED_1000 ?
 			     1000 :
 			     (tp->link_config.active_speed == SPEED_100 ?
@@ -1898,14 +1898,14 @@ static void tg3_link_report(struct tg3 *tp)
 			    (tp->link_config.active_duplex == DUPLEX_FULL ?
 			     "full" : "half"));
 
-		netdev_info(tp->dev, "Flow control is %s for TX and %s for RX\n",
+		netdev_dbg(tp->dev, "Flow control is %s for TX and %s for RX\n",
 			    (tp->link_config.active_flowctrl & FLOW_CTRL_TX) ?
 			    "on" : "off",
 			    (tp->link_config.active_flowctrl & FLOW_CTRL_RX) ?
 			    "on" : "off");
 
 		if (tp->phy_flags & TG3_PHYFLG_EEE_CAP)
-			netdev_info(tp->dev, "EEE is %s\n",
+			netdev_dbg(tp->dev, "EEE is %s\n",
 				    tp->setlpicnt ? "enabled" : "disabled");
 
 		tg3_ump_link_report(tp);
@@ -8299,7 +8299,7 @@ static void tg3_set_loopback(struct net_device *dev, netdev_features_t features)
 		tg3_mac_loopback(tp, true);
 		netif_carrier_on(tp->dev);
 		spin_unlock_bh(&tp->lock);
-		netdev_info(dev, "Internal MAC loopback mode enabled.\n");
+		netdev_dbg(dev, "Internal MAC loopback mode enabled.\n");
 	} else {
 		if (!(tp->mac_mode & MAC_MODE_PORT_INT_LPBACK))
 			return;
@@ -8309,7 +8309,7 @@ static void tg3_set_loopback(struct net_device *dev, netdev_features_t features)
 		/* Force link status check */
 		tg3_setup_phy(tp, true);
 		spin_unlock_bh(&tp->lock);
-		netdev_info(dev, "Internal MAC loopback mode disabled.\n");
+		netdev_dbg(dev, "Internal MAC loopback mode disabled.\n");
 	}
 }
 
@@ -18007,7 +18007,7 @@ static int tg3_init_one(struct pci_dev *pdev,
 			tp->ptp_clock = NULL;
 	}
 
-	netdev_info(dev, "Tigon3 [partno(%s) rev %04x] (%s) MAC address %pM\n",
+	netdev_dbg(dev, "Tigon3 [partno(%s) rev %04x] (%s) MAC address %pM\n",
 		    tp->board_part_number,
 		    tg3_chip_rev_id(tp),
 		    tg3_bus_string(tp, str),
@@ -18023,20 +18023,20 @@ static int tg3_init_one(struct pci_dev *pdev,
 		else
 			ethtype = "10/100/1000Base-T";
 
-		netdev_info(dev, "attached PHY is %s (%s Ethernet) "
+		netdev_dbg(dev, "attached PHY is %s (%s Ethernet) "
 			    "(WireSpeed[%d], EEE[%d])\n",
 			    tg3_phy_string(tp), ethtype,
 			    (tp->phy_flags & TG3_PHYFLG_NO_ETH_WIRE_SPEED) == 0,
 			    (tp->phy_flags & TG3_PHYFLG_EEE_CAP) != 0);
 	}
 
-	netdev_info(dev, "RXcsums[%d] LinkChgREG[%d] MIirq[%d] ASF[%d] TSOcap[%d]\n",
+	netdev_dbg(dev, "RXcsums[%d] LinkChgREG[%d] MIirq[%d] ASF[%d] TSOcap[%d]\n",
 		    (dev->features & NETIF_F_RXCSUM) != 0,
 		    tg3_flag(tp, USE_LINKCHG_REG) != 0,
 		    (tp->phy_flags & TG3_PHYFLG_USE_MI_INTERRUPT) != 0,
 		    tg3_flag(tp, ENABLE_ASF) != 0,
 		    tg3_flag(tp, TSO_CAPABLE) != 0);
-	netdev_info(dev, "dma_rwctrl[%08x] dma_mask[%d-bit]\n",
+	netdev_dbg(dev, "dma_rwctrl[%08x] dma_mask[%d-bit]\n",
 		    tp->dma_rwctrl,
 		    pdev->dma_mask == DMA_BIT_MASK(32) ? 32 :
 		    ((u64)pdev->dma_mask) == DMA_BIT_MASK(40) ? 40 : 64);
@@ -18234,7 +18234,7 @@ static pci_ers_result_t tg3_io_error_detected(struct pci_dev *pdev,
 	struct tg3 *tp = netdev_priv(netdev);
 	pci_ers_result_t err = PCI_ERS_RESULT_NEED_RESET;
 
-	netdev_info(netdev, "PCI I/O error detected\n");
+	netdev_dbg(netdev, "PCI I/O error detected\n");
 
 	rtnl_lock();
 

@@ -89,7 +89,7 @@ int determine_fw_capabilities(struct orinoco_private *priv,
 	le16_to_cpus(&nic_id.variant);
 	le16_to_cpus(&nic_id.major);
 	le16_to_cpus(&nic_id.minor);
-	dev_info(dev, "Hardware identity %04x:%04x:%04x:%04x\n",
+	dev_dbg(dev, "Hardware identity %04x:%04x:%04x:%04x\n",
 		 nic_id.id, nic_id.variant, nic_id.major, nic_id.minor);
 
 	if (hw_ver)
@@ -112,7 +112,7 @@ int determine_fw_capabilities(struct orinoco_private *priv,
 	le16_to_cpus(&sta_id.variant);
 	le16_to_cpus(&sta_id.major);
 	le16_to_cpus(&sta_id.minor);
-	dev_info(dev, "Station identity  %04x:%04x:%04x:%04x\n",
+	dev_dbg(dev, "Station identity  %04x:%04x:%04x:%04x\n",
 		 sta_id.id, sta_id.variant, sta_id.major, sta_id.minor);
 
 	switch (sta_id.id) {
@@ -260,7 +260,7 @@ int determine_fw_capabilities(struct orinoco_private *priv,
 		break;
 	}
 	if (fw_name)
-		dev_info(dev, "Firmware determined as %s\n", fw_name);
+		dev_dbg(dev, "Firmware determined as %s\n", fw_name);
 
 #ifndef CONFIG_HERMES_PRISM
 	if (priv->firmware_type == FIRMWARE_TYPE_INTERSIL) {

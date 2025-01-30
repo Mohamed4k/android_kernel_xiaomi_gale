@@ -94,7 +94,7 @@ struct fsl_tcon *fsl_tcon_init(struct device *dev)
 	}
 
 	of_node_put(np);
-	dev_info(dev, "Using TCON in bypass mode\n");
+	dev_dbg(dev, "Using TCON in bypass mode\n");
 
 	return tcon;
 

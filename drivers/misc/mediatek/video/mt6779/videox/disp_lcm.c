@@ -653,7 +653,7 @@ void parse_lcm_ops_dt_node(struct device_node *np, struct LCM_DTS *lcm_dts,
 	/* parse LCM compare_id table */
 	len = disp_of_getprop_u8(np, "compare_id", dts);
 	if (len <= 0) {
-		pr_warn("%s:%d: Cannot find LCM compare_id table, skip it!\n",
+		pr_debug("%s:%d: Cannot find LCM compare_id table, skip it!\n",
 			__FILE__, __LINE__);
 	} else {
 		if (len > (sizeof(struct LCM_DATA)*COMPARE_ID_SIZE)) {

@@ -48,25 +48,25 @@ static void lcm_request_gpio_control(struct device *dev)
 {
 	GPIO_LCD_RST = of_get_named_gpio(dev->of_node, "gpio_lcd_rst", 0);
 	gpio_request(GPIO_LCD_RST, "GPIO_LCD_RST");
-	pr_notice("[KE/LCM] GPIO_LCD_RST = 0x%x\n", GPIO_LCD_RST);
+	pr_debug("[KE/LCM] GPIO_LCD_RST = 0x%x\n", GPIO_LCD_RST);
 
 	GPIO_LCD_PWR = of_get_named_gpio(dev->of_node, "gpio_lcd_pwr", 0);
 	gpio_request(GPIO_LCD_PWR, "GPIO_LCD_PWR");
-	pr_notice("[KE/LCM] GPIO_LCD_PWR = 0x%x\n", GPIO_LCD_PWR);
+	pr_debug("[KE/LCM] GPIO_LCD_PWR = 0x%x\n", GPIO_LCD_PWR);
 
 	GPIO_LCD_PWR_EN = of_get_named_gpio(dev->of_node, "gpio_lcd_pwr_en", 0);
 	gpio_request(GPIO_LCD_PWR_EN, "GPIO_LCD_PWR_EN");
-	pr_notice("[KE/LCM] GPIO_LCD_PWR_EN = 0x%x\n", GPIO_LCD_PWR_EN);
+	pr_debug("[KE/LCM] GPIO_LCD_PWR_EN = 0x%x\n", GPIO_LCD_PWR_EN);
 
 	GPIO_LCD_PWR2_EN = of_get_named_gpio(dev->of_node, "gpio_lcd_pwr2_en",
 					     0);
 	gpio_request(GPIO_LCD_PWR2_EN, "GPIO_LCD_PWR2_EN");
-	pr_notice("[KE/LCM] GPIO_LCD_PWR2_EN = 0x%x\n", GPIO_LCD_PWR2_EN);
+	pr_debug("[KE/LCM] GPIO_LCD_PWR2_EN = 0x%x\n", GPIO_LCD_PWR2_EN);
 }
 
 static int lcm_driver_probe(struct device *dev, void const *data)
 {
-	pr_notice("[Kernel/LCM] %s\n", __func__);
+	pr_debug("[Kernel/LCM] %s\n", __func__);
 	lcm_request_gpio_control(dev);
 
 	return 0;
@@ -106,7 +106,7 @@ static struct platform_driver lcm_driver = {
 static int __init lcm_init(void)
 {
 	if (platform_driver_register(&lcm_driver)) {
-		pr_notice("LCM: failed to register this driver!\n");
+		pr_debug("LCM: failed to register this driver!\n");
 		return -ENODEV;
 	}
 
@@ -174,7 +174,7 @@ static struct LCM_UTIL_FUNCS lcm_util = {0};
 					   ##args)
 #define LCM_LOGD(string, args...)  dprintf(INFO, "[LK/"LOG_TAG"]"string, ##args)
 #else
-#define LCM_LOGI(fmt, args...)  pr_notice("[KERNEL/"LOG_TAG"]"fmt, ##args)
+#define LCM_LOGI(fmt, args...)  pr_debug("[KERNEL/"LOG_TAG"]"fmt, ##args)
 #define LCM_LOGD(fmt, args...)  pr_debug("[KERNEL/"LOG_TAG"]"fmt, ##args)
 #endif
 
@@ -311,7 +311,7 @@ static void lcm_get_params(struct LCM_PARAMS *params)
 
 static void lcm_init_lcm(void)
 {
-	pr_notice("[Kernel/LCM] %s\n", __func__);
+	pr_debug("[Kernel/LCM] %s\n", __func__);
 	push_table(lcm_initialization_setting,
 		   sizeof(lcm_initialization_setting) /
 		   sizeof(struct LCM_setting_table), 1);
@@ -337,19 +337,19 @@ static void lcm_init_power(void)
 	lcm_set_gpio_output(GPIO_LCD_RST, GPIO_OUT_ONE);
 	MDELAY(5);
 #else
-	pr_notice("[KERNEL/LCM] %s enter\n", __func__);
+	pr_debug("[KERNEL/LCM] %s enter\n", __func__);
 #endif
 }
 
 static void lcm_resume(void)
 {
-	pr_notice("[Kernel/LCM] %s\n", __func__);
+	pr_debug("[Kernel/LCM] %s\n", __func__);
 	lcm_init_lcm();
 }
 
 static void lcm_resume_power(void)
 {
-	pr_notice("[Kernel/LCM] %s\n", __func__);
+	pr_debug("[Kernel/LCM] %s\n", __func__);
 	lcm_set_gpio_output(GPIO_LCD_PWR, GPIO_OUT_ONE);
 	MDELAY(20);
 
@@ -365,7 +365,7 @@ static void lcm_resume_power(void)
 
 static void lcm_suspend(void)
 {
-	pr_notice("[Kernel/LCM] %s\n", __func__);
+	pr_debug("[Kernel/LCM] %s\n", __func__);
 	push_table(lcm_suspend_setting,
 		   sizeof(lcm_suspend_setting) /
 		   sizeof(struct LCM_setting_table), 1);
@@ -373,7 +373,7 @@ static void lcm_suspend(void)
 
 static void lcm_suspend_power(void)
 {
-	pr_notice("[Kernel/LCM] %s\n", __func__);
+	pr_debug("[Kernel/LCM] %s\n", __func__);
 	lcm_set_gpio_output(GPIO_LCD_RST, GPIO_OUT_ZERO);
 	MDELAY(10);
 

@@ -1232,7 +1232,7 @@ int ixgbe_init_interrupt_scheme(struct ixgbe_adapter *adapter)
 
 	ixgbe_cache_ring_register(adapter);
 
-	e_dev_info("Multiqueue %s: Rx Queue count = %u, Tx Queue count = %u XDP Queue count = %u\n",
+	e_dev_dbg("Multiqueue %s: Rx Queue count = %u, Tx Queue count = %u XDP Queue count = %u\n",
 		   (adapter->num_rx_queues > 1) ? "Enabled" : "Disabled",
 		   adapter->num_rx_queues, adapter->num_tx_queues,
 		   adapter->num_xdp_queues);

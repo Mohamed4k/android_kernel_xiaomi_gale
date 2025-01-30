@@ -641,7 +641,7 @@ int rcar_du_modeset_init(struct rcar_du_device *rcdu)
 
 		rcdu->fbdev = fbdev;
 	} else {
-		dev_info(rcdu->dev,
+		dev_dbg(rcdu->dev,
 			 "no connector found, disabling fbdev emulation\n");
 	}
 

@@ -325,7 +325,7 @@ static void mdla_irq_sw_sched(struct mdla_dev *mdla_device)
 	if (unlikely((irq_status & INTR_CONV_GCU_SAT_EXCEPTION_INT) ||
 				(irq_status & INRQ_CONV_AQU_ACC_SAT_EXCEPTION_INT) ||
 				(irq_status & INRQ_CONV_AQU_ADD_SAT_EXCEPTION_INT))) {
-		pr_info("unexpected IRQ status: core %x, irq_status: %x\n",
+		pr_debug("unexpected IRQ status: core %x, irq_status: %x\n",
 			core_id, irq_status);
 	}
 
@@ -439,7 +439,7 @@ int mdla_v2_0_irq_request(struct device *dev, int irqdesc_num)
 	struct device_node *node = dev->of_node;
 
 	if (!node) {
-		dev_info(dev, "get mdla device node err\n");
+		dev_dbg(dev, "get mdla device node err\n");
 		return -1;
 	}
 
@@ -455,17 +455,17 @@ int mdla_v2_0_irq_request(struct device *dev, int irqdesc_num)
 		irq_desc->dev = mdla_get_device(i);
 		irq_desc->irq  = irq_of_parse_and_map(node, i);
 		if (!irq_desc->irq) {
-			dev_info(dev, "get mdla irq: %d failed\n", i);
+			dev_dbg(dev, "get mdla irq: %d failed\n", i);
 			goto err;
 		}
 
 		if (request_irq(irq_desc->irq, mdla_irq_handler,
 			irq_get_trigger_type(irq_desc->irq),
 			DRIVER_NAME, irq_desc->dev)) {
-			dev_info(dev, "mtk_mdla[%d]: Could not allocate interrupt %d.\n",
+			dev_dbg(dev, "mtk_mdla[%d]: Could not allocate interrupt %d.\n",
 					i, irq_desc->irq);
 		}
-		dev_info(dev, "request_irq %d done\n", irq_desc->irq);
+		dev_dbg(dev, "request_irq %d done\n", irq_desc->irq);
 	}
 
 	return 0;

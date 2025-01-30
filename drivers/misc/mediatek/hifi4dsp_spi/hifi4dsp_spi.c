@@ -110,7 +110,7 @@ loop:
 		buffer = tx_cmd_type_single;
 	} else {
 		status = -EINVAL;
-		pr_notice("Input wrong type!\n");
+		pr_debug("Input wrong type!\n");
 		goto tail;
 	}
 	x[0].tx_buf	= buffer;
@@ -147,14 +147,14 @@ loop:
 		goto tail;
 	read_status = rx_cmd_read_sta[1];
 	if ((read_status & CONFIG_READY) != CONFIG_READY) {
-		pr_notice("SPI slave status error: 0x%x, line:%d\n",
+		pr_debug("SPI slave status error: 0x%x, line:%d\n",
 				read_status, __LINE__);
 		if (try++ <= MAX_SPI_TRY_CNT)
 			goto loop;
 	}
 tail:
 	if (status) {
-		pr_notice("config type & addr & len err, line(%d), type(%d), ret(%d)\n",
+		pr_debug("config type & addr & len err, line(%d), type(%d), ret(%d)\n",
 				__LINE__, type, status);
 	}
 	return status;
@@ -185,7 +185,7 @@ static int spi_trigger_wr_data(struct spi_device *spi,
 		local_buf = kzalloc(size, GFP_KERNEL);
 		if (!local_buf) {
 			status = -ENOMEM;
-			pr_notice("tx/rx malloc fail!, line:%d\n", __LINE__);
+			pr_debug("tx/rx malloc fail!, line:%d\n", __LINE__);
 			goto tail;
 		}
 	} else {
@@ -234,7 +234,7 @@ static int spi_trigger_wr_data(struct spi_device *spi,
 	if (((read_status & SR_RD_ERR) == SR_RD_ERR) ||
 		((read_status & SR_WR_ERR) == SR_WR_ERR) ||
 		((read_status & SR_TIMEOUT_ERR) == SR_TIMEOUT_ERR)) {
-		pr_notice("SPI slave status error: 0x%x, line:%d\n",
+		pr_debug("SPI slave status error: 0x%x, line:%d\n",
 				read_status, __LINE__);
 		x[2].tx_buf	= tx_cmd_write_sta;		// write status
 		x[2].rx_buf = rx_cmd_write_sta;
@@ -271,7 +271,7 @@ static int spi_trigger_wr_data(struct spi_device *spi,
 	} else {
 		while (((read_status & SR_RDWR_FINISH) != SR_RDWR_FINISH) &&
 			(retry_count < 100000)) {
-			pr_notice("SPI slave r/w not finished: 0x%x, line:%d\n",
+			pr_debug("SPI slave r/w not finished: 0x%x, line:%d\n",
 					read_status, __LINE__);
 			memset(rx_cmd_read_sta, 0, ARRAY_SIZE(rx_cmd_read_sta));
 			x[1].tx_buf	= tx_cmd_read_sta;           // read status
@@ -298,7 +298,7 @@ tail:
 	if (local_buf != mtk_spi_buffer)
 		kfree(local_buf);
 	if (status)
-		pr_notice("write/read to slave err, line(%d), len(%d), ret(%d)\n",
+		pr_debug("write/read to slave err, line(%d), len(%d), ret(%d)\n",
 				__LINE__, len, status);
 	return status;
 }
@@ -309,27 +309,27 @@ int dsp_spi_write(u32 addr, void *value, int len, u32 speed)
 	struct spi_device *spi = hifi4dsp_spi_data.spi_bus_data[0];
 	void *tx_store;
 
-	pr_notice("%s addr = 0x%08x, len = %d\n", __func__, addr, len);
+	pr_debug("%s addr = 0x%08x, len = %d\n", __func__, addr, len);
 	xfer_speed = speed;
 	mutex_lock(&hifi4dsp_bus_lock);
 spi_config_write:
 	ret = spi_config_type_wr(spi, type, addr, len, SPI_WRITE, xfer_speed);
 	if (ret < 0) {
-		pr_notice("SPI config write fail! line:%d\n", __LINE__);
+		pr_debug("SPI config write fail! line:%d\n", __LINE__);
 		goto tail;
 	}
 	tx_store = value;
 	ret = spi_trigger_wr_data(spi, type, len, SPI_WRITE, tx_store,
 				  xfer_speed);
 	if (ret < 0) {
-		pr_notice("SPI write data error! line:%d\n", __LINE__);
+		pr_debug("SPI write data error! line:%d\n", __LINE__);
 		goto tail;
 	}
 	if (ret > 0) {
 		if (try++ < MAX_SPI_TRY_CNT)
 			goto spi_config_write;
 		else
-			pr_notice("SPI write fail, retry count > %d, line:%d\n",
+			pr_debug("SPI write fail, retry count > %d, line:%d\n",
 				 MAX_SPI_TRY_CNT, __LINE__);
 	}
 tail:
@@ -355,14 +355,14 @@ int dsp_spi_write_ex(u32 addr, void *value, int len, u32 speed)
 		new_buf = (u8 *)value + once_len * loop;
 		ret = dsp_spi_write(new_addr, new_buf, once_len, speed);
 		if (ret)
-			pr_notice("dsp_spi_write() fail! line:%d\n", __LINE__);
+			pr_debug("dsp_spi_write() fail! line:%d\n", __LINE__);
 	}
 	if (res_len) {
 		new_addr = addr + once_len * loop;
 		new_buf = (u8 *)value + once_len * loop;
 		ret = dsp_spi_write(new_addr, new_buf, res_len, speed);
 		if (ret)
-			pr_notice("dsp_spi_write() fail! line:%d\n", __LINE__);
+			pr_debug("dsp_spi_write() fail! line:%d\n", __LINE__);
 	}
 	return ret;
 }
@@ -373,18 +373,18 @@ int dsp_spi_read(u32 addr, void *value, int len, u32 speed)
 	int type = default_spi_trans_mode;
 	struct spi_device *spi = hifi4dsp_spi_data.spi_bus_data[0];
 
-	pr_notice("%s addr = 0x%08x, len = %d\n", __func__, addr, len);
+	pr_debug("%s addr = 0x%08x, len = %d\n", __func__, addr, len);
 	xfer_speed = speed;
 	mutex_lock(&hifi4dsp_bus_lock);
 spi_config_read:
 	ret = spi_config_type_wr(spi, type, addr, len, SPI_READ, xfer_speed);
 	if (ret < 0) {
-		pr_notice("SPI config write fail! line:%d\n", __LINE__);
+		pr_debug("SPI config write fail! line:%d\n", __LINE__);
 		goto tail;
 	}
 	ret = spi_trigger_wr_data(spi, type, len, SPI_READ, value, xfer_speed);
 	if (ret < 0) {
-		pr_notice("SPI read data error! line:%d\n", __LINE__);
+		pr_debug("SPI read data error! line:%d\n", __LINE__);
 		goto tail;
 	}
 	if (ret > 0) {
@@ -394,7 +394,7 @@ spi_config_read:
 			pr_debug("SPI read fail, retry count > %d, line:%d\n",
 				 MAX_SPI_TRY_CNT, __LINE__);
 	}
-	pr_notice("[mt6382] spi read regiter %d", *((u32 *)value));
+	pr_debug("[mt6382] spi read regiter %d", *((u32 *)value));
 tail:
 	mutex_unlock(&hifi4dsp_bus_lock);
 	return ret;
@@ -418,14 +418,14 @@ int dsp_spi_read_ex(u32 addr, void *value, int len, u32 speed)
 		new_buf = (u8 *)value + once_len * loop;
 		ret = dsp_spi_read(new_addr, new_buf, once_len, speed);
 		if (ret)
-			pr_notice("dsp_spi_read() fail! line:%d\n", __LINE__);
+			pr_debug("dsp_spi_read() fail! line:%d\n", __LINE__);
 	}
 	if (res_len) {
 		new_addr = addr + once_len * loop;
 		new_buf = (u8 *)value + once_len * loop;
 		ret = dsp_spi_read(new_addr, new_buf, res_len, speed);
 		if (ret)
-			pr_notice("dsp_spi_read() fail! line:%d\n", __LINE__);
+			pr_debug("dsp_spi_read() fail! line:%d\n", __LINE__);
 	}
 	return ret;
 }
@@ -472,7 +472,7 @@ int spi_multipin_loopback_transfer(int len, int xfer_speed)
 	void *rx_buf;
 	int i, err = 0;
 
-	pr_info("%s entry...\n", __func__);
+	pr_debug("%s entry...\n", __func__);
 	tx_buf = kzalloc(len, GFP_KERNEL);
 	rx_buf = kzalloc(len, GFP_KERNEL);
 	for (i = 0; i < len; i++)
@@ -531,7 +531,7 @@ int spi_multipin_loopback_transfer(int len, int xfer_speed)
 		}
 	}
 	pr_debug("total length %d bytes, err %d bytes.\n", len, err);
-	pr_info("%s quit...\n", __func__);
+	pr_debug("%s quit...\n", __func__);
 tail:
 	kfree(tx_buf);
 	kfree(rx_buf);
@@ -553,7 +553,7 @@ static ssize_t hifi4dsp_spi_store(struct device *dev,
 			buf += 9;
 			if (!strncmp(buf, "len=", 4) &&
 				(sscanf(buf + 4, "%d", &len) == 1)) {
-				pr_info("**dump set**\n addr = 0x%x, speed = %d, len = %d\n",
+				pr_debug("**dump set**\n addr = 0x%x, speed = %d, len = %d\n",
 						 dsp_addr, xfer_speed, len);
 				ret = spi_multipin_loopback_transfer(len,
 						xfer_speed);
@@ -574,7 +574,7 @@ static void spi_create_attribute(struct device *dev)
 	for (idx = 0; idx < size; idx++) {
 		ret = device_create_file(dev, spi_attribute[idx]);
 		if (ret != 0)
-			pr_info("device_create_file fail!\n");
+			pr_debug("device_create_file fail!\n");
 	}
 }
 int hifi4dsp_spi_get_status(void)
@@ -589,7 +589,7 @@ static int hifi4dsp_spi_probe(struct spi_device *spi)
 	struct mtk_chip_config *data;
 	struct mtk_hifi4dsp_spi_data *pri_data = &hifi4dsp_spi_data;
 
-	pr_info("%s() enter.\n", __func__);
+	pr_debug("%s() enter.\n", __func__);
 	data = kzalloc(sizeof(struct mtk_chip_config), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
@@ -597,16 +597,16 @@ static int hifi4dsp_spi_probe(struct spi_device *spi)
 	}
 	ret = of_property_read_u32(nc, "tick-dly", &tick_delay);
 	if (ret) {
-		pr_info("tick-dly isn't setting!\n");
+		pr_debug("tick-dly isn't setting!\n");
 		tick_delay = 0;
 	} else
-		pr_info("tick-dly = %d\n", tick_delay);
+		pr_debug("tick-dly = %d\n", tick_delay);
 	ret = of_property_read_u32(nc, "spi-pin-mode", &default_spi_trans_mode);
 	if (ret) {
-		pr_info("spi-pin-mode isn't setting!\n");
+		pr_debug("spi-pin-mode isn't setting!\n");
 		default_spi_trans_mode = 2;
 	} else
-		pr_info("spi-pin-mode = %d\n", default_spi_trans_mode);
+		pr_debug("spi-pin-mode = %d\n", default_spi_trans_mode);
 	/*
 	 * Structure filled with mtk-spi crtical values.
 	 */
@@ -627,7 +627,7 @@ tail:
 }
 static int hifi4dsp_spi_remove(struct spi_device *spi)
 {
-	pr_info("%s().\n", __func__);
+	pr_debug("%s().\n", __func__);
 	if (spi && spi->controller_data)
 		kfree(spi->controller_data);
 	return 0;

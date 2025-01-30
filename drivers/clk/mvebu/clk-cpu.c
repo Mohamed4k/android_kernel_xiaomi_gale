@@ -180,7 +180,7 @@ static void __init of_cpu_clk_setup(struct device_node *node)
 	}
 
 	if (pmu_dfs_base == NULL)
-		pr_warn("%s: pmu-dfs base register not set, dynamic frequency scaling not available\n",
+		pr_debug("%s: pmu-dfs base register not set, dynamic frequency scaling not available\n",
 			__func__);
 
 	for_each_node_by_type(dn, "cpu")

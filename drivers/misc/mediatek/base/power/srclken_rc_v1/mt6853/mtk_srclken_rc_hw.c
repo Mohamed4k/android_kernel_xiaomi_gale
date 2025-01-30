@@ -136,18 +136,18 @@ static int __srclken_switch_subsys_ctrl(enum sys_id id,
 	u32 bit_mask = SW_SRCLKEN_RC_MSK << SW_SRCLKEN_RC_SHFT;
 
 	if (id >= MAX_SYS_NUM || id < 0) {
-		pr_notice("req_subsys is not available\n");
+		pr_debug("req_subsys is not available\n");
 		return -1;
 	}
 
 	if ((mode != HW_MODE) && (mode != SW_MODE)) {
-		pr_notice("req_mode is not allowed\n");
+		pr_debug("req_mode is not allowed\n");
 		return -1;
 	}
 
 	if ((req != OFF_REQ) && (req != NO_REQ) &&
 			(req != FPM_REQ) && (req != BBLPM_REQ)) {
-		pr_notice("req_type is not allowed\n");
+		pr_debug("req_type is not allowed\n");
 		return -1;
 	}
 
@@ -163,7 +163,7 @@ static int __srclken_switch_subsys_ctrl(enum sys_id id,
 			== (mode | req))
 		return 0;
 
-	pr_info("read back value err.(0x%x)",
+	pr_debug("read back value err.(0x%x)",
 			srclken_read(RC_M00_SRCLKEN_CFG + 4 * id));
 	return -1;
 
@@ -199,9 +199,9 @@ static ssize_t __subys_ctl_store(const char *buf, enum sys_id id)
 		__srclken_gpio_pull(true);
 		#endif
 	} else {
-		pr_info("bad argument!! please follow correct format\n");
-		pr_info("echo $mode > proc/srclken_rc/$subsys\n");
-		pr_info("mode = {HW, SW_OFF, SW_FPM, SW_BBLPM}\n");
+		pr_debug("bad argument!! please follow correct format\n");
+		pr_debug("echo $mode > proc/srclken_rc/$subsys\n");
+		pr_debug("mode = {HW, SW_OFF, SW_FPM, SW_BBLPM}\n");
 
 		return -EPERM;
 	}
@@ -301,7 +301,7 @@ static u32 __srclken_dump_sta(char *buf, u8 id)
 		len += __subsys_ctl_show(buf + len, SYS_RF);
 		break;
 	default:
-		pr_notice("Not valid xo_buf id\n");
+		pr_debug("Not valid xo_buf id\n");
 		break;
 	}
 
@@ -317,13 +317,13 @@ void srclken_dump_sta_log(void)
 
 	clk_buf_get_aux_out();
 	clk_buf_dump_clkbuf_log();
-	pr_notice("%s:\n", __func__);
+	pr_debug("%s:\n", __func__);
 	for (id = 0; id < XO_NUMBER; id++) {
 		sta = clk_buf_get_xo_en_sta(id);
 		if (sta) {
 			len = __srclken_dump_sta(buf, id);
 			if (len)
-				pr_notice("%s\n", buf);
+				pr_debug("%s\n", buf);
 		}
 	}
 }
@@ -365,7 +365,7 @@ void srclken_dump_cfg_log(void)
 
 	__srclken_dump_cfg(buf);
 
-	pr_notice("%s: %s\n", __func__, buf);
+	pr_debug("%s: %s\n", __func__, buf);
 }
 
 static int __srclken_dump_last_sta(char *buf, u8 idx)
@@ -400,12 +400,12 @@ void srclken_dump_last_sta_log(void)
 	char buf[1024];
 	u8 i;
 
-	pr_notice("%s:\n", __func__);
+	pr_debug("%s:\n", __func__);
 
 	for (i = 0; i < TRACE_NUM; i++) {
 		__srclken_dump_last_sta(buf, i);
 
-		pr_notice("%s", buf);
+		pr_debug("%s", buf);
 	}
 }
 
@@ -821,7 +821,7 @@ static ssize_t debug_ctl_store(struct kobject *kobj,
 
 	return count;
 ERROR_CMD:
-	pr_info("bad argument!! please follow correct format\n");
+	pr_debug("bad argument!! please follow correct format\n");
 	return -EPERM;
 }
 
@@ -859,7 +859,7 @@ static ssize_t scp_sw_ctl_store(struct kobject *kobj,
 
 	return count;
 ERROR_CMD:
-	pr_info("bad argument!! please follow correct format\n");
+	pr_debug("bad argument!! please follow correct format\n");
 	return -EPERM;
 }
 
@@ -938,7 +938,7 @@ int srclken_fs_init(void)
 	/* create /sys/power/srclken/xxx */
 	r = sysfs_create_group(power_kobj, &srclken_attr_group);
 	if (r)
-		pr_notice("FAILED TO CREATE /sys/power/srclken (%d)\n", r);
+		pr_debug("FAILED TO CREATE /sys/power/srclken (%d)\n", r);
 
 	return r;
 }
@@ -962,12 +962,12 @@ int srclken_dts_map(void)
 	if (node) {
 		srclken_base = of_iomap(node, 0);
 		if (!srclken_base) {
-			pr_notice("%s() can't find iomem for srclken\n",
+			pr_debug("%s() can't find iomem for srclken\n",
 				__func__);
 			return -1;
 		}
 	} else {
-		pr_notice("%s can't find compatible node for srclken\n",
+		pr_debug("%s can't find compatible node for srclken\n",
 			__func__);
 		return -1;
 	}
@@ -976,12 +976,12 @@ int srclken_dts_map(void)
 	if (node) {
 		pwrap_base = of_iomap(node, 0);
 		if (!pwrap_base) {
-			pr_notice("%s() can't find iomem for pwrap\n",
+			pr_debug("%s() can't find iomem for pwrap\n",
 				__func__);
 			return -1;
 		}
 	} else {
-		pr_notice("%s can't find compatible node for pwrap\n",
+		pr_debug("%s can't find compatible node for pwrap\n",
 			__func__);
 		return -1;
 	}
@@ -990,12 +990,12 @@ int srclken_dts_map(void)
 	if (node) {
 		scp_base = of_iomap(node, 2);
 		if (!scp_base) {
-			pr_notice("%s() can't find iomem for scp\n",
+			pr_debug("%s() can't find iomem for scp\n",
 				__func__);
 			return -1;
 		}
 	} else {
-		pr_notice("%s can't find compatible node for scp\n",
+		pr_debug("%s can't find compatible node for scp\n",
 			__func__);
 		return -1;
 	}
@@ -1004,12 +1004,12 @@ int srclken_dts_map(void)
 	if (node) {
 		gpio_base = of_iomap(node, 0);
 		if (!gpio_base) {
-			pr_notice("%s() can't find iomem for gpio\n",
+			pr_debug("%s() can't find iomem for gpio\n",
 				__func__);
 			return -1;
 		}
 	} else {
-		pr_notice("%s can't find compatible node for gpio\n",
+		pr_debug("%s can't find compatible node for gpio\n",
 			__func__);
 		return -1;
 	}
@@ -1028,7 +1028,7 @@ int srclken_dts_map(void)
 void srclken_stage_init(void)
 {
 #if SRCLKEN_RC_BRINGUP
-	pr_info("%s: skipped for bring up\n", __func__);
+	pr_debug("%s: skipped for bring up\n", __func__);
 	return;
 #else
 #if 0
@@ -1122,7 +1122,7 @@ RC_STAGE_DONE:
 	return;
 
 RC_STAGE_ERR:
-	pr_notice("%s: rc went wrong, need to check\n", __func__);
+	pr_debug("%s: rc went wrong, need to check\n", __func__);
 	rc_stage = SRCLKEN_ERR;
 
 #endif

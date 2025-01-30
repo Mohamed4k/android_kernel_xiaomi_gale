@@ -256,13 +256,13 @@ int bnxt_set_vf_bw(struct net_device *dev, int vf_id, int min_tx_rate,
 	vf = &bp->pf.vf[vf_id];
 	pf_link_speed = bnxt_fw_to_ethtool_speed(bp->link_info.link_speed);
 	if (max_tx_rate > pf_link_speed) {
-		netdev_info(bp->dev, "max tx rate %d exceed PF link speed for VF %d\n",
+		netdev_dbg(bp->dev, "max tx rate %d exceed PF link speed for VF %d\n",
 			    max_tx_rate, vf_id);
 		return -EINVAL;
 	}
 
 	if (min_tx_rate > pf_link_speed || min_tx_rate > max_tx_rate) {
-		netdev_info(bp->dev, "min tx rate %d is invalid for VF %d\n",
+		netdev_dbg(bp->dev, "min tx rate %d is invalid for VF %d\n",
 			    min_tx_rate, vf_id);
 		return -EINVAL;
 	}
@@ -682,7 +682,7 @@ static int bnxt_sriov_enable(struct bnxt *bp, int *num_vfs)
 	}
 
 	if (vfs_supported != *num_vfs) {
-		netdev_info(bp->dev, "Requested VFs %d, can enable %d\n",
+		netdev_dbg(bp->dev, "Requested VFs %d, can enable %d\n",
 			    *num_vfs, vfs_supported);
 		*num_vfs = vfs_supported;
 	}

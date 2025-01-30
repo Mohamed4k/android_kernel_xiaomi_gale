@@ -160,7 +160,7 @@ static void cleanup_aer_uncorrect_error_status(struct pci_dev *dev)
 	u32 status, mask;
 	int pos = 0x100;
 
-	pr_info("%s :\n", __func__);
+	pr_debug("%s :\n", __func__);
 
 	pci_read_config_dword(dev, pos + PCI_ERR_UNCOR_STATUS, &status);
 	pci_read_config_dword(dev, pos + PCI_ERR_UNCOR_SEVER, &mask);
@@ -366,7 +366,7 @@ static void update_link_status(struct net_device *netdev,
 		}
 
 		if (lio->linfo.link.s.mtu != current_max_mtu) {
-			dev_info(&oct->pci_dev->dev,
+			dev_dbg(&oct->pci_dev->dev,
 				 "Max MTU Changed from %d to %d\n",
 				 current_max_mtu, lio->linfo.link.s.mtu);
 			netdev->max_mtu = lio->linfo.link.s.mtu;
@@ -402,7 +402,7 @@ liquidio_vf_probe(struct pci_dev *pdev,
 	}
 	oct_dev->msix_on = LIO_FLAG_MSIX_ENABLED;
 
-	dev_info(&pdev->dev, "Initializing device %x:%x.\n",
+	dev_dbg(&pdev->dev, "Initializing device %x:%x.\n",
 		 (u32)pdev->vendor, (u32)pdev->device);
 
 	/* Assign octeon_device for this device to the private data area. */
@@ -763,7 +763,7 @@ static void liquidio_vf_remove(struct pci_dev *pdev)
 	 */
 	octeon_destroy_resources(oct_dev);
 
-	dev_info(&oct_dev->pci_dev->dev, "Device removed\n");
+	dev_dbg(&oct_dev->pci_dev->dev, "Device removed\n");
 
 	/* This octeon device has been removed. Update the global
 	 * data structure to reflect this. Free the device structure.
@@ -935,7 +935,7 @@ static int liquidio_open(struct net_device *netdev)
 	/* tell Octeon to start forwarding packets to host */
 	send_rx_ctrl_cmd(lio, 1);
 
-	dev_info(&oct->pci_dev->dev, "%s interface is opened\n", netdev->name);
+	dev_dbg(&oct->pci_dev->dev, "%s interface is opened\n", netdev->name);
 
 	return 0;
 }
@@ -979,7 +979,7 @@ static int liquidio_stop(struct net_device *netdev)
 		oct->droq[0]->ops.poll_mode = 0;
 	}
 
-	dev_info(&oct->pci_dev->dev, "%s interface is stopped\n", netdev->name);
+	dev_dbg(&oct->pci_dev->dev, "%s interface is stopped\n", netdev->name);
 
 	return 0;
 }
@@ -2351,7 +2351,7 @@ static int octeon_device_init(struct octeon_device *oct)
 	}
 	atomic_set(&oct->status, OCT_DEV_MSIX_ALLOC_VECTOR_DONE);
 
-	dev_info(&oct->pci_dev->dev, "OCTEON_CN23XX VF Version: %s, %d ioqs\n",
+	dev_dbg(&oct->pci_dev->dev, "OCTEON_CN23XX VF Version: %s, %d ioqs\n",
 		 LIQUIDIO_VERSION, oct->sriov_info.rings_per_vf);
 
 	/* Setup the interrupt handler and record the INT SUM register address*/
@@ -2419,7 +2419,7 @@ static void __exit liquidio_vf_exit(void)
 {
 	pci_unregister_driver(&liquidio_vf_pci_driver);
 
-	pr_info("LiquidIO_VF network module is now unloaded\n");
+	pr_debug("LiquidIO_VF network module is now unloaded\n");
 }
 
 module_init(liquidio_vf_init);

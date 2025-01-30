@@ -568,7 +568,7 @@ static int ti_pipe3_get_sysctrl(struct ti_pipe3 *phy)
 		phy->dpll_reset_syscon = syscon_regmap_lookup_by_phandle(node,
 							"syscon-pllreset");
 		if (IS_ERR(phy->dpll_reset_syscon)) {
-			dev_info(dev,
+			dev_dbg(dev,
 				 "can't get syscon-pllreset, sata dpll won't idle\n");
 			phy->dpll_reset_syscon = NULL;
 		} else {

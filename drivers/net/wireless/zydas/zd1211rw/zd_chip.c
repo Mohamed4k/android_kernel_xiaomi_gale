@@ -84,7 +84,7 @@ static void print_id(struct zd_chip *chip)
 
 	scnprint_id(chip, buffer, sizeof(buffer));
 	buffer[sizeof(buffer)-1] = 0;
-	dev_info(zd_chip_dev(chip), "%s\n", buffer);
+	dev_dbg(zd_chip_dev(chip), "%s\n", buffer);
 }
 
 static zd_addr_t inc_addr(zd_addr_t addr)
@@ -1032,7 +1032,7 @@ static int print_fw_version(struct zd_chip *chip)
 	if (r)
 		return r;
 
-	dev_info(zd_chip_dev(chip),"firmware version %04hx\n", version);
+	dev_dbg(zd_chip_dev(chip),"firmware version %04hx\n", version);
 
 	snprintf(wiphy->fw_version, sizeof(wiphy->fw_version),
 			"%04hx", version);

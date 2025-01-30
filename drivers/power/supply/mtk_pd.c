@@ -651,7 +651,7 @@ static int pd_sc_set_charger(struct chg_alg_device *alg)
 
 	if (pd->input_current_limit1 == 0 ||
 		pd->charging_current_limit1 == 0) {
-		pr_notice("input/charging current is 0, end Pd\n");
+		pr_debug("input/charging current is 0, end Pd\n");
 		return -1;
 	}
 
@@ -722,7 +722,7 @@ static int pd_dcs_set_charger(struct chg_alg_device *alg)
 	if (pd->input_current_limit1 == 0 ||
 		pd->charging_current_limit1 == 0 ||
 		pd->charging_current_limit2 == 0) {
-		pr_notice("input/charging current is 0, end PD\n");
+		pr_debug("input/charging current is 0, end PD\n");
 		return -1;
 	}
 
@@ -1234,11 +1234,11 @@ int _pd_get_prop(struct chg_alg_device *alg,
 		enum chg_alg_props s, int *value)
 {
 
-	pr_notice("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 	if (s == ALG_MAX_VBUS)
 		*value = 10000;
 	else
-		pr_notice("%s does not support prop:%d\n", __func__, s);
+		pr_debug("%s does not support prop:%d\n", __func__, s);
 	return 0;
 }
 
@@ -1270,7 +1270,7 @@ int _pd_set_setting(struct chg_alg_device *alg_dev,
 int _pd_set_prop(struct chg_alg_device *alg,
 		enum chg_alg_props s, int value)
 {
-	pr_notice("%s %d %d\n", __func__, s, value);
+	pr_debug("%s %d %d\n", __func__, s, value);
 	return 0;
 }
 
@@ -1291,7 +1291,7 @@ static int mtk_pd_probe(struct platform_device *pdev)
 {
 	struct mtk_pd *pd = NULL;
 
-	pr_notice("%s: starts\n", __func__);
+	pr_debug("%s: starts\n", __func__);
 
 	pd = devm_kzalloc(&pdev->dev, sizeof(*pd), GFP_KERNEL);
 	if (!pd)

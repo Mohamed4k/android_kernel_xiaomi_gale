@@ -565,7 +565,7 @@ static int atmel_spi_configure_dma(struct spi_master *master,
 	if (err)
 		goto error;
 
-	dev_info(&as->pdev->dev,
+	dev_dbg(&as->pdev->dev,
 			"Using %s (tx) and %s (rx) for DMA transfers\n",
 			dma_chan_name(master->dma_tx),
 			dma_chan_name(master->dma_rx));
@@ -1631,12 +1631,12 @@ static int atmel_spi_probe(struct platform_device *pdev)
 			}
 		}
 		if (!as->use_dma)
-			dev_info(master->dev.parent,
+			dev_dbg(master->dev.parent,
 				 "  can not allocate dma coherent memory\n");
 	}
 
 	if (as->caps.has_dma_support && !as->use_dma)
-		dev_info(&pdev->dev, "Atmel SPI Controller using PIO only\n");
+		dev_dbg(&pdev->dev, "Atmel SPI Controller using PIO only\n");
 
 	if (as->use_pdc) {
 		ret = devm_request_irq(&pdev->dev, irq, atmel_spi_pdc_interrupt,
@@ -1658,7 +1658,7 @@ static int atmel_spi_probe(struct platform_device *pdev)
 	as->fifo_size = 0;
 	if (!of_property_read_u32(pdev->dev.of_node, "atmel,fifo-size",
 				  &as->fifo_size)) {
-		dev_info(&pdev->dev, "Using FIFO (%u data)\n", as->fifo_size);
+		dev_dbg(&pdev->dev, "Using FIFO (%u data)\n", as->fifo_size);
 	}
 
 	atmel_spi_init(as);
@@ -1673,7 +1673,7 @@ static int atmel_spi_probe(struct platform_device *pdev)
 		goto out_free_dma;
 
 	/* go! */
-	dev_info(&pdev->dev, "Atmel SPI Controller version 0x%x at 0x%08lx (irq %d)\n",
+	dev_dbg(&pdev->dev, "Atmel SPI Controller version 0x%x at 0x%08lx (irq %d)\n",
 			atmel_get_version(as), (unsigned long)regs->start,
 			irq);
 

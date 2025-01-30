@@ -317,7 +317,7 @@ static bool mac8390_rsrc_init(struct net_device *dev,
 
 	/* Get the MAC address */
 	if (nubus_find_rsrc(&dir, NUBUS_RESID_MAC_ADDRESS, &ent) == -1) {
-		dev_info(&board->dev, "MAC address resource not found\n");
+		dev_dbg(&board->dev, "MAC address resource not found\n");
 		return false;
 	}
 
@@ -338,7 +338,7 @@ static bool mac8390_rsrc_init(struct net_device *dev,
 		nubus_rewinddir(&dir);
 		if (nubus_find_rsrc(&dir, NUBUS_RESID_MINOR_LENGTH,
 				    &ent) == -1) {
-			dev_info(&board->dev,
+			dev_dbg(&board->dev,
 				 "Memory length resource not found, probing\n");
 			offset = mac8390_memsize(dev->mem_start);
 		} else {
@@ -609,8 +609,8 @@ static int mac8390_initdev(struct net_device *dev, struct nubus_board *board,
 	__NS8390_init(dev, 0);
 
 	/* Good, done, now spit out some messages */
-	dev_info(&board->dev, "%s (type %s)\n", board->name, cardname[type]);
-	dev_info(&board->dev, "MAC %pM, IRQ %d, %d KB shared memory at %#lx, %d-bit access.\n",
+	dev_dbg(&board->dev, "%s (type %s)\n", board->name, cardname[type]);
+	dev_dbg(&board->dev, "MAC %pM, IRQ %d, %d KB shared memory at %#lx, %d-bit access.\n",
 		 dev->dev_addr, dev->irq,
 		 (unsigned int)(dev->mem_end - dev->mem_start) >> 10,
 		 dev->mem_start, access_bitmode ? 32 : 16);

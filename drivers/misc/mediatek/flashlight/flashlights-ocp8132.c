@@ -195,7 +195,7 @@ static int cust_pinctrl_set(int pin, int state)
 		pr_err("default set err, pin(%d) state(%d)\n", pin, state);
 		break;
 	}
-	pr_info("pin(%d) state(%d)\n", pin, state);
+	pr_debug("pin(%d) state(%d)\n", pin, state);
 
 	return ret;
 }
@@ -364,7 +364,7 @@ static int cust_ioctl(unsigned int cmd, unsigned long arg)
 
 	default:
 		/*
-		pr_info("No such command and arg(%d): (%d, %d)\n",
+		pr_debug("No such command and arg(%d): (%d, %d)\n",
 				channel, _IOC_NR(cmd), (int)fl_arg->arg);
 		*/
 		return -ENOTTY;
@@ -395,14 +395,14 @@ static int cust_set_driver(int set)
 		if (!use_count)
 			ret = cust_init();
 		use_count++;
-		pr_info("Set driver: %d\n", use_count);
+		pr_debug("Set driver: %d\n", use_count);
 	} else {
 		use_count--;
 		if (!use_count)
 			ret = cust_uninit();
 		if (use_count < 0)
 			use_count = 0;
-		pr_info("Unset driver: %d\n", use_count);
+		pr_debug("Unset driver: %d\n", use_count);
 	}
 	mutex_unlock(&cust_mutex);
 
@@ -466,7 +466,7 @@ static ssize_t mt_cust_gpio_torch_brightness_store(struct device *dev,
 	ret = kstrtoul(buf, 10, &value);
 	if (ret < 0)
 		return ret;
-	pr_info("%s value is %d,length is %d\n",__func__,value,strlen(buf));
+	pr_debug("%s value is %d,length is %d\n",__func__,value,strlen(buf));
 
 	value = cust_gpio_verify_level(value);
 	last_val = value;
@@ -513,13 +513,13 @@ static int cust_parse_dt(struct device *dev,
 
 	pdata->channel_num = of_get_child_count(np);
 	if (!pdata->channel_num) {
-		pr_info("Parse no dt, node.\n");
+		pr_debug("Parse no dt, node.\n");
 		return 0;
 	}
-	pr_info("Channel number(%d).\n", pdata->channel_num);
+	pr_debug("Channel number(%d).\n", pdata->channel_num);
 
 	if (of_property_read_u32(np, "decouple", &decouple))
-		pr_info("Parse no dt, decouple.\n");
+		pr_debug("Parse no dt, decouple.\n");
 
 	pdata->dev_id = devm_kzalloc(dev,
 			pdata->channel_num *
@@ -540,7 +540,7 @@ static int cust_parse_dt(struct device *dev,
 		pdata->dev_id[i].channel = i;
 		pdata->dev_id[i].decouple = decouple;
 
-		pr_info("Parse dt (type,ct,part,name,channel,decouple)=(%d,%d,%d,%s,%d,%d).\n",
+		pr_debug("Parse dt (type,ct,part,name,channel,decouple)=(%d,%d,%d,%s,%d,%d).\n",
 				pdata->dev_id[i].type, pdata->dev_id[i].ct,
 				pdata->dev_id[i].part, pdata->dev_id[i].name,
 				pdata->dev_id[i].channel,
@@ -561,7 +561,7 @@ static int cust_probe(struct platform_device *pdev)
 	int err;
 	int i;
 
-	pr_info("CHYL Probe start.\n");
+	pr_debug("CHYL Probe start.\n");
 
 	/* init pinctrl */
 	if (cust_pinctrl_init(pdev)) {
@@ -615,11 +615,11 @@ static int cust_probe(struct platform_device *pdev)
 
 	err = sysfs_create_group(&pdev->dev.kobj, &cust_gpio_attribute_group);
 	if (err < 0) {
-		dev_info(&pdev->dev, "%s error creating sysfs attr files\n",
+		dev_dbg(&pdev->dev, "%s error creating sysfs attr files\n",
 			 __func__);
 	}
 
-	pr_info("CHYL Probe done.\n");
+	pr_debug("CHYL Probe done.\n");
 
 	return 0;
 err:
@@ -685,7 +685,7 @@ static int __init flashlight_cust_init(void)
 {
 	int ret;
 
-	pr_info("CHYL Init start.\n");
+	pr_debug("CHYL Init start.\n");
 
 #ifndef CONFIG_OF
 	ret = platform_device_register(&cust_gpio_platform_device);
@@ -701,7 +701,7 @@ static int __init flashlight_cust_init(void)
 		return ret;
 	}
 
-	pr_info("Init done.\n");
+	pr_debug("Init done.\n");
 
 	return 0;
 }

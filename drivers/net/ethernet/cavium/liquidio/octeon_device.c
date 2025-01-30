@@ -1257,7 +1257,7 @@ int octeon_core_drv_init(struct octeon_recv_info *recv_info, void *buf)
 	oct->boardinfo.major = cs->board_rev_major;
 	oct->boardinfo.minor = cs->board_rev_minor;
 
-	dev_info(&oct->pci_dev->dev,
+	dev_dbg(&oct->pci_dev->dev,
 		 "Running %s (%llu Hz)\n",
 		 app_name, CVM_CAST64(cs->corefreq));
 

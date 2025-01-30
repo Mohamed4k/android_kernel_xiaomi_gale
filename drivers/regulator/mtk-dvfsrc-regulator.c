@@ -177,7 +177,7 @@ static int dvfsrc_vcore_regulator_probe(struct platform_device *pdev)
 		}
 	}
 
-	dev_info(&pdev->dev, "initialized mtk,dvfsrc regulator\n");
+	dev_dbg(&pdev->dev, "initialized mtk,dvfsrc regulator\n");
 	return 0;
 }
 

@@ -1395,7 +1395,7 @@ static int pch_spi_pd_probe(struct platform_device *plat_dev)
 	pch_spi_set_master_mode(master);
 
 	if (use_dma) {
-		dev_info(&plat_dev->dev, "Use DMA for data transfers\n");
+		dev_dbg(&plat_dev->dev, "Use DMA for data transfers\n");
 		ret = pch_alloc_dma_buf(board_dat, data);
 		if (ret)
 			goto err_spi_register_master;

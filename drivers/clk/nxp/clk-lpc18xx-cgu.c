@@ -360,7 +360,7 @@ static unsigned long lpc18xx_pll0_recalc_rate(struct clk_hw *hw,
 		return parent_rate;
 
 	if (npdiv != LPC18XX_PLL0_NP_DIVS_1) {
-		pr_warn("%s: pre/post dividers not supported\n", __func__);
+		pr_debug("%s: pre/post dividers not supported\n", __func__);
 		return 0;
 	}
 
@@ -368,7 +368,7 @@ static unsigned long lpc18xx_pll0_recalc_rate(struct clk_hw *hw,
 	if (msel)
 		return 2 * msel * parent_rate;
 
-	pr_warn("%s: unable to calculate rate\n", __func__);
+	pr_debug("%s: unable to calculate rate\n", __func__);
 
 	return 0;
 }
@@ -379,13 +379,13 @@ static long lpc18xx_pll0_round_rate(struct clk_hw *hw, unsigned long rate,
 	unsigned long m;
 
 	if (*prate < rate) {
-		pr_warn("%s: pll dividers not supported\n", __func__);
+		pr_debug("%s: pll dividers not supported\n", __func__);
 		return -EINVAL;
 	}
 
 	m = DIV_ROUND_UP_ULL(*prate, rate * 2);
 	if (m <= 0 && m > LPC18XX_PLL0_MSEL_MAX) {
-		pr_warn("%s: unable to support rate %lu\n", __func__, rate);
+		pr_debug("%s: unable to support rate %lu\n", __func__, rate);
 		return -EINVAL;
 	}
 
@@ -400,13 +400,13 @@ static int lpc18xx_pll0_set_rate(struct clk_hw *hw, unsigned long rate,
 	int retry = 3;
 
 	if (parent_rate < rate) {
-		pr_warn("%s: pll dividers not supported\n", __func__);
+		pr_debug("%s: pll dividers not supported\n", __func__);
 		return -EINVAL;
 	}
 
 	m = DIV_ROUND_UP_ULL(parent_rate, rate * 2);
 	if (m <= 0 && m > LPC18XX_PLL0_MSEL_MAX) {
-		pr_warn("%s: unable to support rate %lu\n", __func__, rate);
+		pr_debug("%s: unable to support rate %lu\n", __func__, rate);
 		return -EINVAL;
 	}
 
@@ -439,7 +439,7 @@ static int lpc18xx_pll0_set_rate(struct clk_hw *hw, unsigned long rate,
 		}
 	} while (retry--);
 
-	pr_warn("%s: unable to lock pll\n", __func__);
+	pr_debug("%s: unable to lock pll\n", __func__);
 
 	return -EINVAL;
 }
@@ -607,7 +607,7 @@ static void __init lpc18xx_cgu_register_source_clks(struct device_node *np,
 	clk = clk_register_fixed_rate(NULL, clk_src_names[CLK_SRC_IRC],
 				      NULL, 0, 12000000);
 	if (IS_ERR(clk))
-		pr_warn("%s: failed to register irc clk\n", __func__);
+		pr_debug("%s: failed to register irc clk\n", __func__);
 
 	/* Register crystal oscillator controlller */
 	parents[0] = of_clk_get_parent_name(np, 0);
@@ -615,14 +615,14 @@ static void __init lpc18xx_cgu_register_source_clks(struct device_node *np,
 				0, base + LPC18XX_CGU_XTAL_OSC_CTRL,
 				0, CLK_GATE_SET_TO_DISABLE, NULL);
 	if (IS_ERR(clk))
-		pr_warn("%s: failed to register osc clk\n", __func__);
+		pr_debug("%s: failed to register osc clk\n", __func__);
 
 	/* Register all PLLs */
 	for (i = 0; i < ARRAY_SIZE(lpc18xx_cgu_src_clk_plls); i++) {
 		clk = lpc18xx_cgu_register_pll(&lpc18xx_cgu_src_clk_plls[i],
 						   base);
 		if (IS_ERR(clk))
-			pr_warn("%s: failed to register pll (%d)\n", __func__, i);
+			pr_debug("%s: failed to register pll (%d)\n", __func__, i);
 	}
 
 	/* Register all clock dividers A-E */
@@ -630,7 +630,7 @@ static void __init lpc18xx_cgu_register_source_clks(struct device_node *np,
 		clk = lpc18xx_cgu_register_div(&lpc18xx_cgu_src_clk_divs[i],
 					       base, i);
 		if (IS_ERR(clk))
-			pr_warn("%s: failed to register div %d\n", __func__, i);
+			pr_debug("%s: failed to register div %d\n", __func__, i);
 	}
 }
 
@@ -648,7 +648,7 @@ static void __init lpc18xx_cgu_register_base_clks(void __iomem *reg_base)
 		clk_base[i] = lpc18xx_register_base_clk(&lpc18xx_cgu_base_clks[i],
 							reg_base, i);
 		if (IS_ERR(clk_base[i]) && PTR_ERR(clk_base[i]) != -ENOENT)
-			pr_warn("%s: register base clk %d failed\n", __func__, i);
+			pr_debug("%s: register base clk %d failed\n", __func__, i);
 	}
 }
 
@@ -658,7 +658,7 @@ static void __init lpc18xx_cgu_init(struct device_node *np)
 
 	reg_base = of_iomap(np, 0);
 	if (!reg_base) {
-		pr_warn("%s: failed to map address range\n", __func__);
+		pr_debug("%s: failed to map address range\n", __func__);
 		return;
 	}
 

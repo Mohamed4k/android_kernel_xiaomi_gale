@@ -196,7 +196,7 @@ static void __init exynos5250_clk_sleep_init(void)
 	exynos5250_save = samsung_clk_alloc_reg_dump(exynos5250_clk_regs,
 					ARRAY_SIZE(exynos5250_clk_regs));
 	if (!exynos5250_save) {
-		pr_warn("%s: failed to allocate sleep save data, no sleep support!\n",
+		pr_debug("%s: failed to allocate sleep save data, no sleep support!\n",
 			__func__);
 		return;
 	}
@@ -887,7 +887,7 @@ static void __init exynos5250_clk_init(struct device_node *np)
 
 	samsung_clk_of_add_provider(np, ctx);
 
-	pr_info("Exynos5250: clock setup completed, armclk=%ld\n",
+	pr_debug("Exynos5250: clock setup completed, armclk=%ld\n",
 			_get_rate("div_arm2"));
 }
 CLK_OF_DECLARE_DRIVER(exynos5250_clk, "samsung,exynos5250-clock", exynos5250_clk_init);

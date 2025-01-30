@@ -137,7 +137,7 @@ static int ls1x_wdt_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, drvdata);
 
-	dev_info(&pdev->dev, "Loongson1 Watchdog driver registered\n");
+	dev_dbg(&pdev->dev, "Loongson1 Watchdog driver registered\n");
 
 	return 0;
 err0:

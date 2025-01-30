@@ -788,10 +788,10 @@ static int stmmac_init_ptp(struct stmmac_priv *priv)
 		priv->adv_ts = 1;
 
 	if (priv->dma_cap.time_stamp)
-		netdev_info(priv->dev, "IEEE 1588-2002 Timestamp supported\n");
+		netdev_dbg(priv->dev, "IEEE 1588-2002 Timestamp supported\n");
 
 	if (priv->adv_ts)
-		netdev_info(priv->dev,
+		netdev_dbg(priv->dev,
 			    "IEEE 1588-2008 Advanced Timestamp supported\n");
 
 	priv->hwts_tx_en = 0;
@@ -1032,7 +1032,7 @@ static void stmmac_display_rx_rings(struct stmmac_priv *priv)
 	for (queue = 0; queue < rx_cnt; queue++) {
 		struct stmmac_rx_queue *rx_q = &priv->rx_queue[queue];
 
-		pr_info("\tRX Queue %u rings\n", queue);
+		pr_debug("\tRX Queue %u rings\n", queue);
 
 		if (priv->extend_desc)
 			head_rx = (void *)rx_q->dma_erx;
@@ -1054,7 +1054,7 @@ static void stmmac_display_tx_rings(struct stmmac_priv *priv)
 	for (queue = 0; queue < tx_cnt; queue++) {
 		struct stmmac_tx_queue *tx_q = &priv->tx_queue[queue];
 
-		pr_info("\tTX Queue %d rings\n", queue);
+		pr_debug("\tTX Queue %d rings\n", queue);
 
 		if (priv->extend_desc)
 			head_tx = (void *)tx_q->dma_etx;
@@ -2126,7 +2126,7 @@ static void stmmac_mmc_setup(struct stmmac_priv *priv)
 		dwmac_mmc_ctrl(priv->mmcaddr, mode);
 		memset(&priv->mmc, 0, sizeof(struct stmmac_counters));
 	} else
-		netdev_info(priv->dev, "No MAC Management Counters available\n");
+		netdev_dbg(priv->dev, "No MAC Management Counters available\n");
 }
 
 /**
@@ -2156,7 +2156,7 @@ static void stmmac_check_ether_addr(struct stmmac_priv *priv)
 		stmmac_get_umac_addr(priv, priv->hw, priv->dev->dev_addr, 0);
 		if (!is_valid_ether_addr(priv->dev->dev_addr))
 			eth_hw_addr_random(priv->dev);
-		netdev_info(priv->dev, "device MAC address %pM\n",
+		netdev_dbg(priv->dev, "device MAC address %pM\n",
 			    priv->dev->dev_addr);
 	}
 }
@@ -2473,10 +2473,10 @@ static void stmmac_mtl_configuration(struct stmmac_priv *priv)
 static void stmmac_safety_feat_configuration(struct stmmac_priv *priv)
 {
 	if (priv->dma_cap.asp) {
-		netdev_info(priv->dev, "Enabling Safety Features\n");
+		netdev_dbg(priv->dev, "Enabling Safety Features\n");
 		stmmac_safety_feat_config(priv, priv->ioaddr, priv->dma_cap.asp);
 	} else {
-		netdev_info(priv->dev, "No Safety Features support found\n");
+		netdev_dbg(priv->dev, "No Safety Features support found\n");
 	}
 }
 
@@ -2877,9 +2877,9 @@ static netdev_tx_t stmmac_tso_xmit(struct sk_buff *skb, struct net_device *dev)
 	}
 
 	if (netif_msg_tx_queued(priv)) {
-		pr_info("%s: tcphdrlen %d, hdr_len %d, pay_len %d, mss %d\n",
+		pr_debug("%s: tcphdrlen %d, hdr_len %d, pay_len %d, mss %d\n",
 			__func__, tcp_hdrlen(skb), proto_hdr_len, pay_len, mss);
-		pr_info("\tskb->len %d, skb->data_len %d\n", skb->len,
+		pr_debug("\tskb->len %d, skb->data_len %d\n", skb->len,
 			skb->data_len);
 	}
 
@@ -2996,13 +2996,13 @@ static netdev_tx_t stmmac_tso_xmit(struct sk_buff *skb, struct net_device *dev)
 	wmb();
 
 	if (netif_msg_pktdata(priv)) {
-		pr_info("%s: curr=%d dirty=%d f=%d, e=%d, f_p=%p, nfrags %d\n",
+		pr_debug("%s: curr=%d dirty=%d f=%d, e=%d, f_p=%p, nfrags %d\n",
 			__func__, tx_q->cur_tx, tx_q->dirty_tx, first_entry,
 			tx_q->cur_tx, first, nfrags);
 
 		stmmac_display_ring(priv, (void *)tx_q->dma_tx, DMA_TX_SIZE, 0);
 
-		pr_info(">>> frame to be transmitted: ");
+		pr_debug(">>> frame to be transmitted: ");
 		print_pkt(skb->data, skb_headlen(skb));
 	}
 
@@ -4159,7 +4159,7 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
 	/* Get the HW capability (new GMAC newer than 3.50a) */
 	priv->hw_cap_support = stmmac_get_hw_features(priv);
 	if (priv->hw_cap_support) {
-		dev_info(priv->device, "DMA HW capability register supported\n");
+		dev_dbg(priv->device, "DMA HW capability register supported\n");
 
 		/* We can override some gmac/dma configuration fields: e.g.
 		 * enh_desc, tx_coe (e.g. that are passed through the
@@ -4189,25 +4189,25 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
 			priv->plat->rx_coe = STMMAC_RX_COE_TYPE1;
 
 	} else {
-		dev_info(priv->device, "No HW DMA feature register supported\n");
+		dev_dbg(priv->device, "No HW DMA feature register supported\n");
 	}
 
 	if (priv->plat->rx_coe) {
 		priv->hw->rx_csum = priv->plat->rx_coe;
-		dev_info(priv->device, "RX Checksum Offload Engine supported\n");
+		dev_dbg(priv->device, "RX Checksum Offload Engine supported\n");
 		if (priv->synopsys_id < DWMAC_CORE_4_00)
-			dev_info(priv->device, "COE Type %d\n", priv->hw->rx_csum);
+			dev_dbg(priv->device, "COE Type %d\n", priv->hw->rx_csum);
 	}
 	if (priv->plat->tx_coe)
-		dev_info(priv->device, "TX Checksum insertion supported\n");
+		dev_dbg(priv->device, "TX Checksum insertion supported\n");
 
 	if (priv->plat->pmt) {
-		dev_info(priv->device, "Wake-Up On Lan supported\n");
+		dev_dbg(priv->device, "Wake-Up On Lan supported\n");
 		device_set_wakeup_capable(priv->device, 1);
 	}
 
 	if (priv->dma_cap.tsoen)
-		dev_info(priv->device, "TSO supported\n");
+		dev_dbg(priv->device, "TSO supported\n");
 
 	/* Run HW quirks, if any */
 	if (priv->hwif_quirks) {
@@ -4224,7 +4224,7 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
 	if (((priv->synopsys_id >= DWMAC_CORE_3_50) ||
 	    (priv->plat->has_xgmac)) && (!priv->plat->riwt_off)) {
 		priv->use_riwt = 1;
-		dev_info(priv->device,
+		dev_dbg(priv->device,
 			 "Enable RX Mitigation via HW Watchdog Timer\n");
 	}
 
@@ -4328,7 +4328,7 @@ int stmmac_dvr_probe(struct device *device,
 	if ((priv->plat->tso_en) && (priv->dma_cap.tsoen)) {
 		ndev->hw_features |= NETIF_F_TSO | NETIF_F_TSO6;
 		priv->tso = true;
-		dev_info(priv->device, "TSO feature enabled\n");
+		dev_dbg(priv->device, "TSO feature enabled\n");
 	}
 	ndev->features |= ndev->hw_features | NETIF_F_HIGHDMA;
 	ndev->watchdog_timeo = msecs_to_jiffies(watchdog);
@@ -4457,7 +4457,7 @@ int stmmac_dvr_remove(struct device *dev)
 	struct net_device *ndev = dev_get_drvdata(dev);
 	struct stmmac_priv *priv = netdev_priv(ndev);
 
-	netdev_info(priv->dev, "%s: removing driver", __func__);
+	netdev_dbg(priv->dev, "%s: removing driver", __func__);
 
 #ifdef CONFIG_DEBUG_FS
 	stmmac_exit_fs(ndev);

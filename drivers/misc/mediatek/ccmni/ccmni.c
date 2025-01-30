@@ -934,7 +934,7 @@ static int ccmni_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 		break;
 
 	case SIOPUSHPENDING:
-		pr_info("Using dummy SIOPUSHPENDING\n");
+		pr_debug("Using dummy SIOPUSHPENDING\n");
 		return 0;
 
 	default:

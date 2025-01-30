@@ -423,7 +423,7 @@ int genwqe_setup_sgl(struct genwqe_dev *cd, struct genwqe_sgl *sgl,
 			if (prev_daddr == daddr) {
 				u32 prev_len = be32_to_cpu(last_s->len);
 
-				/* pr_info("daddr combining: "
+				/* pr_debug("daddr combining: "
 					"%016llx/%08x -> %016llx\n",
 					prev_daddr, prev_len, daddr); */
 
@@ -722,7 +722,7 @@ int genwqe_card_reset(struct genwqe_dev *cd)
 	msleep(50);
 
 	if (genwqe_need_err_masking(cd)) {
-		dev_info(&pci_dev->dev,
+		dev_dbg(&pci_dev->dev,
 			 "[%s] masking errors for old bitstreams\n", __func__);
 		__genwqe_writeq(cd, IO_SLC_MISC_DEBUG, 0x0aull);
 	}

@@ -605,7 +605,7 @@ static int check_init_parameters(struct fman_mac *memac)
 		return -EINVAL;
 	}
 	if (!memac->event_cb) {
-		pr_warn("Uninitialize event handler\n");
+		pr_debug("Uninitialize event handler\n");
 		return -EINVAL;
 	}
 

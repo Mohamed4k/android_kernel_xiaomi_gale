@@ -104,7 +104,7 @@ static int bus_tracer_resume(struct platform_device *pdev)
 int bus_tracer_register(struct bus_tracer_plt *plt)
 {
 	if (!plt) {
-		pr_notice("%s%d: plt is NULL\n", __func__, __LINE__);
+		pr_debug("%s%d: plt is NULL\n", __func__, __LINE__);
 		return -EINVAL;
 	}
 
@@ -118,24 +118,24 @@ int bus_tracer_dump(char *buf, int len)
 	struct bus_tracer_plt *plt = bus_tracer_drv.cur_plt;
 
 	if (!buf) {
-		pr_notice("%s:%d: buf is NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: buf is NULL\n", __func__, __LINE__);
 		return -EINVAL;
 	}
 
 	if (!plt) {
-		pr_notice("%s:%d: plt is NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt is NULL\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->num_tracer <= 0) {
-		pr_notice("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->ops && plt->ops->dump)
 		return plt->ops->dump(plt, buf, len);
 
-	pr_notice("no dump function implemented\n");
+	pr_debug("no dump function implemented\n");
 
 	return 0;
 }
@@ -145,19 +145,19 @@ int bus_tracer_enable(unsigned char force_enable, unsigned int tracer_id)
 	struct bus_tracer_plt *plt = bus_tracer_drv.cur_plt;
 
 	if (!plt) {
-		pr_notice("%s:%d: plt is NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt is NULL\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->num_tracer <= 0) {
-		pr_notice("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->ops && plt->ops->enable)
 		return plt->ops->enable(plt, force_enable, tracer_id);
 
-	pr_notice("no enable function implemented\n");
+	pr_debug("no enable function implemented\n");
 
 	return 0;
 }
@@ -167,19 +167,19 @@ int bus_tracer_disable(void)
 	struct bus_tracer_plt *plt = bus_tracer_drv.cur_plt;
 
 	if (!plt) {
-		pr_notice("%s:%d: plt is NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt is NULL\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->num_tracer <= 0) {
-		pr_notice("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->ops && plt->ops->disable)
 		return plt->ops->disable(plt);
 
-	pr_notice("no disable function implemented\n");
+	pr_debug("no disable function implemented\n");
 
 	return 0;
 }
@@ -190,19 +190,19 @@ int bus_tracer_set_watchpoint_filter(struct watchpoint_filter f,
 	struct bus_tracer_plt *plt = bus_tracer_drv.cur_plt;
 
 	if (!plt) {
-		pr_notice("%s:%d: plt is NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt is NULL\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->num_tracer <= 0) {
-		pr_notice("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->ops && plt->ops->set_watchpoint_filter)
 		return plt->ops->set_watchpoint_filter(plt, f, tracer_id);
 
-	pr_notice("no set_watchpoint_filter function implemented\n");
+	pr_debug("no set_watchpoint_filter function implemented\n");
 
 	return 0;
 }
@@ -212,19 +212,19 @@ int bus_tracer_set_bypass_filter(struct bypass_filter f, unsigned int tracer_id)
 	struct bus_tracer_plt *plt = bus_tracer_drv.cur_plt;
 
 	if (!plt) {
-		pr_notice("%s:%d: plt is NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt is NULL\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->num_tracer <= 0) {
-		pr_notice("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->ops && plt->ops->set_bypass_filter)
 		return plt->ops->set_bypass_filter(plt, f, tracer_id);
 
-	pr_notice("no set_bypass_filter function implemented\n");
+	pr_debug("no set_bypass_filter function implemented\n");
 
 	return 0;
 }
@@ -235,19 +235,19 @@ int bus_tracer_set_id_filter(struct id_filter f, unsigned int tracer_id,
 	struct bus_tracer_plt *plt = bus_tracer_drv.cur_plt;
 
 	if (!plt) {
-		pr_notice("%s:%d: plt is NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt is NULL\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->num_tracer <= 0) {
-		pr_notice("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->ops && plt->ops->set_id_filter)
 		return plt->ops->set_id_filter(plt, f, tracer_id, idf_id);
 
-	pr_notice("no set_id_filter function implemented\n");
+	pr_debug("no set_id_filter function implemented\n");
 
 	return 0;
 }
@@ -257,19 +257,19 @@ int bus_tracer_set_rw_filter(struct rw_filter f, unsigned int tracer_id)
 	struct bus_tracer_plt *plt = bus_tracer_drv.cur_plt;
 
 	if (!plt) {
-		pr_notice("%s:%d: plt is NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt is NULL\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->num_tracer <= 0) {
-		pr_notice("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->ops && plt->ops->set_rw_filter)
 		return plt->ops->set_rw_filter(plt, f, tracer_id);
 
-	pr_notice("no set_rw_filter function implemented\n");
+	pr_debug("no set_rw_filter function implemented\n");
 
 	return 0;
 }
@@ -279,19 +279,19 @@ int bus_tracer_dump_setting(char *buf, int len)
 	struct bus_tracer_plt *plt = bus_tracer_drv.cur_plt;
 
 	if (!plt) {
-		pr_notice("%s:%d: plt is NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt is NULL\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->num_tracer <= 0) {
-		pr_notice("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt->num_tracer <= 0\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (plt->ops && plt->ops->dump_setting)
 		return plt->ops->dump_setting(plt, buf, len);
 
-	pr_notice("no dump_setting function implemented\n");
+	pr_debug("no dump_setting function implemented\n");
 
 	return 0;
 }
@@ -301,12 +301,12 @@ int bus_tracer_dump_min_len(void)
 	struct bus_tracer_plt *plt = bus_tracer_drv.cur_plt;
 
 	if (!plt) {
-		pr_notice("%s:%d: plt is NULL\n", __func__, __LINE__);
+		pr_debug("%s:%d: plt is NULL\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
 	if (!plt->min_buf_len)
-		pr_notice("%s:%d: min_buf_len is 0\n", __func__, __LINE__);
+		pr_debug("%s:%d: min_buf_len is 0\n", __func__, __LINE__);
 
 	return plt->min_buf_len;
 }
@@ -406,7 +406,7 @@ static ssize_t bus_tracer_enable_store(struct device_driver *driver,
 
 	while ((arg = strsep(&p, " ")) && (i <= 1)) {
 		if (kstrtoul(arg, 16, &input) != 0) {
-			pr_notice("%s: kstrtoul fail for %s\n", __func__, p);
+			pr_debug("%s: kstrtoul fail for %s\n", __func__, p);
 			return 0;
 		}
 		switch (i) {
@@ -426,11 +426,11 @@ static ssize_t bus_tracer_enable_store(struct device_driver *driver,
 		if (enable)
 			ret = plt->ops->enable(plt, 1, tracer_id);
 		else
-			pr_notice("%s: not support for runtime disabling\n",
+			pr_debug("%s: not support for runtime disabling\n",
 					__func__);
 
 		if (ret)
-			pr_notice("%s: enable failed\n", __func__);
+			pr_debug("%s: enable failed\n", __func__);
 	}
 
 	return count;
@@ -459,7 +459,7 @@ static ssize_t bus_tracer_recording_store(struct device_driver *driver,
 	int ret = -1;
 
 	if (kstrtoul(p, 10, &arg) != 0) {
-		pr_notice("%s: kstrtoul fail for %s\n", __func__, p);
+		pr_debug("%s: kstrtoul fail for %s\n", __func__, p);
 		return 0;
 	}
 
@@ -469,7 +469,7 @@ static ssize_t bus_tracer_recording_store(struct device_driver *driver,
 			ret = plt->ops->set_recording(plt, !(arg & 1));
 
 		if (ret)
-			pr_notice("%s: recording failed\n", __func__);
+			pr_debug("%s: recording failed\n", __func__);
 	}
 
 	return count;
@@ -506,7 +506,7 @@ static ssize_t bus_tracer_watchpoint_filter_store(struct device_driver *driver,
 
 	while ((arg = strsep(&p, " ")) && (i <= 4)) {
 		if (kstrtoul(arg, 16, &input) != 0) {
-			pr_notice("%s: kstrtoul fail for %s\n", __func__, p);
+			pr_debug("%s: kstrtoul fail for %s\n", __func__, p);
 			return 0;
 		}
 		switch (i) {
@@ -532,7 +532,7 @@ static ssize_t bus_tracer_watchpoint_filter_store(struct device_driver *driver,
 	}
 
 	if (i <= 4) {
-		pr_notice("%s: too few arguments\n", __func__);
+		pr_debug("%s: too few arguments\n", __func__);
 		return count;
 	}
 
@@ -540,7 +540,7 @@ static ssize_t bus_tracer_watchpoint_filter_store(struct device_driver *driver,
 		ret = plt->ops->set_watchpoint_filter(plt, f, tracer_id);
 
 		if (ret)
-			pr_notice("%s:%d: recording failed\n", __func__);
+			pr_debug("%s:%d: recording failed\n", __func__);
 	}
 
 	return count;
@@ -577,7 +577,7 @@ static ssize_t bus_tracer_bypass_filter_store(struct device_driver *driver,
 
 	while ((arg = strsep(&p, " ")) && (i <= 3)) {
 		if (kstrtoul(arg, 16, &input) != 0) {
-			pr_notice("%s: kstrtoul fail for %s\n", __func__, p);
+			pr_debug("%s: kstrtoul fail for %s\n", __func__, p);
 			return 0;
 		}
 		switch (i) {
@@ -600,7 +600,7 @@ static ssize_t bus_tracer_bypass_filter_store(struct device_driver *driver,
 	}
 
 	if (i <= 3) {
-		pr_notice("%s: too few arguments\n", __func__);
+		pr_debug("%s: too few arguments\n", __func__);
 		return count;
 	}
 
@@ -608,7 +608,7 @@ static ssize_t bus_tracer_bypass_filter_store(struct device_driver *driver,
 		ret = plt->ops->set_bypass_filter(plt, f, tracer_id);
 
 		if (ret)
-			pr_notice("%s: recording failed\n", __func__);
+			pr_debug("%s: recording failed\n", __func__);
 	}
 
 	return count;
@@ -644,7 +644,7 @@ static ssize_t bus_tracer_id_filter_store(struct device_driver *driver,
 
 	while ((arg = strsep(&p, " ")) && (i <= 3)) {
 		if (kstrtoul(arg, 16, &input) != 0) {
-			pr_notice("%s: kstrtoul fail for %s\n", __func__, p);
+			pr_debug("%s: kstrtoul fail for %s\n", __func__, p);
 			return 0;
 		}
 		switch (i) {
@@ -667,7 +667,7 @@ static ssize_t bus_tracer_id_filter_store(struct device_driver *driver,
 	}
 
 	if (i <= 3) {
-		pr_notice("%s:%d: too few arguments\n", __func__, __LINE__);
+		pr_debug("%s:%d: too few arguments\n", __func__, __LINE__);
 		return count;
 	}
 
@@ -675,7 +675,7 @@ static ssize_t bus_tracer_id_filter_store(struct device_driver *driver,
 		ret = plt->ops->set_id_filter(plt, f, tracer_id, idf_id);
 
 		if (ret)
-			pr_notice("%s: recording failed\n", __func__);
+			pr_debug("%s: recording failed\n", __func__);
 	}
 
 	return count;
@@ -710,7 +710,7 @@ static ssize_t bus_tracer_rw_filter_store(struct device_driver *driver,
 
 	while ((arg = strsep(&p, " ")) && (i <= 2)) {
 		if (kstrtoul(arg, 16, &input) != 0) {
-			pr_notice("%s: kstrtoul fail for %s\n", __func__, p);
+			pr_debug("%s: kstrtoul fail for %s\n", __func__, p);
 			return 0;
 		}
 		switch (i) {
@@ -730,7 +730,7 @@ static ssize_t bus_tracer_rw_filter_store(struct device_driver *driver,
 	}
 
 	if (i <= 2) {
-		pr_notice("%s: too few arguments\n", __func__);
+		pr_debug("%s: too few arguments\n", __func__);
 		return count;
 	}
 
@@ -738,7 +738,7 @@ static ssize_t bus_tracer_rw_filter_store(struct device_driver *driver,
 		ret = plt->ops->set_rw_filter(plt, f, tracer_id);
 
 		if (ret)
-			pr_notice("%s: recording failed\n", __func__);
+			pr_debug("%s: recording failed\n", __func__);
 	}
 
 	return count;
@@ -758,7 +758,7 @@ static ssize_t bus_dump_setting_show(struct device_driver *driver, char *buf)
 
 	ret = plt->ops->dump_setting(plt, buf, -1);
 	if (ret)
-		pr_notice("%s:%d: dump failed\n", __func__, __LINE__);
+		pr_debug("%s:%d: dump failed\n", __func__, __LINE__);
 
 	return strlen(buf);
 }
@@ -802,7 +802,7 @@ static int bus_tracer_start(void)
 		return -ENODEV;
 
 	if (!plt->ops) {
-		pr_notice("%s:%d: ops not installed\n", __func__, __LINE__);
+		pr_debug("%s:%d: ops not installed\n", __func__, __LINE__);
 		return -ENODEV;
 	}
 
@@ -821,61 +821,61 @@ static int __init bus_tracer_init(void)
 
 	ret = bus_tracer_start();
 	if (ret) {
-		pr_notice("%s: bus_tracer_start failed\n", __func__);
+		pr_debug("%s: bus_tracer_start failed\n", __func__);
 		return -ENODEV;
 	}
 
 	/* our probe would be callback after this registration */
 	ret = platform_driver_register(&bus_tracer_drv.plt_drv);
 	if (ret) {
-		pr_notice("%s: platform_driver_register failed\n", __func__);
+		pr_debug("%s: platform_driver_register failed\n", __func__);
 		return -ENODEV;
 	}
 
 	ret = driver_create_file(&bus_tracer_drv.plt_drv.driver,
 			&driver_attr_dump_to_buf);
 	if (ret)
-		pr_notice("%s: driver_create_file failed.\n", __func__);
+		pr_debug("%s: driver_create_file failed.\n", __func__);
 
 	ret = driver_create_file(&bus_tracer_drv.plt_drv.driver,
 			&driver_attr_tracer_enable);
 	if (ret)
-		pr_notice("%s: driver_create_file failed.\n", __func__);
+		pr_debug("%s: driver_create_file failed.\n", __func__);
 
 	ret = driver_create_file(&bus_tracer_drv.plt_drv.driver,
 			&driver_attr_tracer_recording);
 	if (ret)
-		pr_notice("%s: driver_create_file failed.\n", __func__);
+		pr_debug("%s: driver_create_file failed.\n", __func__);
 #if 0
 	ret = driver_create_file(&bus_tracer_drv.plt_drv.driver,
 			&driver_attr_watchpoint_filter);
 	if (ret)
-		pr_notice("%s: driver_create_file failed.\n", __func__);
+		pr_debug("%s: driver_create_file failed.\n", __func__);
 
 	ret = driver_create_file(&bus_tracer_drv.plt_drv.driver,
 			&driver_attr_bypass_filter);
 	if (ret)
-		pr_notice("%s: driver_create_file failed.\n", __func__);
+		pr_debug("%s: driver_create_file failed.\n", __func__);
 
 	ret = driver_create_file(&bus_tracer_drv.plt_drv.driver,
 			&driver_attr_id_filter);
 	if (ret)
-		pr_notice("%s: driver_create_file failed.\n", __func__);
+		pr_debug("%s: driver_create_file failed.\n", __func__);
 
 	ret = driver_create_file(&bus_tracer_drv.plt_drv.driver,
 			&driver_attr_rw_filter);
 	if (ret)
-		pr_notice("%s: driver_create_file failed.\n", __func__);
+		pr_debug("%s: driver_create_file failed.\n", __func__);
 #endif
 	ret = driver_create_file(&bus_tracer_drv.plt_drv.driver,
 			&driver_attr_dump_setting);
 	if (ret)
-		pr_notice("%s: driver_create_file failed.\n", __func__);
+		pr_debug("%s: driver_create_file failed.\n", __func__);
 #if 0
 	ret = driver_create_file(&bus_tracer_drv.plt_drv.driver,
 			&driver_attr_last_status);
 	if (ret)
-		pr_notice("%s: driver_create_file failed.\n", __func__);
+		pr_debug("%s: driver_create_file failed.\n", __func__);
 #endif
 #if 0
 	/* create /proc/bus_tracer */
@@ -898,7 +898,7 @@ static int __init bus_tracer_init(void)
 
 	/* force_enable=0 to enable all the tracers with enabled=1 */
 	bus_tracer_enable(0, -1);
-	pr_notice("%s: running...\n", __func__);
+	pr_debug("%s: running...\n", __func__);
 
 	return 0;
 }

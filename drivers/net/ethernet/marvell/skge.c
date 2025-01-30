@@ -1120,7 +1120,7 @@ static u16 xm_phy_read(struct skge_hw *hw, int port, u16 reg)
 {
 	u16 v = 0;
 	if (__xm_phy_read(hw, port, reg, &v))
-		pr_warn("%s: phy read timed out\n", hw->dev[port]->name);
+		pr_debug("%s: phy read timed out\n", hw->dev[port]->name);
 	return v;
 }
 
@@ -1916,7 +1916,7 @@ static int gm_phy_write(struct skge_hw *hw, int port, u16 reg, u16 val)
 			return 0;
 	}
 
-	pr_warn("%s: phy write timeout\n", hw->dev[port]->name);
+	pr_debug("%s: phy write timeout\n", hw->dev[port]->name);
 	return -EIO;
 }
 
@@ -1944,7 +1944,7 @@ static u16 gm_phy_read(struct skge_hw *hw, int port, u16 reg)
 {
 	u16 v = 0;
 	if (__gm_phy_read(hw, port, reg, &v))
-		pr_warn("%s: phy read timeout\n", hw->dev[port]->name);
+		pr_debug("%s: phy read timeout\n", hw->dev[port]->name);
 	return v;
 }
 
@@ -3771,7 +3771,7 @@ static int skge_device_event(struct notifier_block *unused,
 			if (d)
 				skge->debugfs = d;
 			else {
-				netdev_info(dev, "rename failed\n");
+				netdev_dbg(dev, "rename failed\n");
 				debugfs_remove(skge->debugfs);
 			}
 		}
@@ -3789,7 +3789,7 @@ static int skge_device_event(struct notifier_block *unused,
 					skge_debug, dev,
 					&skge_debug_fops);
 		if (!d || IS_ERR(d))
-			netdev_info(dev, "debugfs create failed\n");
+			netdev_dbg(dev, "debugfs create failed\n");
 		else
 			skge->debugfs = d;
 		break;
@@ -3810,7 +3810,7 @@ static __init void skge_debug_init(void)
 
 	ent = debugfs_create_dir("skge", NULL);
 	if (!ent || IS_ERR(ent)) {
-		pr_info("debugfs create directory failed\n");
+		pr_debug("debugfs create directory failed\n");
 		return;
 	}
 
@@ -3989,7 +3989,7 @@ static int skge_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (err)
 		goto err_out_iounmap;
 
-	pr_info("%s addr 0x%llx irq %d chip %s rev %d\n",
+	pr_debug("%s addr 0x%llx irq %d chip %s rev %d\n",
 		DRV_VERSION,
 		(unsigned long long)pci_resource_start(pdev, 0), pdev->irq,
 		skge_board_name(hw), hw->chip_rev);

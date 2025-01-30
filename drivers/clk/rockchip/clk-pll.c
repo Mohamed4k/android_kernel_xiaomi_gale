@@ -232,7 +232,7 @@ static int rockchip_rk3036_pll_set_params(struct rockchip_clk_pll *pll,
 	/* wait for the pll to lock */
 	ret = rockchip_pll_wait_lock(pll);
 	if (ret) {
-		pr_warn("%s: pll update unsuccessful, trying to restore old params\n",
+		pr_debug("%s: pll update unsuccessful, trying to restore old params\n",
 			__func__);
 		rockchip_rk3036_pll_set_params(pll, &cur);
 	}
@@ -326,7 +326,7 @@ static void rockchip_rk3036_pll_init(struct clk_hw *hw)
 		struct clk *parent = clk_get_parent(hw->clk);
 
 		if (!parent) {
-			pr_warn("%s: parent of %s not available\n",
+			pr_debug("%s: parent of %s not available\n",
 				__func__, __clk_get_name(hw->clk));
 			return;
 		}
@@ -465,7 +465,7 @@ static int rockchip_rk3066_pll_set_params(struct rockchip_clk_pll *pll,
 	/* wait for the pll to lock */
 	ret = rockchip_pll_wait_lock(pll);
 	if (ret) {
-		pr_warn("%s: pll update unsuccessful, trying to restore old params\n",
+		pr_debug("%s: pll update unsuccessful, trying to restore old params\n",
 			__func__);
 		rockchip_rk3066_pll_set_params(pll, &cur);
 	}
@@ -711,7 +711,7 @@ static int rockchip_rk3399_pll_set_params(struct rockchip_clk_pll *pll,
 	/* wait for the pll to lock */
 	ret = rockchip_rk3399_pll_wait_lock(pll);
 	if (ret) {
-		pr_warn("%s: pll update unsuccessful, trying to restore old params\n",
+		pr_debug("%s: pll update unsuccessful, trying to restore old params\n",
 			__func__);
 		rockchip_rk3399_pll_set_params(pll, &cur);
 	}
@@ -805,7 +805,7 @@ static void rockchip_rk3399_pll_init(struct clk_hw *hw)
 		struct clk *parent = clk_get_parent(hw->clk);
 
 		if (!parent) {
-			pr_warn("%s: parent of %s not available\n",
+			pr_debug("%s: parent of %s not available\n",
 				__func__, __clk_get_name(hw->clk));
 			return;
 		}
@@ -949,7 +949,7 @@ struct clk *rockchip_clk_register_pll(struct rockchip_clk_provider *ctx,
 			init.ops = &rockchip_rk3399_pll_clk_ops;
 		break;
 	default:
-		pr_warn("%s: Unknown pll type for pll clk %s\n",
+		pr_debug("%s: Unknown pll type for pll clk %s\n",
 			__func__, name);
 	}
 

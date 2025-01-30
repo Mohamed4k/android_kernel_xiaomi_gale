@@ -111,7 +111,7 @@ static void firmware_load(const struct firmware *fw, void *context)
 		return;
 	}
 
-	dev_info(&spi->dev, "FPGA %s detected\n", ecp3_dev[i].name);
+	dev_dbg(&spi->dev, "FPGA %s detected\n", ecp3_dev[i].name);
 
 	txbuf[0] = FPGA_CMD_READ_STATUS;
 	ret = spi_write_then_read(spi, txbuf, 8, rxbuf, rx_len);
@@ -163,7 +163,7 @@ static void firmware_load(const struct firmware *fw, void *context)
 		return;
 	}
 
-	dev_info(&spi->dev, "Configuring the FPGA...\n");
+	dev_dbg(&spi->dev, "Configuring the FPGA...\n");
 	ret = spi_write(spi, buffer, fw->size + 8);
 
 	txbuf[0] = FPGA_CMD_WRITE_DIS;
@@ -176,9 +176,9 @@ static void firmware_load(const struct firmware *fw, void *context)
 
 	/* Check result */
 	if (status & FPGA_STATUS_DONE)
-		dev_info(&spi->dev, "FPGA successfully configured!\n");
+		dev_dbg(&spi->dev, "FPGA successfully configured!\n");
 	else
-		dev_info(&spi->dev, "FPGA not configured (DONE not set)\n");
+		dev_dbg(&spi->dev, "FPGA not configured (DONE not set)\n");
 
 	/*
 	 * Don't forget to release the firmware again
@@ -211,7 +211,7 @@ static int lattice_ecp3_probe(struct spi_device *spi)
 		return err;
 	}
 
-	dev_info(&spi->dev, "FPGA bitstream configuration driver registered\n");
+	dev_dbg(&spi->dev, "FPGA bitstream configuration driver registered\n");
 
 	return 0;
 }

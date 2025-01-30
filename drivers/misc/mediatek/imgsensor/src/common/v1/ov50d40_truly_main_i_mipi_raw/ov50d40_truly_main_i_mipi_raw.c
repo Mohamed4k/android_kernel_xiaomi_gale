@@ -322,7 +322,7 @@ static void ov50d40_fusion_id_read(void)
 	int i;
 	for (i=0; i<16; i++) {
 		fusion_id_main[i] = read_cmos_sensor_ov50d40(0x10+i);
-		//pr_info("zengx %s addr = 0x%4x fusion_id_main[%d]=0x%2x\n",__func__, 0x10 + i, i, fusion_id_main[i]);
+		//pr_debug("zengx %s addr = 0x%4x fusion_id_main[%d]=0x%2x\n",__func__, 0x10 + i, i, fusion_id_main[i]);
 	}
 }
 static void ov50d40_sn_read(void)
@@ -330,7 +330,7 @@ static void ov50d40_sn_read(void)
 	int i;
 	for (i=0; i<14; i++) {
 		sn_main[i] = read_cmos_sensor_ov50d40(0x3FE3+i);
-		//pr_info("zengx %s addr = 0x%4x sn_main[%d]=0x%2x\n",__func__, 0x3fe3 + i, i, sn_main[i]);
+		//pr_debug("zengx %s addr = 0x%4x sn_main[%d]=0x%2x\n",__func__, 0x3fe3 + i, i, sn_main[i]);
 	}
 }
 static void set_dummy(void)
@@ -3092,9 +3092,9 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
 		spin_unlock(&imgsensor_drv_lock);
 		do {
 			*sensor_id = return_sensor_id();
-			pr_info("ov50d40_truly get_imgsensor_id: 0x%x \n", *sensor_id);
+			pr_debug("ov50d40_truly get_imgsensor_id: 0x%x \n", *sensor_id);
 			if (*sensor_id == imgsensor_info.sensor_id) {
-				pr_info("ov50d40_truly i2c write id: 0x%x, sensor id: 0x%x\n",
+				pr_debug("ov50d40_truly i2c write id: 0x%x, sensor id: 0x%x\n",
 					imgsensor.i2c_write_id, *sensor_id);
 				ov50d40_fusion_id_read();
 				ov50d40_sn_read();
@@ -3106,7 +3106,7 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
 		retry = 1;
 	}
 	if (*sensor_id != imgsensor_info.sensor_id) {
-		pr_info("get_imgsensor_id: 0x%x fail\n", *sensor_id);
+		pr_debug("get_imgsensor_id: 0x%x fail\n", *sensor_id);
 		*sensor_id = 0xFFFFFFFF;
 		return ERROR_SENSOR_CONNECT_FAIL;
 	}
@@ -3124,7 +3124,7 @@ static kal_uint32 open(void)
 		do {
 			sensor_id = return_sensor_id();
 			if (sensor_id == imgsensor_info.sensor_id) {
-				pr_info("i2c write id: 0x%x, sensor id: 0x%x\n",
+				pr_debug("i2c write id: 0x%x, sensor id: 0x%x\n",
 					imgsensor.i2c_write_id, sensor_id);
 				break;
 			}
@@ -3136,7 +3136,7 @@ static kal_uint32 open(void)
 		retry = 2;
 	}
 	if (imgsensor_info.sensor_id != sensor_id) {
-		pr_info("Open sensor id: 0x%x fail\n", sensor_id);
+		pr_debug("Open sensor id: 0x%x fail\n", sensor_id);
 		return ERROR_SENSOR_CONNECT_FAIL;
 	}
 	sensor_init();

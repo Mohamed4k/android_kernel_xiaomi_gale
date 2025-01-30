@@ -322,7 +322,7 @@ int hclgevf_cmd_init(struct hclgevf_dev *hdev)
 	}
 	hdev->fw_version = version;
 
-	dev_info(&hdev->pdev->dev, "The firmware version is %08x\n", version);
+	dev_dbg(&hdev->pdev->dev, "The firmware version is %08x\n", version);
 
 	return 0;
 err_crq:

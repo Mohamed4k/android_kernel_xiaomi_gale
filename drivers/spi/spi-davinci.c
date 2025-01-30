@@ -1016,7 +1016,7 @@ static int davinci_spi_probe(struct platform_device *pdev)
 	if (ret == -EPROBE_DEFER) {
 		goto free_clk;
 	} else if (ret) {
-		dev_info(&pdev->dev, "DMA is not supported (%d)\n", ret);
+		dev_dbg(&pdev->dev, "DMA is not supported (%d)\n", ret);
 		dspi->dma_rx = NULL;
 		dspi->dma_tx = NULL;
 	}
@@ -1049,7 +1049,7 @@ static int davinci_spi_probe(struct platform_device *pdev)
 	if (ret)
 		goto free_dma;
 
-	dev_info(&pdev->dev, "Controller at 0x%p\n", dspi->base);
+	dev_dbg(&pdev->dev, "Controller at 0x%p\n", dspi->base);
 
 	return ret;
 

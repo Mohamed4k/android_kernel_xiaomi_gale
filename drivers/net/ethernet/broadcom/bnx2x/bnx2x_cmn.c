@@ -1330,7 +1330,7 @@ void __bnx2x_link_report(struct bnx2x *bp)
 		} else {
 			flow = "none";
 		}
-		netdev_info(bp->dev, "NIC Link is Up, %d Mbps %s duplex, Flow control: %s\n",
+		netdev_dbg(bp->dev, "NIC Link is Up, %d Mbps %s duplex, Flow control: %s\n",
 			    cur_data.line_speed, duplex, flow);
 	}
 }
@@ -1780,14 +1780,14 @@ static int bnx2x_req_msix_irqs(struct bnx2x *bp)
 	i = BNX2X_NUM_ETH_QUEUES(bp);
 	if (IS_PF(bp)) {
 		offset = 1 + CNIC_SUPPORT(bp);
-		netdev_info(bp->dev,
+		netdev_dbg(bp->dev,
 			    "using MSI-X  IRQs: sp %d  fp[%d] %d ... fp[%d] %d\n",
 			    bp->msix_table[0].vector,
 			    0, bp->msix_table[offset].vector,
 			    i - 1, bp->msix_table[offset + i - 1].vector);
 	} else {
 		offset = CNIC_SUPPORT(bp);
-		netdev_info(bp->dev,
+		netdev_dbg(bp->dev,
 			    "using MSI-X  IRQs: fp[%d] %d ... fp[%d] %d\n",
 			    0, bp->msix_table[offset].vector,
 			    i - 1, bp->msix_table[offset + i - 1].vector);
@@ -1843,12 +1843,12 @@ static int bnx2x_setup_irqs(struct bnx2x *bp)
 		}
 		if (bp->flags & USING_MSI_FLAG) {
 			bp->dev->irq = bp->pdev->irq;
-			netdev_info(bp->dev, "using MSI IRQ %d\n",
+			netdev_dbg(bp->dev, "using MSI IRQ %d\n",
 				    bp->dev->irq);
 		}
 		if (bp->flags & USING_MSIX_FLAG) {
 			bp->dev->irq = bp->msix_table[0].vector;
-			netdev_info(bp->dev, "using MSIX IRQ %d\n",
+			netdev_dbg(bp->dev, "using MSIX IRQ %d\n",
 				    bp->dev->irq);
 		}
 	}
@@ -4514,7 +4514,7 @@ static int bnx2x_alloc_fp_mem_at(struct bnx2x *bp, int index)
 
 		if (CHIP_IS_E3(bp)) {
 			u32 cfg = SHMEM_RD(bp,
-					   dev_info.port_hw_config[BP_PORT(bp)].
+					   dev_dbg.port_hw_config[BP_PORT(bp)].
 					   default_cfg);
 
 			/* Decrease ring size for 1G functions */

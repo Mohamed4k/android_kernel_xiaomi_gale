@@ -32,21 +32,21 @@ extern int pe4_get_debug_level(void);
 #define pe4_err(fmt, args...)					\
 do {								\
 	if (pe4_get_debug_level() >= PE4_ERROR_LEVEL) {	\
-		pr_notice(fmt, ##args);				\
+		pr_debug(fmt, ##args);				\
 	}							\
 } while (0)
 
 #define pe4_info(fmt, args...)					\
 do {								\
 	if (pe4_get_debug_level() >= PE4_INFO_LEVEL) { \
-		pr_notice(fmt, ##args);				\
+		pr_debug(fmt, ##args);				\
 	}							\
 } while (0)
 
 #define pe4_dbg(fmt, args...)					\
 do {								\
 	if (pe4_get_debug_level() >= PE4_DEBUG_LEVEL) {	\
-		pr_notice(fmt, ##args);				\
+		pr_debug(fmt, ##args);				\
 	}							\
 } while (0)
 

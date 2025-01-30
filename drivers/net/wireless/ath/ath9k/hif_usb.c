@@ -1080,7 +1080,7 @@ static int ath9k_hif_usb_download_fw(struct hif_device_usb *hif_dev)
 	if (err)
 		return -EIO;
 
-	dev_info(&hif_dev->udev->dev, "ath9k_htc: Transferred FW: %s, size: %ld\n",
+	dev_dbg(&hif_dev->udev->dev, "ath9k_htc: Transferred FW: %s, size: %ld\n",
 		 hif_dev->fw_name, (unsigned long) hif_dev->fw_size);
 
 	return 0;
@@ -1200,7 +1200,7 @@ static int ath9k_hif_request_firmware(struct hif_device_usb *hif_dev,
 		return ret;
 	}
 
-	dev_info(&hif_dev->udev->dev, "ath9k_htc: Firmware %s requested\n",
+	dev_dbg(&hif_dev->udev->dev, "ath9k_htc: Firmware %s requested\n",
 		 hif_dev->fw_name);
 
 	return ret;
@@ -1306,7 +1306,7 @@ static int send_eject_command(struct usb_interface *interface)
 	cmd[15] = 0x1b;	/* SCSI command: START STOP UNIT */
 	cmd[19] = 0x2;	/* eject disc */
 
-	dev_info(&udev->dev, "Ejecting storage device...\n");
+	dev_dbg(&udev->dev, "Ejecting storage device...\n");
 	r = usb_bulk_msg(udev, usb_sndbulkpipe(udev, bulk_out_ep),
 		cmd, 31, NULL, 2 * USB_MSG_TIMEOUT);
 	kfree(cmd);
@@ -1406,7 +1406,7 @@ static void ath9k_hif_usb_disconnect(struct usb_interface *interface)
 		ath9k_hif_usb_reboot(udev);
 
 	kfree(hif_dev);
-	dev_info(&udev->dev, "ath9k_htc: USB layer deinitialized\n");
+	dev_dbg(&udev->dev, "ath9k_htc: USB layer deinitialized\n");
 	usb_put_dev(udev);
 }
 

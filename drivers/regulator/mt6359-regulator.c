@@ -1320,7 +1320,7 @@ static int mt6359_regulator_probe(struct platform_device *pdev)
 		dev_notice(&pdev->dev, "Failed to read Chip ID\n");
 		return -EIO;
 	}
-	dev_info(&pdev->dev, "Chip ID = 0x%x\n", reg_value);
+	dev_dbg(&pdev->dev, "Chip ID = 0x%x\n", reg_value);
 
 	for (i = 0; i < regulator_init_data->size; i++, mt_regulators++) {
 		mt_regulators->desc.of_parse_cb = mt6359_of_parse_cb;

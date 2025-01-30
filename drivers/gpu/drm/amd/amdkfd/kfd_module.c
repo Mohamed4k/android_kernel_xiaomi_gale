@@ -156,7 +156,7 @@ static int __init kfd_module_init(void)
 
 	amdkfd_init_completed = 1;
 
-	dev_info(kfd_device, "Initialized module\n");
+	dev_dbg(kfd_device, "Initialized module\n");
 
 	return 0;
 
@@ -176,7 +176,7 @@ static void __exit kfd_module_exit(void)
 	kfd_process_destroy_wq();
 	kfd_topology_shutdown();
 	kfd_chardev_exit();
-	pr_info("amdkfd: Removed module\n");
+	pr_debug("amdkfd: Removed module\n");
 }
 
 module_init(kfd_module_init);

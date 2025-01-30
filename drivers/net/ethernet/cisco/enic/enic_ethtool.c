@@ -200,12 +200,12 @@ static int enic_set_ringparam(struct net_device *netdev,
 	int err = 0;
 
 	if (ring->rx_mini_max_pending || ring->rx_mini_pending) {
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "modifying mini ring params is not supported");
 		return -EINVAL;
 	}
 	if (ring->rx_jumbo_max_pending || ring->rx_jumbo_pending) {
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "modifying jumbo ring params is not supported");
 		return -EINVAL;
 	}
@@ -213,14 +213,14 @@ static int enic_set_ringparam(struct net_device *netdev,
 	tx_pending = c->wq_desc_count;
 	if (ring->rx_pending > ENIC_MAX_RQ_DESCS ||
 	    ring->rx_pending < ENIC_MIN_RQ_DESCS) {
-		netdev_info(netdev, "rx pending (%u) not in range [%u,%u]",
+		netdev_dbg(netdev, "rx pending (%u) not in range [%u,%u]",
 			    ring->rx_pending, ENIC_MIN_RQ_DESCS,
 			    ENIC_MAX_RQ_DESCS);
 		return -EINVAL;
 	}
 	if (ring->tx_pending > ENIC_MAX_WQ_DESCS ||
 	    ring->tx_pending < ENIC_MIN_WQ_DESCS) {
-		netdev_info(netdev, "tx pending (%u) not in range [%u,%u]",
+		netdev_dbg(netdev, "tx pending (%u) not in range [%u,%u]",
 			    ring->tx_pending, ENIC_MIN_WQ_DESCS,
 			    ENIC_MAX_WQ_DESCS);
 		return -EINVAL;
@@ -351,7 +351,7 @@ static int enic_coalesce_valid(struct enic *enic,
 	    (ec->rx_coalesce_usecs > coalesce_usecs_max)	||
 	    (ec->rx_coalesce_usecs_low > coalesce_usecs_max)	||
 	    (ec->rx_coalesce_usecs_high > coalesce_usecs_max))
-		netdev_info(enic->netdev, "ethtool_set_coalesce: adaptor supports max coalesce value of %d. Setting max value.\n",
+		netdev_dbg(enic->netdev, "ethtool_set_coalesce: adaptor supports max coalesce value of %d. Setting max value.\n",
 			    coalesce_usecs_max);
 
 	if (ec->rx_coalesce_usecs_high &&

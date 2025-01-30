@@ -484,7 +484,7 @@ static int si570_probe(struct i2c_client *client,
 	}
 
 	/* Display a message indicating that we've successfully registered */
-	dev_info(&client->dev, "registered, current frequency %llu Hz\n",
+	dev_dbg(&client->dev, "registered, current frequency %llu Hz\n",
 			data->frequency);
 
 	return 0;

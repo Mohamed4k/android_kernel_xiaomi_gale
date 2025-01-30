@@ -526,7 +526,7 @@ static void hz_to_spi_baud(char *pbr, char *br, int speed_hz,
 		}
 
 	if (minscale == INT_MAX) {
-		pr_warn("Can not find valid baud rate,speed_hz is %d,clkrate is %ld, we use the max prescaler value.\n",
+		pr_debug("Can not find valid baud rate,speed_hz is %d,clkrate is %ld, we use the max prescaler value.\n",
 			speed_hz, clkrate);
 		*pbr = ARRAY_SIZE(pbr_tbl) - 1;
 		*br =  ARRAY_SIZE(brs) - 1;
@@ -560,7 +560,7 @@ static void ns_delay_scale(char *psc, char *sc, int delay_ns,
 		}
 
 	if (minscale == INT_MAX) {
-		pr_warn("Cannot find correct scale values for %dns delay at clkrate %ld, using max prescaler value",
+		pr_debug("Cannot find correct scale values for %dns delay at clkrate %ld, using max prescaler value",
 			delay_ns, clkrate);
 		*psc = ARRAY_SIZE(pscale_tbl) - 1;
 		*sc = SPI_CTAR_SCALE_BITS;

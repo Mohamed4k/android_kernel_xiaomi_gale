@@ -260,7 +260,7 @@ static int bcm63xx_wdt_probe(struct platform_device *pdev)
 
 	if (bcm63xx_wdt_settimeout(wdt_time)) {
 		bcm63xx_wdt_settimeout(WDT_DEFAULT_TIME);
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			": wdt_time value must be 1 <= wdt_time <= 256, using %d\n",
 			wdt_time);
 	}
@@ -271,7 +271,7 @@ static int bcm63xx_wdt_probe(struct platform_device *pdev)
 		goto unregister_timer;
 	}
 
-	dev_info(&pdev->dev, " started, timer margin: %d sec\n",
+	dev_dbg(&pdev->dev, " started, timer margin: %d sec\n",
 						WDT_DEFAULT_TIME);
 
 	return 0;

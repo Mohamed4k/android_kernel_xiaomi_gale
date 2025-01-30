@@ -35,13 +35,13 @@
 extern struct device *g_device;
 #if defined(CONFIG_TOUCHSCREEN_HIMAX_DEBUG)
 #define D(x...) dev_dbg(g_device, "[HXTP] " x)
-#define I(x...) dev_info(g_device, "[HXTP] " x)
-#define W(x...) dev_info(g_device, "[HXTP][WARNING] " x)
-#define E(x...) dev_info(g_device, "[HXTP][ERROR] " x)
+#define I(x...) dev_dbg(g_device, "[HXTP] " x)
+#define W(x...) dev_dbg(g_device, "[HXTP][WARNING] " x)
+#define E(x...) dev_dbg(g_device, "[HXTP][ERROR] " x)
 #define DIF(x...) \
 do { \
 	if (debug_flag) \
-		dev_info(g_device, "[HXTP][DEBUG] " x); \
+		dev_dbg(g_device, "[HXTP][DEBUG] " x); \
 } while (0)
 #else
 #define D(x...)

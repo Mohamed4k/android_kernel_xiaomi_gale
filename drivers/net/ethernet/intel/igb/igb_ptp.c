@@ -1199,7 +1199,7 @@ void igb_ptp_init(struct igb_adapter *adapter)
 		adapter->ptp_clock = NULL;
 		dev_err(&adapter->pdev->dev, "ptp_clock_register failed\n");
 	} else if (adapter->ptp_clock) {
-		dev_info(&adapter->pdev->dev, "added PHC on %s\n",
+		dev_dbg(&adapter->pdev->dev, "added PHC on %s\n",
 			 adapter->netdev->name);
 		adapter->ptp_flags |= IGB_PTP_ENABLED;
 	}
@@ -1240,7 +1240,7 @@ void igb_ptp_stop(struct igb_adapter *adapter)
 
 	if (adapter->ptp_clock) {
 		ptp_clock_unregister(adapter->ptp_clock);
-		dev_info(&adapter->pdev->dev, "removed PHC on %s\n",
+		dev_dbg(&adapter->pdev->dev, "removed PHC on %s\n",
 			 adapter->netdev->name);
 		adapter->ptp_flags &= ~IGB_PTP_ENABLED;
 	}

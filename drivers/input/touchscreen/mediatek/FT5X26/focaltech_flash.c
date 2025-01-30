@@ -181,10 +181,10 @@ int hidi2c_to_stdi2c(struct i2c_client *client)
 
 	if (auc_i2c_write_buf[0] == 0xeb && auc_i2c_write_buf[1] == 0xaa &&
 	    auc_i2c_write_buf[2] == 0x08) {
-		pr_info("hidi2c to_stdi2c successful.\n");
+		pr_debug("hidi2c to_stdi2c successful.\n");
 		bRet = 1;
 	} else {
-		pr_notice("hidi2c to_stdi2c error.\n");
+		pr_debug("hidi2c to_stdi2c error.\n");
 		bRet = 0;
 	}
 
@@ -238,7 +238,7 @@ void fts_update_fw_ver(struct fts_ts_data *data)
 	if (err < 0)
 		dev_notice(&client->dev, "fw sub minor version read failed");
 
-	dev_info(&client->dev, "Firmware version = %d.%d.%d\n", data->fw_ver[0],
+	dev_dbg(&client->dev, "Firmware version = %d.%d.%d\n", data->fw_ver[0],
 		 data->fw_ver[1], data->fw_ver[2]);
 }
 
@@ -411,7 +411,7 @@ int fts_ctpm_fw_upgrade_ReadProjectCode(struct i2c_client *client,
 		if (*(pProjectCode + j) == '\0')
 			break;
 	}
-	pr_info("project code = %s\n", pProjectCode);
+	pr_debug("project code = %s\n", pProjectCode);
 	msleep(50);
 	/*********Step 5: reset the new FW***********************/
 	TPD_DEBUG("Step 5: reset the new FW\n");
@@ -2934,7 +2934,7 @@ static int fts_ReadFirmware(char *firmware_name, unsigned char *firmware_buf)
 	if (pfile == NULL)
 		pfile = filp_open(filepath, O_RDONLY, 0);
 	if (IS_ERR(pfile)) {
-		pr_notice("error occurred while opening file %s.\n", filepath);
+		pr_debug("error occurred while opening file %s.\n", filepath);
 		return -EIO;
 	}
 	inode = pfile->f_path.dentry->d_inode;
@@ -3292,7 +3292,7 @@ int fts_ctpm_fw_upgrade_with_i_file(struct i2c_client *client)
 				   __func__);
 	} else if (fts_updateinfo_curr.CHIP_ID == 0x54) {
 		if (fw_len < 8 || fw_len > 54 * 1024) {
-			pr_notice("FW length error\n");
+			pr_debug("FW length error\n");
 			return -EIO;
 		}
 		/*FW upgrade*/
@@ -3310,7 +3310,7 @@ int fts_ctpm_fw_upgrade_with_i_file(struct i2c_client *client)
 		}
 	} else if (fts_updateinfo_curr.CHIP_ID == 0x58) {
 		if (fw_len < 8 || fw_len > 54 * 1024) {
-			pr_notice("FW length error\n");
+			pr_debug("FW length error\n");
 			return -EIO;
 		}
 
@@ -3329,7 +3329,7 @@ int fts_ctpm_fw_upgrade_with_i_file(struct i2c_client *client)
 		}
 	} else if (fts_updateinfo_curr.CHIP_ID == 0x59) {
 		if (fw_len < 8 || fw_len > 54 * 1024) {
-			pr_notice("FW length error\n");
+			pr_debug("FW length error\n");
 			return -EIO;
 		}
 
@@ -3423,7 +3423,7 @@ int taiguan_fw_upgrade_with_i_file(struct i2c_client *client)
 
 	if (fts_updateinfo_curr.CHIP_ID == 0x58) {
 		if (fw_len < 8 || fw_len > 54 * 1024) {
-			pr_notice("FW length error\n");
+			pr_debug("FW length error\n");
 			return -EIO;
 		}
 
@@ -3641,7 +3641,7 @@ int fts_ctpm_auto_upgrade(struct i2c_client *client)
 			FTS_DBG("[FTS] upgrade to new version 0x%x\n",
 				uc_host_fm_ver);
 		} else {
-			pr_notice("[FTS] upgrade failed ret=%d.\n", i_ret);
+			pr_debug("[FTS] upgrade failed ret=%d.\n", i_ret);
 			FTS_DBG("[FTS] upgrade failed ret=%d.\n", i_ret);
 			return -EIO;
 		}

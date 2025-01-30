@@ -171,33 +171,33 @@ static void dump_cxl_config_space(struct pci_dev *dev)
 	int vsec;
 	u32 val;
 
-	dev_info(&dev->dev, "dump_cxl_config_space\n");
+	dev_dbg(&dev->dev, "dump_cxl_config_space\n");
 
 	pci_read_config_dword(dev, PCI_BASE_ADDRESS_0, &val);
-	dev_info(&dev->dev, "BAR0: %#.8x\n", val);
+	dev_dbg(&dev->dev, "BAR0: %#.8x\n", val);
 	pci_read_config_dword(dev, PCI_BASE_ADDRESS_1, &val);
-	dev_info(&dev->dev, "BAR1: %#.8x\n", val);
+	dev_dbg(&dev->dev, "BAR1: %#.8x\n", val);
 	pci_read_config_dword(dev, PCI_BASE_ADDRESS_2, &val);
-	dev_info(&dev->dev, "BAR2: %#.8x\n", val);
+	dev_dbg(&dev->dev, "BAR2: %#.8x\n", val);
 	pci_read_config_dword(dev, PCI_BASE_ADDRESS_3, &val);
-	dev_info(&dev->dev, "BAR3: %#.8x\n", val);
+	dev_dbg(&dev->dev, "BAR3: %#.8x\n", val);
 	pci_read_config_dword(dev, PCI_BASE_ADDRESS_4, &val);
-	dev_info(&dev->dev, "BAR4: %#.8x\n", val);
+	dev_dbg(&dev->dev, "BAR4: %#.8x\n", val);
 	pci_read_config_dword(dev, PCI_BASE_ADDRESS_5, &val);
-	dev_info(&dev->dev, "BAR5: %#.8x\n", val);
+	dev_dbg(&dev->dev, "BAR5: %#.8x\n", val);
 
-	dev_info(&dev->dev, "p1 regs: %#llx, len: %#llx\n",
+	dev_dbg(&dev->dev, "p1 regs: %#llx, len: %#llx\n",
 		p1_base(dev), p1_size(dev));
-	dev_info(&dev->dev, "p2 regs: %#llx, len: %#llx\n",
+	dev_dbg(&dev->dev, "p2 regs: %#llx, len: %#llx\n",
 		p2_base(dev), p2_size(dev));
-	dev_info(&dev->dev, "BAR 4/5: %#llx, len: %#llx\n",
+	dev_dbg(&dev->dev, "BAR 4/5: %#llx, len: %#llx\n",
 		pci_resource_start(dev, 4), pci_resource_len(dev, 4));
 
 	if (!(vsec = find_cxl_vsec(dev)))
 		return;
 
 #define show_reg(name, what) \
-	dev_info(&dev->dev, "cxl vsec: %30s: %#x\n", name, what)
+	dev_dbg(&dev->dev, "cxl vsec: %30s: %#x\n", name, what)
 
 	pci_read_config_dword(dev, vsec + 0x0, &val);
 	show_reg("Cap ID", (val >> 0) & 0xffff);
@@ -275,7 +275,7 @@ static void dump_afu_descriptor(struct cxl_afu *afu)
 	int i;
 
 #define show_reg(name, what) \
-	dev_info(&afu->dev, "afu desc: %30s: %#llx\n", name, what)
+	dev_dbg(&afu->dev, "afu desc: %30s: %#llx\n", name, what)
 
 	val = AFUD_READ_INFO(afu);
 	show_reg("num_ints_per_process", AFUD_NUM_INTS_PER_PROC(val));
@@ -619,7 +619,7 @@ static void cxl_setup_psl_timebase(struct cxl *adapter, struct pci_dev *dev)
 	of_node_get(np);
 	if (! of_get_property(np, "ibm,capp-timebase-sync", NULL)) {
 		of_node_put(np);
-		dev_info(&dev->dev, "PSL timebase inactive: OPAL support missing\n");
+		dev_dbg(&dev->dev, "PSL timebase inactive: OPAL support missing\n");
 		return;
 	}
 	of_node_put(np);
@@ -756,7 +756,7 @@ static int switch_card_to_cxl(struct pci_dev *dev)
 	u8 val;
 	int rc;
 
-	dev_info(&dev->dev, "switch card to CXL\n");
+	dev_dbg(&dev->dev, "switch card to CXL\n");
 
 	if (!(vsec = find_cxl_vsec(dev))) {
 		dev_err(&dev->dev, "ABORTING: CXL VSEC not found!\n");
@@ -879,7 +879,7 @@ static int cxl_read_afu_descriptor(struct cxl_afu *afu)
 		dev_warn(&afu->dev,
 			 "Invalid AFU error buffer offset %Lx\n",
 			 afu->eb_offset);
-		dev_info(&afu->dev,
+		dev_dbg(&afu->dev,
 			 "Ignoring AFU error buffer in the descriptor\n");
 		/* indicate that no afu buffer exists */
 		afu->eb_len = 0;
@@ -1176,7 +1176,7 @@ static int pci_init_afu(struct cxl *adapter, int slice, struct pci_dev *dev)
 	adapter->afu[afu->slice] = afu;
 
 	if ((rc = cxl_pci_vphb_add(afu)))
-		dev_info(&afu->dev, "Can't register vPHB\n");
+		dev_dbg(&afu->dev, "Can't register vPHB\n");
 
 	return 0;
 
@@ -1227,7 +1227,7 @@ int cxl_pci_reset(struct cxl *adapter)
 		return -EINVAL;
 	}
 
-	dev_info(&dev->dev, "CXL reset\n");
+	dev_dbg(&dev->dev, "CXL reset\n");
 
 	/*
 	 * The adapter is about to be reset, so ignore errors.
@@ -1384,7 +1384,7 @@ static int cxl_vsec_looks_ok(struct cxl *adapter, struct pci_dev *dev)
 	}
 
 	if (!cxl_compatible_caia_version(adapter)) {
-		dev_info(&dev->dev, "Ignoring card. PSL type is not supported (caia version: %d)\n",
+		dev_dbg(&dev->dev, "Ignoring card. PSL type is not supported (caia version: %d)\n",
 			 adapter->caia_major);
 		return -ENODEV;
 	}
@@ -1497,7 +1497,7 @@ static int cxl_configure_adapter(struct cxl *adapter, struct pci_dev *dev)
 
 	if (cxl_is_power9()) {
 		if (pnv_pci_set_tunnel_bar(dev, 0x00020000E0000000ull, 1))
-			dev_info(&dev->dev, "Tunneled operations unsupported\n");
+			dev_dbg(&dev->dev, "Tunneled operations unsupported\n");
 		else
 			adapter->tunneled_ops_supported = true;
 	}
@@ -1625,10 +1625,10 @@ static const struct cxl_service_layer_ops psl8_ops = {
 static void set_sl_ops(struct cxl *adapter, struct pci_dev *dev)
 {
 	if (cxl_is_power8()) {
-		dev_info(&dev->dev, "Device uses a PSL8\n");
+		dev_dbg(&dev->dev, "Device uses a PSL8\n");
 		adapter->native->sl_ops = &psl8_ops;
 	} else {
-		dev_info(&dev->dev, "Device uses a PSL9\n");
+		dev_dbg(&dev->dev, "Device uses a PSL9\n");
 		adapter->native->sl_ops = &psl9_ops;
 	}
 }
@@ -1748,12 +1748,12 @@ static int cxl_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	}
 
 	if (cxl_slot_is_switched(dev)) {
-		dev_info(&dev->dev, "Ignoring card on incompatible PCI slot\n");
+		dev_dbg(&dev->dev, "Ignoring card on incompatible PCI slot\n");
 		return -ENODEV;
 	}
 
 	if (cxl_is_power9() && !radix_enabled()) {
-		dev_info(&dev->dev, "Only Radix mode supported\n");
+		dev_dbg(&dev->dev, "Only Radix mode supported\n");
 		return -ENODEV;
 	}
 
@@ -1883,7 +1883,7 @@ static pci_ers_result_t cxl_pci_error_detected(struct pci_dev *pdev,
 	 */
 	if (adapter->perst_loads_image && !adapter->perst_same_image) {
 		/* TODO take the PHB out of CXL mode */
-		dev_info(&pdev->dev, "reflashing, so opting out of EEH!\n");
+		dev_dbg(&pdev->dev, "reflashing, so opting out of EEH!\n");
 		return PCI_ERS_RESULT_NONE;
 	}
 

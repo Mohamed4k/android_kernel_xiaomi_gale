@@ -177,7 +177,7 @@ void epd_power_enable(int enable)
 	}
 }
 
-int epd_get_dev_info(int is_sf, void *info)
+int epd_get_dev_dbg(int is_sf, void *info)
 {
 	int ret = 0;
 	unsigned int Eink_width = 0;
@@ -374,7 +374,7 @@ const struct EXTD_DRIVER *EXTD_EPD_Driver(void)
 		.power_enable = epd_power_enable,
 		.set_audio_enable = NULL,
 		.set_resolution = NULL,
-		.get_dev_info = epd_get_dev_info,
+		.get_dev_dbg = epd_get_dev_dbg,
 		.get_capability = NULL,
 		.get_edid = NULL,
 		.wait_vsync = epd_waitVsync,

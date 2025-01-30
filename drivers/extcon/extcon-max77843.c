@@ -871,7 +871,7 @@ static int max77843_muic_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Failed to read revision number\n");
 		goto err_muic_irq;
 	}
-	dev_info(info->dev, "MUIC device ID : 0x%x\n", id);
+	dev_dbg(info->dev, "MUIC device ID : 0x%x\n", id);
 
 	/* Support virtual irq domain for max77843 MUIC device */
 	INIT_WORK(&info->irq_work, max77843_muic_irq_work);

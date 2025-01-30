@@ -515,7 +515,7 @@ static struct net_device *corkscrew_scan(int unit)
 			if (pnp_device_attach(idev) < 0)
 				continue;
 			if (pnp_activate_dev(idev) < 0) {
-				pr_warn("pnp activate failed (out of resources?)\n");
+				pr_debug("pnp activate failed (out of resources?)\n");
 				pnp_device_detach(idev);
 				continue;
 			}
@@ -532,7 +532,7 @@ static struct net_device *corkscrew_scan(int unit)
 			if(corkscrew_debug)
 				pr_debug("ISAPNP reports %s at i/o 0x%x, irq %d\n",
 					(char*) corkscrew_isapnp_adapters[i].driver_data, ioaddr, irq);
-			pr_info("3c515 Resource configuration register %#4.4x, DCR %4.4x.\n",
+			pr_debug("3c515 Resource configuration register %#4.4x, DCR %4.4x.\n",
 		     		inl(ioaddr + 0x2002), inw(ioaddr + 0x2000));
 			/* irq = inw(ioaddr + 0x2002) & 15; */ /* Use the irq from isapnp */
 			SET_NETDEV_DEV(dev, &idev->dev);
@@ -551,7 +551,7 @@ no_pnp:
 		if (!check_device(ioaddr))
 			continue;
 
-		pr_info("3c515 Resource configuration register %#4.4x, DCR %4.4x.\n",
+		pr_debug("3c515 Resource configuration register %#4.4x, DCR %4.4x.\n",
 		     inl(ioaddr + 0x2002), inw(ioaddr + 0x2000));
 		err = corkscrew_setup(dev, ioaddr, NULL, cards_found++);
 		if (!err)
@@ -623,7 +623,7 @@ static int corkscrew_setup(struct net_device *dev, int ioaddr,
 	list_add(&vp->list, &root_corkscrew_dev);
 #endif
 
-	pr_info("%s: 3Com %s at %#3x,", dev->name, vp->product_name, ioaddr);
+	pr_debug("%s: 3Com %s at %#3x,", dev->name, vp->product_name, ioaddr);
 
 	spin_lock_init(&vp->lock);
 
@@ -660,7 +660,7 @@ static int corkscrew_setup(struct net_device *dev, int ioaddr,
 	pr_cont(", IRQ %d\n", dev->irq);
 	/* Tell them about an invalid IRQ. */
 	if (corkscrew_debug && (dev->irq <= 0 || dev->irq > 15))
-		pr_warn(" *** Warning: this IRQ is unlikely to work! ***\n");
+		pr_debug(" *** Warning: this IRQ is unlikely to work! ***\n");
 
 	{
 		static const char * const ram_split[] = {
@@ -671,9 +671,9 @@ static int corkscrew_setup(struct net_device *dev, int ioaddr,
 		vp->available_media = inw(ioaddr + Wn3_Options);
 		config = inl(ioaddr + Wn3_Config);
 		if (corkscrew_debug > 1)
-			pr_info("  Internal config register is %4.4x, transceivers %#x.\n",
+			pr_debug("  Internal config register is %4.4x, transceivers %#x.\n",
 				config, inw(ioaddr + Wn3_Options));
-		pr_info("  %dK %s-wide RAM %s Rx:Tx split, %s%s interface.\n",
+		pr_debug("  %dK %s-wide RAM %s Rx:Tx split, %s%s interface.\n",
 			8 << config & Ram_size,
 			config & Ram_width ? "word" : "byte",
 			ram_split[(config & Ram_split) >> Ram_split_shift],
@@ -684,7 +684,7 @@ static int corkscrew_setup(struct net_device *dev, int ioaddr,
 		dev->if_port = vp->default_media;
 	}
 	if (vp->media_override != 7) {
-		pr_info("  Media override to transceiver type %d (%s).\n",
+		pr_debug("  Media override to transceiver type %d (%s).\n",
 		       vp->media_override,
 		       media_tbl[vp->media_override].name);
 		dev->if_port = vp->media_override;
@@ -721,7 +721,7 @@ static int corkscrew_open(struct net_device *dev)
 
 	if (vp->media_override != 7) {
 		if (corkscrew_debug > 1)
-			pr_info("%s: Media override to transceiver %d (%s).\n",
+			pr_debug("%s: Media override to transceiver %d (%s).\n",
 				dev->name, vp->media_override,
 				media_tbl[vp->media_override].name);
 		dev->if_port = vp->media_override;
@@ -967,12 +967,12 @@ static void corkscrew_timeout(struct net_device *dev)
 	struct corkscrew_private *vp = netdev_priv(dev);
 	int ioaddr = dev->base_addr;
 
-	pr_warn("%s: transmit timed out, tx_status %2.2x status %4.4x\n",
+	pr_debug("%s: transmit timed out, tx_status %2.2x status %4.4x\n",
 		dev->name, inb(ioaddr + TxStatus),
 		inw(ioaddr + EL3_STATUS));
 	/* Slight code bloat to be user friendly. */
 	if ((inb(ioaddr + TxStatus) & 0x88) == 0x88)
-		pr_warn("%s: Transmitter encountered 16 collisions -- network cable problem?\n",
+		pr_debug("%s: Transmitter encountered 16 collisions -- network cable problem?\n",
 			dev->name);
 #ifndef final_version
 	pr_debug("  Flags; bus-master %d, full %d; dirty %d current %d.\n",
@@ -1215,11 +1215,11 @@ static irqreturn_t corkscrew_interrupt(int irq, void *dev_id)
 				/* This occurs when we have the wrong media type! */
 				if (DoneDidThat == 0 && inw(ioaddr + EL3_STATUS) & StatsFull) {
 					int win, reg;
-					pr_notice("%s: Updating stats failed, disabling stats as an interrupt source.\n",
+					pr_debug("%s: Updating stats failed, disabling stats as an interrupt source.\n",
 						dev->name);
 					for (win = 0; win < 8; win++) {
 						EL3WINDOW(win);
-						pr_notice("Vortex window %d:", win);
+						pr_debug("Vortex window %d:", win);
 						for (reg = 0; reg < 16; reg++)
 							pr_cont(" %2.2x", inb(ioaddr + reg));
 						pr_cont("\n");
@@ -1382,7 +1382,7 @@ static int boomerang_rx(struct net_device *dev)
 				temp = skb_put(skb, pkt_len);
 				/* Remove this checking code for final release. */
 				if (isa_bus_to_virt(vp->rx_ring[entry].addr) != temp)
-					pr_warn("%s: Warning -- the skbuff addresses do not match in boomerang_rx: %p vs. %p / %p\n",
+					pr_debug("%s: Warning -- the skbuff addresses do not match in boomerang_rx: %p vs. %p / %p\n",
 						dev->name,
 						isa_bus_to_virt(vp->rx_ring[entry].addr),
 						skb->head, temp);

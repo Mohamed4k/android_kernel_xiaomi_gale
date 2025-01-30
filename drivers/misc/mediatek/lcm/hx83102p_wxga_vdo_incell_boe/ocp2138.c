@@ -85,7 +85,7 @@ int ocp2138_write_byte(unsigned char cmd, unsigned char writeData)
 	char write_data[2] = { 0 };
 	int ret = 0;
 
-	pr_notice("[KE/ocp2138] cmd: %02x, data: %02x,%s\n", cmd, writeData, __func__);
+	pr_debug("[KE/ocp2138] cmd: %02x, data: %02x,%s\n", cmd, writeData, __func__);
 
 	mutex_lock(&ocp2138_i2c_access);
 
@@ -95,7 +95,7 @@ int ocp2138_write_byte(unsigned char cmd, unsigned char writeData)
 	ret = i2c_master_send(new_client, write_data, 2);
 	if (ret < 0) {
 		mutex_unlock(&ocp2138_i2c_access);
-		pr_notice("[ocp2138] I2C write fail!!!\n");
+		pr_debug("[ocp2138] I2C write fail!!!\n");
 
 		return 0;
 	}
@@ -110,7 +110,7 @@ static int ocp2138_driver_probe(struct i2c_client *client,
 {
 	int err = 0;
 
-	pr_notice("[KE/ocp2138] name=%s addr=0x%x\n",
+	pr_debug("[KE/ocp2138] name=%s addr=0x%x\n",
 		client->name, client->addr);
 	new_client = kmalloc(sizeof(struct i2c_client), GFP_KERNEL);
 	if (!new_client) {
@@ -130,7 +130,7 @@ static int ocp2138_driver_probe(struct i2c_client *client,
 
 static int ocp2138_driver_remove(struct i2c_client *client)
 {
-	pr_notice("[KE/ocp2138] %s\n", __func__);
+	pr_debug("[KE/ocp2138] %s\n", __func__);
 
 	new_client = NULL;
 	i2c_unregister_device(client);
@@ -142,12 +142,12 @@ static int ocp2138_driver_remove(struct i2c_client *client)
 
 static int __init ocp2138_init(void)
 {
-	pr_notice("[KE/ocp2138] %s\n", __func__);
+	pr_debug("[KE/ocp2138] %s\n", __func__);
 
 	if (i2c_add_driver(&ocp2138_driver) != 0)
-		pr_notice("[KE/ocp2138] failed to register ocp2138 i2c driver.\n");
+		pr_debug("[KE/ocp2138] failed to register ocp2138 i2c driver.\n");
 	else
-		pr_notice("[KE/ocp2138] Success to register ocp2138 i2c driver.\n");
+		pr_debug("[KE/ocp2138] Success to register ocp2138 i2c driver.\n");
 
 	return 0;
 }

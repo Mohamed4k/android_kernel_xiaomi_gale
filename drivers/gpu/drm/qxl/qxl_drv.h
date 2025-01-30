@@ -234,7 +234,7 @@ struct qxl_device {
 	struct qxl_gem		gem;
 	struct qxl_mode_info mode_info;
 
-	struct fb_info			*fbdev_info;
+	struct fb_info			*fbdev_dbg;
 	struct qxl_framebuffer	*fbdev_qfb;
 	void *ram_physical;
 

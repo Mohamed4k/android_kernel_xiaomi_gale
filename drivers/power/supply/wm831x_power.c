@@ -274,7 +274,7 @@ static void wm831x_config_battery(struct wm831x *wm831x)
 	reg2 = 0;
 
 	if (!pdata->enable) {
-		dev_info(wm831x->dev, "Battery charger disabled\n");
+		dev_dbg(wm831x->dev, "Battery charger disabled\n");
 		return;
 	}
 

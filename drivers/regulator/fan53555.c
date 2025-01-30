@@ -443,7 +443,7 @@ static int fan53555_regulator_probe(struct i2c_client *client,
 		return ret;
 	}
 	di->chip_rev = val & DIE_REV;
-	dev_info(&client->dev, "FAN53555 Option[%d] Rev[%d] Detected!\n",
+	dev_dbg(&client->dev, "FAN53555 Option[%d] Rev[%d] Detected!\n",
 				di->chip_id, di->chip_rev);
 	/* Device init */
 	ret = fan53555_device_setup(di, pdata);

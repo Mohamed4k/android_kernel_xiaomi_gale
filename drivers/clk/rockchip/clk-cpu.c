@@ -150,7 +150,7 @@ static int rockchip_cpuclk_pre_rate_change(struct rockchip_cpuclk *cpuclk,
 		/* calculate dividers */
 		alt_div =  DIV_ROUND_UP(alt_prate, ndata->old_rate) - 1;
 		if (alt_div > reg_data->div_core_mask) {
-			pr_warn("%s: limiting alt-divider %lu to %d\n",
+			pr_debug("%s: limiting alt-divider %lu to %d\n",
 				__func__, alt_div, reg_data->div_core_mask);
 			alt_div = reg_data->div_core_mask;
 		}

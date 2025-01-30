@@ -433,7 +433,7 @@ static int ics932s401_detect(struct i2c_client *client,
 		return -ENODEV;
 
 	if (revision != ICS932S401_REV)
-		dev_info(&adapter->dev, "Unknown revision %d\n", revision);
+		dev_dbg(&adapter->dev, "Unknown revision %d\n", revision);
 
 	strlcpy(info->type, "ics932s401", I2C_NAME_SIZE);
 
@@ -455,7 +455,7 @@ static int ics932s401_probe(struct i2c_client *client,
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->lock);
 
-	dev_info(&client->dev, "%s chip found\n", client->name);
+	dev_dbg(&client->dev, "%s chip found\n", client->name);
 
 	/* Register sysfs hooks */
 	data->attrs.attrs = ics932s401_attr;

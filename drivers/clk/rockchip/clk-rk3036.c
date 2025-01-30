@@ -467,7 +467,7 @@ static void __init rk3036_clk_init(struct device_node *np)
 
 	clk = clk_register_fixed_factor(NULL, "usb480m", "xin24m", 0, 20, 1);
 	if (IS_ERR(clk))
-		pr_warn("%s: could not register clock usb480m: %ld\n",
+		pr_debug("%s: could not register clock usb480m: %ld\n",
 			__func__, PTR_ERR(clk));
 
 	rockchip_clk_register_plls(ctx, rk3036_pll_clks,

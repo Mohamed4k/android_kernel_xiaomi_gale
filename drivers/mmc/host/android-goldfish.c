@@ -337,14 +337,14 @@ static irqreturn_t goldfish_mmc_irq(int irq, void *dev_id)
 
 	if (state_changed) {
 		u32 state = GOLDFISH_MMC_READ(host, MMC_STATE);
-		pr_info("%s: Card detect now %d\n", __func__,
+		pr_debug("%s: Card detect now %d\n", __func__,
 			(state & MMC_STATE_INSERTED));
 		mmc_detect_change(host->mmc, 0);
 	}
 
 	if (!end_command && !end_transfer && !state_changed && !cmd_timeout) {
 		status = GOLDFISH_MMC_READ(host, MMC_INT_STATUS);
-		dev_info(mmc_dev(host->mmc),"spurious irq 0x%04x\n", status);
+		dev_dbg(mmc_dev(host->mmc),"spurious irq 0x%04x\n", status);
 		if (status != 0) {
 			GOLDFISH_MMC_WRITE(host, MMC_INT_STATUS, status);
 			GOLDFISH_MMC_WRITE(host, MMC_INT_ENABLE, 0);

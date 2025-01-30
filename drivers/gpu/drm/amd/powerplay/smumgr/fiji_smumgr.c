@@ -205,7 +205,7 @@ static int fiji_start_avfs_btc(struct pp_hwmgr *hwmgr)
 	if (0 != smu_data->avfs_btc_param) {
 		if (0 != smu7_send_msg_to_smc_with_parameter(hwmgr,
 				PPSMC_MSG_PerformBtc, smu_data->avfs_btc_param)) {
-			pr_info("[AVFS][Fiji_PerformBtc] PerformBTC SMU msg failed");
+			pr_debug("[AVFS][Fiji_PerformBtc] PerformBTC SMU msg failed");
 			result = -EINVAL;
 		}
 	}
@@ -2342,7 +2342,7 @@ static uint32_t fiji_get_offsetof(uint32_t type, uint32_t member)
 		}
 		break;
 	}
-	pr_warn("can't get the offset of type %x member %x\n", type, member);
+	pr_debug("can't get the offset of type %x member %x\n", type, member);
 	return 0;
 }
 
@@ -2367,7 +2367,7 @@ static uint32_t fiji_get_mac_definition(uint32_t value)
 		return SMU73_MAX_LEVELS_MVDD;
 	}
 
-	pr_warn("can't get the mac of %x\n", value);
+	pr_debug("can't get the mac of %x\n", value);
 	return 0;
 }
 

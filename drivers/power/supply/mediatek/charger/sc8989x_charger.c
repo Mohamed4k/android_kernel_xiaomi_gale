@@ -616,7 +616,7 @@ __maybe_unused static int __sc8989x_get_adc(struct sc8989x_chip *sc, enum sc8989
         break;
     case SC8989X_ADC_IBUS:
         sc8989x_get_adc_ibus(sc, val);
-        dev_info(sc->dev, "get_adc channel: %d val: %d", chan, *val);  
+        dev_dbg(sc->dev, "get_adc channel: %d val: %d", chan, *val);  
         return 0;
     default:
         goto err;    
@@ -626,7 +626,7 @@ __maybe_unused static int __sc8989x_get_adc(struct sc8989x_chip *sc, enum sc8989
     if (ret < 0)
         goto err;
     *val = reg2val(range_id, reg_val);
-    dev_info(sc->dev, "get_adc channel: %d val: %d", chan, *val);    
+    dev_dbg(sc->dev, "get_adc channel: %d val: %d", chan, *val);    
     return 0;
 err:
     dev_err(sc->dev, "get_adc fail channel: %d", chan);
@@ -697,23 +697,23 @@ static int sc8989x_set_iindpm(struct sc8989x_chip *sc, int curr_ma) {
         if (!sc->vbus_good) {
             cancel_delayed_work(&sc->icl_step_dwork);
             sc8989x_write_iindpm(sc, curr_ma);
-            dev_info(sc->dev, "sc vbus absent, set icl to %dmA", curr_ma);
+            dev_dbg(sc->dev, "sc vbus absent, set icl to %dmA", curr_ma);
         } else {
-            dev_info(sc->dev, "sc new icl:%dmA, last icl:%dmA", curr_ma, sc->icl_goal);
+            dev_dbg(sc->dev, "sc new icl:%dmA, last icl:%dmA", curr_ma, sc->icl_goal);
             sc->icl_goal = curr_ma;
             if (!sc->bc12_done_flag) // bc1.2 ongoing
-                dev_info(sc->dev, "sc bc1.2 ongoing, set iindpm skip");
+                dev_dbg(sc->dev, "sc bc1.2 ongoing, set iindpm skip");
             else if (sc->adp_type == STANDARD_HOST) {
                 schedule_delayed_work(&sc->icl_step_dwork, msecs_to_jiffies(100)); // delay 100ms
-                dev_info(sc->dev, "sc sdp set new icl:%dmA", curr_ma);
+                dev_dbg(sc->dev, "sc sdp set new icl:%dmA", curr_ma);
             } else {
                 sc8989x_write_iindpm(sc, curr_ma);
-                dev_info(sc->dev, "sc write icl:%dmA", curr_ma);
+                dev_dbg(sc->dev, "sc write icl:%dmA", curr_ma);
             }
         }
     } else {
         sc8989x_write_iindpm(sc, curr_ma);
-        dev_info(sc->dev, "ti write icl to %dmA", curr_ma);
+        dev_dbg(sc->dev, "ti write icl to %dmA", curr_ma);
     }
     return ret;
 }
@@ -758,14 +758,14 @@ static int sc8989x_set_chg_enable(struct sc8989x_chip *sc, bool enable) {
     sc8989x_field_read(sc, CHG_CFG, &old_en);
     old_en = !!old_en;
     if ((enable && old_en) || (!enable && !old_en)) {
-        dev_info(sc->dev, "charge already %s",
+        dev_dbg(sc->dev, "charge already %s",
             old_en ? "enabled" : "disabled");
         return 0;
     }
 
     if (sc->part_no == SC8989X) {
         if (!reg_val) { // disable charge
-            dev_info(sc->dev, "disable charge now");
+            dev_dbg(sc->dev, "disable charge now");
             ret = sc8989x_field_write(sc, CHG_CFG, 0);
             cancel_delayed_work(&sc->chg_enable_dwork);
             cancel_delayed_work(&sc->icl_step_dwork);
@@ -773,24 +773,24 @@ static int sc8989x_set_chg_enable(struct sc8989x_chip *sc, bool enable) {
             if (!sc->vbus_good) {
                 cancel_delayed_work(&sc->chg_enable_dwork);
                 cancel_delayed_work(&sc->icl_step_dwork);
-                dev_info(sc->dev, "vbus absent, enable charge skip");
+                dev_dbg(sc->dev, "vbus absent, enable charge skip");
             } else {
                 if (!sc->bc12_done_flag) // bc1.2 ongoing
-                    dev_info(sc->dev, "sc bc1.2 ongoing, enable charge skip");
+                    dev_dbg(sc->dev, "sc bc1.2 ongoing, enable charge skip");
                 else if (sc->adp_type == STANDARD_HOST) { // sdp detected
                     sc8989x_write_iindpm(sc, 100);
                     schedule_delayed_work(&sc->chg_enable_dwork, msecs_to_jiffies(100));
                     schedule_delayed_work(&sc->icl_step_dwork, msecs_to_jiffies(200));
-                    dev_info(sc->dev, "sc set icl to 100mA before charge enable");
+                    dev_dbg(sc->dev, "sc set icl to 100mA before charge enable");
                 } else {
                     ret = sc8989x_field_write(sc, CHG_CFG, 1);
-                    dev_info(sc->dev, "sc charge enable now");
+                    dev_dbg(sc->dev, "sc charge enable now");
                 }
             }
         }
     } else {
         ret = sc8989x_field_write(sc, CHG_CFG, reg_val);
-        dev_info(sc->dev, "ti charge %s now", reg_val ? "enable" : "disable");
+        dev_dbg(sc->dev, "ti charge %s now", reg_val ? "enable" : "disable");
     }
 
     return ret;
@@ -820,7 +820,7 @@ __maybe_unused static int sc8989x_set_otg_enable(struct sc8989x_chip *sc,
     sc8989x_field_read(sc, OTG_CFG, &old_en);
     old_en = !!old_en;
     if ((enable && old_en) || (!enable && !old_en)) {
-        dev_info(sc->dev, "otg already %s",
+        dev_dbg(sc->dev, "otg already %s",
             old_en ? "enabled" : "disabled");
         return 0;
     }
@@ -1089,7 +1089,7 @@ static int sc8989x_read_byte(struct sc8989x_chip *sc, u8 *data, u8 reg)
 	mutex_lock(&sc8989x_i2c_lock);
 	ret = i2c_smbus_read_byte_data(sc->client, reg);
 	if (ret < 0) {
-		pr_info("failed to read 0x%.2x\n", reg);
+		pr_debug("failed to read 0x%.2x\n", reg);
 		mutex_unlock(&sc8989x_i2c_lock);
 		return ret;
 	}
@@ -1123,7 +1123,7 @@ static int sc8989x_dump_register(struct sc8989x_chip *sc) {
         if (ret < 0) {
             return ret;
         }
-        dev_info(sc->dev, "%s REG%02x = 0x%02x\n", __func__, i, val);
+        dev_dbg(sc->dev, "%s REG%02x = 0x%02x\n", __func__, i, val);
     }
 
     return 0;
@@ -1135,7 +1135,7 @@ static int sc8989x_plug_in(struct charger_device *chg_dev) {
     int ret = 0;
     struct sc8989x_chip *sc = dev_get_drvdata(&chg_dev->dev);
 
-    dev_info(sc->dev, "%s\n", __func__);
+    dev_dbg(sc->dev, "%s\n", __func__);
 
     /* Enable charging */
     ret = sc8989x_set_chg_enable(sc, true);
@@ -1150,7 +1150,7 @@ static int sc8989x_plug_out(struct charger_device *chg_dev) {
     int ret = 0;
     struct sc8989x_chip *sc = dev_get_drvdata(&chg_dev->dev);
 
-    dev_info(sc->dev, "%s\n", __func__);
+    dev_dbg(sc->dev, "%s\n", __func__);
 
     ret = sc8989x_set_chg_enable(sc, false);
     if (ret) {
@@ -1168,7 +1168,7 @@ static int sc8989x_enable(struct charger_device *chg_dev, bool en) {
         sc8989x_write_iindpm(sc,100);
     }
 
-    dev_info(sc->dev, "%s charger %s\n", en ? "enable" : "disable",
+    dev_dbg(sc->dev, "%s charger %s\n", en ? "enable" : "disable",
             !ret ? "successfully" : "failed");
 
     return ret;
@@ -1179,7 +1179,7 @@ static int sc8989x_is_enabled(struct charger_device *chg_dev, bool * enabled) {
     struct sc8989x_chip *sc = dev_get_drvdata(&chg_dev->dev);
 
     ret = sc8989x_check_chg_enabled(sc, enabled);
-    dev_info(sc->dev, "charger is %s\n",
+    dev_dbg(sc->dev, "charger is %s\n",
             *enabled ? "charging" : "not charging");
 
     return ret;
@@ -1203,10 +1203,10 @@ static int sc8989x_set_charging_current(struct charger_device *chg_dev,
                                         u32 curr) {
     struct sc8989x_chip *sc = dev_get_drvdata(&chg_dev->dev);
     int sc_max_charge_current = 3550000; // mA
-    dev_info(sc->dev, "%s: charge curr = %duA\n", __func__, curr);
+    dev_dbg(sc->dev, "%s: charge curr = %duA\n", __func__, curr);
     if( sc->part_no == SC8989X && curr > sc_max_charge_current){
         curr = sc_max_charge_current;
-        dev_info(sc->dev, "%s Reset charge curr to %duA for sc8989x\n", __func__, curr);
+        dev_dbg(sc->dev, "%s Reset charge curr to %duA for sc8989x\n", __func__, curr);
     }
     if(sc->input_suspend){
         curr = 0;
@@ -1220,7 +1220,7 @@ static int sc8989x_get_input_current(struct charger_device *chg_dev, u32 * curr)
     int curr_ma;
     int ret;
 
-    dev_info(sc->dev, "%s\n", __func__);
+    dev_dbg(sc->dev, "%s\n", __func__);
 
     ret = sc8989x_get_iindpm(sc, &curr_ma);
     if (!ret) {
@@ -1235,15 +1235,15 @@ static int sc8989x_set_input_current(struct charger_device *chg_dev, u32 curr) {
     int max_input_curr_limit_uA = 2000000; // 2A
     /* Begin for HTH-316785 c2c charging disconnect 20230829*/
     if(sc->part_no == SC8989X && sc->bc12_done_flag == 0 ) {
-        dev_info(sc->dev, "%s %duA, bc12 is doing, skip\n", __func__, curr);
+        dev_dbg(sc->dev, "%s %duA, bc12 is doing, skip\n", __func__, curr);
         return 0;
     }
     /* End for HTH-316785 20230829 */
 
-    dev_info(sc->dev, "%s: iindpm curr = %duA\n", __func__, curr);
+    dev_dbg(sc->dev, "%s: iindpm curr = %duA\n", __func__, curr);
     if (curr > max_input_curr_limit_uA) {
         curr = max_input_curr_limit_uA;
-        dev_info(sc->dev, "%s Reset input current to %duA\n", __func__, curr);
+        dev_dbg(sc->dev, "%s Reset input current to %duA\n", __func__, curr);
     }
     return sc8989x_set_iindpm(sc, curr / 1000);
 }
@@ -1254,7 +1254,7 @@ static int sc8989x_get_constant_voltage(struct charger_device *chg_dev,
     int volt_mv;
     int ret;
 
-    dev_info(sc->dev, "%s\n", __func__);
+    dev_dbg(sc->dev, "%s\n", __func__);
 
     ret = sc8989x_get_vbat(sc, &volt_mv);
     if (!ret) {
@@ -1268,7 +1268,7 @@ static int sc8989x_set_constant_voltage(struct charger_device *chg_dev,
                                         u32 volt) {
     struct sc8989x_chip *sc = dev_get_drvdata(&chg_dev->dev);
 
-    dev_info(sc->dev, "%s: charge volt = %duV\n", __func__, volt);
+    dev_dbg(sc->dev, "%s: charge volt = %duV\n", __func__, volt);
 
     return sc8989x_set_vbat(sc, volt / 1000);
 }
@@ -1276,14 +1276,14 @@ static int sc8989x_set_constant_voltage(struct charger_device *chg_dev,
 static int sc8989x_kick_wdt(struct charger_device *chg_dev) {
     struct sc8989x_chip *sc = dev_get_drvdata(&chg_dev->dev);
 
-    dev_info(sc->dev, "%s\n", __func__);
+    dev_dbg(sc->dev, "%s\n", __func__);
     return sc8989x_reset_wdt(sc);
 }
 
 static int sc8989x_set_ivl(struct charger_device *chg_dev, u32 volt) {
     struct sc8989x_chip *sc = dev_get_drvdata(&chg_dev->dev);
 
-    dev_info(sc->dev, "%s: vindpm volt = %d\n", __func__, volt);
+    dev_dbg(sc->dev, "%s: vindpm volt = %d\n", __func__, volt);
 
     return sc8989x_set_vindpm(sc, volt / 1000);
 }
@@ -1294,7 +1294,7 @@ static int sc8989x_is_charging_done(struct charger_device *chg_dev, bool * done)
 
     ret = sc8989x_check_charge_done(sc, done);
 
-    dev_info(sc->dev, "%s: charge %s done\n", __func__, *done ? "is" : "not");
+    dev_dbg(sc->dev, "%s: charge %s done\n", __func__, *done ? "is" : "not");
     return ret;
 }
 
@@ -1309,7 +1309,7 @@ static int sc8989x_get_min_ichg(struct charger_device *chg_dev, u32 * curr) {
 static int sc8989x_dump_registers(struct charger_device *chg_dev) {
     struct sc8989x_chip *sc = dev_get_drvdata(&chg_dev->dev);
 
-    dev_info(sc->dev, "%s\n", __func__);
+    dev_dbg(sc->dev, "%s\n", __func__);
 
     return sc8989x_dump_register(sc);
 }
@@ -1320,7 +1320,7 @@ static int sc8989x_send_ta_current_pattern(struct charger_device *chg_dev,
     int ret;
     int i;
 
-    dev_info(sc->dev, "%s: %s\n", __func__, is_increase ?
+    dev_dbg(sc->dev, "%s: %s\n", __func__, is_increase ?
             "pumpx up" : "pumpx dn");
     //pumpx start
     ret = sc8989x_set_iindpm(sc, 100);
@@ -1364,7 +1364,7 @@ static int sc8989x_send_ta20_current_pattern(struct charger_device *chg_dev,
 
     val = (uV - 5500000) / 500000;
 
-    dev_info(sc->dev, "%s ta20 vol=%duV, val=%d\n", __func__, uV, val);
+    dev_dbg(sc->dev, "%s ta20 vol=%duV, val=%d\n", __func__, uV, val);
 
     sc8989x_set_iindpm(sc, 100);
     msleep(150);
@@ -1440,7 +1440,7 @@ static int sc8989x_set_otg(struct charger_device *chg_dev, bool enable) {
     ret = sc8989x_set_otg_enable(sc, enable);
     ret |= sc8989x_set_chg_enable(sc, !enable);
 
-    dev_info(sc->dev, "%s OTG %s\n", enable ? "enable" : "disable",
+    dev_dbg(sc->dev, "%s OTG %s\n", enable ? "enable" : "disable",
             !ret ? "successfully" : "failed");
 
     return ret;
@@ -1449,7 +1449,7 @@ static int sc8989x_set_otg(struct charger_device *chg_dev, bool enable) {
 static int sc8989x_set_safety_timer(struct charger_device *chg_dev, bool enable) {
     struct sc8989x_chip *sc = dev_get_drvdata(&chg_dev->dev);
 
-    dev_info(sc->dev, "%s  %s\n", __func__, enable ? "enable" : "disable");
+    dev_dbg(sc->dev, "%s  %s\n", __func__, enable ? "enable" : "disable");
 
     return sc8989x_set_safet_timer(sc, enable);
 }
@@ -1464,7 +1464,7 @@ static int sc8989x_is_safety_timer_enabled(struct charger_device *chg_dev,
 static int sc8989x_set_boost_ilmt(struct charger_device *chg_dev, u32 curr) {
     struct sc8989x_chip *sc = dev_get_drvdata(&chg_dev->dev);
 
-    dev_info(sc->dev, "%s otg curr = %d\n", __func__, curr);
+    dev_dbg(sc->dev, "%s otg curr = %d\n", __func__, curr);
     return sc8989x_set_iboost(sc, curr / 1000);
 }
 
@@ -1500,7 +1500,7 @@ __maybe_unused static int sc8989x_get_votg(struct sc8989x_chip *sc, int *volt_mv
 
 static int sc8989x_do_event(struct charger_device *chg_dev, u32 event, u32 args) {
     struct sc8989x_chip *sc = dev_get_drvdata(&chg_dev->dev);
-    dev_info(sc->dev, "%s\n", __func__);
+    dev_dbg(sc->dev, "%s\n", __func__);
 
 #ifdef CONFIG_MTK_CHARGER_V4P19
     switch (event) {
@@ -1531,7 +1531,7 @@ static int sc8989x_do_event(struct charger_device *chg_dev, u32 event, u32 args)
 static int sc8989x_enable_hz(struct charger_device *chg_dev, bool enable) {
     struct sc8989x_chip *sc = dev_get_drvdata(&chg_dev->dev);
 
-    dev_info(sc->dev, "%s %s\n", __func__, enable ? "enable" : "disable");
+    dev_dbg(sc->dev, "%s %s\n", __func__, enable ? "enable" : "disable");
 
     return sc8989x_set_hiz(sc, enable);
 }
@@ -1543,7 +1543,7 @@ static int sc8989x_enable_powerpath(struct charger_device *chg_dev, bool en) {
     u32 mivr = (en ? sc->cfg->vindpm : SC8989X_VINDPM_MAX);
     int reg_val = 0;
 
-    dev_info(sc->dev, "%s en = %d\n", __func__, en);
+    dev_dbg(sc->dev, "%s en = %d\n", __func__, en);
 
     reg_val = val2reg(SC8989X_VINDPM, mivr);
     sc8989x_field_write(sc, FORCE_VINDPM, true);
@@ -1641,7 +1641,7 @@ static void lc_chg_ui_rush_dwork_handler(struct work_struct *work)
         if( ret > (DELAY_CHARGE_UI_MS - 100)) {
             propval.intval = 2;
             sc->adp_type = NONSTANDARD_CHARGER;
-            dev_info(sc->dev, "%s charge ui rush start\n", __func__);
+            dev_dbg(sc->dev, "%s charge ui rush start\n", __func__);
         } else {
             return;
         }
@@ -1653,7 +1653,7 @@ static void lc_chg_ui_rush_dwork_handler(struct work_struct *work)
                     &propval);
 
     if (ret < 0)
-        pr_notice("inform power supply online failed:%d\n", ret);
+        pr_debug("inform power supply online failed:%d\n", ret);
 
     propval.intval = sc->adp_type;
 
@@ -1661,7 +1661,7 @@ static void lc_chg_ui_rush_dwork_handler(struct work_struct *work)
                     POWER_SUPPLY_PROP_CHARGE_TYPE,
                     &propval);
     if (ret < 0)
-        pr_notice("inform power supply charge type failed:%d\n", ret);
+        pr_debug("inform power supply charge type failed:%d\n", ret);
 }
 
 static void sc8989x_inform_psy_dwork_handler(struct work_struct *work) 
@@ -1690,7 +1690,7 @@ static void sc8989x_inform_psy_dwork_handler(struct work_struct *work)
         if( ret > (DELAY_CHARGE_UI_MS - 100)) {
             propval.intval = 2;
             sc->adp_type = NONSTANDARD_CHARGER;
-            dev_info(sc->dev, "%s charge ui rush start\n", __func__);
+            dev_dbg(sc->dev, "%s charge ui rush start\n", __func__);
         }
         // End
     } else {
@@ -1701,7 +1701,7 @@ static void sc8989x_inform_psy_dwork_handler(struct work_struct *work)
                     &propval);
 
     if (ret < 0)
-        pr_notice("inform power supply online failed:%d\n", ret);
+        pr_debug("inform power supply online failed:%d\n", ret);
 
     propval.intval = sc->adp_type;
 
@@ -1709,7 +1709,7 @@ static void sc8989x_inform_psy_dwork_handler(struct work_struct *work)
                     POWER_SUPPLY_PROP_CHARGE_TYPE,
                     &propval);
     if (ret < 0)
-        pr_notice("inform power supply charge type failed:%d\n", ret);
+        pr_debug("inform power supply charge type failed:%d\n", ret);
 
 }
 #endif /*CONFIG_MTK_CHARGER_V4P19*/
@@ -1801,7 +1801,7 @@ static int sc8989x_get_charger_type(struct sc8989x_chip *sc) {
             dev_err(sc->dev, "%s Read VBUS_STAT fail\n", __func__);
             reg_val = temp;
         }
-        dev_info(sc->dev, "%s %d -> %d \n", __func__, temp, reg_val);
+        dev_dbg(sc->dev, "%s %d -> %d \n", __func__, temp, reg_val);
     }
     old_reg_val = reg_val;
     // End HTH-320260, the VBUS_STAT should not be changed when the usb cable is pluged in.
@@ -1870,7 +1870,7 @@ static int sc8989x_get_charger_type(struct sc8989x_chip *sc) {
     sc8989x_set_chg_type(sc, reg_val);
 #endif /*CONFIG_MTK_CLASS */
 
-    dev_info(sc->dev, "%s vbus stat: 0x%02x\n", __func__, reg_val);
+    dev_dbg(sc->dev, "%s vbus stat: 0x%02x\n", __func__, reg_val);
 
     return ret;
 }
@@ -1907,7 +1907,7 @@ static irqreturn_t sc8989x_irq_handler(int irq, void *data) {
     static int vindpm_retry = 0;
     struct sc8989x_chip *sc = (struct sc8989x_chip *)data;
 
-    dev_info(sc->dev, "%s: sc8989x_irq_handler, msleep 10\n", __func__);
+    dev_dbg(sc->dev, "%s: sc8989x_irq_handler, msleep 10\n", __func__);
     
     msleep(10);
 
@@ -1931,12 +1931,12 @@ static irqreturn_t sc8989x_irq_handler(int irq, void *data) {
     }
     /* end HTH-322223 */
 
-    dev_info(sc->dev, "%s: reg_val = %d\n", __func__, reg_val);
+    dev_dbg(sc->dev, "%s: reg_val = %d\n", __func__, reg_val);
 
     prev_vbus_gd = sc->vbus_good;
     sc->vbus_good = !!reg_val;
 
-    dev_info(sc->dev, "%s: prev_vbus_gd = %d, sc->vbus_good = %d\n", 
+    dev_dbg(sc->dev, "%s: prev_vbus_gd = %d, sc->vbus_good = %d\n", 
 		    __func__, prev_vbus_gd, sc->vbus_good);
 
     if (!prev_vbus_gd && sc->vbus_good) {
@@ -1946,7 +1946,7 @@ static irqreturn_t sc8989x_irq_handler(int irq, void *data) {
         if(sc->part_no == SC8989X){
             ret = sc8989x_set_vindpm_track(sc,SC8989X_TRACK_300);
         }
-        dev_info(sc->dev, "%s: adapter/usb inserted\n", __func__);
+        dev_dbg(sc->dev, "%s: adapter/usb inserted\n", __func__);
 //#ifndef CONFIG_MTK_CHARGER_V5P10
         ret = sc8989x_reset_dpdm(sc);
         if (ret) {
@@ -1957,7 +1957,7 @@ static irqreturn_t sc8989x_irq_handler(int irq, void *data) {
 //#endif /* CONFIG_MTK_CHARGER_V5P10 */
         sc->usb_plug_in_time = ktime_get();
         schedule_delayed_work(&sc->chg_ui_rush_dwork, msecs_to_jiffies(DELAY_CHARGE_UI_MS));
-        //dev_info(sc->dev, " set charge usb_plug_in_time\n");
+        //dev_dbg(sc->dev, " set charge usb_plug_in_time\n");
     } else if (prev_vbus_gd && !sc->vbus_good) {
         /* Begin for HTH-316785 c2c charging disconnect 20230829*/
         sc->bc12_done_flag = 0;
@@ -1970,7 +1970,7 @@ static irqreturn_t sc8989x_irq_handler(int irq, void *data) {
             sc8989x_set_iindpm(sc,250);
         }
         vindpm_retry = 0;
-        dev_info(sc->dev, "%s: adapter/usb removed\n", __func__);
+        dev_dbg(sc->dev, "%s: adapter/usb removed\n", __func__);
         stat_adc_conversion(sc, false);
         sc8989x_set_dpdm_hiz(sc);
         sc->force_detect_count = 0;
@@ -2098,7 +2098,7 @@ static int sc8989x_init_device(struct sc8989x_chip *sc) {
     sc8989x_field_write(sc, REG_RST, 1);
 
     for (i = 0; i < ARRAY_SIZE(props); i++) {
-        dev_info(sc->dev, "%d--->%d\n", props[i].field_id, props[i].conv_data);
+        dev_dbg(sc->dev, "%d--->%d\n", props[i].field_id, props[i].conv_data);
         ret = sc8989x_field_write(sc, props[i].field_id, props[i].conv_data);
     }
     sc8989x_adc_ibus_en(sc, true);
@@ -2377,7 +2377,7 @@ static int sc8989x_chg_set_property(struct power_supply *psy,
 
     switch (psp) {
     case POWER_SUPPLY_PROP_ONLINE:
-        dev_info(sc->dev, "%s  %d\n", __func__, val->intval);
+        dev_dbg(sc->dev, "%s  %d\n", __func__, val->intval);
         if (val->intval == 2) {
             schedule_delayed_work(&sc->force_detect_dwork,
                                 msecs_to_jiffies(300));
@@ -2469,9 +2469,9 @@ static void sc8989x_chg_enable_dwork_handler(struct work_struct *work)
 
     if (sc->vbus_good) {
         sc8989x_field_write(sc, CHG_CFG, 1);
-        dev_info(sc->dev, "charge enable now");
+        dev_dbg(sc->dev, "charge enable now");
     } else
-        dev_info(sc->dev, "vbus not good, not enable charge");
+        dev_dbg(sc->dev, "vbus not good, not enable charge");
 }
 
 static void sc8989x_icl_step_dwork_handler(struct work_struct *work)
@@ -2481,22 +2481,22 @@ static void sc8989x_icl_step_dwork_handler(struct work_struct *work)
         work, struct sc8989x_chip, icl_step_dwork.work);
 
     if (!sc->vbus_good || sc->adp_type != STANDARD_HOST) {
-        dev_info(sc->dev, "vbus drop out");
+        dev_dbg(sc->dev, "vbus drop out");
         return;
     }
 
     sc8989x_field_read(sc, IINDPM, &iindpm_regval);
     iindpm_nowval = val2reg(SC8989X_IINDPM, sc->icl_goal);
     if (iindpm_nowval == iindpm_regval)
-        dev_info(sc->dev, "icl reached %dmA", sc->icl_goal);
+        dev_dbg(sc->dev, "icl reached %dmA", sc->icl_goal);
     else if (iindpm_nowval > iindpm_regval) {
         iindpm_nowval = iindpm_regval + 1;
         sc8989x_field_write(sc, IINDPM, iindpm_nowval);
         schedule_delayed_work(&sc->icl_step_dwork, msecs_to_jiffies(100));
-        dev_info(sc->dev, "icl increase to %dmA", iindpm_nowval);
+        dev_dbg(sc->dev, "icl increase to %dmA", iindpm_nowval);
     } else {
         sc8989x_field_write(sc, IINDPM, iindpm_nowval);
-        dev_info(sc->dev, "icl reduce to %dmA", iindpm_nowval);
+        dev_dbg(sc->dev, "icl reduce to %dmA", iindpm_nowval);
     }
 }
 /* End for HTH-316785 20230829 */
@@ -2621,7 +2621,7 @@ static int sc8989x_charger_remove(struct i2c_client *client) {
     struct sc8989x_chip *sc = i2c_get_clientdata(client);
 
     if (sc) {
-        dev_info(sc->dev, "%s\n", __func__);
+        dev_dbg(sc->dev, "%s\n", __func__);
 #ifdef CONFIG_MTK_CLASS
         charger_device_unregister(sc->chg_dev);
 #endif                          /*CONFIG_MTK_CLASS */
@@ -2653,7 +2653,7 @@ static void sc8989x_charger_shutdown(struct i2c_client *client)
 static int sc8989x_suspend(struct device *dev) {
     struct sc8989x_chip *sc = dev_get_drvdata(dev);
 
-    dev_info(dev, "%s\n", __func__);
+    dev_dbg(dev, "%s\n", __func__);
     if (device_may_wakeup(dev))
         enable_irq_wake(sc->irq);
     disable_irq(sc->irq);
@@ -2664,7 +2664,7 @@ static int sc8989x_suspend(struct device *dev) {
 static int sc8989x_resume(struct device *dev) {
     struct sc8989x_chip *sc = dev_get_drvdata(dev);
 
-    dev_info(dev, "%s\n", __func__);
+    dev_dbg(dev, "%s\n", __func__);
     enable_irq(sc->irq);
     if (device_may_wakeup(dev))
         disable_irq_wake(sc->irq);

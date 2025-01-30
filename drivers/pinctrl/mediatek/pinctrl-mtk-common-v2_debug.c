@@ -56,23 +56,23 @@ int gpio_get_tristate_input(unsigned int pin)
 	hw = g_hw;
 
 	if (!hw->soc) {
-		pr_notice("invalid gpio chip\n");
+		pr_debug("invalid gpio chip\n");
 		return -EINVAL;
 	}
 
 	if (!hw->soc->bias_set_combo) {
-		pr_notice("not supported gpio chip\n");
+		pr_debug("not supported gpio chip\n");
 		return -ENOTSUPP;
 	}
 
 	if (pin < hw->chip.base) {
-		pr_notice(FUN_3STATE ": please use virtual pin number\n");
+		pr_debug(FUN_3STATE ": please use virtual pin number\n");
 		return -EINVAL;
 	}
 
 	pin -= hw->chip.base;
 	if (pin >= hw->soc->npins) {
-		pr_notice(FUN_3STATE ": invalid pin number: %u\n",
+		pr_debug(FUN_3STATE ": invalid pin number: %u\n",
 			pin);
 		return -EINVAL;
 	}
@@ -82,7 +82,7 @@ int gpio_get_tristate_input(unsigned int pin)
 	if (ret)
 		return ret;
 	if (val != 0) {
-		pr_notice(FUN_3STATE ":GPIO%d in mode %d, not GPIO mode\n",
+		pr_debug(FUN_3STATE ":GPIO%d in mode %d, not GPIO mode\n",
 			pin, val);
 		return -EINVAL;
 	}
@@ -91,7 +91,7 @@ int gpio_get_tristate_input(unsigned int pin)
 	if (ret)
 		return ret;
 	if (pullen == 0 ||  pullen == MTK_PUPD_SET_R1R0_00) {
-		pr_notice(FUN_3STATE ":GPIO%d not pullen, skip floating test\n",
+		pr_debug(FUN_3STATE ":GPIO%d not pullen, skip floating test\n",
 			pin);
 		return gpio_get_value(pin+hw->chip.base);
 	}
@@ -101,24 +101,24 @@ int gpio_get_tristate_input(unsigned int pin)
 		pull_type = 0;
 
 	/* set pullsel as pull-up and get input value */
-	pr_notice(FUN_3STATE ":pull up GPIO%d\n", pin);
+	pr_debug(FUN_3STATE ":pull up GPIO%d\n", pin);
 	ret = hw->soc->bias_set_combo(hw, desc, 1,
 		(pull_type ? MTK_PUPD_SET_R1R0_11 : MTK_ENABLE));
 	if (ret)
 		goto out;
 	mdelay(PULL_DELAY);
 	val_up = gpio_get_value(pin+hw->chip.base);
-	pr_notice(FUN_3STATE ":GPIO%d input %d\n", pin, val_up);
+	pr_debug(FUN_3STATE ":GPIO%d input %d\n", pin, val_up);
 
 	/* set pullsel as pull-down and get input value */
-	pr_notice(FUN_3STATE ":pull down GPIO%d\n", pin);
+	pr_debug(FUN_3STATE ":pull down GPIO%d\n", pin);
 	ret = hw->soc->bias_set_combo(hw, desc, 0,
 		(pull_type ? MTK_PUPD_SET_R1R0_11 : MTK_ENABLE));
 	if (ret)
 		goto out;
 	mdelay(PULL_DELAY);
 	val_down = gpio_get_value(pin+hw->chip.base);
-	pr_notice(FUN_3STATE ":GPIO%d input %d\n", pin, val_down);
+	pr_debug(FUN_3STATE ":GPIO%d input %d\n", pin, val_down);
 
 	if (val_up && val_down)
 		ret = 1;
@@ -127,7 +127,7 @@ int gpio_get_tristate_input(unsigned int pin)
 	else if (val_up && !val_down)
 		ret = 2;
 	else {
-		pr_notice(FUN_3STATE ":GPIO%d pull HW is abnormal\n", pin);
+		pr_debug(FUN_3STATE ":GPIO%d pull HW is abnormal\n", pin);
 		ret = -EINVAL;
 	}
 
@@ -227,11 +227,11 @@ void gpio_dump_regs_range(int start, int end)
 	if (end > chip->ngpio - 1)
 		end = chip->ngpio - 1;
 
-	pr_notice("PIN: (MODE)(DIR)(DOUT)(DIN)(DRIVE)(SMT)(IES)(PULL_EN)(PULL_SEL)(R1 R0)\n");
+	pr_debug("PIN: (MODE)(DIR)(DOUT)(DIN)(DRIVE)(SMT)(IES)(PULL_EN)(PULL_SEL)(R1 R0)\n");
 
 	for (i = start; i < end; i++) {
 		(void)mtk_pctrl_show_one_pin(hw, i, buf, 96);
-		pr_notice("%s", buf);
+		pr_debug("%s", buf);
 	}
 }
 EXPORT_SYMBOL_GPL(gpio_dump_regs_range);
@@ -254,7 +254,7 @@ static ssize_t mtk_gpio_store_pin(struct device *dev,
 			  MTK_PUPD_SET_R1R0_10, MTK_PUPD_SET_R1R0_11};
 
 	if (!hw || !hw->soc) {
-		pr_notice("[pinctrl]cannot find %s device\n",
+		pr_debug("[pinctrl]cannot find %s device\n",
 			pinctrl_paris_modname);
 		return count;
 	}
@@ -275,7 +275,7 @@ static ssize_t mtk_gpio_store_pin(struct device *dev,
 	} else if (!strncmp(buf, "pullen", 6)
 		&& (sscanf(buf+6, "%d %d", &gpio, &val) == 2)) {
 		if (gpio < 0 || gpio > hw->soc->npins) {
-			pr_notice("invalid pin number\n");
+			pr_debug("invalid pin number\n");
 			goto out;
 		}
 		desc = (const struct mtk_pin_desc *)&hw->soc->pins[gpio];
@@ -295,7 +295,7 @@ static ssize_t mtk_gpio_store_pin(struct device *dev,
 	} else if ((!strncmp(buf, "pullsel", 7))
 		&& (sscanf(buf+7, "%d %d", &gpio, &val) == 2)) {
 		if (gpio < 0 || gpio > hw->soc->npins) {
-			pr_notice("invalid pin number\n");
+			pr_debug("invalid pin number\n");
 			goto out;
 		}
 		desc = (const struct mtk_pin_desc *)&hw->soc->pins[gpio];
@@ -312,7 +312,7 @@ static ssize_t mtk_gpio_store_pin(struct device *dev,
 	} else if ((!strncmp(buf, "driving", 7))
 		&& (sscanf(buf+7, "%d %d", &gpio, &val) == 2)) {
 		if (gpio < 0 || gpio > hw->soc->npins) {
-			pr_notice("invalid pin number\n");
+			pr_debug("invalid pin number\n");
 			goto out;
 		}
 		desc = (const struct mtk_pin_desc *)&hw->soc->pins[gpio];
@@ -320,7 +320,7 @@ static ssize_t mtk_gpio_store_pin(struct device *dev,
 	} else if ((!strncmp(buf, "r1r0", 4))
 		&& (sscanf(buf+4, "%d %d %d", &gpio, &val, &val2) == 3)) {
 		if (gpio < 0 || gpio > hw->soc->npins) {
-			pr_notice("invalid pin number\n");
+			pr_debug("invalid pin number\n");
 			goto out;
 		}
 		desc = (const struct mtk_pin_desc *)&hw->soc->pins[gpio];
@@ -335,7 +335,7 @@ static ssize_t mtk_gpio_store_pin(struct device *dev,
 			&attrs[4], &attrs[5], &attrs[6], &attrs[7],
 			&attrs[8], &attrs[9], &attrs[10], &attrs[11]);
 		if (val <= 0 || val > 13) {
-			pr_notice("invalid input count %d\n", val);
+			pr_debug("invalid input count %d\n", val);
 			goto out;
 		}
 		if (!hw->soc->bias_get_combo || !hw->soc->bias_set_combo)
@@ -347,7 +347,7 @@ static ssize_t mtk_gpio_store_pin(struct device *dev,
 				vals[i] = 0;
 		}
 		if (gpio < 0) {
-			pr_notice("invalid pin number\n");
+			pr_debug("invalid pin number\n");
 			goto out;
 		}
 		desc = (const struct mtk_pin_desc *)&hw->soc->pins[gpio];
@@ -382,7 +382,7 @@ out:
 	return count;
 
 no_bias_combo_out:
-	pr_notice("[pinctrl]bias_set_combo/bias_get_combo not supported\n");
+	pr_debug("[pinctrl]bias_set_combo/bias_get_combo not supported\n");
 	return count;
 }
 
@@ -404,13 +404,13 @@ static int mtk_gpio_create_attr(void)
 				strlen(pinctrl_paris_modname))) {
 			hw = gpiochip_get_data(gdesc->gdev->chip);
 			if (!hw || !hw->soc || !hw->dev) {
-				pr_notice("invalid gpio chip\n");
+				pr_debug("invalid gpio chip\n");
 				return -EINVAL;
 			}
 
 			err = device_create_file(hw->dev, &dev_attr_mt_gpio);
 			if (err) {
-				pr_notice("[pinctrl]error create mtk_gpio\n");
+				pr_debug("[pinctrl]error create mtk_gpio\n");
 				break;
 			}
 		}

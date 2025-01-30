@@ -507,7 +507,7 @@ static int adp5589_gpio_add(struct adp5589_kpad *kpad)
 
 	kpad->gc.ngpio = adp5589_build_gpiomap(kpad, pdata);
 	if (kpad->gc.ngpio == 0) {
-		dev_info(dev, "No unused gpios left to export\n");
+		dev_dbg(dev, "No unused gpios left to export\n");
 		return 0;
 	}
 
@@ -1028,7 +1028,7 @@ static int adp5589_probe(struct i2c_client *client,
 	device_init_wakeup(&client->dev, 1);
 	i2c_set_clientdata(client, kpad);
 
-	dev_info(&client->dev, "Rev.%d keypad, irq %d\n", revid, client->irq);
+	dev_dbg(&client->dev, "Rev.%d keypad, irq %d\n", revid, client->irq);
 	return 0;
 
 err_free_irq:

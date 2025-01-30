@@ -228,7 +228,7 @@ static int __init qcom_cpuidle_init(struct device_node *cpu_node, int cpu)
 			continue;
 
 		if (i == CPUIDLE_STATE_MAX) {
-			pr_warn("%s: cpuidle states reached max possible\n",
+			pr_debug("%s: cpuidle states reached max possible\n",
 					__func__);
 			break;
 		}

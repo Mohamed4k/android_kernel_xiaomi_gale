@@ -177,7 +177,7 @@ static int ts4800_wdt_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, wdt);
 
-	dev_info(&pdev->dev,
+	dev_dbg(&pdev->dev,
 		 "initialized (timeout = %d sec, nowayout = %d)\n",
 		 wdd->timeout, nowayout);
 

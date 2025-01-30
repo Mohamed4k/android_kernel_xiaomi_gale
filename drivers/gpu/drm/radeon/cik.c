@@ -4802,42 +4802,42 @@ static int cik_cp_resume(struct radeon_device *rdev)
 
 static void cik_print_gpu_status_regs(struct radeon_device *rdev)
 {
-	dev_info(rdev->dev, "  GRBM_STATUS=0x%08X\n",
+	dev_dbg(rdev->dev, "  GRBM_STATUS=0x%08X\n",
 		RREG32(GRBM_STATUS));
-	dev_info(rdev->dev, "  GRBM_STATUS2=0x%08X\n",
+	dev_dbg(rdev->dev, "  GRBM_STATUS2=0x%08X\n",
 		RREG32(GRBM_STATUS2));
-	dev_info(rdev->dev, "  GRBM_STATUS_SE0=0x%08X\n",
+	dev_dbg(rdev->dev, "  GRBM_STATUS_SE0=0x%08X\n",
 		RREG32(GRBM_STATUS_SE0));
-	dev_info(rdev->dev, "  GRBM_STATUS_SE1=0x%08X\n",
+	dev_dbg(rdev->dev, "  GRBM_STATUS_SE1=0x%08X\n",
 		RREG32(GRBM_STATUS_SE1));
-	dev_info(rdev->dev, "  GRBM_STATUS_SE2=0x%08X\n",
+	dev_dbg(rdev->dev, "  GRBM_STATUS_SE2=0x%08X\n",
 		RREG32(GRBM_STATUS_SE2));
-	dev_info(rdev->dev, "  GRBM_STATUS_SE3=0x%08X\n",
+	dev_dbg(rdev->dev, "  GRBM_STATUS_SE3=0x%08X\n",
 		RREG32(GRBM_STATUS_SE3));
-	dev_info(rdev->dev, "  SRBM_STATUS=0x%08X\n",
+	dev_dbg(rdev->dev, "  SRBM_STATUS=0x%08X\n",
 		RREG32(SRBM_STATUS));
-	dev_info(rdev->dev, "  SRBM_STATUS2=0x%08X\n",
+	dev_dbg(rdev->dev, "  SRBM_STATUS2=0x%08X\n",
 		RREG32(SRBM_STATUS2));
-	dev_info(rdev->dev, "  SDMA0_STATUS_REG   = 0x%08X\n",
+	dev_dbg(rdev->dev, "  SDMA0_STATUS_REG   = 0x%08X\n",
 		RREG32(SDMA0_STATUS_REG + SDMA0_REGISTER_OFFSET));
-	dev_info(rdev->dev, "  SDMA1_STATUS_REG   = 0x%08X\n",
+	dev_dbg(rdev->dev, "  SDMA1_STATUS_REG   = 0x%08X\n",
 		 RREG32(SDMA0_STATUS_REG + SDMA1_REGISTER_OFFSET));
-	dev_info(rdev->dev, "  CP_STAT = 0x%08x\n", RREG32(CP_STAT));
-	dev_info(rdev->dev, "  CP_STALLED_STAT1 = 0x%08x\n",
+	dev_dbg(rdev->dev, "  CP_STAT = 0x%08x\n", RREG32(CP_STAT));
+	dev_dbg(rdev->dev, "  CP_STALLED_STAT1 = 0x%08x\n",
 		 RREG32(CP_STALLED_STAT1));
-	dev_info(rdev->dev, "  CP_STALLED_STAT2 = 0x%08x\n",
+	dev_dbg(rdev->dev, "  CP_STALLED_STAT2 = 0x%08x\n",
 		 RREG32(CP_STALLED_STAT2));
-	dev_info(rdev->dev, "  CP_STALLED_STAT3 = 0x%08x\n",
+	dev_dbg(rdev->dev, "  CP_STALLED_STAT3 = 0x%08x\n",
 		 RREG32(CP_STALLED_STAT3));
-	dev_info(rdev->dev, "  CP_CPF_BUSY_STAT = 0x%08x\n",
+	dev_dbg(rdev->dev, "  CP_CPF_BUSY_STAT = 0x%08x\n",
 		 RREG32(CP_CPF_BUSY_STAT));
-	dev_info(rdev->dev, "  CP_CPF_STALLED_STAT1 = 0x%08x\n",
+	dev_dbg(rdev->dev, "  CP_CPF_STALLED_STAT1 = 0x%08x\n",
 		 RREG32(CP_CPF_STALLED_STAT1));
-	dev_info(rdev->dev, "  CP_CPF_STATUS = 0x%08x\n", RREG32(CP_CPF_STATUS));
-	dev_info(rdev->dev, "  CP_CPC_BUSY_STAT = 0x%08x\n", RREG32(CP_CPC_BUSY_STAT));
-	dev_info(rdev->dev, "  CP_CPC_STALLED_STAT1 = 0x%08x\n",
+	dev_dbg(rdev->dev, "  CP_CPF_STATUS = 0x%08x\n", RREG32(CP_CPF_STATUS));
+	dev_dbg(rdev->dev, "  CP_CPC_BUSY_STAT = 0x%08x\n", RREG32(CP_CPC_BUSY_STAT));
+	dev_dbg(rdev->dev, "  CP_CPC_STALLED_STAT1 = 0x%08x\n",
 		 RREG32(CP_CPC_STALLED_STAT1));
-	dev_info(rdev->dev, "  CP_CPC_STATUS = 0x%08x\n", RREG32(CP_CPC_STATUS));
+	dev_dbg(rdev->dev, "  CP_CPC_STATUS = 0x%08x\n", RREG32(CP_CPC_STATUS));
 }
 
 /**
@@ -4938,12 +4938,12 @@ static void cik_gpu_soft_reset(struct radeon_device *rdev, u32 reset_mask)
 	if (reset_mask == 0)
 		return;
 
-	dev_info(rdev->dev, "GPU softreset: 0x%08X\n", reset_mask);
+	dev_dbg(rdev->dev, "GPU softreset: 0x%08X\n", reset_mask);
 
 	cik_print_gpu_status_regs(rdev);
-	dev_info(rdev->dev, "  VM_CONTEXT1_PROTECTION_FAULT_ADDR   0x%08X\n",
+	dev_dbg(rdev->dev, "  VM_CONTEXT1_PROTECTION_FAULT_ADDR   0x%08X\n",
 		 RREG32(VM_CONTEXT1_PROTECTION_FAULT_ADDR));
-	dev_info(rdev->dev, "  VM_CONTEXT1_PROTECTION_FAULT_STATUS 0x%08X\n",
+	dev_dbg(rdev->dev, "  VM_CONTEXT1_PROTECTION_FAULT_STATUS 0x%08X\n",
 		 RREG32(VM_CONTEXT1_PROTECTION_FAULT_STATUS));
 
 	/* disable CG/PG */
@@ -5018,7 +5018,7 @@ static void cik_gpu_soft_reset(struct radeon_device *rdev, u32 reset_mask)
 	if (grbm_soft_reset) {
 		tmp = RREG32(GRBM_SOFT_RESET);
 		tmp |= grbm_soft_reset;
-		dev_info(rdev->dev, "GRBM_SOFT_RESET=0x%08X\n", tmp);
+		dev_dbg(rdev->dev, "GRBM_SOFT_RESET=0x%08X\n", tmp);
 		WREG32(GRBM_SOFT_RESET, tmp);
 		tmp = RREG32(GRBM_SOFT_RESET);
 
@@ -5032,7 +5032,7 @@ static void cik_gpu_soft_reset(struct radeon_device *rdev, u32 reset_mask)
 	if (srbm_soft_reset) {
 		tmp = RREG32(SRBM_SOFT_RESET);
 		tmp |= srbm_soft_reset;
-		dev_info(rdev->dev, "SRBM_SOFT_RESET=0x%08X\n", tmp);
+		dev_dbg(rdev->dev, "SRBM_SOFT_RESET=0x%08X\n", tmp);
 		WREG32(SRBM_SOFT_RESET, tmp);
 		tmp = RREG32(SRBM_SOFT_RESET);
 
@@ -5149,7 +5149,7 @@ static void cik_gpu_pci_config_reset(struct radeon_device *rdev)
 	struct kv_reset_save_regs kv_save = { 0 };
 	u32 tmp, i;
 
-	dev_info(rdev->dev, "GPU pci config reset\n");
+	dev_dbg(rdev->dev, "GPU pci config reset\n");
 
 	/* disable dpm? */
 

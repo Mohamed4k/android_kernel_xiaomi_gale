@@ -1486,7 +1486,7 @@ static int nb8800_probe(struct platform_device *pdev)
 
 	netif_napi_add(dev, &priv->napi, nb8800_poll, NAPI_POLL_WEIGHT);
 
-	netdev_info(dev, "MAC address %pM\n", dev->dev_addr);
+	netdev_dbg(dev, "MAC address %pM\n", dev->dev_addr);
 
 	return 0;
 

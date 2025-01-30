@@ -332,13 +332,13 @@ void mlx5e_self_test(struct net_device *ndev, struct ethtool_test *etest,
 	memset(buf, 0, sizeof(u64) * MLX5E_ST_NUM);
 
 	mutex_lock(&priv->state_lock);
-	netdev_info(ndev, "Self test begin..\n");
+	netdev_dbg(ndev, "Self test begin..\n");
 
 	for (i = 0; i < MLX5E_ST_NUM; i++) {
-		netdev_info(ndev, "\t[%d] %s start..\n",
+		netdev_dbg(ndev, "\t[%d] %s start..\n",
 			    i, mlx5e_self_tests[i]);
 		buf[i] = mlx5e_st_func[i](priv);
-		netdev_info(ndev, "\t[%d] %s end: result(%lld)\n",
+		netdev_dbg(ndev, "\t[%d] %s end: result(%lld)\n",
 			    i, mlx5e_self_tests[i], buf[i]);
 	}
 
@@ -350,6 +350,6 @@ void mlx5e_self_test(struct net_device *ndev, struct ethtool_test *etest,
 			break;
 		}
 	}
-	netdev_info(ndev, "Self test out: status flags(0x%x)\n",
+	netdev_dbg(ndev, "Self test out: status flags(0x%x)\n",
 		    etest->flags);
 }

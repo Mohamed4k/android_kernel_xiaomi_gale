@@ -179,7 +179,7 @@ static bool scif_rma_tc_can_cache(struct scif_endpt *ep, size_t cur_bytes)
 	if ((atomic_read(&ep->rma_info.tcw_total_pages)
 			+ (cur_bytes >> PAGE_SHIFT)) >
 			scif_info.rma_tc_limit) {
-		dev_info(scif_info.mdev.this_device,
+		dev_dbg(scif_info.mdev.this_device,
 			 "%s %d total=%d, current=%zu reached max\n",
 			 __func__, __LINE__,
 			 atomic_read(&ep->rma_info.tcw_total_pages),

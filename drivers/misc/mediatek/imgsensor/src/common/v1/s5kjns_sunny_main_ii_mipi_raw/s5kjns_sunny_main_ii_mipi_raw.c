@@ -386,7 +386,7 @@ static void s5kjns_fusion_id_read(void)
 	int i;
 	for (i=0; i<6; i++) {
 		fusion_id_main[i] = read_cmos_sensor_s5kjns(0x10+i);
-		//pr_info("zengx %s addr = 0x%4x fusion_id_main[%d]=0x%2x\n",__func__, 0x10 + i, i, fusion_id_main[i]);
+		//pr_debug("zengx %s addr = 0x%4x fusion_id_main[%d]=0x%2x\n",__func__, 0x10 + i, i, fusion_id_main[i]);
 	}
 }
 static void s5kjns_sn_read(void)
@@ -394,7 +394,7 @@ static void s5kjns_sn_read(void)
 	int i;
 	for (i=0; i<14; i++) {
 		sn_main[i] = read_cmos_sensor_s5kjns(0x3FE3+i);
-		//pr_info("zengx %s addr = 0x%4x sn_main[%d]=0x%2x\n",__func__, 0x3fe3 + i, i, sn_main[i]);
+		//pr_debug("zengx %s addr = 0x%4x sn_main[%d]=0x%2x\n",__func__, 0x3fe3 + i, i, sn_main[i]);
 	}
 }
 static void set_dummy(void)
@@ -3997,7 +3997,7 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
 				*sensor_id = return_sensor_id();
 					LOG_INF("get_imgsensor_id  sensor_id: 0x%x\n",*sensor_id);
 				if (*sensor_id == imgsensor_info.sensor_id) {
-					pr_info("s5kjns_sunny i2c 0x%x, sid 0x%x\n",
+					pr_debug("s5kjns_sunny i2c 0x%x, sid 0x%x\n",
 						imgsensor.i2c_write_id, *sensor_id);
 						s5kjns_fusion_id_read();
 						s5kjns_sn_read();

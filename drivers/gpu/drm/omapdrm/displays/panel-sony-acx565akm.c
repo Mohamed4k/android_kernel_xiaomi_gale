@@ -264,7 +264,7 @@ static int panel_detect(struct panel_drv_data *ddata)
 
 	ddata->revision = ddata->display_id[1];
 
-	dev_info(&ddata->spi->dev, "omapfb: %s rev %02x LCD detected\n",
+	dev_dbg(&ddata->spi->dev, "omapfb: %s rev %02x LCD detected\n",
 			ddata->name, ddata->revision);
 
 	return 0;

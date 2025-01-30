@@ -573,9 +573,9 @@ static inline int max17042_model_data_compare(struct max17042_chip *chip,
 	if (memcmp(data1, data2, size)) {
 		dev_err(&chip->client->dev, "%s compare failed\n", __func__);
 		for (i = 0; i < size; i++)
-			dev_info(&chip->client->dev, "0x%x, 0x%x",
+			dev_dbg(&chip->client->dev, "0x%x, 0x%x",
 				data1[i], data2[i]);
-		dev_info(&chip->client->dev, "\n");
+		dev_dbg(&chip->client->dev, "\n");
 		return -EINVAL;
 	}
 	return 0;
@@ -860,7 +860,7 @@ static irqreturn_t max17042_thread_handler(int id, void *dev)
 	regmap_read(chip->regmap, MAX17042_STATUS, &val);
 	if ((val & STATUS_INTR_SOCMIN_BIT) ||
 		(val & STATUS_INTR_SOCMAX_BIT)) {
-		dev_info(&chip->client->dev, "SOC threshold INTR\n");
+		dev_dbg(&chip->client->dev, "SOC threshold INTR\n");
 		max17042_set_soc_threshold(chip, 1);
 	}
 

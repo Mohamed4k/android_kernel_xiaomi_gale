@@ -34,21 +34,21 @@ extern int pe_get_debug_level(void);
 #define pe_err(fmt, args...)					\
 do {								\
 	if (pe_get_debug_level() >= PE_ERROR_LEVEL) {	\
-		pr_notice(fmt, ##args);				\
+		pr_debug(fmt, ##args);				\
 	}							\
 } while (0)
 
 #define pe_info(fmt, args...)					\
 do {								\
 	if (pe_get_debug_level() >= PE_INFO_LEVEL) { \
-		pr_notice(fmt, ##args);				\
+		pr_debug(fmt, ##args);				\
 	}							\
 } while (0)
 
 #define pe_dbg(fmt, args...)					\
 do {								\
 	if (pe_get_debug_level() >= PE_DEBUG_LEVEL) {	\
-		pr_notice(fmt, ##args);				\
+		pr_debug(fmt, ##args);				\
 	}							\
 } while (0)
 

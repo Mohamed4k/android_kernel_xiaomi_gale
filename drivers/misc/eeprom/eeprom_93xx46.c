@@ -494,7 +494,7 @@ static int eeprom_93xx46_probe(struct spi_device *spi)
 		goto fail;
 	}
 
-	dev_info(&spi->dev, "%d-bit eeprom %s\n",
+	dev_dbg(&spi->dev, "%d-bit eeprom %s\n",
 		(pd->flags & EE_ADDR8) ? 8 : 16,
 		(pd->flags & EE_READONLY) ? "(readonly)" : "");
 

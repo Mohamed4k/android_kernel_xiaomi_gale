@@ -1051,7 +1051,7 @@ static int stm32_gpiolib_register_bank(struct stm32_pinctrl *pctl,
 		return err;
 	}
 
-	dev_info(dev, "%s bank added\n", bank->gpio_chip.label);
+	dev_dbg(dev, "%s bank added\n", bank->gpio_chip.label);
 	return 0;
 }
 
@@ -1228,7 +1228,7 @@ int stm32_pctl_probe(struct platform_device *pdev)
 		}
 	}
 
-	dev_info(dev, "Pinctrl STM32 initialized\n");
+	dev_dbg(dev, "Pinctrl STM32 initialized\n");
 
 	return 0;
 }

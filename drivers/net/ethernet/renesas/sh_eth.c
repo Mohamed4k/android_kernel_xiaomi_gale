@@ -3347,7 +3347,7 @@ static int sh_eth_drv_probe(struct platform_device *pdev)
 		device_set_wakeup_capable(&pdev->dev, 1);
 
 	/* print device information */
-	netdev_info(ndev, "Base address at 0x%x, %pM, IRQ %d.\n",
+	netdev_dbg(ndev, "Base address at 0x%x, %pM, IRQ %d.\n",
 		    (u32)ndev->base_addr, ndev->dev_addr, ndev->irq);
 
 	pm_runtime_put(&pdev->dev);

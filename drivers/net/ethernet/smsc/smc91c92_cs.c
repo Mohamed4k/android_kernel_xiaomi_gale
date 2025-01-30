@@ -792,7 +792,7 @@ static int check_sig(struct pcmcia_device *link)
     }
 
     if (width) {
-	    netdev_info(dev, "using 8-bit IO window\n");
+	    netdev_dbg(dev, "using 8-bit IO window\n");
 
 	    smc91c92_suspend(link);
 	    pcmcia_fixup_iowidth(link);
@@ -920,14 +920,14 @@ static int smc91c92_config(struct pcmcia_device *link)
 	goto config_undo;
     }
 
-    netdev_info(dev, "smc91c%s rev %d: io %#3lx, irq %d, hw_addr %pM\n",
+    netdev_dbg(dev, "smc91c%s rev %d: io %#3lx, irq %d, hw_addr %pM\n",
 		name, (rev & 0x0f), dev->base_addr, dev->irq, dev->dev_addr);
 
     if (rev > 0) {
 	if (mir & 0x3ff)
-	    netdev_info(dev, "  %lu byte", mir);
+	    netdev_dbg(dev, "  %lu byte", mir);
 	else
-	    netdev_info(dev, "  %lu kb", mir>>10);
+	    netdev_dbg(dev, "  %lu kb", mir>>10);
 	pr_cont(" buffer, %s xcvr\n",
 		(smc->cfg & CFG_MII_SELECT) ? "MII" : if_names[dev->if_port]);
     }
@@ -1060,7 +1060,7 @@ static int smc_open(struct net_device *dev)
 	return -ENODEV;
     /* Physical device present signature. */
     if (check_sig(link) < 0) {
-	netdev_info(dev, "Yikes!  Bad chip signature!\n");
+	netdev_dbg(dev, "Yikes!  Bad chip signature!\n");
 	return -ENODEV;
     }
     link->open++;
@@ -1593,7 +1593,7 @@ static int s9k_config(struct net_device *dev, struct ifmap *map)
 	else if (map->port > 2)
 	    return -EINVAL;
 	dev->if_port = map->port;
-	netdev_info(dev, "switched to %s port\n", if_names[dev->if_port]);
+	netdev_dbg(dev, "switched to %s port\n", if_names[dev->if_port]);
 	smc_reset(dev);
     }
     return 0;
@@ -1744,7 +1744,7 @@ static void media_check(struct timer_list *t)
        this, we can limp along even if the interrupt is blocked */
     if (smc->watchdog++ && ((i>>8) & i)) {
 	if (!smc->fast_poll)
-	    netdev_info(dev, "interrupt(s) dropped!\n");
+	    netdev_dbg(dev, "interrupt(s) dropped!\n");
 	local_irq_save(flags);
 	smc_interrupt(dev->irq, dev);
 	local_irq_restore(flags);
@@ -1768,7 +1768,7 @@ static void media_check(struct timer_list *t)
 	SMC_SELECT_BANK(3);
 	link = mdio_read(dev, smc->mii_if.phy_id, 1);
 	if (!link || (link == 0xffff)) {
-	    netdev_info(dev, "MII is missing!\n");
+	    netdev_dbg(dev, "MII is missing!\n");
 	    smc->mii_if.phy_id = -1;
 	    goto reschedule;
 	}
@@ -1776,11 +1776,11 @@ static void media_check(struct timer_list *t)
 	link &= 0x0004;
 	if (link != smc->link_status) {
 	    u_short p = mdio_read(dev, smc->mii_if.phy_id, 5);
-	    netdev_info(dev, "%s link beat\n", link ? "found" : "lost");
+	    netdev_dbg(dev, "%s link beat\n", link ? "found" : "lost");
 	    smc->duplex = (((p & 0x0100) || ((p & 0x1c0) == 0x40))
 			   ? TCR_FDUPLX : 0);
 	    if (link) {
-		netdev_info(dev, "autonegotiation complete: "
+		netdev_dbg(dev, "autonegotiation complete: "
 			    "%dbaseT-%cD selected\n",
 			    (p & 0x0180) ? 100 : 10, smc->duplex ? 'F' : 'H');
 	    }
@@ -1801,23 +1801,23 @@ static void media_check(struct timer_list *t)
     if (media != smc->media_status) {
 	if ((media & smc->media_status & 1) &&
 	    ((smc->media_status ^ media) & EPH_LINK_OK))
-	    netdev_info(dev, "%s link beat\n",
+	    netdev_dbg(dev, "%s link beat\n",
 			smc->media_status & EPH_LINK_OK ? "lost" : "found");
 	else if ((media & smc->media_status & 2) &&
 		 ((smc->media_status ^ media) & EPH_16COL))
-	    netdev_info(dev, "coax cable %s\n",
+	    netdev_dbg(dev, "coax cable %s\n",
 			media & EPH_16COL ? "problem" : "ok");
 	if (dev->if_port == 0) {
 	    if (media & 1) {
 		if (media & EPH_LINK_OK)
-		    netdev_info(dev, "flipped to 10baseT\n");
+		    netdev_dbg(dev, "flipped to 10baseT\n");
 		else
 		    smc_set_xcvr(dev, 2);
 	    } else {
 		if (media & EPH_16COL)
 		    smc_set_xcvr(dev, 1);
 		else
-		    netdev_info(dev, "flipped to 10base2\n");
+		    netdev_dbg(dev, "flipped to 10base2\n");
 	    }
 	}
 	smc->media_status = media;

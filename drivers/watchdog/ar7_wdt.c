@@ -138,7 +138,7 @@ static void ar7_wdt_update_margin(int new_margin)
 		change = 0xffff;
 	ar7_wdt_change(change);
 	margin = change * prescale_value / vbus_rate;
-	pr_info("timer margin %d seconds (prescale %d, change %d, freq %d)\n",
+	pr_debug("timer margin %d seconds (prescale %d, change %d, freq %d)\n",
 		margin, prescale_value, change, vbus_rate);
 }
 
@@ -169,7 +169,7 @@ static int ar7_wdt_open(struct inode *inode, struct file *file)
 static int ar7_wdt_release(struct inode *inode, struct file *file)
 {
 	if (!expect_close)
-		pr_warn("watchdog device closed unexpectedly, will not disable the watchdog timer\n");
+		pr_debug("watchdog device closed unexpectedly, will not disable the watchdog timer\n");
 	else if (!nowayout)
 		ar7_wdt_disable_wdt();
 	clear_bit(0, &wdt_is_open);

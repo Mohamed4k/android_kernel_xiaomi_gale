@@ -1136,7 +1136,7 @@ static int fimc_bind(struct device *dev, struct device *master, void *data)
 			DRM_EXYNOS_IPP_CAP_SCALE | DRM_EXYNOS_IPP_CAP_CONVERT,
 			ctx->formats, ctx->num_formats, "fimc");
 
-	dev_info(dev, "The exynos fimc has been probed successfully\n");
+	dev_dbg(dev, "The exynos fimc has been probed successfully\n");
 
 	return 0;
 }
@@ -1350,7 +1350,7 @@ static int fimc_probe(struct platform_device *pdev)
 	if (ret)
 		goto err_pm_dis;
 
-	dev_info(dev, "drm fimc registered successfully.\n");
+	dev_dbg(dev, "drm fimc registered successfully.\n");
 
 	return 0;
 

@@ -139,7 +139,7 @@ struct net_device * __init apne_probe(int unit)
 	if ( !(AMIGAHW_PRESENT(PCMCIA)) )
 		return ERR_PTR(-ENODEV);
 
-	pr_info("Looking for PCMCIA ethernet card : ");
+	pr_debug("Looking for PCMCIA ethernet card : ");
 
 	/* check if a card is inserted */
 	if (!(PCMCIA_INSERTED)) {
@@ -214,9 +214,9 @@ static int __init apne_probe1(struct net_device *dev, int ioaddr)
     static unsigned version_printed;
 
     if ((apne_msg_enable & NETIF_MSG_DRV) && (version_printed++ == 0))
-		netdev_info(dev, version);
+		netdev_dbg(dev, version);
 
-    netdev_info(dev, "PCMCIA NE*000 ethercard probe");
+    netdev_dbg(dev, "PCMCIA NE*000 ethercard probe");
 
     /* Reset card. Who knows what dain-bramaged state it was left in. */
     {	unsigned long reset_start_time = jiffies;
@@ -330,7 +330,7 @@ static int __init apne_probe1(struct net_device *dev, int ioaddr)
 
     pr_cont(" %pM\n", dev->dev_addr);
 
-    netdev_info(dev, "%s found.\n", name);
+    netdev_dbg(dev, "%s found.\n", name);
 
     ei_status.name = name;
     ei_status.tx_start_page = start_page;

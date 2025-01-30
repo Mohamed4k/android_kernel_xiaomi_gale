@@ -71,15 +71,15 @@ int pl111_vexpress_clcd_init(struct device *dev,
 		mux_motherboard = false;
 
 	if (mux_motherboard) {
-		dev_info(dev, "DVI muxed to motherboard CLCD\n");
+		dev_dbg(dev, "DVI muxed to motherboard CLCD\n");
 		val = VEXPRESS_FPGAMUX_MOTHERBOARD;
 	} else if (ct_clcd == dev->of_node) {
-		dev_info(dev,
+		dev_dbg(dev,
 			 "DVI muxed to daughterboard 1 (core tile) CLCD\n");
 		val = VEXPRESS_FPGAMUX_DAUGHTERBOARD_1;
 	} else {
-		dev_info(dev, "core tile graphics present\n");
-		dev_info(dev, "this device will be deactivated\n");
+		dev_dbg(dev, "core tile graphics present\n");
+		dev_dbg(dev, "this device will be deactivated\n");
 		return -ENODEV;
 	}
 

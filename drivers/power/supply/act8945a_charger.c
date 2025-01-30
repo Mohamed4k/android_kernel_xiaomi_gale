@@ -483,7 +483,7 @@ static int act8945a_charger_config(struct device *dev,
 
 	if (tmp & APCH_CFG_SUSCHG) {
 		value |= APCH_CFG_SUSCHG;
-		dev_info(dev, "have been suspended\n");
+		dev_dbg(dev, "have been suspended\n");
 	}
 
 	charger->lbo_gpio = devm_gpiod_get_optional(dev, "active-semi,lbo",
@@ -499,7 +499,7 @@ static int act8945a_charger_config(struct device *dev,
 			       (IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING),
 			       "act8945a_lbo_detect", charger);
 	if (ret)
-		dev_info(dev, "failed to request gpio \"lbo\" IRQ\n");
+		dev_dbg(dev, "failed to request gpio \"lbo\" IRQ\n");
 
 	charger->chglev_gpio = devm_gpiod_get_optional(dev,
 						       "active-semi,chglev",

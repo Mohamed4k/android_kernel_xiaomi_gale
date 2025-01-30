@@ -249,7 +249,7 @@ static irqreturn_t cdns_wdt_irq_handler(int irq, void *dev_id)
 {
 	struct platform_device *pdev = dev_id;
 
-	dev_info(&pdev->dev,
+	dev_dbg(&pdev->dev,
 		 "Watchdog timed out. Internal reset not enabled\n");
 
 	return IRQ_HANDLED;
@@ -365,7 +365,7 @@ static int cdns_wdt_probe(struct platform_device *pdev)
 	}
 	platform_set_drvdata(pdev, wdt);
 
-	dev_info(&pdev->dev, "Xilinx Watchdog Timer at %p with timeout %ds%s\n",
+	dev_dbg(&pdev->dev, "Xilinx Watchdog Timer at %p with timeout %ds%s\n",
 		 wdt->regs, cdns_wdt_device->timeout,
 		 nowayout ? ", nowayout" : "");
 

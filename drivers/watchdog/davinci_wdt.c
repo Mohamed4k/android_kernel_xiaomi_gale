@@ -229,7 +229,7 @@ static int davinci_wdt_probe(struct platform_device *pdev)
 
 	watchdog_init_timeout(wdd, heartbeat, dev);
 
-	dev_info(dev, "heartbeat %d sec\n", wdd->timeout);
+	dev_dbg(dev, "heartbeat %d sec\n", wdd->timeout);
 
 	watchdog_set_drvdata(wdd, davinci_wdt);
 	watchdog_set_nowayout(wdd, 1);

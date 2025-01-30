@@ -357,7 +357,7 @@ static int mei_nfc_if_version(struct mei_cl *cl,
 
 	memcpy(ver, reply->data, sizeof(struct mei_nfc_if_version));
 
-	dev_info(bus->dev, "NFC MEI VERSION: IVN 0x%x Vendor ID 0x%x Type 0x%x\n",
+	dev_dbg(bus->dev, "NFC MEI VERSION: IVN 0x%x Vendor ID 0x%x Type 0x%x\n",
 		ver->fw_ivn, ver->vendor_id, ver->radio_type);
 
 err:

@@ -428,7 +428,7 @@ static int disp_probe_1(void)
 	unsigned long va;
 	unsigned int irq;
 
-	pr_info("disp driver(1) %s begin\n", __func__);
+	pr_debug("disp driver(1) %s begin\n", __func__);
 
 #if (defined(CONFIG_MTK_TEE_GP_SUPPORT) || \
 	defined(CONFIG_TRUSTONIC_TEE_SUPPORT)) && \
@@ -439,7 +439,7 @@ static int disp_probe_1(void)
 	disp_misc_dev.parent = NULL;
 	ret = misc_register(&disp_misc_dev);
 	if (ret) {
-		pr_info("disp: fail to create mtk_disp node\n");
+		pr_debug("disp: fail to create mtk_disp node\n");
 		return (unsigned long)(ERR_PTR(ret));
 	}
 #endif
@@ -561,7 +561,7 @@ static int disp_probe_1(void)
 		disp_init_bdg_gce_obj();
 #endif
 
-	pr_info("disp driver(1) %s end\n", __func__);
+	pr_debug("disp driver(1) %s end\n", __func__);
 	/* NOT_REFERENCED(class_dev); */
 	return ret;
 }
@@ -576,7 +576,7 @@ static ssize_t product_name_show(struct kobject *dev,
 		struct kobj_attribute *attr, char *buf)
 {
 	ssize_t ret = 0;
-	pr_info("product_name_show g_product_id =%s\n",g_product_id);
+	pr_debug("product_name_show g_product_id =%s\n",g_product_id);
 	sprintf(buf, "%s\n", g_product_id);
 	ret = strlen(buf) + 1;
 	return ret;
@@ -586,15 +586,15 @@ static struct kobj_attribute dev_attr_product_name=
 static int msm_product_name_create_sysfs(void){
 	int ret;
 	msm_product_name=kobject_create_and_add("android_product",NULL);
-	pr_info("msm_product_name_create_sysfs  g_product_id =%s,msm_product_name=%s\n",g_product_id,msm_product_name);
+	pr_debug("msm_product_name_create_sysfs  g_product_id =%s,msm_product_name=%s\n",g_product_id,msm_product_name);
 	if(msm_product_name==NULL){
-		pr_info("msm_product_name_create_sysfs_failed\n");
+		pr_debug("msm_product_name_create_sysfs_failed\n");
 	ret=-ENOMEM;
 		return ret;
 	}
 	ret=sysfs_create_file(msm_product_name,&dev_attr_product_name.attr);
 	if(ret){
-		pr_info("%s failed \n",__func__);
+		pr_debug("%s failed \n",__func__);
 		kobject_del(msm_product_name);
 	}
 	return 0;
@@ -602,8 +602,8 @@ static int msm_product_name_create_sysfs(void){
 static int __init lcm_get_product_type(char *str)
 {
 	strcpy(g_product_id, str);
-	pr_info("[: %s %d]androidboot.product.vendor.sku=%s \n",__FUNCTION__,__LINE__,g_product_id);
-	//pr_info("board_id_hwname : %s\n", g_product_id);
+	pr_debug("[: %s %d]androidboot.product.vendor.sku=%s \n",__FUNCTION__,__LINE__,g_product_id);
+	//pr_debug("board_id_hwname : %s\n", g_product_id);
 	return 1;
 }
 __setup("androidboot.product.vendor.sku", lcm_get_product_type);
@@ -613,9 +613,9 @@ static int disp_probe(struct platform_device *pdev)
 	static unsigned int disp_probe_cnt;
 
 	if (disp_helper_get_stage() == DISP_HELPER_STAGE_NORMAL) {
-		pr_info("%s: %d\n", __func__, smi_mm_first_get());
+		pr_debug("%s: %d\n", __func__, smi_mm_first_get());
 		if (!smi_mm_first_get()) {
-			pr_notice("SMI not start probe\n");
+			pr_debug("SMI not start probe\n");
 			return -EPROBE_DEFER;
 		}
 	}
@@ -623,7 +623,7 @@ static int disp_probe(struct platform_device *pdev)
 	if (disp_probe_cnt != 0)
 		return 0;
 
-	pr_info("disp driver(1) %s begin\n", __func__);
+	pr_debug("disp driver(1) %s begin\n", __func__);
 
 	/* save pdev for disp_probe_1 */
 	memcpy(&mydev, pdev, sizeof(mydev));
@@ -635,11 +635,11 @@ static int disp_probe(struct platform_device *pdev)
 
 	disp_probe_cnt++;
 
-	pr_info("disp driver(1) %s end\n", __func__);
+	pr_debug("disp driver(1) %s end\n", __func__);
 
 	disp_probe_1();
 
-	pr_info("%s+ msm_product_name_create_sysfs\n", __func__);
+	pr_debug("%s+ msm_product_name_create_sysfs\n", __func__);
 	msm_product_name_create_sysfs();
 
 
@@ -729,7 +729,7 @@ static int __init disp_late(void)
 	/* for rt5081 */
 	ret = display_bias_regulator_init();
 	if (ret < 0)
-		pr_info("get dsv_pos fail, ret = %d\n", ret);
+		pr_debug("get dsv_pos fail, ret = %d\n", ret);
 
 	disp_late_bias_enable();
 

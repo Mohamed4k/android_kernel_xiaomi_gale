@@ -1440,7 +1440,7 @@ static void __init stm32f4_rcc_init(struct device_node *np)
 	pdrm = syscon_regmap_lookup_by_phandle(np, "st,syscfg");
 	if (IS_ERR(pdrm)) {
 		pdrm = NULL;
-		pr_warn("%s: Unable to get syscfg\n", __func__);
+		pr_debug("%s: Unable to get syscfg\n", __func__);
 	}
 
 	match = of_match_node(stm32f4_of_match, np);
@@ -1604,7 +1604,7 @@ static void __init stm32f4_rcc_init(struct device_node *np)
 				&stm32f4_clk_lock);
 
 		if (IS_ERR(hw)) {
-			pr_warn("Unable to register %s clk\n", aux_clk->name);
+			pr_debug("Unable to register %s clk\n", aux_clk->name);
 			continue;
 		}
 

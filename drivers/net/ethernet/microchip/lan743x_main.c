@@ -2811,7 +2811,7 @@ cleanup_pci:
 	lan743x_pci_cleanup(adapter);
 
 return_error:
-	pr_warn("Initialization failed\n");
+	pr_debug("Initialization failed\n");
 	return ret;
 }
 

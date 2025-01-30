@@ -108,7 +108,7 @@ EXPORT_SYMBOL(chg_alg_notifier_call);
 int chg_alg_set_current_limit(struct chg_alg_device *alg_dev,
 	struct chg_limit_setting *setting)
 {
-	pr_notice("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 	if (alg_dev != NULL && alg_dev->ops != NULL &&
 	    alg_dev->ops->set_current_limit)
 		return alg_dev->ops->set_current_limit(alg_dev, setting);
@@ -137,7 +137,7 @@ char *chg_alg_state_to_str(int state)
 	default:
 		break;
 	}
-	pr_notice("%s unknown state:%d\n", __func__
+	pr_debug("%s unknown state:%d\n", __func__
 		, state);
 	return "chg_alg_state_UNKNOWN";
 }
@@ -268,7 +268,7 @@ static int __init charger_algorithm_class_init(void)
 	charger_algorithm_class =
 		class_create(THIS_MODULE, "Charger Algorithm");
 	if (IS_ERR(charger_algorithm_class)) {
-		pr_notice("Unable to create charger algorithm class; errno = %ld\n",
+		pr_debug("Unable to create charger algorithm class; errno = %ld\n",
 			PTR_ERR(charger_algorithm_class));
 		return PTR_ERR(charger_algorithm_class);
 	}

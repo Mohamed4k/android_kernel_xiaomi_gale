@@ -1843,7 +1843,7 @@ static int alx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		goto out_unmap;
 	}
 
-	netdev_info(netdev,
+	netdev_dbg(netdev,
 		    "Qualcomm Atheros AR816x/AR817x Ethernet [%pM]\n",
 		    netdev->dev_addr);
 
@@ -1928,7 +1928,7 @@ static pci_ers_result_t alx_pci_error_detected(struct pci_dev *pdev,
 	struct net_device *netdev = alx->dev;
 	pci_ers_result_t rc = PCI_ERS_RESULT_NEED_RESET;
 
-	dev_info(&pdev->dev, "pci error detected\n");
+	dev_dbg(&pdev->dev, "pci error detected\n");
 
 	rtnl_lock();
 
@@ -1953,7 +1953,7 @@ static pci_ers_result_t alx_pci_error_slot_reset(struct pci_dev *pdev)
 	struct alx_hw *hw = &alx->hw;
 	pci_ers_result_t rc = PCI_ERS_RESULT_DISCONNECT;
 
-	dev_info(&pdev->dev, "pci error slot reset\n");
+	dev_dbg(&pdev->dev, "pci error slot reset\n");
 
 	rtnl_lock();
 
@@ -1980,7 +1980,7 @@ static void alx_pci_error_resume(struct pci_dev *pdev)
 	struct alx_priv *alx = pci_get_drvdata(pdev);
 	struct net_device *netdev = alx->dev;
 
-	dev_info(&pdev->dev, "pci error resume\n");
+	dev_dbg(&pdev->dev, "pci error resume\n");
 
 	rtnl_lock();
 

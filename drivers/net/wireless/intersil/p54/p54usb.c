@@ -968,7 +968,7 @@ static int p54u_load_firmware(struct ieee80211_hw *dev,
 	if (i < 0)
 		return i;
 
-	dev_info(&priv->udev->dev, "Loading firmware file %s\n",
+	dev_dbg(&priv->udev->dev, "Loading firmware file %s\n",
 	       p54u_fwlist[i].fw);
 
 	usb_get_intf(intf);

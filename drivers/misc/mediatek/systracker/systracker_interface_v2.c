@@ -50,27 +50,27 @@ static int systracker_probe(struct platform_device *pdev)
 	void __iomem *infra_ao_base;
 	unsigned int bus_dbg_con_offset;
 
-	pr_notice("systracker probe\n");
+	pr_debug("systracker probe\n");
 
 	/* iomap register */
 	BUS_DBG_BASE = of_iomap(pdev->dev.of_node, 0);
 	if (!BUS_DBG_BASE) {
-		pr_notice("can't of_iomap for systracker!!\n");
+		pr_debug("can't of_iomap for systracker!!\n");
 		return -ENOMEM;
 	}
 
-	pr_notice("of_iomap for systracker @ 0x%p\n", BUS_DBG_BASE);
+	pr_debug("of_iomap for systracker @ 0x%p\n", BUS_DBG_BASE);
 
 	infra_ao_base = of_iomap(pdev->dev.of_node, 1);
 	if (!infra_ao_base) {
-		pr_notice("[systracker] bus_dbg_con is in infra\n");
+		pr_debug("[systracker] bus_dbg_con is in infra\n");
 		BUS_DBG_INFRA_BASE = BUS_DBG_BASE;
 	} else {
-		pr_notice("[systracker] bus_dbg_con is in infra_ao\n");
+		pr_debug("[systracker] bus_dbg_con is in infra_ao\n");
 		if (of_property_read_u32
 			(pdev->dev.of_node, "mediatek,bus_dbg_con_offset",
 			&bus_dbg_con_offset)) {
-			pr_notice
+			pr_debug
 			("[systracker] cannot get bus_dbg_con_offset\n");
 			return -ENODEV;
 		}
@@ -288,7 +288,7 @@ int systracker_test_init(void)
 	if (mt_systracker_drv.systracker_test_init)
 		return mt_systracker_drv.systracker_test_init();
 
-	pr_notice("mt_systracker_drv.%s is NULL", __func__);
+	pr_debug("mt_systracker_drv.%s is NULL", __func__);
 	return -1;
 }
 
@@ -507,7 +507,7 @@ static ssize_t tracker_entry_dump_show
 	int ret = tracker_dump(buf);
 
 	if (ret == -1)
-		pr_notice("Dump error in %s, %d\n", __func__, __LINE__);
+		pr_debug("Dump error in %s, %d\n", __func__, __LINE__);
 
 	return strlen(buf);
 }
@@ -580,7 +580,7 @@ static int __init systracker_init(void)
 	ret |= driver_create_file(&mt_systracker_drv.driver.driver,
 		&driver_attr_tracker_last_status);
 	if (ret)
-		pr_notice("Fail to create systracker_drv sysfs files");
+		pr_debug("Fail to create systracker_drv sysfs files");
 
 	pr_debug("systracker init done\n");
 

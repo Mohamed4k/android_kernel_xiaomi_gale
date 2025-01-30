@@ -392,9 +392,9 @@ static int rtl8192cu_parse_efuse(struct rtl8xxxu_priv *priv)
 	       efuse->ht20_max_power_offset,
 	       sizeof(efuse->ht20_max_power_offset));
 
-	dev_info(&priv->udev->dev, "Vendor: %.7s\n",
+	dev_dbg(&priv->udev->dev, "Vendor: %.7s\n",
 		 efuse->vendor_name);
-	dev_info(&priv->udev->dev, "Product: %.20s\n",
+	dev_dbg(&priv->udev->dev, "Product: %.20s\n",
 		 efuse->device_name);
 
 	priv->power_base = &rtl8192c_power_base;
@@ -410,11 +410,11 @@ static int rtl8192cu_parse_efuse(struct rtl8xxxu_priv *priv)
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_EFUSE) {
 		unsigned char *raw = priv->efuse_wifi.raw;
 
-		dev_info(&priv->udev->dev,
+		dev_dbg(&priv->udev->dev,
 			 "%s: dumping efuse (0x%02zx bytes):\n",
 			 __func__, sizeof(struct rtl8192cu_efuse));
 		for (i = 0; i < sizeof(struct rtl8192cu_efuse); i += 8)
-			dev_info(&priv->udev->dev, "%02x: %8ph\n", i, &raw[i]);
+			dev_dbg(&priv->udev->dev, "%02x: %8ph\n", i, &raw[i]);
 	}
 	return 0;
 }
@@ -457,7 +457,7 @@ static int rtl8192cu_power_on(struct rtl8xxxu_priv *priv)
 	}
 
 	if (!i) {
-		pr_info("%s: Poll failed\n", __func__);
+		pr_debug("%s: Poll failed\n", __func__);
 		return -ENODEV;
 	}
 
@@ -470,7 +470,7 @@ static int rtl8192cu_power_on(struct rtl8xxxu_priv *priv)
 
 	val8 = rtl8xxxu_read8(priv, REG_LDOV12D_CTRL);
 	if (!(val8 & LDOV12D_ENABLE)) {
-		pr_info("%s: Enabling LDOV12D (%02x)\n", __func__, val8);
+		pr_debug("%s: Enabling LDOV12D (%02x)\n", __func__, val8);
 		val8 |= LDOV12D_ENABLE;
 		rtl8xxxu_write8(priv, REG_LDOV12D_CTRL, val8);
 
@@ -494,7 +494,7 @@ static int rtl8192cu_power_on(struct rtl8xxxu_priv *priv)
 			break;
 	}
 	if (!i) {
-		pr_info("%s: FSMCO_MAC_ENABLE poll failed\n", __func__);
+		pr_debug("%s: FSMCO_MAC_ENABLE poll failed\n", __func__);
 		return -EBUSY;
 	}
 
@@ -522,7 +522,7 @@ static int rtl8192cu_power_on(struct rtl8xxxu_priv *priv)
 	}
 
 	if (!i) {
-		pr_info("%s: APSD_CTRL poll failed\n", __func__);
+		pr_debug("%s: APSD_CTRL poll failed\n", __func__);
 		return -EBUSY;
 	}
 

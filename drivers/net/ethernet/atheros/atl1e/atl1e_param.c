@@ -128,18 +128,18 @@ static int atl1e_validate_option(int *value, struct atl1e_option *opt,
 	case enable_option:
 		switch (*value) {
 		case OPTION_ENABLED:
-			netdev_info(adapter->netdev,
+			netdev_dbg(adapter->netdev,
 				    "%s Enabled\n", opt->name);
 			return 0;
 		case OPTION_DISABLED:
-			netdev_info(adapter->netdev,
+			netdev_dbg(adapter->netdev,
 				    "%s Disabled\n", opt->name);
 			return 0;
 		}
 		break;
 	case range_option:
 		if (*value >= opt->arg.r.min && *value <= opt->arg.r.max) {
-			netdev_info(adapter->netdev, "%s set to %i\n",
+			netdev_dbg(adapter->netdev, "%s set to %i\n",
 				    opt->name, *value);
 			return 0;
 		}
@@ -152,7 +152,7 @@ static int atl1e_validate_option(int *value, struct atl1e_option *opt,
 				ent = &opt->arg.l.p[i];
 				if (*value == ent->i) {
 					if (ent->str[0] != '\0')
-						netdev_info(adapter->netdev,
+						netdev_dbg(adapter->netdev,
 							    "%s\n", ent->str);
 					return 0;
 				}
@@ -163,7 +163,7 @@ static int atl1e_validate_option(int *value, struct atl1e_option *opt,
 		BUG();
 	}
 
-	netdev_info(adapter->netdev, "Invalid %s specified (%i) %s\n",
+	netdev_dbg(adapter->netdev, "Invalid %s specified (%i) %s\n",
 		    opt->name, *value, opt->err);
 	*value = opt->def;
 	return -1;

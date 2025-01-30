@@ -970,7 +970,7 @@ static int add_setting(struct pinctrl *p, struct pinctrl_dev *pctldev,
 		 * OK let us guess that the driver is not there yet, and
 		 * let's defer obtaining this pinctrl handle to later...
 		 */
-		dev_info(p->dev, "unknown pinctrl device %s in map entry, deferring probe",
+		dev_dbg(p->dev, "unknown pinctrl device %s in map entry, deferring probe",
 			map->ctrl_dev_name);
 		return -EPROBE_DEFER;
 	}
@@ -1837,7 +1837,7 @@ static void pinctrl_init_device_debugfs(struct pinctrl_dev *pctldev)
 				"%s-%s", dev_name(pctldev->dev),
 				pctldev->desc->name);
 		if (!debugfs_name) {
-			pr_warn("failed to determine debugfs dir name for %s\n",
+			pr_debug("failed to determine debugfs dir name for %s\n",
 				dev_name(pctldev->dev));
 			return;
 		}
@@ -1849,7 +1849,7 @@ static void pinctrl_init_device_debugfs(struct pinctrl_dev *pctldev)
 	pctldev->device_root = device_root;
 
 	if (IS_ERR(device_root) || !device_root) {
-		pr_warn("failed to create debugfs directory for %s\n",
+		pr_debug("failed to create debugfs directory for %s\n",
 			dev_name(pctldev->dev));
 		return;
 	}
@@ -1874,7 +1874,7 @@ static void pinctrl_init_debugfs(void)
 {
 	debugfs_root = debugfs_create_dir("pinctrl", NULL);
 	if (IS_ERR(debugfs_root) || !debugfs_root) {
-		pr_warn("failed to create debugfs directory\n");
+		pr_debug("failed to create debugfs directory\n");
 		debugfs_root = NULL;
 		return;
 	}
@@ -2257,7 +2257,7 @@ EXPORT_SYMBOL_GPL(devm_pinctrl_unregister);
 
 static int __init pinctrl_init(void)
 {
-	pr_info("initialized pinctrl subsystem\n");
+	pr_debug("initialized pinctrl subsystem\n");
 	pinctrl_init_debugfs();
 	return 0;
 }

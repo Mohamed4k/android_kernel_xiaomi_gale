@@ -785,9 +785,9 @@ static int lpc_mii_probe(struct net_device *ndev)
 
 	/* Attach to the PHY */
 	if (lpc_phy_interface_mode(&pldat->pdev->dev) == PHY_INTERFACE_MODE_MII)
-		netdev_info(ndev, "using MII interface\n");
+		netdev_dbg(ndev, "using MII interface\n");
 	else
-		netdev_info(ndev, "using RMII interface\n");
+		netdev_dbg(ndev, "using RMII interface\n");
 	phydev = phy_connect(ndev, phydev_name(phydev),
 			     &lpc_handle_link_change,
 			     lpc_phy_interface_mode(&pldat->pdev->dev));
@@ -1426,7 +1426,7 @@ static int lpc_eth_drv_probe(struct platform_device *pdev)
 	if (ret)
 		goto err_out_unregister_netdev;
 
-	netdev_info(ndev, "LPC mac at 0x%08lx irq %d\n",
+	netdev_dbg(ndev, "LPC mac at 0x%08lx irq %d\n",
 	       (unsigned long)res->start, ndev->irq);
 
 	phydev = ndev->phydev;

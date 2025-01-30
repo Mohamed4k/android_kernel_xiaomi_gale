@@ -145,7 +145,7 @@ static int mcs_touchkey_probe(struct i2c_client *client,
 		dev_err(&client->dev, "i2c read error[%d]\n", error);
 		goto err_free_mem;
 	}
-	dev_info(&client->dev, "Firmware version: %d\n", fw_ver);
+	dev_dbg(&client->dev, "Firmware version: %d\n", fw_ver);
 
 	input_dev->name = "MELFAS MCS Touchkey";
 	input_dev->id.bustype = BUS_I2C;

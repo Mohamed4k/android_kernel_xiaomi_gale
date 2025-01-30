@@ -633,7 +633,7 @@ int i40evf_setup_tx_descriptors(struct i40e_ring *tx_ring)
 	tx_ring->desc = dma_alloc_coherent(dev, tx_ring->size,
 					   &tx_ring->dma, GFP_KERNEL);
 	if (!tx_ring->desc) {
-		dev_info(dev, "Unable to allocate memory for the Tx descriptor ring, size=%d\n",
+		dev_dbg(dev, "Unable to allocate memory for the Tx descriptor ring, size=%d\n",
 			 tx_ring->size);
 		goto err;
 	}
@@ -752,7 +752,7 @@ int i40evf_setup_rx_descriptors(struct i40e_ring *rx_ring)
 					   &rx_ring->dma, GFP_KERNEL);
 
 	if (!rx_ring->desc) {
-		dev_info(dev, "Unable to allocate memory for the Rx descriptor ring, size=%d\n",
+		dev_dbg(dev, "Unable to allocate memory for the Rx descriptor ring, size=%d\n",
 			 rx_ring->size);
 		goto err;
 	}
@@ -2370,7 +2370,7 @@ static inline void i40evf_tx_map(struct i40e_ring *tx_ring, struct sk_buff *skb,
 	return;
 
 dma_error:
-	dev_info(tx_ring->dev, "TX DMA map failed\n");
+	dev_dbg(tx_ring->dev, "TX DMA map failed\n");
 
 	/* clear dma mappings for failed tx_bi map */
 	for (;;) {

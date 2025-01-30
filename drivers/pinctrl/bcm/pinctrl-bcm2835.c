@@ -1057,7 +1057,7 @@ static int bcm2835_pinctrl_probe(struct platform_device *pdev)
 	err = gpiochip_irqchip_add(&pc->gpio_chip, &bcm2835_gpio_irq_chip,
 				   0, handle_level_irq, IRQ_TYPE_NONE);
 	if (err) {
-		dev_info(dev, "could not add irqchip\n");
+		dev_dbg(dev, "could not add irqchip\n");
 		return err;
 	}
 

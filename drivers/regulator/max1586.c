@@ -292,7 +292,7 @@ static int max1586_pmic_probe(struct i2c_client *client,
 	}
 
 	i2c_set_clientdata(client, max1586);
-	dev_info(&client->dev, "Maxim 1586 regulator driver loaded\n");
+	dev_dbg(&client->dev, "Maxim 1586 regulator driver loaded\n");
 	return 0;
 }
 

@@ -1794,7 +1794,7 @@ static int pinmux_xway_probe(struct platform_device *pdev)
 		pinctrl_add_gpio_range(xway_info.pctrl, &xway_gpio_range);
 	}
 
-	dev_info(&pdev->dev, "Init done\n");
+	dev_dbg(&pdev->dev, "Init done\n");
 	return 0;
 }
 

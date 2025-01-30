@@ -281,7 +281,7 @@ static int rk808_set_ramp_delay(struct regulator_dev *rdev, int ramp_delay)
 	case 6001 ... 10000:
 		break;
 	default:
-		pr_warn("%s ramp_delay: %d not supported, setting 10000\n",
+		pr_debug("%s ramp_delay: %d not supported, setting 10000\n",
 			rdev->desc->name, ramp_delay);
 	}
 
@@ -714,7 +714,7 @@ static int rk808_regulator_dt_parse_pdata(struct device *dev,
 		}
 
 		if (!pdata->dvs_gpio[i]) {
-			dev_info(dev, "there is no dvs%d gpio\n", i);
+			dev_dbg(dev, "there is no dvs%d gpio\n", i);
 			continue;
 		}
 

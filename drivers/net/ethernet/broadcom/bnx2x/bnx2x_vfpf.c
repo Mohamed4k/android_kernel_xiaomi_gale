@@ -240,9 +240,9 @@ int bnx2x_vfpf_acquire(struct bnx2x *bp, u8 tx_count, u8 rx_count)
 		goto out;
 	}
 
-	req->vfdev_info.vf_id = vf_id;
-	req->vfdev_info.vf_os = 0;
-	req->vfdev_info.fp_hsi_ver = ETH_FP_HSI_VERSION;
+	req->vfdev_dbg.vf_id = vf_id;
+	req->vfdev_dbg.vf_os = 0;
+	req->vfdev_dbg.fp_hsi_ver = ETH_FP_HSI_VERSION;
 
 	req->resc_request.num_rxqs = rx_count;
 	req->resc_request.num_txqs = tx_count;
@@ -259,9 +259,9 @@ int bnx2x_vfpf_acquire(struct bnx2x *bp, u8 tx_count, u8 rx_count)
 		      CHANNEL_TLV_PHYS_PORT_ID, sizeof(struct channel_tlv));
 
 	/* Bulletin support for bulletin board with length > legacy length */
-	req->vfdev_info.caps |= VF_CAP_SUPPORT_EXT_BULLETIN;
+	req->vfdev_dbg.caps |= VF_CAP_SUPPORT_EXT_BULLETIN;
 	/* vlan filtering is supported */
-	req->vfdev_info.caps |= VF_CAP_SUPPORT_VLAN_FILTER;
+	req->vfdev_dbg.caps |= VF_CAP_SUPPORT_VLAN_FILTER;
 
 	/* add list termination tlv */
 	bnx2x_add_tlv(bp, req,
@@ -367,9 +367,9 @@ int bnx2x_vfpf_acquire(struct bnx2x *bp, u8 tx_count, u8 rx_count)
 	}
 
 	/* get HW info */
-	bp->common.chip_id |= (bp->acquire_resp.pfdev_info.chip_num & 0xffff);
+	bp->common.chip_id |= (bp->acquire_resp.pfdev_dbg.chip_num & 0xffff);
 	bp->link_params.chip_id = bp->common.chip_id;
-	bp->db_size = bp->acquire_resp.pfdev_info.db_size;
+	bp->db_size = bp->acquire_resp.pfdev_dbg.db_size;
 	bp->common.int_block = INT_BLOCK_IGU;
 	bp->common.chip_port_mode = CHIP_2_PORT_MODE;
 	bp->igu_dsb_id = -1;
@@ -382,7 +382,7 @@ int bnx2x_vfpf_acquire(struct bnx2x *bp, u8 tx_count, u8 rx_count)
 	bp->igu_base_sb = bp->acquire_resp.resc.hw_sbs[0].hw_sb_id;
 	bp->vlan_credit = bp->acquire_resp.resc.num_vlan_filters;
 
-	strlcpy(bp->fw_ver, bp->acquire_resp.pfdev_info.fw_ver,
+	strlcpy(bp->fw_ver, bp->acquire_resp.pfdev_dbg.fw_ver,
 		sizeof(bp->fw_ver));
 
 	if (is_valid_ether_addr(bp->acquire_resp.resc.current_mac_addr))
@@ -935,7 +935,7 @@ int bnx2x_vfpf_update_vlan(struct bnx2x *bp, u16 vid, u8 vf_qid, bool add)
 	struct pfvf_general_resp_tlv *resp = &bp->vf2pf_mbox->resp.general_resp;
 	int rc = 0;
 
-	if (!(bp->acquire_resp.pfdev_info.pf_cap & PFVF_CAP_VLAN_FILTER)) {
+	if (!(bp->acquire_resp.pfdev_dbg.pf_cap & PFVF_CAP_VLAN_FILTER)) {
 		DP(BNX2X_MSG_IOV, "HV does not support vlan filtering\n");
 		return 0;
 	}
@@ -1266,15 +1266,15 @@ static void bnx2x_vf_mbx_acquire_resp(struct bnx2x *bp, struct bnx2x_virtf *vf,
 	memset(resp, 0, sizeof(*resp));
 
 	/* fill in pfdev info */
-	resp->pfdev_info.chip_num = bp->common.chip_id;
-	resp->pfdev_info.db_size = bp->db_size;
-	resp->pfdev_info.indices_per_sb = HC_SB_MAX_INDICES_E2;
-	resp->pfdev_info.pf_cap = (PFVF_CAP_RSS |
+	resp->pfdev_dbg.chip_num = bp->common.chip_id;
+	resp->pfdev_dbg.db_size = bp->db_size;
+	resp->pfdev_dbg.indices_per_sb = HC_SB_MAX_INDICES_E2;
+	resp->pfdev_dbg.pf_cap = (PFVF_CAP_RSS |
 				   PFVF_CAP_TPA |
 				   PFVF_CAP_TPA_UPDATE |
 				   PFVF_CAP_VLAN_FILTER);
-	bnx2x_fill_fw_str(bp, resp->pfdev_info.fw_ver,
-			  sizeof(resp->pfdev_info.fw_ver));
+	bnx2x_fill_fw_str(bp, resp->pfdev_dbg.fw_ver,
+			  sizeof(resp->pfdev_dbg.fw_ver));
 
 	if (status == PFVF_STATUS_NO_RESOURCE ||
 	    status == PFVF_STATUS_SUCCESS) {
@@ -1312,20 +1312,20 @@ static void bnx2x_vf_mbx_acquire_resp(struct bnx2x *bp, struct bnx2x_virtf *vf,
 		}
 	}
 
-	DP(BNX2X_MSG_IOV, "VF[%d] ACQUIRE_RESPONSE: pfdev_info- chip_num=0x%x, db_size=%d, idx_per_sb=%d, pf_cap=0x%x\n"
+	DP(BNX2X_MSG_IOV, "VF[%d] ACQUIRE_RESPONSE: pfdev_dbg- chip_num=0x%x, db_size=%d, idx_per_sb=%d, pf_cap=0x%x\n"
 	   "resources- n_rxq-%d, n_txq-%d, n_sbs-%d, n_macs-%d, n_vlans-%d, n_mcs-%d, fw_ver: '%s'\n",
 	   vf->abs_vfid,
-	   resp->pfdev_info.chip_num,
-	   resp->pfdev_info.db_size,
-	   resp->pfdev_info.indices_per_sb,
-	   resp->pfdev_info.pf_cap,
+	   resp->pfdev_dbg.chip_num,
+	   resp->pfdev_dbg.db_size,
+	   resp->pfdev_dbg.indices_per_sb,
+	   resp->pfdev_dbg.pf_cap,
 	   resc->num_rxqs,
 	   resc->num_txqs,
 	   resc->num_sbs,
 	   resc->num_mac_filters,
 	   resc->num_vlan_filters,
 	   resc->num_mc_filters,
-	   resp->pfdev_info.fw_ver);
+	   resp->pfdev_dbg.fw_ver);
 
 	DP_CONT(BNX2X_MSG_IOV, "hw_qids- [ ");
 	for (i = 0; i < vf_rxq_count(vf); i++)
@@ -1372,7 +1372,7 @@ static bool bnx2x_vf_mbx_is_windows_vm(struct bnx2x *bp,
 	 */
 	if (!acquire->bulletin_addr ||
 	    acquire->resc_request.num_mc_filters == 32 ||
-	    ((acquire->vfdev_info.vf_os & VF_OS_MASK) ==
+	    ((acquire->vfdev_dbg.vf_os & VF_OS_MASK) ==
 	     VF_OS_WINDOWS))
 		return true;
 
@@ -1405,8 +1405,8 @@ static void bnx2x_vf_mbx_acquire(struct bnx2x *bp, struct bnx2x_virtf *vf,
 
 	/* log vfdef info */
 	DP(BNX2X_MSG_IOV,
-	   "VF[%d] ACQUIRE: vfdev_info- vf_id %d, vf_os %d resources- n_rxq-%d, n_txq-%d, n_sbs-%d, n_macs-%d, n_vlans-%d, n_mcs-%d\n",
-	   vf->abs_vfid, acquire->vfdev_info.vf_id, acquire->vfdev_info.vf_os,
+	   "VF[%d] ACQUIRE: vfdev_dbg- vf_id %d, vf_os %d resources- n_rxq-%d, n_txq-%d, n_sbs-%d, n_macs-%d, n_vlans-%d, n_mcs-%d\n",
+	   vf->abs_vfid, acquire->vfdev_dbg.vf_id, acquire->vfdev_dbg.vf_os,
 	   acquire->resc_request.num_rxqs, acquire->resc_request.num_txqs,
 	   acquire->resc_request.num_sbs, acquire->resc_request.num_mac_filters,
 	   acquire->resc_request.num_vlan_filters,
@@ -1428,14 +1428,14 @@ static void bnx2x_vf_mbx_acquire(struct bnx2x *bp, struct bnx2x_virtf *vf,
 	 * Linux vfs should be oblivious to changes between v0 and v2.
 	 */
 	if (bnx2x_vf_mbx_is_windows_vm(bp, &mbx->msg->req.acquire))
-		vf->fp_hsi = acquire->vfdev_info.fp_hsi_ver;
+		vf->fp_hsi = acquire->vfdev_dbg.fp_hsi_ver;
 	else
-		vf->fp_hsi = max_t(u8, acquire->vfdev_info.fp_hsi_ver,
+		vf->fp_hsi = max_t(u8, acquire->vfdev_dbg.fp_hsi_ver,
 				   ETH_FP_HSI_VER_2);
 	if (vf->fp_hsi > ETH_FP_HSI_VERSION) {
 		DP(BNX2X_MSG_IOV,
 		   "VF [%d] - Can't support acquire request since VF requests a FW version which is too new [%02x > %02x]\n",
-		   vf->abs_vfid, acquire->vfdev_info.fp_hsi_ver,
+		   vf->abs_vfid, acquire->vfdev_dbg.fp_hsi_ver,
 		   ETH_FP_HSI_VERSION);
 		rc = -EINVAL;
 		goto out;
@@ -1446,7 +1446,7 @@ static void bnx2x_vf_mbx_acquire(struct bnx2x *bp, struct bnx2x_virtf *vf,
 
 	/* store address of vf's bulletin board */
 	vf->bulletin_map = acquire->bulletin_addr;
-	if (acquire->vfdev_info.caps & VF_CAP_SUPPORT_EXT_BULLETIN) {
+	if (acquire->vfdev_dbg.caps & VF_CAP_SUPPORT_EXT_BULLETIN) {
 		DP(BNX2X_MSG_IOV, "VF[%d] supports long bulletin boards\n",
 		   vf->abs_vfid);
 		vf->cfg_flags |= VF_CFG_EXT_BULLETIN;
@@ -1454,7 +1454,7 @@ static void bnx2x_vf_mbx_acquire(struct bnx2x *bp, struct bnx2x_virtf *vf,
 		vf->cfg_flags &= ~VF_CFG_EXT_BULLETIN;
 	}
 
-	if (acquire->vfdev_info.caps & VF_CAP_SUPPORT_VLAN_FILTER) {
+	if (acquire->vfdev_dbg.caps & VF_CAP_SUPPORT_VLAN_FILTER) {
 		DP(BNX2X_MSG_IOV, "VF[%d] supports vlan filtering\n",
 		   vf->abs_vfid);
 		vf->cfg_flags |= VF_CFG_VLAN_FILTER;

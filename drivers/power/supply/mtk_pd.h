@@ -41,21 +41,21 @@ extern int pd_get_debug_level(void);
 #define pd_err(fmt, args...)					\
 do {								\
 	if (pd_get_debug_level() >= PD_ERROR_LEVEL) {	\
-		pr_notice(fmt, ##args);				\
+		pr_debug(fmt, ##args);				\
 	}							\
 } while (0)
 
 #define pd_info(fmt, args...)					\
 do {								\
 	if (pd_get_debug_level() >= PD_INFO_LEVEL) { \
-		pr_notice(fmt, ##args);				\
+		pr_debug(fmt, ##args);				\
 	}							\
 } while (0)
 
 #define pd_dbg(fmt, args...)					\
 do {								\
 	if (pd_get_debug_level() >= PD_DEBUG_LEVEL) {	\
-		pr_notice(fmt, ##args);				\
+		pr_debug(fmt, ##args);				\
 	}							\
 } while (0)
 

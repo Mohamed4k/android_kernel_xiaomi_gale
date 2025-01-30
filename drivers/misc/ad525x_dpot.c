@@ -723,7 +723,7 @@ int ad_dpot_probe(struct device *dev,
 		goto exit_free;
 	}
 
-	dev_info(dev, "%s %d-Position Digital Potentiometer registered\n",
+	dev_dbg(dev, "%s %d-Position Digital Potentiometer registered\n",
 		 name, data->max_pos);
 
 	return 0;

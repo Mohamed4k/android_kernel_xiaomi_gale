@@ -31,7 +31,7 @@
 			      audio_ringbuf_free_space(rb), \
 			      count); \
 		} else { \
-			pr_notice("%s(), %uL, %p %p\n", \
+			pr_debug("%s(), %uL, %p %p\n", \
 				  __func__, __LINE__, rb, description); \
 		} \
 	} while (0)
@@ -100,12 +100,12 @@ void audio_ringbuf_copy_to_linear(
 		return;
 	}
 	if (!rb->base || !rb->size) {
-		DUMP_RINGBUF(pr_notice, "no init", rb, count);
+		DUMP_RINGBUF(pr_debug, "no init", rb, count);
 		AUD_WARNING("no init");
 		return;
 	}
 	if (count > audio_ringbuf_count(rb)) {
-		DUMP_RINGBUF(pr_notice, "underflow", rb, count);
+		DUMP_RINGBUF(pr_debug, "underflow", rb, count);
 		AUD_WARNING("underflow");
 		return;
 	}
@@ -145,12 +145,12 @@ void audio_ringbuf_copy_from_linear_impl(
 		return;
 	}
 	if (!rb->base || !rb->size) {
-		DUMP_RINGBUF(pr_notice, "no init", rb, count);
+		DUMP_RINGBUF(pr_debug, "no init", rb, count);
 		AUD_WARNING("no init");
 		return;
 	}
 	if (count > audio_ringbuf_free_space(rb)) {
-		DUMP_RINGBUF(pr_notice, "overflow", rb, count);
+		DUMP_RINGBUF(pr_debug, "overflow", rb, count);
 		AUD_WARNING("overflow");
 		return;
 	}
@@ -206,17 +206,17 @@ void audio_ringbuf_copy_from_ringbuf_impl(
 		return;
 	}
 	if (!rb_src->base || !rb_src->size) {
-		DUMP_RINGBUF(pr_notice, "no init", rb_src, count);
+		DUMP_RINGBUF(pr_debug, "no init", rb_src, count);
 		AUD_WARNING("no init");
 		return;
 	}
 	if (count > audio_ringbuf_count(rb_src)) {
-		DUMP_RINGBUF(pr_notice, "underflow", rb_src, count);
+		DUMP_RINGBUF(pr_debug, "underflow", rb_src, count);
 		AUD_WARNING("underflow");
 		return;
 	}
 	if (count > audio_ringbuf_free_space(rb_des)) {
-		DUMP_RINGBUF(pr_notice, "overflow", rb_des, count);
+		DUMP_RINGBUF(pr_debug, "overflow", rb_des, count);
 		AUD_WARNING("overflow");
 		return;
 	}
@@ -264,12 +264,12 @@ void audio_ringbuf_copy_from_ringbuf(
 		return;
 	}
 	if (!rb_src->base || !rb_src->size) {
-		DUMP_RINGBUF(pr_notice, "no init", rb_src, count);
+		DUMP_RINGBUF(pr_debug, "no init", rb_src, count);
 		AUD_WARNING("no init");
 		return;
 	}
 	if (count > audio_ringbuf_count(rb_src)) {
-		DUMP_RINGBUF(pr_notice, "underflow", rb_src, count);
+		DUMP_RINGBUF(pr_debug, "underflow", rb_src, count);
 		AUD_WARNING("underflow");
 		return;
 	}
@@ -309,12 +309,12 @@ void audio_ringbuf_write_value(
 
 	dynamic_change_ring_buf_size(rb, count);
 	if (!rb->base || !rb->size) {
-		DUMP_RINGBUF(pr_notice, "no init", rb, count);
+		DUMP_RINGBUF(pr_debug, "no init", rb, count);
 		AUD_WARNING("no init");
 		return;
 	}
 	if (count > audio_ringbuf_free_space(rb)) {
-		DUMP_RINGBUF(pr_notice, "overflow", rb, count);
+		DUMP_RINGBUF(pr_debug, "overflow", rb, count);
 		AUD_WARNING("overflow");
 		return;
 	}
@@ -363,7 +363,7 @@ void audio_ringbuf_drop_data(struct audio_ringbuf_t *rb, const uint32_t count)
 		return;
 	}
 	if (count > audio_ringbuf_count(rb)) {
-		DUMP_RINGBUF(pr_notice, "underflow", rb, count);
+		DUMP_RINGBUF(pr_debug, "underflow", rb, count);
 		AUD_WARNING("underflow");
 		return;
 	}
@@ -411,12 +411,12 @@ void audio_ringbuf_compensate_value_impl(
 	}
 
 	if (!rb->base || !rb->size) {
-		DUMP_RINGBUF(pr_notice, "no init", rb, count);
+		DUMP_RINGBUF(pr_debug, "no init", rb, count);
 		AUD_WARNING("no init");
 		return;
 	}
 	if (count > audio_ringbuf_free_space(rb)) {
-		DUMP_RINGBUF(pr_notice, "overflow", rb, count);
+		DUMP_RINGBUF(pr_debug, "overflow", rb, count);
 		AUD_WARNING("overflow");
 		return;
 	}
@@ -534,7 +534,7 @@ void dynamic_change_ring_buf_size(
 			change_size  = (2 * (data_count + write_size));
 			change_size += MAX_SIZE_OF_ONE_FRAME;
 
-			pr_info("%s(), %p: %u -> %u, data_count %u, write_size %u, free_space %u\n",
+			pr_debug("%s(), %p: %u -> %u, data_count %u, write_size %u, free_space %u\n",
 				__func__,
 				rb->base,
 				rb->size,

@@ -198,9 +198,9 @@ void t4vf_os_link_changed(struct adapter *adapter, int pidx, int link_ok)
 			break;
 		}
 
-		netdev_info(dev, "link up, %s, full-duplex, %s PAUSE\n", s, fc);
+		netdev_dbg(dev, "link up, %s, full-duplex, %s PAUSE\n", s, fc);
 	} else {
-		netdev_info(dev, "link down\n");
+		netdev_dbg(dev, "link down\n");
 	}
 }
 
@@ -217,22 +217,22 @@ void t4vf_os_portmod_changed(struct adapter *adapter, int pidx)
 	const struct port_info *pi = netdev_priv(dev);
 
 	if (pi->mod_type == FW_PORT_MOD_TYPE_NONE)
-		dev_info(adapter->pdev_dev, "%s: port module unplugged\n",
+		dev_dbg(adapter->pdev_dev, "%s: port module unplugged\n",
 			 dev->name);
 	else if (pi->mod_type < ARRAY_SIZE(mod_str))
-		dev_info(adapter->pdev_dev, "%s: %s port module inserted\n",
+		dev_dbg(adapter->pdev_dev, "%s: %s port module inserted\n",
 			 dev->name, mod_str[pi->mod_type]);
 	else if (pi->mod_type == FW_PORT_MOD_TYPE_NOTSUPPORTED)
-		dev_info(adapter->pdev_dev, "%s: unsupported optical port "
+		dev_dbg(adapter->pdev_dev, "%s: unsupported optical port "
 			 "module inserted\n", dev->name);
 	else if (pi->mod_type == FW_PORT_MOD_TYPE_UNKNOWN)
-		dev_info(adapter->pdev_dev, "%s: unknown port module inserted,"
+		dev_dbg(adapter->pdev_dev, "%s: unknown port module inserted,"
 			 "forcing TWINAX\n", dev->name);
 	else if (pi->mod_type == FW_PORT_MOD_TYPE_ERROR)
-		dev_info(adapter->pdev_dev, "%s: transceiver module error\n",
+		dev_dbg(adapter->pdev_dev, "%s: transceiver module error\n",
 			 dev->name);
 	else
-		dev_info(adapter->pdev_dev, "%s: unknown module type %d "
+		dev_dbg(adapter->pdev_dev, "%s: unknown module type %d "
 			 "inserted\n", dev->name, pi->mod_type);
 }
 
@@ -3137,7 +3137,7 @@ static int cxgb4vf_pci_probe(struct pci_dev *pdev,
 					mac);
 				goto err_free_dev;
 			}
-			dev_info(&pdev->dev,
+			dev_dbg(&pdev->dev,
 				 "Using assigned MAC ACL: %pM\n", mac);
 		}
 	}
@@ -3151,7 +3151,7 @@ static int cxgb4vf_pci_probe(struct pci_dev *pdev,
 		adapter->flags |= USING_MSIX;
 	else {
 		if (msi == MSI_MSIX) {
-			dev_info(adapter->pdev_dev,
+			dev_dbg(adapter->pdev_dev,
 				 "Unable to use MSI-X Interrupts; falling "
 				 "back to MSI Interrupts\n");
 
@@ -3224,7 +3224,7 @@ static int cxgb4vf_pci_probe(struct pci_dev *pdev,
 	 * VF network device ...
 	 */
 	for_each_port(adapter, pidx) {
-		dev_info(adapter->pdev_dev, "%s: Chelsio VF NIC PCIe %s\n",
+		dev_dbg(adapter->pdev_dev, "%s: Chelsio VF NIC PCIe %s\n",
 			 adapter->port[pidx]->name,
 			 (adapter->flags & USING_MSIX) ? "MSI-X" :
 			 (adapter->flags & USING_MSI)  ? "MSI" : "");
@@ -3429,7 +3429,7 @@ static int __init cxgb4vf_module_init(void)
 	 * Vet our module parameters.
 	 */
 	if (msi != MSI_MSIX && msi != MSI_MSI) {
-		pr_warn("bad module parameter msi=%d; must be %d (MSI-X or MSI) or %d (MSI)\n",
+		pr_debug("bad module parameter msi=%d; must be %d (MSI-X or MSI) or %d (MSI)\n",
 			msi, MSI_MSIX, MSI_MSI);
 		return -EINVAL;
 	}
@@ -3437,7 +3437,7 @@ static int __init cxgb4vf_module_init(void)
 	/* Debugfs support is optional, just warn if this fails */
 	cxgb4vf_debugfs_root = debugfs_create_dir(KBUILD_MODNAME, NULL);
 	if (IS_ERR_OR_NULL(cxgb4vf_debugfs_root))
-		pr_warn("could not create debugfs entry, continuing\n");
+		pr_debug("could not create debugfs entry, continuing\n");
 
 	ret = pci_register_driver(&cxgb4vf_driver);
 	if (ret < 0 && !IS_ERR_OR_NULL(cxgb4vf_debugfs_root))

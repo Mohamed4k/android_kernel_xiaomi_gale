@@ -162,7 +162,7 @@ MODULE_ALIAS("platform:smc91x");
 #define PRINTK(dev, fmt, ...)					\
 	do {							\
 		if (SMC_DEBUG > 0)				\
-			netdev_info(dev, fmt, ##__VA_ARGS__);	\
+			netdev_dbg(dev, fmt, ##__VA_ARGS__);	\
 		else						\
 			netdev_dbg(dev, fmt, ##__VA_ARGS__);	\
 	} while (0)
@@ -749,7 +749,7 @@ static void smc_tx(struct net_device *dev)
 			"late collision" : "too many collisions");
 		dev->stats.tx_window_errors++;
 		if (!(dev->stats.tx_window_errors & 63) && net_ratelimit()) {
-			netdev_info(dev, "unexpectedly large number of bad collisions. Please check duplex setting.\n");
+			netdev_dbg(dev, "unexpectedly large number of bad collisions. Please check duplex setting.\n");
 		}
 	}
 
@@ -1062,7 +1062,7 @@ static void smc_phy_configure(struct work_struct *work)
 		goto smc_phy_configure_exit;
 
 	if (smc_phy_reset(dev, phyaddr)) {
-		netdev_info(dev, "PHY reset timed out\n");
+		netdev_dbg(dev, "PHY reset timed out\n");
 		goto smc_phy_configure_exit;
 	}
 
@@ -1089,7 +1089,7 @@ static void smc_phy_configure(struct work_struct *work)
 	my_phy_caps = smc_phy_read(dev, phyaddr, MII_BMSR);
 
 	if (!(my_phy_caps & BMSR_ANEGCAPABLE)) {
-		netdev_info(dev, "Auto negotiation NOT supported\n");
+		netdev_dbg(dev, "Auto negotiation NOT supported\n");
 		smc_phy_fixed(dev);
 		goto smc_phy_configure_exit;
 	}
@@ -1186,7 +1186,7 @@ static void smc_10bt_check_media(struct net_device *dev, int init)
 			netif_carrier_on(dev);
 		}
 		if (netif_msg_link(lp))
-			netdev_info(dev, "link %s\n",
+			netdev_dbg(dev, "link %s\n",
 				    new_carrier ? "up" : "down");
 	}
 }
@@ -2030,7 +2030,7 @@ static int smc_probe(struct net_device *dev, void __iomem *ioaddr,
 	retval = register_netdev(dev);
 	if (retval == 0) {
 		/* now, print out the card info, in a short format.. */
-		netdev_info(dev, "%s (rev %d) at %p IRQ %d",
+		netdev_dbg(dev, "%s (rev %d) at %p IRQ %d",
 			    version_string, revision_register & 0x0f,
 			    lp->base, dev->irq);
 
@@ -2045,7 +2045,7 @@ static int smc_probe(struct net_device *dev, void __iomem *ioaddr,
 			netdev_warn(dev, "Invalid ethernet MAC address. Please set using ifconfig\n");
 		} else {
 			/* Print the Ethernet address */
-			netdev_info(dev, "Ethernet addr: %pM\n",
+			netdev_dbg(dev, "Ethernet addr: %pM\n",
 				    dev->dev_addr);
 		}
 
@@ -2164,7 +2164,7 @@ static inline void smc_request_datacs(struct platform_device *pdev, struct net_d
 			return;
 
 		if(!request_mem_region(res->start, SMC_DATA_EXTENT, CARDNAME)) {
-			netdev_info(ndev, "%s: failed to request datacs memory region.\n",
+			netdev_dbg(ndev, "%s: failed to request datacs memory region.\n",
 				    CARDNAME);
 			return;
 		}
@@ -2411,7 +2411,7 @@ static int smc_drv_probe(struct platform_device *pdev)
  out_free_netdev:
 	free_netdev(ndev);
  out:
-	pr_info("%s: not found (%d).\n", CARDNAME, ret);
+	pr_debug("%s: not found (%d).\n", CARDNAME, ret);
 
 	return ret;
 }

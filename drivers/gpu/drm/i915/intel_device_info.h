@@ -116,7 +116,7 @@ enum intel_platform {
 #define GEN_MAX_SLICES		(6) /* CNL upper bound */
 #define GEN_MAX_SUBSLICES	(8) /* ICL upper bound */
 
-struct sseu_dev_info {
+struct sseu_dev_dbg {
 	u8 slice_mask;
 	u8 subslice_mask[GEN_MAX_SUBSLICES];
 	u16 eu_total;
@@ -174,7 +174,7 @@ struct intel_device_info {
 	int cursor_offsets[I915_MAX_PIPES];
 
 	/* Slice/subslice/EU info */
-	struct sseu_dev_info sseu;
+	struct sseu_dev_dbg sseu;
 
 	u32 cs_timestamp_frequency_khz;
 
@@ -189,7 +189,7 @@ struct intel_driver_caps {
 	bool has_logical_contexts:1;
 };
 
-static inline unsigned int sseu_subslice_total(const struct sseu_dev_info *sseu)
+static inline unsigned int sseu_subslice_total(const struct sseu_dev_dbg *sseu)
 {
 	unsigned int i, total = 0;
 
@@ -199,7 +199,7 @@ static inline unsigned int sseu_subslice_total(const struct sseu_dev_info *sseu)
 	return total;
 }
 
-static inline int sseu_eu_idx(const struct sseu_dev_info *sseu,
+static inline int sseu_eu_idx(const struct sseu_dev_dbg *sseu,
 			      int slice, int subslice)
 {
 	int subslice_stride = DIV_ROUND_UP(sseu->max_eus_per_subslice,
@@ -209,7 +209,7 @@ static inline int sseu_eu_idx(const struct sseu_dev_info *sseu,
 	return slice * slice_stride + subslice * subslice_stride;
 }
 
-static inline u16 sseu_get_eus(const struct sseu_dev_info *sseu,
+static inline u16 sseu_get_eus(const struct sseu_dev_dbg *sseu,
 			       int slice, int subslice)
 {
 	int i, offset = sseu_eu_idx(sseu, slice, subslice);
@@ -224,7 +224,7 @@ static inline u16 sseu_get_eus(const struct sseu_dev_info *sseu,
 	return eu_mask;
 }
 
-static inline void sseu_set_eus(struct sseu_dev_info *sseu,
+static inline void sseu_set_eus(struct sseu_dev_dbg *sseu,
 				int slice, int subslice, u16 eu_mask)
 {
 	int i, offset = sseu_eu_idx(sseu, slice, subslice);
@@ -245,7 +245,7 @@ void intel_device_info_dump_flags(const struct intel_device_info *info,
 				  struct drm_printer *p);
 void intel_device_info_dump_runtime(const struct intel_device_info *info,
 				    struct drm_printer *p);
-void intel_device_info_dump_topology(const struct sseu_dev_info *sseu,
+void intel_device_info_dump_topology(const struct sseu_dev_dbg *sseu,
 				     struct drm_printer *p);
 
 void intel_device_info_init_mmio(struct drm_i915_private *dev_priv);

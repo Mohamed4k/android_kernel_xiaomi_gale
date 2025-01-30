@@ -358,19 +358,19 @@ static struct mlx4_interface mlx4_en_interface = {
 static void mlx4_en_verify_params(void)
 {
 	if (pfctx > MAX_PFC_TX) {
-		pr_warn("mlx4_en: WARNING: illegal module parameter pfctx 0x%x - should be in range 0-0x%x, will be changed to default (0)\n",
+		pr_debug("mlx4_en: WARNING: illegal module parameter pfctx 0x%x - should be in range 0-0x%x, will be changed to default (0)\n",
 			pfctx, MAX_PFC_TX);
 		pfctx = 0;
 	}
 
 	if (pfcrx > MAX_PFC_RX) {
-		pr_warn("mlx4_en: WARNING: illegal module parameter pfcrx 0x%x - should be in range 0-0x%x, will be changed to default (0)\n",
+		pr_debug("mlx4_en: WARNING: illegal module parameter pfcrx 0x%x - should be in range 0-0x%x, will be changed to default (0)\n",
 			pfcrx, MAX_PFC_RX);
 		pfcrx = 0;
 	}
 
 	if (inline_thold < MIN_PKT_LEN || inline_thold > MAX_INLINE) {
-		pr_warn("mlx4_en: WARNING: illegal module parameter inline_thold %d - should be in range %d-%d, will be changed to default (%d)\n",
+		pr_debug("mlx4_en: WARNING: illegal module parameter inline_thold %d - should be in range %d-%d, will be changed to default (%d)\n",
 			inline_thold, MIN_PKT_LEN, MAX_INLINE, MAX_INLINE);
 		inline_thold = MAX_INLINE;
 	}

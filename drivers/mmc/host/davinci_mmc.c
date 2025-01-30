@@ -1338,7 +1338,7 @@ static int davinci_mmcsd_probe(struct platform_device *pdev)
 
 	rename_region(mem, mmc_hostname(mmc));
 
-	dev_info(mmc_dev(host->mmc), "Using %s, %d-bit mode\n",
+	dev_dbg(mmc_dev(host->mmc), "Using %s, %d-bit mode\n",
 		host->use_dma ? "DMA" : "PIO",
 		(mmc->caps & MMC_CAP_4_BIT_DATA) ? 4 : 1);
 

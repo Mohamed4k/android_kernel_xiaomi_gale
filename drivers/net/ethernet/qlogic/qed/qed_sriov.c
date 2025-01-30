@@ -54,11 +54,11 @@ static u8 qed_vf_calculate_legacy(struct qed_vf_info *p_vf)
 {
 	u8 legacy = 0;
 
-	if (p_vf->acquire.vfdev_info.eth_fp_hsi_minor ==
+	if (p_vf->acquire.vfdev_dbg.eth_fp_hsi_minor ==
 	    ETH_HSI_VER_NO_PKT_LEN_TUNN)
 		legacy |= QED_QCID_LEGACY_VF_RX_PROD;
 
-	if (!(p_vf->acquire.vfdev_info.capabilities &
+	if (!(p_vf->acquire.vfdev_dbg.capabilities &
 	      VFPF_ACQUIRE_CAP_QUEUE_QIDS))
 		legacy |= QED_QCID_LEGACY_VF_CID;
 
@@ -106,7 +106,7 @@ static int qed_sp_vf_start(struct qed_hwfn *p_hwfn, struct qed_vf_info *p_vf)
 		return -EINVAL;
 	}
 
-	fp_minor = p_vf->acquire.vfdev_info.eth_fp_hsi_minor;
+	fp_minor = p_vf->acquire.vfdev_dbg.eth_fp_hsi_minor;
 	if (fp_minor > ETH_HSI_VER_MINOR &&
 	    fp_minor != ETH_HSI_VER_NO_PKT_LEN_TUNN) {
 		DP_VERBOSE(p_hwfn,
@@ -1425,7 +1425,7 @@ qed_iov_vf_mbx_acquire_resc_cids(struct qed_hwfn *p_hwfn,
 	 * number of CIDs. The VF doesn't care about the number, and this
 	 * has the likely result of causing an additional acquisition.
 	 */
-	if (!(p_vf->acquire.vfdev_info.capabilities &
+	if (!(p_vf->acquire.vfdev_dbg.capabilities &
 	      VFPF_ACQUIRE_CAP_QUEUE_QIDS))
 		return;
 
@@ -1433,7 +1433,7 @@ qed_iov_vf_mbx_acquire_resc_cids(struct qed_hwfn *p_hwfn,
 	 * that would make sure doorbells for all CIDs fall within the bar.
 	 * If it doesn't, make sure regview window is sufficient.
 	 */
-	if (p_vf->acquire.vfdev_info.capabilities &
+	if (p_vf->acquire.vfdev_dbg.capabilities &
 	    VFPF_ACQUIRE_CAP_PHYSICAL_BAR) {
 		bar_size = qed_iov_vf_db_bar_size(p_hwfn, p_ptt);
 		if (bar_size)
@@ -1519,9 +1519,9 @@ static u8 qed_iov_vf_mbx_acquire_resc(struct qed_hwfn *p_hwfn,
 		/* Some legacy OSes are incapable of correctly handling this
 		 * failure.
 		 */
-		if ((p_vf->acquire.vfdev_info.eth_fp_hsi_minor ==
+		if ((p_vf->acquire.vfdev_dbg.eth_fp_hsi_minor ==
 		     ETH_HSI_VER_NO_PKT_LEN_TUNN) &&
-		    (p_vf->acquire.vfdev_info.os_type ==
+		    (p_vf->acquire.vfdev_dbg.os_type ==
 		     VFPF_ACQUIRE_OS_WINDOWS))
 			return PFVF_STATUS_SUCCESS;
 
@@ -1556,7 +1556,7 @@ static void qed_iov_vf_mbx_acquire(struct qed_hwfn *p_hwfn,
 {
 	struct qed_iov_vf_mbx *mbx = &vf->vf_mbx;
 	struct pfvf_acquire_resp_tlv *resp = &mbx->reply_virt->acquire_resp;
-	struct pf_vf_pfdev_info *pfdev_info = &resp->pfdev_info;
+	struct pf_vf_pfdev_dbg *pfdev_dbg = &resp->pfdev_dbg;
 	struct vfpf_acquire_tlv *req = &mbx->req_virt->acquire;
 	u8 vfpf_status = PFVF_STATUS_NOT_SUPPORTED;
 	struct pf_vf_resc *resc = &resp->resc;
@@ -1568,8 +1568,8 @@ static void qed_iov_vf_mbx_acquire(struct qed_hwfn *p_hwfn,
 	 * is supported - might be later overriden. This guarantees that
 	 * VF could recognize legacy PF based on lack of versions in reply.
 	 */
-	pfdev_info->major_fp_hsi = ETH_HSI_VER_MAJOR;
-	pfdev_info->minor_fp_hsi = ETH_HSI_VER_MINOR;
+	pfdev_dbg->major_fp_hsi = ETH_HSI_VER_MAJOR;
+	pfdev_dbg->minor_fp_hsi = ETH_HSI_VER_MINOR;
 
 	if (vf->state != VF_FREE && vf->state != VF_STOPPED) {
 		DP_VERBOSE(p_hwfn,
@@ -1580,10 +1580,10 @@ static void qed_iov_vf_mbx_acquire(struct qed_hwfn *p_hwfn,
 	}
 
 	/* Validate FW compatibility */
-	if (req->vfdev_info.eth_fp_hsi_major != ETH_HSI_VER_MAJOR) {
-		if (req->vfdev_info.capabilities &
+	if (req->vfdev_dbg.eth_fp_hsi_major != ETH_HSI_VER_MAJOR) {
+		if (req->vfdev_dbg.capabilities &
 		    VFPF_ACQUIRE_CAP_PRE_FP_HSI) {
-			struct vf_pf_vfdev_info *p_vfdev = &req->vfdev_info;
+			struct vf_pf_vfdev_dbg *p_vfdev = &req->vfdev_dbg;
 
 			DP_VERBOSE(p_hwfn, QED_MSG_IOV,
 				   "VF[%d] is pre-fastpath HSI\n",
@@ -1594,8 +1594,8 @@ static void qed_iov_vf_mbx_acquire(struct qed_hwfn *p_hwfn,
 			DP_INFO(p_hwfn,
 				"VF[%d] needs fastpath HSI %02x.%02x, which is incompatible with loaded FW's faspath HSI %02x.%02x\n",
 				vf->abs_vf_id,
-				req->vfdev_info.eth_fp_hsi_major,
-				req->vfdev_info.eth_fp_hsi_minor,
+				req->vfdev_dbg.eth_fp_hsi_major,
+				req->vfdev_dbg.eth_fp_hsi_minor,
 				ETH_HSI_VER_MAJOR, ETH_HSI_VER_MINOR);
 
 			goto out;
@@ -1604,7 +1604,7 @@ static void qed_iov_vf_mbx_acquire(struct qed_hwfn *p_hwfn,
 
 	/* On 100g PFs, prevent old VFs from loading */
 	if ((p_hwfn->cdev->num_hwfns > 1) &&
-	    !(req->vfdev_info.capabilities & VFPF_ACQUIRE_CAP_100G)) {
+	    !(req->vfdev_dbg.capabilities & VFPF_ACQUIRE_CAP_100G)) {
 		DP_INFO(p_hwfn,
 			"VF[%d] is running an old driver that doesn't support 100g\n",
 			vf->abs_vf_id);
@@ -1614,50 +1614,50 @@ static void qed_iov_vf_mbx_acquire(struct qed_hwfn *p_hwfn,
 	/* Store the acquire message */
 	memcpy(&vf->acquire, req, sizeof(vf->acquire));
 
-	vf->opaque_fid = req->vfdev_info.opaque_fid;
+	vf->opaque_fid = req->vfdev_dbg.opaque_fid;
 
 	vf->vf_bulletin = req->bulletin_addr;
 	vf->bulletin.size = (vf->bulletin.size < req->bulletin_size) ?
 			    vf->bulletin.size : req->bulletin_size;
 
 	/* fill in pfdev info */
-	pfdev_info->chip_num = p_hwfn->cdev->chip_num;
-	pfdev_info->db_size = 0;
-	pfdev_info->indices_per_sb = PIS_PER_SB_E4;
+	pfdev_dbg->chip_num = p_hwfn->cdev->chip_num;
+	pfdev_dbg->db_size = 0;
+	pfdev_dbg->indices_per_sb = PIS_PER_SB_E4;
 
-	pfdev_info->capabilities = PFVF_ACQUIRE_CAP_DEFAULT_UNTAGGED |
+	pfdev_dbg->capabilities = PFVF_ACQUIRE_CAP_DEFAULT_UNTAGGED |
 				   PFVF_ACQUIRE_CAP_POST_FW_OVERRIDE;
 	if (p_hwfn->cdev->num_hwfns > 1)
-		pfdev_info->capabilities |= PFVF_ACQUIRE_CAP_100G;
+		pfdev_dbg->capabilities |= PFVF_ACQUIRE_CAP_100G;
 
 	/* Share our ability to use multiple queue-ids only with VFs
 	 * that request it.
 	 */
-	if (req->vfdev_info.capabilities & VFPF_ACQUIRE_CAP_QUEUE_QIDS)
-		pfdev_info->capabilities |= PFVF_ACQUIRE_CAP_QUEUE_QIDS;
+	if (req->vfdev_dbg.capabilities & VFPF_ACQUIRE_CAP_QUEUE_QIDS)
+		pfdev_dbg->capabilities |= PFVF_ACQUIRE_CAP_QUEUE_QIDS;
 
 	/* Share the sizes of the bars with VF */
-	resp->pfdev_info.bar_size = qed_iov_vf_db_bar_size(p_hwfn, p_ptt);
+	resp->pfdev_dbg.bar_size = qed_iov_vf_db_bar_size(p_hwfn, p_ptt);
 
-	qed_iov_vf_mbx_acquire_stats(p_hwfn, &pfdev_info->stats_info);
+	qed_iov_vf_mbx_acquire_stats(p_hwfn, &pfdev_dbg->stats_info);
 
-	memcpy(pfdev_info->port_mac, p_hwfn->hw_info.hw_mac_addr, ETH_ALEN);
+	memcpy(pfdev_dbg->port_mac, p_hwfn->hw_info.hw_mac_addr, ETH_ALEN);
 
-	pfdev_info->fw_major = FW_MAJOR_VERSION;
-	pfdev_info->fw_minor = FW_MINOR_VERSION;
-	pfdev_info->fw_rev = FW_REVISION_VERSION;
-	pfdev_info->fw_eng = FW_ENGINEERING_VERSION;
+	pfdev_dbg->fw_major = FW_MAJOR_VERSION;
+	pfdev_dbg->fw_minor = FW_MINOR_VERSION;
+	pfdev_dbg->fw_rev = FW_REVISION_VERSION;
+	pfdev_dbg->fw_eng = FW_ENGINEERING_VERSION;
 
 	/* Incorrect when legacy, but doesn't matter as legacy isn't reading
 	 * this field.
 	 */
-	pfdev_info->minor_fp_hsi = min_t(u8, ETH_HSI_VER_MINOR,
-					 req->vfdev_info.eth_fp_hsi_minor);
-	pfdev_info->os_type = VFPF_ACQUIRE_OS_LINUX;
-	qed_mcp_get_mfw_ver(p_hwfn, p_ptt, &pfdev_info->mfw_ver, NULL);
+	pfdev_dbg->minor_fp_hsi = min_t(u8, ETH_HSI_VER_MINOR,
+					 req->vfdev_dbg.eth_fp_hsi_minor);
+	pfdev_dbg->os_type = VFPF_ACQUIRE_OS_LINUX;
+	qed_mcp_get_mfw_ver(p_hwfn, p_ptt, &pfdev_dbg->mfw_ver, NULL);
 
-	pfdev_info->dev_type = p_hwfn->cdev->type;
-	pfdev_info->chip_rev = p_hwfn->cdev->chip_rev;
+	pfdev_dbg->dev_type = p_hwfn->cdev->type;
+	pfdev_dbg->chip_rev = p_hwfn->cdev->chip_rev;
 
 	/* Fill resources available to VF; Make sure there are enough to
 	 * satisfy the VF's request.
@@ -1681,13 +1681,13 @@ static void qed_iov_vf_mbx_acquire(struct qed_hwfn *p_hwfn,
 
 	DP_VERBOSE(p_hwfn,
 		   QED_MSG_IOV,
-		   "VF[%d] ACQUIRE_RESPONSE: pfdev_info- chip_num=0x%x, db_size=%d, idx_per_sb=%d, pf_cap=0x%llx\n"
+		   "VF[%d] ACQUIRE_RESPONSE: pfdev_dbg- chip_num=0x%x, db_size=%d, idx_per_sb=%d, pf_cap=0x%llx\n"
 		   "resources- n_rxq-%d, n_txq-%d, n_sbs-%d, n_macs-%d, n_vlans-%d\n",
 		   vf->abs_vf_id,
-		   resp->pfdev_info.chip_num,
-		   resp->pfdev_info.db_size,
-		   resp->pfdev_info.indices_per_sb,
-		   resp->pfdev_info.capabilities,
+		   resp->pfdev_dbg.chip_num,
+		   resp->pfdev_dbg.db_size,
+		   resp->pfdev_dbg.indices_per_sb,
+		   resp->pfdev_dbg.capabilities,
 		   resc->num_rxqs,
 		   resc->num_txqs,
 		   resc->num_sbs,
@@ -2072,7 +2072,7 @@ static u8 qed_iov_vf_mbx_qid(struct qed_hwfn *p_hwfn,
 	struct vfpf_qid_tlv *p_qid_tlv;
 
 	/* Search for the qid if the VF published its going to provide it */
-	if (!(p_vf->acquire.vfdev_info.capabilities &
+	if (!(p_vf->acquire.vfdev_dbg.capabilities &
 	      VFPF_ACQUIRE_CAP_QUEUE_QIDS)) {
 		if (b_is_tx)
 			return QED_IOV_LEGACY_QID_TX;
@@ -2413,7 +2413,7 @@ static void qed_iov_vf_mbx_start_txq_resp(struct qed_hwfn *p_hwfn,
 	 * mistake, but one which we're now stuck with, as some older
 	 * clients assume the size of the previous response.
 	 */
-	if (p_vf->acquire.vfdev_info.eth_fp_hsi_minor ==
+	if (p_vf->acquire.vfdev_dbg.eth_fp_hsi_minor ==
 	    ETH_HSI_VER_NO_PKT_LEN_TUNN)
 		b_legacy = true;
 
@@ -2680,7 +2680,7 @@ static void qed_iov_vf_mbx_update_rxqs(struct qed_hwfn *p_hwfn,
 	/* There shouldn't exist a VF that uses queue-qids yet uses this
 	 * API with multiple Rx queues. Validate this.
 	 */
-	if ((vf->acquire.vfdev_info.capabilities &
+	if ((vf->acquire.vfdev_dbg.capabilities &
 	     VFPF_ACQUIRE_CAP_QUEUE_QIDS) && req->num_rxqs != 1) {
 		DP_VERBOSE(p_hwfn, QED_MSG_IOV,
 			   "VF[%d] supports QIDs but sends multiple queues\n",

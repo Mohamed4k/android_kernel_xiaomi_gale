@@ -742,14 +742,14 @@ struct qed_hash_fcoe_con {
 	struct qed_fcoe_conn *con;
 };
 
-static int qed_fill_fcoe_dev_info(struct qed_dev *cdev,
+static int qed_fill_fcoe_dev_dbg(struct qed_dev *cdev,
 				  struct qed_dev_fcoe_info *info)
 {
 	struct qed_hwfn *hwfn = QED_LEADING_HWFN(cdev);
 	int rc;
 
 	memset(info, 0, sizeof(*info));
-	rc = qed_fill_dev_info(cdev, &info->common);
+	rc = qed_fill_dev_dbg(cdev, &info->common);
 
 	info->primary_dbq_rq_addr =
 	    qed_fcoe_get_primary_bdq_prod(hwfn, BDQ_ID_RQ);
@@ -1036,7 +1036,7 @@ void qed_get_protocol_stats_fcoe(struct qed_dev *cdev,
 static const struct qed_fcoe_ops qed_fcoe_ops_pass = {
 	.common = &qed_common_ops_pass,
 	.ll2 = &qed_ll2_ops_pass,
-	.fill_dev_info = &qed_fill_fcoe_dev_info,
+	.fill_dev_dbg = &qed_fill_fcoe_dev_dbg,
 	.start = &qed_fcoe_start,
 	.stop = &qed_fcoe_stop,
 	.register_ops = &qed_register_fcoe_ops,

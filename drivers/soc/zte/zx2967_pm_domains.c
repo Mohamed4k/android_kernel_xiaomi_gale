@@ -136,6 +136,6 @@ int zx2967_pd_probe(struct platform_device *pdev,
 	}
 
 	of_genpd_add_provider_onecell(pdev->dev.of_node, genpd_data);
-	dev_info(&pdev->dev, "powerdomain init ok\n");
+	dev_dbg(&pdev->dev, "powerdomain init ok\n");
 	return 0;
 }

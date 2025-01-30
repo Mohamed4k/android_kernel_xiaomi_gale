@@ -506,15 +506,15 @@ static void nq_dump_status(void)
 	if (l_ctx.dump.off)
 		ret = -EBUSY;
 
-	mc_dev_info("TEE HALTED");
+	mc_dev_dbg("TEE HALTED");
 	if (l_ctx.tee_version) {
-		mc_dev_info("TEE version: %s", l_ctx.tee_version);
+		mc_dev_dbg("TEE version: %s", l_ctx.tee_version);
 		if (ret >= 0)
 			ret = kasnprintf(&l_ctx.dump, "TEE version: %s\n",
 					 l_ctx.tee_version);
 	}
 
-	mc_dev_info("Status dump:");
+	mc_dev_dbg("Status dump:");
 	old_affinity = tee_set_affinity();
 	for (i = 0; i < (size_t)ARRAY_SIZE(status_map); i++) {
 		u32 info;
@@ -524,7 +524,7 @@ static void nq_dump_status(void)
 			return;
 		}
 
-		mc_dev_info("  %-22s= 0x%08x", status_map[i].msg, info);
+		mc_dev_dbg("  %-22s= 0x%08x", status_map[i].msg, info);
 		if (ret >= 0)
 			ret = kasnprintf(&l_ctx.dump, "%-22s= 0x%08x\n",
 					 status_map[i].msg, info);
@@ -547,7 +547,7 @@ static void nq_dump_status(void)
 	}
 	tee_restore_affinity(old_affinity);
 
-	mc_dev_info("  %-22s= 0x%s", "mcExcep.uuid", uuid_str);
+	mc_dev_dbg("  %-22s= 0x%s", "mcExcep.uuid", uuid_str);
 	if (ret >= 0)
 		ret = kasnprintf(&l_ctx.dump, "%-22s= 0x%s\n", "mcExcep.uuid",
 				 uuid_str);
@@ -666,13 +666,13 @@ static int nq_boot_tee(void)
 				MC_IV_FLAG_IRQ;
 			l_ctx.mcp_buffer->message.init_values.irq =
 				irq_d->parent_data->hwirq;
-			mc_dev_info("irq_d->parent_data->hwirq is 0x%lx\n",
+			mc_dev_dbg("irq_d->parent_data->hwirq is 0x%lx\n",
 				irq_d->parent_data->hwirq);
 		}
 #else
 		l_ctx.mcp_buffer->message.init_values.flags |= MC_IV_FLAG_IRQ;
 		l_ctx.mcp_buffer->message.init_values.irq = irq_d->hwirq;
-		mc_dev_info("irq_d->hwirq is 0x%lx\n", irq_d->hwirq);
+		mc_dev_dbg("irq_d->hwirq is 0x%lx\n", irq_d->hwirq);
 #endif
 	}
 	l_ctx.mcp_buffer->message.init_values.time_ofs =
@@ -992,7 +992,7 @@ static int tee_worker(void *arg)
 
 	mc_dev_devel("[%ld] exits, ret=%d", id, ret);
 	if (!atomic_dec_return(&l_ctx.workers_started)) {
-		mc_dev_info("TEE scheduler exits ...");
+		mc_dev_dbg("TEE scheduler exits ...");
 		if (l_ctx.tee_hung)
 			/* There is an error, the tee must have crashed */
 			nq_handle_tee_crash();
@@ -1063,7 +1063,7 @@ int nq_start(void)
 	/* Make sure we have the interrupt before going on */
 #if defined(CONFIG_OF)
 	l_ctx.irq = irq_of_parse_and_map(g_ctx.mcd->of_node, 0);
-	mc_dev_info("SSIQ from dts is 0x%08x", l_ctx.irq);
+	mc_dev_dbg("SSIQ from dts is 0x%08x", l_ctx.irq);
 #endif
 #if defined(MC_INTR_SSIQ)
 	if (l_ctx.irq <= 0)
@@ -1083,7 +1083,7 @@ int nq_start(void)
 
 #define MC_DISABLE_IRQ_WAKEUP
 #ifdef MC_DISABLE_IRQ_WAKEUP
-	mc_dev_info("irq_set_irq_wake on irq %u disabled", l_ctx.irq);
+	mc_dev_dbg("irq_set_irq_wake on irq %u disabled", l_ctx.irq);
 #else
 	ret = irq_set_irq_wake(l_ctx.irq, 1);
 	if (ret) {
@@ -1124,7 +1124,7 @@ int nq_start(void)
 		if (!ret) {
 			logging_run();
 			l_ctx.log_buffer_busy = true;
-			mc_dev_info("registered log buffer of size %d",
+			mc_dev_dbg("registered log buffer of size %d",
 				    l_ctx.log_buffer_size);
 		} else {
 			mc_dev_err(ret, "failed to register log buffer");
@@ -1132,7 +1132,7 @@ int nq_start(void)
 			ret = 0;
 		}
 	} else {
-		mc_dev_info("no log buffer to register");
+		mc_dev_dbg("no log buffer to register");
 	}
 
 	/* Bootup */

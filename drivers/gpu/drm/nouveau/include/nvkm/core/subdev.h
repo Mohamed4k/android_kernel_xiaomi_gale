@@ -30,7 +30,7 @@ void nvkm_subdev_del(struct nvkm_subdev **);
 int  nvkm_subdev_preinit(struct nvkm_subdev *);
 int  nvkm_subdev_init(struct nvkm_subdev *);
 int  nvkm_subdev_fini(struct nvkm_subdev *, bool suspend);
-int  nvkm_subdev_info(struct nvkm_subdev *, u64, u64 *);
+int  nvkm_subdev_dbg(struct nvkm_subdev *, u64, u64 *);
 void nvkm_subdev_intr(struct nvkm_subdev *);
 
 /* subdev logging */

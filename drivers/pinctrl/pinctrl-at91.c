@@ -1293,7 +1293,7 @@ static int at91_pinctrl_probe(struct platform_device *pdev)
 		if (gpio_chips[i])
 			pinctrl_add_gpio_range(info->pctl, &gpio_chips[i]->range);
 
-	dev_info(&pdev->dev, "initialized AT91 pinctrl driver\n");
+	dev_dbg(&pdev->dev, "initialized AT91 pinctrl driver\n");
 
 	return 0;
 }
@@ -1487,7 +1487,7 @@ static int alt_gpio_irq_type(struct irq_data *d, unsigned type)
 		return 0;
 	case IRQ_TYPE_NONE:
 	default:
-		pr_warn("AT91: No type for irq %d\n", gpio_to_irq(d->irq));
+		pr_debug("AT91: No type for irq %d\n", gpio_to_irq(d->irq));
 		return -EINVAL;
 	}
 
@@ -1805,7 +1805,7 @@ static int at91_gpio_probe(struct platform_device *pdev)
 	if (ret)
 		goto irq_setup_err;
 
-	dev_info(&pdev->dev, "at address %p\n", at91_chip->regbase);
+	dev_dbg(&pdev->dev, "at address %p\n", at91_chip->regbase);
 
 	return 0;
 

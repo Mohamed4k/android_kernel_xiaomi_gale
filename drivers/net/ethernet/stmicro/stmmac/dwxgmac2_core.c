@@ -360,7 +360,7 @@ int dwxgmac2_setup(struct stmmac_priv *priv)
 {
 	struct mac_device_info *mac = priv->hw;
 
-	dev_info(priv->device, "\tXGMAC2\n");
+	dev_dbg(priv->device, "\tXGMAC2\n");
 
 	priv->dev->priv_flags |= IFF_UNICAST_FLT;
 	mac->pcsr = priv->ioaddr;

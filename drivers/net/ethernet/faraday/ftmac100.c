@@ -337,7 +337,7 @@ static bool ftmac100_rx_packet_error(struct ftmac100 *priv,
 
 	if (unlikely(ftmac100_rxdes_rx_error(rxdes))) {
 		if (net_ratelimit())
-			netdev_info(netdev, "rx err\n");
+			netdev_dbg(netdev, "rx err\n");
 
 		netdev->stats.rx_errors++;
 		error = true;
@@ -345,7 +345,7 @@ static bool ftmac100_rx_packet_error(struct ftmac100 *priv,
 
 	if (unlikely(ftmac100_rxdes_crc_error(rxdes))) {
 		if (net_ratelimit())
-			netdev_info(netdev, "rx crc err\n");
+			netdev_dbg(netdev, "rx crc err\n");
 
 		netdev->stats.rx_crc_errors++;
 		error = true;
@@ -353,19 +353,19 @@ static bool ftmac100_rx_packet_error(struct ftmac100 *priv,
 
 	if (unlikely(ftmac100_rxdes_frame_too_long(rxdes))) {
 		if (net_ratelimit())
-			netdev_info(netdev, "rx frame too long\n");
+			netdev_dbg(netdev, "rx frame too long\n");
 
 		netdev->stats.rx_length_errors++;
 		error = true;
 	} else if (unlikely(ftmac100_rxdes_runt(rxdes))) {
 		if (net_ratelimit())
-			netdev_info(netdev, "rx runt\n");
+			netdev_dbg(netdev, "rx runt\n");
 
 		netdev->stats.rx_length_errors++;
 		error = true;
 	} else if (unlikely(ftmac100_rxdes_odd_nibble(rxdes))) {
 		if (net_ratelimit())
-			netdev_info(netdev, "rx odd nibble\n");
+			netdev_dbg(netdev, "rx odd nibble\n");
 
 		netdev->stats.rx_length_errors++;
 		error = true;
@@ -926,7 +926,7 @@ static int ftmac100_poll(struct napi_struct *napi, int budget)
 	if (status & (FTMAC100_INT_NORXBUF | FTMAC100_INT_RPKT_LOST |
 		      FTMAC100_INT_AHB_ERR | FTMAC100_INT_PHYSTS_CHG)) {
 		if (net_ratelimit())
-			netdev_info(netdev, "[ISR] = 0x%x: %s%s%s%s\n", status,
+			netdev_dbg(netdev, "[ISR] = 0x%x: %s%s%s%s\n", status,
 				    status & FTMAC100_INT_NORXBUF ? "NORXBUF " : "",
 				    status & FTMAC100_INT_RPKT_LOST ? "RPKT_LOST " : "",
 				    status & FTMAC100_INT_AHB_ERR ? "AHB_ERR " : "",
@@ -1140,11 +1140,11 @@ static int ftmac100_probe(struct platform_device *pdev)
 		goto err_register_netdev;
 	}
 
-	netdev_info(netdev, "irq %d, mapped at %p\n", priv->irq, priv->base);
+	netdev_dbg(netdev, "irq %d, mapped at %p\n", priv->irq, priv->base);
 
 	if (!is_valid_ether_addr(netdev->dev_addr)) {
 		eth_hw_addr_random(netdev);
-		netdev_info(netdev, "generated random MAC address %pM\n",
+		netdev_dbg(netdev, "generated random MAC address %pM\n",
 			    netdev->dev_addr);
 	}
 
@@ -1198,7 +1198,7 @@ static struct platform_driver ftmac100_driver = {
  *****************************************************************************/
 static int __init ftmac100_init(void)
 {
-	pr_info("Loading version " DRV_VERSION " ...\n");
+	pr_debug("Loading version " DRV_VERSION " ...\n");
 	return platform_driver_register(&ftmac100_driver);
 }
 

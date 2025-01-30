@@ -427,7 +427,7 @@ noinline int brcmstb_pm_s3_finish(void)
 	else
 		cmd = BSP_GEN_FIXED_KEY;
 	if (do_bsp_initiate_command(cmd)) {
-		pr_info("key loading failed\n");
+		pr_debug("key loading failed\n");
 		return -EIO;
 	}
 
@@ -736,7 +736,7 @@ static int brcmstb_pm_probe(struct platform_device *pdev)
 	for_each_matching_node(dn, ddr_shimphy_dt_ids) {
 		i = ctrl.num_memc;
 		if (i >= MAX_NUM_MEMC) {
-			pr_warn("too many MEMCs (max %d)\n", MAX_NUM_MEMC);
+			pr_debug("too many MEMCs (max %d)\n", MAX_NUM_MEMC);
 			break;
 		}
 
@@ -818,7 +818,7 @@ static int brcmstb_pm_probe(struct platform_device *pdev)
 out:
 	kfree(ctrl.s3_params);
 
-	pr_warn("PM: initialization failed with code %d\n", ret);
+	pr_debug("PM: initialization failed with code %d\n", ret);
 
 	return ret;
 }

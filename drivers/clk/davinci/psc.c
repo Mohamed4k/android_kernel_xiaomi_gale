@@ -480,7 +480,7 @@ int davinci_psc_register_clocks(struct device *dev,
 		return PTR_ERR(psc);
 
 	for (; info->name; info++) {
-		const struct davinci_lpsc_clkdev_info *cdevs = info->cdevs;
+		const struct davinci_lpsc_clkdev_dbg *cdevs = info->cdevs;
 		struct clk *clk = psc->clk_data.clks[info->md];
 
 		if (!cdevs || IS_ERR_OR_NULL(clk))

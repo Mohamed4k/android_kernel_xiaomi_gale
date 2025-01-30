@@ -194,7 +194,7 @@ static int tfp410_get_connector_properties(struct tfp410 *dvi)
 
 	dvi->ddc = of_get_i2c_adapter_by_node(ddc_phandle);
 	if (dvi->ddc)
-		dev_info(dvi->dev, "Connector's ddc i2c bus found\n");
+		dev_dbg(dvi->dev, "Connector's ddc i2c bus found\n");
 	else
 		ret = -EPROBE_DEFER;
 

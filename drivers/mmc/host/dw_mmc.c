@@ -978,10 +978,10 @@ static int dw_mci_get_cd(struct mmc_host *mmc)
 
 		if (!test_bit(DW_MMC_CARD_PRESENT, &slot->flags)) {
 			if (mmc->caps & MMC_CAP_NEEDS_POLL) {
-				dev_info(&mmc->class_dev,
+				dev_dbg(&mmc->class_dev,
 					"card is polling.\n");
 			} else {
-				dev_info(&mmc->class_dev,
+				dev_dbg(&mmc->class_dev,
 					"card is non-removable.\n");
 			}
 			set_bit(DW_MMC_CARD_PRESENT, &slot->flags);
@@ -1252,7 +1252,7 @@ static void dw_mci_setup_bus(struct dw_mci_slot *slot, bool force_clkinit)
 			force_clkinit) {
 			/* Silent the verbose log if calling from PM context */
 			if (!force_clkinit)
-				dev_info(&slot->mmc->class_dev,
+				dev_dbg(&slot->mmc->class_dev,
 					 "Bus speed (slot %d) = %dHz (slot req %dHz, actual %dHZ div = %d)\n",
 					 slot->id, host->bus_hz, clock,
 					 div ? ((host->bus_hz / div) >> 1) :
@@ -2937,7 +2937,7 @@ static void dw_mci_init_dma(struct dw_mci *host)
 		if (addr_config == 1) {
 			/* host supports IDMAC in 64-bit address mode */
 			host->dma_64bit_address = 1;
-			dev_info(host->dev,
+			dev_dbg(host->dev,
 				 "IDMAC supports 64-bit address mode.\n");
 			if (!dma_set_mask(host->dev, DMA_BIT_MASK(64)))
 				dma_set_coherent_mask(host->dev,
@@ -2945,7 +2945,7 @@ static void dw_mci_init_dma(struct dw_mci *host)
 		} else {
 			/* host supports IDMAC in 32-bit address mode */
 			host->dma_64bit_address = 0;
-			dev_info(host->dev,
+			dev_dbg(host->dev,
 				 "IDMAC supports 32-bit address mode.\n");
 		}
 
@@ -2961,7 +2961,7 @@ static void dw_mci_init_dma(struct dw_mci *host)
 		}
 
 		host->dma_ops = &dw_mci_idmac_ops;
-		dev_info(host->dev, "Using internal DMA controller.\n");
+		dev_dbg(host->dev, "Using internal DMA controller.\n");
 	} else {
 		/* TRANS_MODE_EDMAC: check dma bindings again */
 		if ((device_property_read_string_array(dev, "dma-names",
@@ -2970,7 +2970,7 @@ static void dw_mci_init_dma(struct dw_mci *host)
 			goto no_dma;
 		}
 		host->dma_ops = &dw_mci_edmac_ops;
-		dev_info(host->dev, "Using external DMA controller.\n");
+		dev_dbg(host->dev, "Using external DMA controller.\n");
 	}
 
 	if (host->dma_ops->init && host->dma_ops->start &&
@@ -2988,7 +2988,7 @@ static void dw_mci_init_dma(struct dw_mci *host)
 	return;
 
 no_dma:
-	dev_info(host->dev, "Using PIO mode.\n");
+	dev_dbg(host->dev, "Using PIO mode.\n");
 	host->use_dma = TRANS_MODE_PIO;
 }
 
@@ -3133,7 +3133,7 @@ static struct dw_mci_board *dw_mci_parse_dt(struct dw_mci *host)
 	}
 
 	if (device_property_read_u32(dev, "fifo-depth", &pdata->fifo_depth))
-		dev_info(dev,
+		dev_dbg(dev,
 			 "fifo-depth property not found, using value of FIFOTH register as default\n");
 
 	device_property_read_u32(dev, "card-detect-delay",
@@ -3334,7 +3334,7 @@ int dw_mci_probe(struct dw_mci *host)
 	 * Need to check the version-id and set data-offset for DATA register.
 	 */
 	host->verid = SDMMC_GET_VERID(mci_readl(host, VERID));
-	dev_info(host->dev, "Version ID is %04x\n", host->verid);
+	dev_dbg(host->dev, "Version ID is %04x\n", host->verid);
 
 	if (host->data_addr_override)
 		host->fifo_reg = host->regs + host->data_addr_override;
@@ -3359,7 +3359,7 @@ int dw_mci_probe(struct dw_mci *host)
 	/* Enable mci interrupt */
 	mci_writel(host, CTRL, SDMMC_CTRL_INT_ENABLE);
 
-	dev_info(host->dev,
+	dev_dbg(host->dev,
 		 "DW MMC controller at irq %d,%d bit host data width,%u deep fifo\n",
 		 host->irq, width, fifo_size);
 
@@ -3508,7 +3508,7 @@ EXPORT_SYMBOL(dw_mci_runtime_resume);
 
 static int __init dw_mci_init(void)
 {
-	pr_info("Synopsys Designware Multimedia Card Interface Driver\n");
+	pr_debug("Synopsys Designware Multimedia Card Interface Driver\n");
 	return 0;
 }
 

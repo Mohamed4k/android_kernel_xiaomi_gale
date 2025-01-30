@@ -190,7 +190,7 @@ static int qede_set_vf_mac(struct net_device *ndev, int vfidx, u8 *mac)
 static int qede_sriov_configure(struct pci_dev *pdev, int num_vfs_param)
 {
 	struct qede_dev *edev = netdev_priv(pci_get_drvdata(pdev));
-	struct qed_dev_info *qed_info = &edev->dev_info.common;
+	struct qed_dev_dbg *qed_info = &edev->dev_dbg.common;
 	struct qed_update_vport_params *vport_params;
 	int rc;
 
@@ -285,11 +285,11 @@ int __init qede_init(void)
 {
 	int ret;
 
-	pr_info("qede_init: %s\n", version);
+	pr_debug("qede_init: %s\n", version);
 
 	qed_ops = qed_get_eth_ops();
 	if (!qed_ops) {
-		pr_notice("Failed to get qed ethtool operations\n");
+		pr_debug("Failed to get qed ethtool operations\n");
 		return -EINVAL;
 	}
 
@@ -298,14 +298,14 @@ int __init qede_init(void)
 	 */
 	ret = register_netdevice_notifier(&qede_netdev_notifier);
 	if (ret) {
-		pr_notice("Failed to register netdevice_notifier\n");
+		pr_debug("Failed to register netdevice_notifier\n");
 		qed_put_eth_ops();
 		return -EINVAL;
 	}
 
 	ret = pci_register_driver(&qede_pci_driver);
 	if (ret) {
-		pr_notice("Failed to register driver\n");
+		pr_debug("Failed to register driver\n");
 		unregister_netdevice_notifier(&qede_netdev_notifier);
 		qed_put_eth_ops();
 		return -EINVAL;
@@ -317,7 +317,7 @@ int __init qede_init(void)
 static void __exit qede_cleanup(void)
 {
 	if (debug & QED_LOG_INFO_MASK)
-		pr_info("qede_cleanup called\n");
+		pr_debug("qede_cleanup called\n");
 
 	unregister_netdevice_notifier(&qede_netdev_notifier);
 	pci_unregister_driver(&qede_pci_driver);
@@ -542,7 +542,7 @@ static int qede_setup_tc(struct net_device *ndev, u8 num_tc)
 	struct qede_dev *edev = netdev_priv(ndev);
 	int cos, count, offset;
 
-	if (num_tc > edev->dev_info.num_tc)
+	if (num_tc > edev->dev_dbg.num_tc)
 		return -EINVAL;
 
 	netdev_reset_tc(ndev);
@@ -746,12 +746,12 @@ static struct qede_dev *qede_alloc_etherdev(struct qed_dev *cdev,
 	SET_NETDEV_DEV(ndev, &pdev->dev);
 
 	memset(&edev->stats, 0, sizeof(edev->stats));
-	memcpy(&edev->dev_info, info, sizeof(*info));
+	memcpy(&edev->dev_dbg, info, sizeof(*info));
 
 	/* As ethtool doesn't have the ability to show WoL behavior as
 	 * 'default', if device supports it declare it's enabled.
 	 */
-	if (edev->dev_info.common.wol_support)
+	if (edev->dev_dbg.common.wol_support)
 		edev->wol_enabled = true;
 
 	INIT_LIST_HEAD(&edev->vlan_list);
@@ -768,15 +768,15 @@ static void qede_init_ndev(struct qede_dev *edev)
 
 	pci_set_drvdata(pdev, ndev);
 
-	ndev->mem_start = edev->dev_info.common.pci_mem_start;
+	ndev->mem_start = edev->dev_dbg.common.pci_mem_start;
 	ndev->base_addr = ndev->mem_start;
-	ndev->mem_end = edev->dev_info.common.pci_mem_end;
-	ndev->irq = edev->dev_info.common.pci_irq;
+	ndev->mem_end = edev->dev_dbg.common.pci_mem_end;
+	ndev->irq = edev->dev_dbg.common.pci_irq;
 
 	ndev->watchdog_timeo = TX_TIMEOUT;
 
 	if (IS_VF(edev)) {
-		if (edev->dev_info.xdp_supported)
+		if (edev->dev_dbg.xdp_supported)
 			ndev->netdev_ops = &qede_netdev_vf_xdp_ops;
 		else
 			ndev->netdev_ops = &qede_netdev_vf_ops;
@@ -793,14 +793,14 @@ static void qede_init_ndev(struct qede_dev *edev)
 		      NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM |
 		      NETIF_F_TSO | NETIF_F_TSO6 | NETIF_F_HW_TC;
 
-	if (!IS_VF(edev) && edev->dev_info.common.num_hwfns == 1)
+	if (!IS_VF(edev) && edev->dev_dbg.common.num_hwfns == 1)
 		hw_features |= NETIF_F_NTUPLE;
 
-	if (edev->dev_info.common.vxlan_enable ||
-	    edev->dev_info.common.geneve_enable)
+	if (edev->dev_dbg.common.vxlan_enable ||
+	    edev->dev_dbg.common.geneve_enable)
 		udp_tunnel_enable = true;
 
-	if (udp_tunnel_enable || edev->dev_info.common.gre_enable) {
+	if (udp_tunnel_enable || edev->dev_dbg.common.gre_enable) {
 		hw_features |= NETIF_F_TSO_ECN;
 		ndev->hw_enc_features = NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM |
 					NETIF_F_SG | NETIF_F_TSO |
@@ -815,7 +815,7 @@ static void qede_init_ndev(struct qede_dev *edev)
 					  NETIF_F_GSO_UDP_TUNNEL_CSUM);
 	}
 
-	if (edev->dev_info.common.gre_enable) {
+	if (edev->dev_dbg.common.gre_enable) {
 		hw_features |= (NETIF_F_GSO_GRE | NETIF_F_GSO_GRE_CSUM);
 		ndev->hw_enc_features |= (NETIF_F_GSO_GRE |
 					  NETIF_F_GSO_GRE_CSUM);
@@ -834,9 +834,9 @@ static void qede_init_ndev(struct qede_dev *edev)
 	ndev->max_mtu = QEDE_MAX_JUMBO_PACKET_SIZE;
 
 	/* Set network device HW mac */
-	ether_addr_copy(edev->ndev->dev_addr, edev->dev_info.common.hw_mac);
+	ether_addr_copy(edev->ndev->dev_addr, edev->dev_dbg.common.hw_mac);
 
-	ndev->mtu = edev->dev_info.common.mtu;
+	ndev->mtu = edev->dev_dbg.common.mtu;
 }
 
 /* This function converts from 32b param to two params of level and module
@@ -933,7 +933,7 @@ static int qede_alloc_fp_array(struct qede_dev *edev)
 		}
 
 		if (fp->type & QEDE_FASTPATH_TX) {
-			fp->txq = kcalloc(edev->dev_info.num_tc,
+			fp->txq = kcalloc(edev->dev_dbg.num_tc,
 					  sizeof(*fp->txq), GFP_KERNEL);
 			if (!fp->txq)
 				goto err;
@@ -1006,35 +1006,35 @@ static void qede_update_pf_params(struct qed_dev *cdev)
 
 static void qede_log_probe(struct qede_dev *edev)
 {
-	struct qed_dev_info *p_dev_info = &edev->dev_info.common;
+	struct qed_dev_dbg *p_dev_dbg = &edev->dev_dbg.common;
 	u8 buf[QEDE_FW_VER_STR_SIZE];
 	size_t left_size;
 
 	snprintf(buf, QEDE_FW_VER_STR_SIZE,
 		 "Storm FW %d.%d.%d.%d, Management FW %d.%d.%d.%d",
-		 p_dev_info->fw_major, p_dev_info->fw_minor, p_dev_info->fw_rev,
-		 p_dev_info->fw_eng,
-		 (p_dev_info->mfw_rev & QED_MFW_VERSION_3_MASK) >>
+		 p_dev_dbg->fw_major, p_dev_dbg->fw_minor, p_dev_dbg->fw_rev,
+		 p_dev_dbg->fw_eng,
+		 (p_dev_dbg->mfw_rev & QED_MFW_VERSION_3_MASK) >>
 		 QED_MFW_VERSION_3_OFFSET,
-		 (p_dev_info->mfw_rev & QED_MFW_VERSION_2_MASK) >>
+		 (p_dev_dbg->mfw_rev & QED_MFW_VERSION_2_MASK) >>
 		 QED_MFW_VERSION_2_OFFSET,
-		 (p_dev_info->mfw_rev & QED_MFW_VERSION_1_MASK) >>
+		 (p_dev_dbg->mfw_rev & QED_MFW_VERSION_1_MASK) >>
 		 QED_MFW_VERSION_1_OFFSET,
-		 (p_dev_info->mfw_rev & QED_MFW_VERSION_0_MASK) >>
+		 (p_dev_dbg->mfw_rev & QED_MFW_VERSION_0_MASK) >>
 		 QED_MFW_VERSION_0_OFFSET);
 
 	left_size = QEDE_FW_VER_STR_SIZE - strlen(buf);
-	if (p_dev_info->mbi_version && left_size)
+	if (p_dev_dbg->mbi_version && left_size)
 		snprintf(buf + strlen(buf), left_size,
 			 " [MBI %d.%d.%d]",
-			 (p_dev_info->mbi_version & QED_MBI_VERSION_2_MASK) >>
+			 (p_dev_dbg->mbi_version & QED_MBI_VERSION_2_MASK) >>
 			 QED_MBI_VERSION_2_OFFSET,
-			 (p_dev_info->mbi_version & QED_MBI_VERSION_1_MASK) >>
+			 (p_dev_dbg->mbi_version & QED_MBI_VERSION_1_MASK) >>
 			 QED_MBI_VERSION_1_OFFSET,
-			 (p_dev_info->mbi_version & QED_MBI_VERSION_0_MASK) >>
+			 (p_dev_dbg->mbi_version & QED_MBI_VERSION_0_MASK) >>
 			 QED_MBI_VERSION_0_OFFSET);
 
-	pr_info("qede %02x:%02x.%02x: %s [%s]\n", edev->pdev->bus->number,
+	pr_debug("qede %02x:%02x.%02x: %s [%s]\n", edev->pdev->bus->number,
 		PCI_SLOT(edev->pdev->devfn), PCI_FUNC(edev->pdev->devfn),
 		buf, edev->ndev->name);
 }
@@ -1048,13 +1048,13 @@ static int __qede_probe(struct pci_dev *pdev, u32 dp_module, u8 dp_level,
 {
 	struct qed_probe_params probe_params;
 	struct qed_slowpath_params sp_params;
-	struct qed_dev_eth_info dev_info;
+	struct qed_dev_eth_info dev_dbg;
 	struct qede_dev *edev;
 	struct qed_dev *cdev;
 	int rc;
 
 	if (unlikely(dp_level & QED_LEVEL_INFO))
-		pr_notice("Starting qede probe\n");
+		pr_debug("Starting qede probe\n");
 
 	memset(&probe_params, 0, sizeof(probe_params));
 	probe_params.protocol = QED_PROTOCOL_ETH;
@@ -1079,16 +1079,16 @@ static int __qede_probe(struct pci_dev *pdev, u32 dp_module, u8 dp_level,
 	strlcpy(sp_params.name, "qede LAN", QED_DRV_VER_STR_SIZE);
 	rc = qed_ops->common->slowpath_start(cdev, &sp_params);
 	if (rc) {
-		pr_notice("Cannot start slowpath\n");
+		pr_debug("Cannot start slowpath\n");
 		goto err1;
 	}
 
 	/* Learn information crucial for qede to progress */
-	rc = qed_ops->fill_dev_info(cdev, &dev_info);
+	rc = qed_ops->fill_dev_dbg(cdev, &dev_dbg);
 	if (rc)
 		goto err2;
 
-	edev = qede_alloc_etherdev(cdev, pdev, &dev_info, dp_module,
+	edev = qede_alloc_etherdev(cdev, pdev, &dev_dbg, dp_module,
 				   dp_level);
 	if (!edev) {
 		rc = -ENOMEM;
@@ -1181,7 +1181,7 @@ static void __qede_remove(struct pci_dev *pdev, enum qede_remove_mode mode)
 	struct qed_dev *cdev;
 
 	if (!ndev) {
-		dev_info(&pdev->dev, "Device has already been removed\n");
+		dev_dbg(&pdev->dev, "Device has already been removed\n");
 		return;
 	}
 
@@ -1214,7 +1214,7 @@ static void __qede_remove(struct pci_dev *pdev, enum qede_remove_mode mode)
 	 */
 	 free_netdev(ndev);
 
-	dev_info(&pdev->dev, "Ending qede_remove successfully\n");
+	dev_dbg(&pdev->dev, "Ending qede_remove successfully\n");
 }
 
 static void qede_remove(struct pci_dev *pdev)
@@ -1242,7 +1242,7 @@ static int qede_set_num_queues(struct qede_dev *edev)
 		rss_num = edev->req_queues;
 	else
 		rss_num = netif_get_num_default_rss_queues() *
-			  edev->dev_info.common.num_hwfns;
+			  edev->dev_dbg.common.num_hwfns;
 
 	rss_num = min_t(u16, QEDE_MAX_RSS_CNT(edev), rss_num);
 
@@ -1604,7 +1604,7 @@ static void qede_init_fp(struct qede_dev *edev)
 				ndev_tx_id = QEDE_TXQ_TO_NDEV_TXQ_ID(edev, txq);
 				txq->ndev_txq_id = ndev_tx_id;
 
-				if (edev->dev_info.is_legacy)
+				if (edev->dev_dbg.is_legacy)
 					txq->is_legacy = 1;
 				txq->dev = &edev->pdev->dev;
 			}
@@ -1623,7 +1623,7 @@ static int qede_set_real_num_queues(struct qede_dev *edev)
 
 	rc = netif_set_real_num_tx_queues(edev->ndev,
 					  QEDE_TSS_COUNT(edev) *
-					  edev->dev_info.num_tc);
+					  edev->dev_dbg.num_tc);
 	if (rc) {
 		DP_NOTICE(edev, "Failed to set real number of Tx queues\n");
 		return rc;
@@ -1935,7 +1935,7 @@ static int qede_start_queues(struct qede_dev *edev, bool clear_stats)
 {
 	int vlan_removal_en = 1;
 	struct qed_dev *cdev = edev->cdev;
-	struct qed_dev_info *qed_info = &edev->dev_info.common;
+	struct qed_dev_dbg *qed_info = &edev->dev_dbg.common;
 	struct qed_update_vport_params *vport_update_params;
 	struct qed_queue_start_common_params q_params;
 	struct qed_start_vport_params start = {0};
@@ -2098,7 +2098,7 @@ static void qede_unload(struct qede_dev *edev, enum qede_unload_mode mode,
 	qede_vlan_mark_nonconfigured(edev);
 	edev->ops->fastpath_stop(edev->cdev);
 
-	if (!IS_VF(edev) && edev->dev_info.common.num_hwfns == 1) {
+	if (!IS_VF(edev) && edev->dev_dbg.common.num_hwfns == 1) {
 		qede_poll_for_freeing_arfs_filters(edev);
 		qede_free_arfs(edev);
 	}
@@ -2155,7 +2155,7 @@ static int qede_load(struct qede_dev *edev, enum qede_load_mode mode,
 	if (rc)
 		goto err2;
 
-	if (!IS_VF(edev) && edev->dev_info.common.num_hwfns == 1) {
+	if (!IS_VF(edev) && edev->dev_dbg.common.num_hwfns == 1) {
 		rc = qede_alloc_arfs(edev);
 		if (rc)
 			DP_NOTICE(edev, "aRFS memory allocation failed\n");
@@ -2175,7 +2175,7 @@ static int qede_load(struct qede_dev *edev, enum qede_load_mode mode,
 	DP_INFO(edev, "Start VPORT, RXQ and TXQ succeeded\n");
 
 	num_tc = netdev_get_num_tc(edev->ndev);
-	num_tc = num_tc ? num_tc : edev->dev_info.num_tc;
+	num_tc = num_tc ? num_tc : edev->dev_dbg.num_tc;
 	qede_setup_tc(edev->ndev, num_tc);
 
 	/* Program un-configured VLANs */

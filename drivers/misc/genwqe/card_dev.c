@@ -1342,7 +1342,7 @@ static int genwqe_inform_and_stop_processes(struct genwqe_dev *cd)
 		/* give kill_timeout seconds to close file descriptors ... */
 		for (i = 0; (i < GENWQE_KILL_TIMEOUT) &&
 			     genwqe_open_files(cd); i++) {
-			dev_info(&pci_dev->dev, "  %d sec ...", i);
+			dev_dbg(&pci_dev->dev, "  %d sec ...", i);
 
 			cond_resched();
 			msleep(1000);

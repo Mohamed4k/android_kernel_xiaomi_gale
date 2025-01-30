@@ -1358,7 +1358,7 @@ static void tegra_pmc_init_tsense_reset(struct tegra_pmc *pmc)
 	value |= PMC_SENSOR_CTRL_ENABLE_RST;
 	tegra_pmc_writel(value, PMC_SENSOR_CTRL);
 
-	dev_info(pmc->dev, "emergency thermal reset enabled\n");
+	dev_dbg(pmc->dev, "emergency thermal reset enabled\n");
 
 out:
 	of_node_put(np);
@@ -1951,13 +1951,13 @@ static int __init tegra_pmc_early_init(void)
 		 * disabled.
 		 */
 		if (IS_ENABLED(CONFIG_ARM) && soc_is_tegra()) {
-			pr_warn("DT node not found, powergating disabled\n");
+			pr_debug("DT node not found, powergating disabled\n");
 
 			regs.start = 0x7000e400;
 			regs.end = 0x7000e7ff;
 			regs.flags = IORESOURCE_MEM;
 
-			pr_warn("Using memory region %pR\n", &regs);
+			pr_debug("Using memory region %pR\n", &regs);
 		} else {
 			/*
 			 * At this point we're not running on Tegra, so play

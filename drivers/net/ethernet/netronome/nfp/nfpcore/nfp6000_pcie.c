@@ -708,7 +708,7 @@ static int enable_bars(struct nfp6000_pcie *nfp, u16 interface)
 	sort(&nfp->bar[0], nfp->bars, sizeof(nfp->bar[0]),
 	     bar_cmp, NULL);
 
-	dev_info(nfp->dev, "%sfree: %d/%d\n", status_msg, bars_free, nfp->bars);
+	dev_dbg(nfp->dev, "%sfree: %d/%d\n", status_msg, bars_free, nfp->bars);
 
 	return 0;
 }
@@ -1326,7 +1326,7 @@ struct nfp_cpp *nfp_cpp_from_nfp6000_pcie(struct pci_dev *pdev)
 	int err;
 
 	/*  Finished with card initialization. */
-	dev_info(&pdev->dev,
+	dev_dbg(&pdev->dev,
 		 "Netronome Flow Processor NFP4000/NFP6000 PCIe Card Probe\n");
 	pcie_print_link_status(pdev);
 

@@ -229,7 +229,7 @@ static int fsl_bman_probe(struct platform_device *pdev)
 
 	err_irq = platform_get_irq(pdev, 0);
 	if (err_irq <= 0) {
-		dev_info(dev, "Can't get %pOF IRQ\n", node);
+		dev_dbg(dev, "Can't get %pOF IRQ\n", node);
 		return -ENODEV;
 	}
 	ret = devm_request_irq(dev, err_irq, bman_isr, IRQF_SHARED, "bman-err",

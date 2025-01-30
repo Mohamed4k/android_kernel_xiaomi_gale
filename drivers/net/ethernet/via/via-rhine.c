@@ -628,7 +628,7 @@ static void rhine_power_init(struct net_device *dev)
 			default:
 				reason = "Unknown";
 			}
-			netdev_info(dev, "Woke system up. Reason: %s\n",
+			netdev_dbg(dev, "Woke system up. Reason: %s\n",
 				    reason);
 		}
 	}
@@ -644,7 +644,7 @@ static void rhine_chip_reset(struct net_device *dev)
 	IOSYNC;
 
 	if (ioread8(ioaddr + ChipCmd1) & Cmd1Reset) {
-		netdev_info(dev, "Reset not complete yet. Trying harder.\n");
+		netdev_dbg(dev, "Reset not complete yet. Trying harder.\n");
 
 		/* Force reset */
 		if (rp->quirks & rqForceReset)
@@ -716,7 +716,7 @@ static void rhine_reload_eeprom(long pioaddr, struct net_device *dev)
 			break;
 	}
 	if (i > 512)
-		pr_info("%4d cycles used @ %s:%d\n", i, __func__, __LINE__);
+		pr_debug("%4d cycles used @ %s:%d\n", i, __func__, __LINE__);
 
 	/*
 	 * Reloading from EEPROM overwrites ConfigA-D, so we must re-enable
@@ -947,7 +947,7 @@ static int rhine_init_one_common(struct device *hwdev, u32 quirks,
 		/* Report it and use a random ethernet address instead */
 		netdev_err(dev, "Invalid MAC address: %pM\n", dev->dev_addr);
 		eth_hw_addr_random(dev);
-		netdev_info(dev, "Using random MAC address: %pM\n",
+		netdev_dbg(dev, "Using random MAC address: %pM\n",
 			    dev->dev_addr);
 	}
 
@@ -995,7 +995,7 @@ static int rhine_init_one_common(struct device *hwdev, u32 quirks,
 	else
 		name = "Rhine III";
 
-	netdev_info(dev, "VIA %s at %p, %pM, IRQ %d\n",
+	netdev_dbg(dev, "VIA %s at %p, %pM, IRQ %d\n",
 		    name, ioaddr, dev->dev_addr, rp->irq);
 
 	dev_set_drvdata(hwdev, dev);
@@ -1007,7 +1007,7 @@ static int rhine_init_one_common(struct device *hwdev, u32 quirks,
 		mdio_write(dev, phy_id, MII_BMCR, mii_cmd);
 		if (mii_status != 0xffff && mii_status != 0x0000) {
 			rp->mii_if.advertising = mdio_read(dev, phy_id, 4);
-			netdev_info(dev,
+			netdev_dbg(dev,
 				    "MII PHY found at address %d, status 0x%04x advertising %04x Link %04x\n",
 				    phy_id,
 				    mii_status, rp->mii_if.advertising,
@@ -2622,15 +2622,15 @@ static int __init rhine_init(void)
 
 /* when a module, this is printed whether or not devices are found in probe */
 #ifdef MODULE
-	pr_info("%s\n", version);
+	pr_debug("%s\n", version);
 #endif
 	if (dmi_check_system(rhine_dmi_table)) {
 		/* these BIOSes fail at PXE boot if chip is in D3 */
 		avoid_D3 = true;
-		pr_warn("Broken BIOS detected, avoid_D3 enabled\n");
+		pr_debug("Broken BIOS detected, avoid_D3 enabled\n");
 	}
 	else if (avoid_D3)
-		pr_info("avoid_D3 set\n");
+		pr_debug("avoid_D3 set\n");
 
 	ret_pci = pci_register_driver(&rhine_driver_pci);
 	ret_platform = platform_driver_register(&rhine_driver_platform);

@@ -463,7 +463,7 @@ static int scaler_bind(struct device *dev, struct device *master, void *data)
 			scaler->scaler_data->formats,
 			scaler->scaler_data->num_formats, "scaler");
 
-	dev_info(dev, "The exynos scaler has been probed successfully\n");
+	dev_dbg(dev, "The exynos scaler has been probed successfully\n");
 
 	return 0;
 }

@@ -48,7 +48,7 @@ irqreturn_t scp_A_irq_handler(int irq, void *dev_id)
 			pr_debug("[SCP] CM4 WDT handler start to reset scp...\n");
 			scp_send_reset_wq(RESET_TYPE_WDT);
 		} else
-			pr_notice("scp_A_wdt_handler: scp resetting\n");
+			pr_debug("scp_A_wdt_handler: scp resetting\n");
 
 		/* clr after SCP side INT trigger,
 		 * or SCP may lost INT max wait 5000*40u = 200ms

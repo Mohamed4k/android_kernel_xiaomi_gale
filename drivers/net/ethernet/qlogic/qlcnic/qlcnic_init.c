@@ -1057,7 +1057,7 @@ static u32 qlcnic_get_bios_version(struct qlcnic_adapter *adapter)
 static void qlcnic_rom_lock_recovery(struct qlcnic_adapter *adapter)
 {
 	if (qlcnic_pcie_sem_lock(adapter, 2, QLCNIC_ROM_LOCK_ID))
-		dev_info(&adapter->pdev->dev, "Resetting rom_lock\n");
+		dev_dbg(&adapter->pdev->dev, "Resetting rom_lock\n");
 
 	qlcnic_pcie_sem_unlock(adapter, 2);
 }
@@ -1115,7 +1115,7 @@ qlcnic_load_firmware(struct qlcnic_adapter *adapter)
 	const struct firmware *fw = adapter->fw;
 	struct pci_dev *pdev = adapter->pdev;
 
-	dev_info(&pdev->dev, "loading firmware from %s\n",
+	dev_dbg(&pdev->dev, "loading firmware from %s\n",
 		 fw_name[adapter->ahw->fw_type]);
 
 	if (fw) {
@@ -1173,7 +1173,7 @@ qlcnic_load_firmware(struct qlcnic_adapter *adapter)
 		} else {
 			size = (QLCNIC_IMAGE_START - QLCNIC_BOOTLD_START) / 8;
 			flashaddr = QLCNIC_BOOTLD_START;
-			dev_info(&pdev->dev,
+			dev_dbg(&pdev->dev,
 				"using legacy method to get flash fw region");
 		}
 

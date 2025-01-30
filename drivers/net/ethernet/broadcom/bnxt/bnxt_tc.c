@@ -46,7 +46,7 @@ static u16 bnxt_flow_get_dst_fid(struct bnxt *pf_bp, struct net_device *dev)
 
 	/* check if dev belongs to the same switch */
 	if (!switchdev_port_same_parent_id(pf_bp->dev, dev)) {
-		netdev_info(pf_bp->dev, "dev(ifindex=%d) not on same switch",
+		netdev_dbg(pf_bp->dev, "dev(ifindex=%d) not on same switch",
 			    dev->ifindex);
 		return BNXT_FID_INVALID;
 	}
@@ -66,7 +66,7 @@ static int bnxt_tc_parse_redir(struct bnxt *bp,
 	struct net_device *dev = tcf_mirred_dev(tc_act);
 
 	if (!dev) {
-		netdev_info(bp->dev, "no dev in mirred action");
+		netdev_dbg(bp->dev, "no dev in mirred action");
 		return -EINVAL;
 	}
 
@@ -102,7 +102,7 @@ static int bnxt_tc_parse_tunnel_set(struct bnxt *bp,
 	struct ip_tunnel_key *tun_key = &tun_info->key;
 
 	if (ip_tunnel_info_af(tun_info) != AF_INET) {
-		netdev_info(bp->dev, "only IPv4 tunnel-encap is supported");
+		netdev_dbg(bp->dev, "only IPv4 tunnel-encap is supported");
 		return -EOPNOTSUPP;
 	}
 
@@ -119,7 +119,7 @@ static int bnxt_tc_parse_actions(struct bnxt *bp,
 	int i, rc;
 
 	if (!tcf_exts_has_actions(tc_exts)) {
-		netdev_info(bp->dev, "no actions");
+		netdev_dbg(bp->dev, "no actions");
 		return -EINVAL;
 	}
 
@@ -194,7 +194,7 @@ static int bnxt_tc_parse_flow(struct bnxt *bp,
 	/* KEY_CONTROL and KEY_BASIC are needed for forming a meaningful key */
 	if ((dissector->used_keys & BIT(FLOW_DISSECTOR_KEY_CONTROL)) == 0 ||
 	    (dissector->used_keys & BIT(FLOW_DISSECTOR_KEY_BASIC)) == 0) {
-		netdev_info(bp->dev, "cannot form TC key: used_keys = 0x%x",
+		netdev_dbg(bp->dev, "cannot form TC key: used_keys = 0x%x",
 			    dissector->used_keys);
 		return -EOPNOTSUPP;
 	}
@@ -362,7 +362,7 @@ static int bnxt_hwrm_cfa_flow_free(struct bnxt *bp, __le16 flow_handle)
 
 	rc = hwrm_send_message(bp, &req, sizeof(req), HWRM_CMD_TIMEOUT);
 	if (rc)
-		netdev_info(bp->dev, "Error: %s: flow_handle=0x%x rc=%d",
+		netdev_dbg(bp->dev, "Error: %s: flow_handle=0x%x rc=%d",
 			    __func__, flow_handle, rc);
 
 	if (rc)
@@ -617,7 +617,7 @@ static int hwrm_cfa_decap_filter_alloc(struct bnxt *bp,
 	if (!rc)
 		*decap_filter_handle = resp->decap_filter_id;
 	else
-		netdev_info(bp->dev, "%s: Error rc=%d", __func__, rc);
+		netdev_dbg(bp->dev, "%s: Error rc=%d", __func__, rc);
 	mutex_unlock(&bp->hwrm_cmd_lock);
 
 	if (rc)
@@ -636,7 +636,7 @@ static int hwrm_cfa_decap_filter_free(struct bnxt *bp,
 
 	rc = hwrm_send_message(bp, &req, sizeof(req), HWRM_CMD_TIMEOUT);
 	if (rc)
-		netdev_info(bp->dev, "%s: Error rc=%d", __func__, rc);
+		netdev_dbg(bp->dev, "%s: Error rc=%d", __func__, rc);
 
 	if (rc)
 		rc = -EIO;
@@ -685,7 +685,7 @@ static int hwrm_cfa_encap_record_alloc(struct bnxt *bp,
 	if (!rc)
 		*encap_record_handle = resp->encap_record_id;
 	else
-		netdev_info(bp->dev, "%s: Error rc=%d", __func__, rc);
+		netdev_dbg(bp->dev, "%s: Error rc=%d", __func__, rc);
 	mutex_unlock(&bp->hwrm_cmd_lock);
 
 	if (rc)
@@ -704,7 +704,7 @@ static int hwrm_cfa_encap_record_free(struct bnxt *bp,
 
 	rc = hwrm_send_message(bp, &req, sizeof(req), HWRM_CMD_TIMEOUT);
 	if (rc)
-		netdev_info(bp->dev, "%s: Error rc=%d", __func__, rc);
+		netdev_dbg(bp->dev, "%s: Error rc=%d", __func__, rc);
 
 	if (rc)
 		rc = -EIO;
@@ -813,7 +813,7 @@ static bool bnxt_tc_can_offload(struct bnxt *bp, struct bnxt_tc_flow *flow)
 	if ((flow->flags & BNXT_TC_FLOW_FLAGS_PORTS) &&
 	    (flow->l4_key.ip_proto != IPPROTO_TCP &&
 	     flow->l4_key.ip_proto != IPPROTO_UDP)) {
-		netdev_info(bp->dev, "Cannot offload non-TCP/UDP (%d) ports",
+		netdev_dbg(bp->dev, "Cannot offload non-TCP/UDP (%d) ports",
 			    flow->l4_key.ip_proto);
 		return false;
 	}
@@ -821,12 +821,12 @@ static bool bnxt_tc_can_offload(struct bnxt *bp, struct bnxt_tc_flow *flow)
 	/* Currently source/dest MAC cannot be partial wildcard  */
 	if (bits_set(&flow->l2_key.smac, sizeof(flow->l2_key.smac)) &&
 	    !is_exactmatch(flow->l2_mask.smac, sizeof(flow->l2_mask.smac))) {
-		netdev_info(bp->dev, "Wildcard match unsupported for Source MAC\n");
+		netdev_dbg(bp->dev, "Wildcard match unsupported for Source MAC\n");
 		return false;
 	}
 	if (bits_set(&flow->l2_key.dmac, sizeof(flow->l2_key.dmac)) &&
 	    !is_exactmatch(&flow->l2_mask.dmac, sizeof(flow->l2_mask.dmac))) {
-		netdev_info(bp->dev, "Wildcard match unsupported for Dest MAC\n");
+		netdev_dbg(bp->dev, "Wildcard match unsupported for Dest MAC\n");
 		return false;
 	}
 
@@ -835,21 +835,21 @@ static bool bnxt_tc_can_offload(struct bnxt *bp, struct bnxt_tc_flow *flow)
 		     sizeof(flow->l2_key.inner_vlan_tci)) &&
 	    !is_vlan_tci_allowed(flow->l2_mask.inner_vlan_tci,
 				 flow->l2_key.inner_vlan_tci)) {
-		netdev_info(bp->dev, "Unsupported VLAN TCI\n");
+		netdev_dbg(bp->dev, "Unsupported VLAN TCI\n");
 		return false;
 	}
 	if (bits_set(&flow->l2_key.inner_vlan_tpid,
 		     sizeof(flow->l2_key.inner_vlan_tpid)) &&
 	    !is_exactmatch(&flow->l2_mask.inner_vlan_tpid,
 			   sizeof(flow->l2_mask.inner_vlan_tpid))) {
-		netdev_info(bp->dev, "Wildcard match unsupported for VLAN TPID\n");
+		netdev_dbg(bp->dev, "Wildcard match unsupported for VLAN TPID\n");
 		return false;
 	}
 
 	/* Currently Ethertype must be set */
 	if (!is_exactmatch(&flow->l2_mask.ether_type,
 			   sizeof(flow->l2_mask.ether_type))) {
-		netdev_info(bp->dev, "Wildcard match unsupported for Ethertype\n");
+		netdev_dbg(bp->dev, "Wildcard match unsupported for Ethertype\n");
 		return false;
 	}
 
@@ -911,7 +911,7 @@ bnxt_tc_get_tunnel_node(struct bnxt *bp, struct rhashtable *tunnel_table,
 	tunnel_node->refcount++;
 	return tunnel_node;
 err:
-	netdev_info(bp->dev, "error rc=%d", rc);
+	netdev_dbg(bp->dev, "error rc=%d", rc);
 	return NULL;
 }
 
@@ -1009,7 +1009,7 @@ static int bnxt_tc_resolve_tunnel_hdrs(struct bnxt *bp,
 
 	rt = ip_route_output_key(dev_net(real_dst_dev), &flow);
 	if (IS_ERR(rt)) {
-		netdev_info(bp->dev, "no route to %pI4b", &flow.daddr);
+		netdev_dbg(bp->dev, "no route to %pI4b", &flow.daddr);
 		return -EOPNOTSUPP;
 	}
 
@@ -1022,7 +1022,7 @@ static int bnxt_tc_resolve_tunnel_hdrs(struct bnxt *bp,
 		struct vlan_dev_priv *vlan = vlan_dev_priv(dst_dev);
 
 		if (vlan->real_dev != real_dst_dev) {
-			netdev_info(bp->dev,
+			netdev_dbg(bp->dev,
 				    "dst_dev(%s) doesn't use PF-if(%s)",
 				    netdev_name(dst_dev),
 				    netdev_name(real_dst_dev));
@@ -1034,7 +1034,7 @@ static int bnxt_tc_resolve_tunnel_hdrs(struct bnxt *bp,
 		l2_info->num_vlans = 1;
 #endif
 	} else if (dst_dev != real_dst_dev) {
-		netdev_info(bp->dev,
+		netdev_dbg(bp->dev,
 			    "dst_dev(%s) for %pI4b is not PF-if(%s)",
 			    netdev_name(dst_dev), &flow.daddr,
 			    netdev_name(real_dst_dev));
@@ -1044,7 +1044,7 @@ static int bnxt_tc_resolve_tunnel_hdrs(struct bnxt *bp,
 
 	nbr = dst_neigh_lookup(&rt->dst, &flow.daddr);
 	if (!nbr) {
-		netdev_info(bp->dev, "can't lookup neighbor for %pI4b",
+		netdev_dbg(bp->dev, "can't lookup neighbor for %pI4b",
 			    &flow.daddr);
 		rc = -EOPNOTSUPP;
 		goto put_rt;
@@ -1442,7 +1442,7 @@ bnxt_hwrm_cfa_flow_stats_get(struct bnxt *bp, int num_flows,
 						le64_to_cpu(resp_bytes[i]);
 		}
 	} else {
-		netdev_info(bp->dev, "error rc=%d", rc);
+		netdev_dbg(bp->dev, "error rc=%d", rc);
 	}
 	mutex_unlock(&bp->hwrm_cmd_lock);
 

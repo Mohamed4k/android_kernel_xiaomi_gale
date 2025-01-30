@@ -4278,7 +4278,7 @@ struct brcmf_sdio *brcmf_sdio_probe(struct brcmf_sdio_dev *sdiodev)
 					bus, "brcmf_wdog/%s",
 					dev_name(&sdiodev->func1->dev));
 	if (IS_ERR(bus->watchdog_tsk)) {
-		pr_warn("brcmf_watchdog thread failed to start\n");
+		pr_debug("brcmf_watchdog thread failed to start\n");
 		bus->watchdog_tsk = NULL;
 	}
 	/* Initialize DPC thread */

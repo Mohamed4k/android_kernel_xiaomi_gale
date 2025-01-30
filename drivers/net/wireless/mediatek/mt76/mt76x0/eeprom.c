@@ -164,7 +164,7 @@ mt76x0_set_macaddr(struct mt76x0_dev *dev, const u8 *eeprom)
 
 	if (!is_valid_ether_addr(dev->macaddr)) {
 		eth_random_addr(dev->macaddr);
-		dev_info(dev->mt76.dev,
+		dev_dbg(dev->mt76.dev,
 			 "Invalid MAC address, using random address %pM\n",
 			 dev->macaddr);
 	}
@@ -210,7 +210,7 @@ mt76x0_set_country_reg(struct mt76x0_dev *dev, u8 *eeprom)
 		idx = val - 32 + 8;
 
 	if (idx != -1)
-		dev_info(dev->mt76.dev,
+		dev_dbg(dev->mt76.dev,
 			 "EEPROM country region %02hhx (channels %hhd-%hhd)\n",
 			 val, chan_bounds[idx].start,
 			 chan_bounds[idx].start + chan_bounds[idx].num - 1);
@@ -424,7 +424,7 @@ mt76x0_eeprom_init(struct mt76x0_dev *dev)
 		dev_warn(dev->mt76.dev,
 			 "Warning: unsupported EEPROM version %02hhx\n",
 			 eeprom[MT_EE_VERSION_EE]);
-	dev_info(dev->mt76.dev, "EEPROM ver:%02hhx fae:%02hhx\n",
+	dev_dbg(dev->mt76.dev, "EEPROM ver:%02hhx fae:%02hhx\n",
 		 eeprom[MT_EE_VERSION_EE], eeprom[MT_EE_VERSION_FAE]);
 
 	mt76x0_set_macaddr(dev, eeprom);

@@ -321,7 +321,7 @@ static int sp5100_tco_setupdevice(struct device *dev,
 		goto unreg_region;
 	}
 
-	dev_info(dev, "Using 0x%08x for watchdog MMIO address\n", mmio_addr);
+	dev_dbg(dev, "Using 0x%08x for watchdog MMIO address\n", mmio_addr);
 
 	/* Setup the watchdog timer */
 	tco_timer_enable(tco);
@@ -396,7 +396,7 @@ static int sp5100_tco_probe(struct platform_device *pdev)
 	wdd->max_timeout = 0xffff;
 
 	if (watchdog_init_timeout(wdd, heartbeat, NULL))
-		dev_info(dev, "timeout value invalid, using %d\n",
+		dev_dbg(dev, "timeout value invalid, using %d\n",
 			 wdd->timeout);
 	watchdog_set_nowayout(wdd, nowayout);
 	watchdog_stop_on_reboot(wdd);
@@ -414,7 +414,7 @@ static int sp5100_tco_probe(struct platform_device *pdev)
 	}
 
 	/* Show module parameters */
-	dev_info(dev, "initialized. heartbeat=%d sec (nowayout=%d)\n",
+	dev_dbg(dev, "initialized. heartbeat=%d sec (nowayout=%d)\n",
 		 wdd->timeout, nowayout);
 
 	return 0;
@@ -462,7 +462,7 @@ static int __init sp5100_tco_init(void)
 	if (!sp5100_tco_pci)
 		return -ENODEV;
 
-	pr_info("SP5100/SB800 TCO WatchDog Timer Driver\n");
+	pr_debug("SP5100/SB800 TCO WatchDog Timer Driver\n");
 
 	err = platform_driver_register(&sp5100_tco_driver);
 	if (err)

@@ -193,7 +193,7 @@ static int altera_tse_mdio_create(struct net_device *dev, unsigned int id)
 	}
 
 	if (netif_msg_drv(priv))
-		netdev_info(dev, "MDIO bus %s: created\n", mdio->id);
+		netdev_dbg(dev, "MDIO bus %s: created\n", mdio->id);
 
 	priv->mdio = mdio;
 	return 0;
@@ -211,7 +211,7 @@ static void altera_tse_mdio_destroy(struct net_device *dev)
 		return;
 
 	if (netif_msg_drv(priv))
-		netdev_info(dev, "MDIO bus %s: removed\n",
+		netdev_dbg(dev, "MDIO bus %s: removed\n",
 			    priv->mdio->id);
 
 	mdiobus_unregister(priv->mdio);
@@ -426,7 +426,7 @@ static int tse_rx(struct altera_tse_private *priv, int limit)
 				 priv->rx_ring[entry].len, DMA_FROM_DEVICE);
 
 		if (netif_msg_pktdata(priv)) {
-			netdev_info(priv->dev, "frame received %d bytes\n",
+			netdev_dbg(priv->dev, "frame received %d bytes\n",
 				    pktlength);
 			print_hex_dump(KERN_ERR, "data: ", DUMP_PREFIX_OFFSET,
 				       16, 1, skb->data, pktlength, true);
@@ -1119,7 +1119,7 @@ static int init_sgmii_pcs(struct net_device *dev)
 		sgmii_pcs_scratch_test(priv, 0xffff) &&
 		sgmii_pcs_scratch_test(priv, 0xa5a5) &&
 		sgmii_pcs_scratch_test(priv, 0x5a5a)) {
-		netdev_info(dev, "PCS PHY ID: 0x%04x%04x\n",
+		netdev_dbg(dev, "PCS PHY ID: 0x%04x%04x\n",
 				sgmii_pcs_read(priv, MII_PHYSID1),
 				sgmii_pcs_read(priv, MII_PHYSID2));
 	} else {
@@ -1146,7 +1146,7 @@ static int init_sgmii_pcs(struct net_device *dev)
 	sgmii_pcs_write(priv, MII_BMCR, tmp_reg);
 	for (n = 0; n < SGMII_PCS_SW_RESET_TIMEOUT; n++) {
 		if (!(sgmii_pcs_read(priv, MII_BMCR) & BMCR_RESET)) {
-			netdev_info(dev, "SGMII PCS block initialised OK\n");
+			netdev_dbg(dev, "SGMII PCS block initialised OK\n");
 			return 0;
 		}
 		udelay(1);
@@ -1594,7 +1594,7 @@ static int altera_tse_probe(struct platform_device *pdev)
 	priv->revision = ioread32(&priv->mac_dev->megacore_revision);
 
 	if (netif_msg_probe(priv))
-		dev_info(&pdev->dev, "Altera TSE MAC version %d.%d at 0x%08lx irq %d/%d\n",
+		dev_dbg(&pdev->dev, "Altera TSE MAC version %d.%d at 0x%08lx irq %d/%d\n",
 			 (priv->revision >> 8) & 0xff,
 			 priv->revision & 0xff,
 			 (unsigned long) control_port->start, priv->rx_irq,

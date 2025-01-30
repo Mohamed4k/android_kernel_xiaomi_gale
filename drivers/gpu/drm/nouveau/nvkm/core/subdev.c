@@ -96,7 +96,7 @@ nvkm_subdev_intr(struct nvkm_subdev *subdev)
 }
 
 int
-nvkm_subdev_info(struct nvkm_subdev *subdev, u64 mthd, u64 *data)
+nvkm_subdev_dbg(struct nvkm_subdev *subdev, u64 mthd, u64 *data)
 {
 	if (subdev->func->info)
 		return subdev->func->info(subdev, mthd, data);

@@ -730,24 +730,24 @@ void
 ath5k_ani_print_counters(struct ath5k_hw *ah)
 {
 	/* clears too */
-	pr_notice("ACK fail\t%d\n", ath5k_hw_reg_read(ah, AR5K_ACK_FAIL));
-	pr_notice("RTS fail\t%d\n", ath5k_hw_reg_read(ah, AR5K_RTS_FAIL));
-	pr_notice("RTS success\t%d\n", ath5k_hw_reg_read(ah, AR5K_RTS_OK));
-	pr_notice("FCS error\t%d\n", ath5k_hw_reg_read(ah, AR5K_FCS_FAIL));
+	pr_debug("ACK fail\t%d\n", ath5k_hw_reg_read(ah, AR5K_ACK_FAIL));
+	pr_debug("RTS fail\t%d\n", ath5k_hw_reg_read(ah, AR5K_RTS_FAIL));
+	pr_debug("RTS success\t%d\n", ath5k_hw_reg_read(ah, AR5K_RTS_OK));
+	pr_debug("FCS error\t%d\n", ath5k_hw_reg_read(ah, AR5K_FCS_FAIL));
 
 	/* no clear */
-	pr_notice("tx\t%d\n", ath5k_hw_reg_read(ah, AR5K_PROFCNT_TX));
-	pr_notice("rx\t%d\n", ath5k_hw_reg_read(ah, AR5K_PROFCNT_RX));
-	pr_notice("busy\t%d\n", ath5k_hw_reg_read(ah, AR5K_PROFCNT_RXCLR));
-	pr_notice("cycles\t%d\n", ath5k_hw_reg_read(ah, AR5K_PROFCNT_CYCLE));
+	pr_debug("tx\t%d\n", ath5k_hw_reg_read(ah, AR5K_PROFCNT_TX));
+	pr_debug("rx\t%d\n", ath5k_hw_reg_read(ah, AR5K_PROFCNT_RX));
+	pr_debug("busy\t%d\n", ath5k_hw_reg_read(ah, AR5K_PROFCNT_RXCLR));
+	pr_debug("cycles\t%d\n", ath5k_hw_reg_read(ah, AR5K_PROFCNT_CYCLE));
 
-	pr_notice("AR5K_PHYERR_CNT1\t%d\n",
+	pr_debug("AR5K_PHYERR_CNT1\t%d\n",
 		  ath5k_hw_reg_read(ah, AR5K_PHYERR_CNT1));
-	pr_notice("AR5K_PHYERR_CNT2\t%d\n",
+	pr_debug("AR5K_PHYERR_CNT2\t%d\n",
 		  ath5k_hw_reg_read(ah, AR5K_PHYERR_CNT2));
-	pr_notice("AR5K_OFDM_FIL_CNT\t%d\n",
+	pr_debug("AR5K_OFDM_FIL_CNT\t%d\n",
 		  ath5k_hw_reg_read(ah, AR5K_OFDM_FIL_CNT));
-	pr_notice("AR5K_CCK_FIL_CNT\t%d\n",
+	pr_debug("AR5K_CCK_FIL_CNT\t%d\n",
 		  ath5k_hw_reg_read(ah, AR5K_CCK_FIL_CNT));
 }
 

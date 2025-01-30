@@ -198,7 +198,7 @@ int qlcnic_fw_cmd_set_drv_version(struct qlcnic_adapter *adapter, u32 fw_cmd)
 
 	err = qlcnic_issue_cmd(adapter, &cmd);
 	if (err) {
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "Failed to set driver version in firmware\n");
 		err = -EIO;
 	}
@@ -377,7 +377,7 @@ int qlcnic_82xx_fw_cmd_create_rx_ctx(struct qlcnic_adapter *adapter)
 	recv_ctx->context_id = le16_to_cpu(prsp->context_id);
 	recv_ctx->virt_port = prsp->virt_port;
 
-	netdev_info(netdev, "Rx Context[%d] Created, state 0x%x\n",
+	netdev_dbg(netdev, "Rx Context[%d] Created, state 0x%x\n",
 		    recv_ctx->context_id, recv_ctx->state);
 	qlcnic_free_mbx_args(&cmd);
 
@@ -503,7 +503,7 @@ int qlcnic_82xx_fw_cmd_create_tx_ctx(struct qlcnic_adapter *adapter,
 			tx_ring->crb_intr_mask = ahw->pci_base0 + intr_mask;
 		}
 
-		netdev_info(netdev, "Tx Context[0x%x] Created, state 0x%x\n",
+		netdev_dbg(netdev, "Tx Context[0x%x] Created, state 0x%x\n",
 			    tx_ring->ctx_id, tx_ring->state);
 	} else {
 		netdev_err(netdev, "Failed to create tx ctx in firmware%d\n",
@@ -793,7 +793,7 @@ int qlcnic_82xx_config_intrpt(struct qlcnic_adapter *adapter, u8 op_type)
 		}
 		val = cmd.rsp.arg[1];
 		if (LSB(val)) {
-			netdev_info(netdev,
+			netdev_dbg(netdev,
 				    "failed to configure interrupt for %d\n",
 				    ahw->intr_tbl[i].id);
 			continue;
@@ -1050,7 +1050,7 @@ int qlcnic_config_port_mirroring(struct qlcnic_adapter *adapter, u8 id,
 		dev_err(dev, "Failed to configure port mirroring for vNIC function %d on eSwitch %d\n",
 			pci_func, id);
 	else
-		dev_info(dev, "Configured port mirroring for vNIC function %d on eSwitch %d\n",
+		dev_dbg(dev, "Configured port mirroring for vNIC function %d on eSwitch %d\n",
 			 pci_func, id);
 	qlcnic_free_mbx_args(&cmd);
 
@@ -1300,7 +1300,7 @@ static int __qlcnic_get_eswitch_port_config(struct qlcnic_adapter *adapter,
 	qlcnic_free_mbx_args(&cmd);
 
 	if (err == QLCNIC_RCODE_SUCCESS)
-		dev_info(dev, "Get eSwitch port config for vNIC function %d\n",
+		dev_dbg(dev, "Get eSwitch port config for vNIC function %d\n",
 			 pci_func);
 	else
 		dev_err(dev, "Failed to get eswitch port config for vNIC function %d\n",
@@ -1391,7 +1391,7 @@ int qlcnic_config_switch_port(struct qlcnic_adapter *adapter,
 		dev_err(dev, "Failed to configure eswitch for vNIC function %d\n",
 			pci_func);
 	else
-		dev_info(dev, "Configured eSwitch for vNIC function %d\n",
+		dev_dbg(dev, "Configured eSwitch for vNIC function %d\n",
 			 pci_func);
 
 	return err;

@@ -500,7 +500,7 @@ static void uevent_notify(struct charger_manager *cm, const char *event)
 	strncpy(env_str, event, UEVENT_BUF_SIZE);
 	kobject_uevent(&cm->dev->kobj, KOBJ_CHANGE);
 
-	dev_info(cm->dev, "%s\n", event);
+	dev_dbg(cm->dev, "%s\n", event);
 }
 
 /**
@@ -536,7 +536,7 @@ static void fullbatt_vchk(struct work_struct *work)
 	if (diff < 0)
 		return;
 
-	dev_info(cm->dev, "VBATT dropped %duV after full-batt\n", diff);
+	dev_dbg(cm->dev, "VBATT dropped %duV after full-batt\n", diff);
 
 	if (diff > desc->fullbatt_vchkdrop_uV) {
 		try_charger_restart(cm);
@@ -569,7 +569,7 @@ static int check_charging_duration(struct charger_manager *cm)
 		duration = curr - cm->charging_start_time;
 
 		if (duration > desc->charging_max_duration_ms) {
-			dev_info(cm->dev, "Charging duration exceed %ums\n",
+			dev_dbg(cm->dev, "Charging duration exceed %ums\n",
 				 desc->charging_max_duration_ms);
 			uevent_notify(cm, "Discharging");
 			try_charger_enable(cm, false);
@@ -580,7 +580,7 @@ static int check_charging_duration(struct charger_manager *cm)
 
 		if (duration > desc->discharging_max_duration_ms &&
 				is_ext_pwr_online(cm)) {
-			dev_info(cm->dev, "Discharging duration exceed %ums\n",
+			dev_dbg(cm->dev, "Discharging duration exceed %ums\n",
 				 desc->discharging_max_duration_ms);
 			uevent_notify(cm, "Recharging");
 			try_charger_enable(cm, true);
@@ -714,7 +714,7 @@ static bool _cm_monitor(struct charger_manager *cm)
 	 */
 	} else if (!cm->emergency_stop && is_full_charged(cm) &&
 			cm->charger_enabled) {
-		dev_info(cm->dev, "EVENT_HANDLE: Battery Fully Charged\n");
+		dev_dbg(cm->dev, "EVENT_HANDLE: Battery Fully Charged\n");
 		uevent_notify(cm, default_event_names[CM_EVENT_BATT_FULL]);
 
 		try_charger_enable(cm, false);
@@ -844,7 +844,7 @@ static void fullbatt_handler(struct charger_manager *cm)
 		cm->fullbatt_vchk_jiffies_at = 1;
 
 out:
-	dev_info(cm->dev, "EVENT_HANDLE: Battery Fully Charged\n");
+	dev_dbg(cm->dev, "EVENT_HANDLE: Battery Fully Charged\n");
 	uevent_notify(cm, default_event_names[CM_EVENT_BATT_FULL]);
 }
 
@@ -1107,7 +1107,7 @@ static bool cm_setup_timer(void)
 			wakeup_ms < CM_RTC_SMALL * MSEC_PER_SEC)
 			wakeup_ms = 2 * CM_RTC_SMALL * MSEC_PER_SEC;
 
-		pr_info("Charger Manager wakeup timer: %u ms\n", wakeup_ms);
+		pr_debug("Charger Manager wakeup timer: %u ms\n", wakeup_ms);
 
 		now = ktime_get_boottime();
 		add = ktime_set(wakeup_ms / MSEC_PER_SEC,
@@ -1142,7 +1142,7 @@ static void charger_extcon_work(struct work_struct *work)
 			return;
 		}
 
-		pr_info("Set current limit of %s : %duA ~ %duA\n",
+		pr_debug("Set current limit of %s : %duA ~ %duA\n",
 			cable->charger->regulator_name,
 			cable->min_uA, cable->max_uA);
 	}
@@ -1210,7 +1210,7 @@ static int charger_extcon_init(struct charger_manager *cm,
 	ret = extcon_register_interest(&cable->extcon_dev,
 			cable->extcon_name, cable->name, &cable->nb);
 	if (ret < 0) {
-		pr_info("Cannot register extcon_dev for %s(cable: %s)\n",
+		pr_debug("Cannot register extcon_dev for %s(cable: %s)\n",
 			cable->extcon_name, cable->name);
 	}
 
@@ -1415,7 +1415,7 @@ static int charger_manager_register_sysfs(struct charger_manager *cm)
 				!chargers_externally_control)
 			chargers_externally_control = 0;
 
-		dev_info(cm->dev, "'%s' regulator's externally_control is %d\n",
+		dev_dbg(cm->dev, "'%s' regulator's externally_control is %d\n",
 			 charger->regulator_name, charger->externally_control);
 
 		ret = sysfs_create_group(&cm->charger_psy->dev.kobj,
@@ -1657,18 +1657,18 @@ static int charger_manager_probe(struct platform_device *pdev)
 	 * Users may intentionally ignore those features.
 	 */
 	if (desc->fullbatt_uV == 0) {
-		dev_info(&pdev->dev, "Ignoring full-battery voltage threshold as it is not supplied\n");
+		dev_dbg(&pdev->dev, "Ignoring full-battery voltage threshold as it is not supplied\n");
 	}
 	if (!desc->fullbatt_vchkdrop_ms || !desc->fullbatt_vchkdrop_uV) {
-		dev_info(&pdev->dev, "Disabling full-battery voltage drop checking mechanism as it is not supplied\n");
+		dev_dbg(&pdev->dev, "Disabling full-battery voltage drop checking mechanism as it is not supplied\n");
 		desc->fullbatt_vchkdrop_ms = 0;
 		desc->fullbatt_vchkdrop_uV = 0;
 	}
 	if (desc->fullbatt_soc == 0) {
-		dev_info(&pdev->dev, "Ignoring full-battery soc(state of charge) threshold as it is not supplied\n");
+		dev_dbg(&pdev->dev, "Ignoring full-battery soc(state of charge) threshold as it is not supplied\n");
 	}
 	if (desc->fullbatt_full_capacity == 0) {
-		dev_info(&pdev->dev, "Ignoring full-battery full capacity threshold as it is not supplied\n");
+		dev_dbg(&pdev->dev, "Ignoring full-battery full capacity threshold as it is not supplied\n");
 	}
 
 	if (!desc->charger_regulators || desc->num_charger_regulators < 1) {
@@ -1712,7 +1712,7 @@ static int charger_manager_probe(struct platform_device *pdev)
 
 	if (!desc->charging_max_duration_ms ||
 			!desc->discharging_max_duration_ms) {
-		dev_info(&pdev->dev, "Cannot limit charging duration checking mechanism to prevent overcharge/overheat and control discharging duration\n");
+		dev_dbg(&pdev->dev, "Cannot limit charging duration checking mechanism to prevent overcharge/overheat and control discharging duration\n");
 		desc->charging_max_duration_ms = 0;
 		desc->discharging_max_duration_ms = 0;
 	}

@@ -518,7 +518,7 @@ static enum drm_mode_status decon_mode_valid(struct exynos_drm_crtc *crtc,
 	if (ctx->irq)
 		return MODE_OK;
 
-	dev_info(ctx->dev, "Sink requires %s mode, but appropriate interrupt is not provided.\n",
+	dev_dbg(ctx->dev, "Sink requires %s mode, but appropriate interrupt is not provided.\n",
 			crtc->i80_mode ? "command" : "video");
 
 	return MODE_BAD;

@@ -1467,7 +1467,7 @@ static int ks_read_selftest(struct ks_net *ks)
 		ret |= 2;
 	}
 
-	netdev_info(ks->netdev, "the selftest passes\n");
+	netdev_dbg(ks->netdev, "the selftest passes\n");
 	return ret;
 }
 
@@ -1611,7 +1611,7 @@ static int ks8851_probe(struct platform_device *pdev)
 	ks->mii.mdio_read       = ks_phy_read;
 	ks->mii.mdio_write      = ks_phy_write;
 
-	netdev_info(netdev, "message enable is %d\n", msg_enable);
+	netdev_dbg(netdev, "message enable is %d\n", msg_enable);
 	/* set the default message enable */
 	ks->msg_enable = netif_msg_init(msg_enable, (NETIF_MSG_DRV |
 						     NETIF_MSG_PROBE |
@@ -1665,9 +1665,9 @@ static int ks8851_probe(struct platform_device *pdev)
 	if (!is_valid_ether_addr(ks->mac_addr)) {
 		/* Use random MAC address if none passed */
 		eth_random_addr(ks->mac_addr);
-		netdev_info(netdev, "Using random mac address\n");
+		netdev_dbg(netdev, "Using random mac address\n");
 	}
-	netdev_info(netdev, "Mac address is: %pM\n", ks->mac_addr);
+	netdev_dbg(netdev, "Mac address is: %pM\n", ks->mac_addr);
 
 	memcpy(netdev->dev_addr, ks->mac_addr, ETH_ALEN);
 
@@ -1675,7 +1675,7 @@ static int ks8851_probe(struct platform_device *pdev)
 
 	id = ks_rdreg16(ks, KS_CIDER);
 
-	netdev_info(netdev, "Found chip, family: 0x%x, id: 0x%x, rev: 0x%x\n",
+	netdev_dbg(netdev, "Found chip, family: 0x%x, id: 0x%x, rev: 0x%x\n",
 		    (id >> 8) & 0xff, (id >> 4) & 0xf, (id >> 1) & 0x7);
 	return 0;
 

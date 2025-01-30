@@ -63,7 +63,7 @@ static int octeon_spi_probe(struct platform_device *pdev)
 		goto fail;
 	}
 
-	dev_info(&pdev->dev, "OCTEON SPI bus driver\n");
+	dev_dbg(&pdev->dev, "OCTEON SPI bus driver\n");
 
 	return 0;
 fail:

@@ -647,7 +647,7 @@ static int pe2_sc_set_charger(struct chg_alg_device *alg)
 
 	if (pe2->input_current_limit1 == 0 ||
 		pe2->charging_current_limit1 == 0) {
-		pr_notice("input/charging current is 0, end PE2\n");
+		pr_debug("input/charging current is 0, end PE2\n");
 		return -1;
 	}
 
@@ -720,7 +720,7 @@ static int pe2_dcs_set_charger(struct chg_alg_device *alg)
 	if (pe2->input_current_limit1 == 0 ||
 		pe2->charging_current_limit1 == 0 ||
 		pe2->charging_current_limit2 == 0) {
-		pr_notice("input/charging current is 0, end PE2\n");
+		pr_debug("input/charging current is 0, end PE2\n");
 		return -1;
 	}
 
@@ -1163,7 +1163,7 @@ static void mtk_pe2_parse_dt(struct mtk_pe20 *pe2,
 	if (of_property_read_u32(np, "pe20_ichg_level_threshold", &val) >= 0)
 		pe2->pe20_ichg_level_threshold = val;
 	else {
-		pr_notice("use default PE20_ICHG_LEAVE_THRESHOLD:%d\n",
+		pr_debug("use default PE20_ICHG_LEAVE_THRESHOLD:%d\n",
 			PE20_ICHG_LEAVE_THRESHOLD);
 		pe2->pe20_ichg_level_threshold =
 						PE20_ICHG_LEAVE_THRESHOLD;
@@ -1172,7 +1172,7 @@ static void mtk_pe2_parse_dt(struct mtk_pe20 *pe2,
 	if (of_property_read_u32(np, "ta_start_battery_soc", &val) >= 0)
 		pe2->ta_start_battery_soc = val;
 	else {
-		pr_notice("use default TA_START_BATTERY_SOC:%d\n",
+		pr_debug("use default TA_START_BATTERY_SOC:%d\n",
 			TA_START_BATTERY_SOC);
 		pe2->ta_start_battery_soc = TA_START_BATTERY_SOC;
 	}
@@ -1180,7 +1180,7 @@ static void mtk_pe2_parse_dt(struct mtk_pe20 *pe2,
 	if (of_property_read_u32(np, "ta_stop_battery_soc", &val) >= 0)
 		pe2->ta_stop_battery_soc = val;
 	else {
-		pr_notice("use default TA_STOP_BATTERY_SOC:%d\n",
+		pr_debug("use default TA_STOP_BATTERY_SOC:%d\n",
 			TA_STOP_BATTERY_SOC);
 		pe2->ta_stop_battery_soc = TA_STOP_BATTERY_SOC;
 	}
@@ -1188,7 +1188,7 @@ static void mtk_pe2_parse_dt(struct mtk_pe20 *pe2,
 	if (of_property_read_u32(np, "min_charger_voltage", &val) >= 0)
 		pe2->min_charger_voltage = val;
 	else {
-		pr_notice("use default V_CHARGER_MIN:%d\n", PE20_V_CHARGER_MIN);
+		pr_debug("use default V_CHARGER_MIN:%d\n", PE20_V_CHARGER_MIN);
 		pe2->min_charger_voltage = PE20_V_CHARGER_MIN;
 	}
 
@@ -1196,7 +1196,7 @@ static void mtk_pe2_parse_dt(struct mtk_pe20 *pe2,
 	if (of_property_read_u32(np, "cable_imp_threshold", &val) >= 0)
 		pe2->cable_imp_threshold = val;
 	else {
-		pr_notice("use default CABLE_IMP_THRESHOLD:%d\n",
+		pr_debug("use default CABLE_IMP_THRESHOLD:%d\n",
 			PE2_CABLE_IMP_THRESHOLD);
 		pe2->cable_imp_threshold = PE2_CABLE_IMP_THRESHOLD;
 	}
@@ -1204,7 +1204,7 @@ static void mtk_pe2_parse_dt(struct mtk_pe20 *pe2,
 	if (of_property_read_u32(np, "vbat_cable_imp_threshold", &val) >= 0)
 		pe2->vbat_cable_imp_threshold = val;
 	else {
-		pr_notice("use default VBAT_CABLE_IMP_THRESHOLD:%d\n",
+		pr_debug("use default VBAT_CABLE_IMP_THRESHOLD:%d\n",
 			PE2_VBAT_CABLE_IMP_THRESHOLD);
 		pe2->vbat_cable_imp_threshold = PE2_VBAT_CABLE_IMP_THRESHOLD;
 	}
@@ -1213,7 +1213,7 @@ static void mtk_pe2_parse_dt(struct mtk_pe20 *pe2,
 	if (of_property_read_u32(np, "sc_input_current", &val) >= 0)
 		pe2->sc_input_current = val;
 	else {
-		pr_notice("use default SC_INPUT_CURRENT:%d\n",
+		pr_debug("use default SC_INPUT_CURRENT:%d\n",
 			SC_INPUT_CURRENT);
 		pe2->sc_input_current = SC_INPUT_CURRENT;
 	}
@@ -1221,7 +1221,7 @@ static void mtk_pe2_parse_dt(struct mtk_pe20 *pe2,
 	if (of_property_read_u32(np, "sc_charger_current", &val) >= 0)
 		pe2->sc_charger_current = val;
 	else {
-		pr_notice("use default SC_CHARGING_CURRENT:%d\n",
+		pr_debug("use default SC_CHARGING_CURRENT:%d\n",
 			SC_CHARGING_CURRENT);
 		pe2->sc_charger_current = SC_CHARGING_CURRENT;
 	}
@@ -1230,7 +1230,7 @@ static void mtk_pe2_parse_dt(struct mtk_pe20 *pe2,
 	if (of_property_read_u32(np, "dcs_input_current", &val) >= 0)
 		pe2->dcs_input_current = val;
 	else {
-		pr_notice("use default DCS_INPUT_CURRENT:%d\n",
+		pr_debug("use default DCS_INPUT_CURRENT:%d\n",
 			DCS_INPUT_CURRENT);
 		pe2->dcs_input_current = DCS_INPUT_CURRENT;
 	}
@@ -1238,7 +1238,7 @@ static void mtk_pe2_parse_dt(struct mtk_pe20 *pe2,
 	if (of_property_read_u32(np, "dcs_chg1_charger_current", &val) >= 0)
 		pe2->dcs_chg1_charger_current = val;
 	else {
-		pr_notice("use default DCS_CHG1_CHARGER_CURRENT:%d\n",
+		pr_debug("use default DCS_CHG1_CHARGER_CURRENT:%d\n",
 			DCS_CHG1_CHARGER_CURRENT);
 		pe2->dcs_chg1_charger_current = DCS_CHG1_CHARGER_CURRENT;
 	}
@@ -1246,7 +1246,7 @@ static void mtk_pe2_parse_dt(struct mtk_pe20 *pe2,
 	if (of_property_read_u32(np, "dcs_chg2_charger_current", &val) >= 0)
 		pe2->dcs_chg2_charger_current = val;
 	else {
-		pr_notice("use default DCS_CHG2_CHARGER_CURRENT:%d\n",
+		pr_debug("use default DCS_CHG2_CHARGER_CURRENT:%d\n",
 			SC_CHARGING_CURRENT);
 		pe2->dcs_chg2_charger_current = DCS_CHG2_CHARGER_CURRENT;
 	}
@@ -1254,7 +1254,7 @@ static void mtk_pe2_parse_dt(struct mtk_pe20 *pe2,
 	if (of_property_read_u32(np, "slave_mivr_diff", &val) >= 0)
 		pe2->pe2_slave_mivr_diff = val;
 	else {
-		pr_notice("use default slave_mivr_diff:%d\n",
+		pr_debug("use default slave_mivr_diff:%d\n",
 			PE2_SLAVE_MIVR_DIFF);
 		pe2->pe2_slave_mivr_diff = PE2_SLAVE_MIVR_DIFF;
 	}
@@ -1262,7 +1262,7 @@ static void mtk_pe2_parse_dt(struct mtk_pe20 *pe2,
 	if (of_property_read_u32(np, "dual_polling_ieoc", &val) >= 0)
 		pe2->dual_polling_ieoc = val;
 	else {
-		pr_notice("use default dual_polling_ieoc :%d\n", 750000);
+		pr_debug("use default dual_polling_ieoc :%d\n", 750000);
 		pe2->dual_polling_ieoc = 750000;
 	}
 
@@ -1273,18 +1273,18 @@ int _pe2_get_prop(struct chg_alg_device *alg,
 		enum chg_alg_props s, int *value)
 {
 
-	pr_notice("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 	if (s == ALG_MAX_VBUS)
 		*value = 10000;
 	else
-		pr_notice("%s does not support prop:%d\n", __func__, s);
+		pr_debug("%s does not support prop:%d\n", __func__, s);
 	return 0;
 }
 
 int _pe2_set_prop(struct chg_alg_device *alg,
 		enum chg_alg_props s, int value)
 {
-	pr_notice("%s %d %d\n", __func__, s, value);
+	pr_debug("%s %d %d\n", __func__, s, value);
 	return 0;
 }
 
@@ -1331,7 +1331,7 @@ static int mtk_pe2_probe(struct platform_device *pdev)
 {
 	struct mtk_pe20 *pe2 = NULL;
 
-	pr_notice("%s: starts\n", __func__);
+	pr_debug("%s: starts\n", __func__);
 
 	pe2 = devm_kzalloc(&pdev->dev, sizeof(*pe2), GFP_KERNEL);
 	if (!pe2)

@@ -312,7 +312,7 @@ static int mt6360_dbg_probe(struct platform_device *pdev)
 			return ret;
 		}
 	}
-	dev_info(&pdev->dev, "%s successfully\n", __func__);
+	dev_dbg(&pdev->dev, "%s successfully\n", __func__);
 	return 0;
 }
 

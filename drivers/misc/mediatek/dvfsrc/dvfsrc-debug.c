@@ -98,7 +98,7 @@ static void dvfsrc_setup_vopp_table(struct mtk_dvfsrc *dvfsrc)
 	}
 
 	for (i = 0; i < num_vopp; i++)
-		dev_info(dvfsrc->dev, "dvfsrc gear uv[%d] = %d\n",
+		dev_dbg(dvfsrc->dev, "dvfsrc gear uv[%d] = %d\n",
 			i, dvfsrc->vopp_uv_tlb[i]);
 
 }
@@ -120,7 +120,7 @@ static int dvfsrc_vcore_check(struct notifier_block *b,
 	vcore_uv = regulator_get_voltage(dvfsrc->vcore_power);
 
 	if (vcore_uv < predict_uv) {
-		dev_info(dvfsrc->dev, "VCORE CHECK FAIL= %d %d, %d\n",
+		dev_dbg(dvfsrc->dev, "VCORE CHECK FAIL= %d %d, %d\n",
 			gear, vcore_uv, predict_uv);
 		return NOTIFY_BAD;
 	}
@@ -143,18 +143,18 @@ static int dvfsrc_dump_info(struct notifier_block *b,
 	mutex_lock(&dump_lock);
 	p = dvfsrc->dump_buf;
 	config->dump_info(dvfsrc, p, dump_size);
-	pr_info("%s", dvfsrc->dump_buf);
+	pr_debug("%s", dvfsrc->dump_buf);
 	p = dvfsrc->dump_buf;
 	config->dump_reg(dvfsrc, p, dump_size);
-	pr_info("%s", dvfsrc->dump_buf);
+	pr_debug("%s", dvfsrc->dump_buf);
 	p = dvfsrc->dump_buf;
 	config->dump_record(dvfsrc, p, dump_size);
-	pr_info("%s", dvfsrc->dump_buf);
+	pr_debug("%s", dvfsrc->dump_buf);
 
 	if (config->dump_spm_info) {
 		p = dvfsrc->dump_buf;
 		config->dump_spm_info(dvfsrc, p, dump_size);
-		pr_info("%s", dvfsrc->dump_buf);
+		pr_debug("%s", dvfsrc->dump_buf);
 	}
 	mutex_unlock(&dump_lock);
 
@@ -207,7 +207,7 @@ static int mtk_dvfsrc_debug_probe(struct platform_device *pdev)
 	res = platform_get_resource_byname(parent_dev,
 			IORESOURCE_MEM, "dvfsrc");
 	if (!res) {
-		dev_info(dev, "dvfsrc debug resource not found\n");
+		dev_dbg(dev, "dvfsrc debug resource not found\n");
 		return -ENODEV;
 	}
 
@@ -229,7 +229,7 @@ static int mtk_dvfsrc_debug_probe(struct platform_device *pdev)
 	dvfsrc->vcore_power =
 		regulator_get_optional(&pdev->dev, "vcore");
 	if (IS_ERR(dvfsrc->vcore_power)) {
-		dev_info(dev, "get debug vcore failed = %ld\n",
+		dev_dbg(dev, "get debug vcore failed = %ld\n",
 			PTR_ERR(dvfsrc->vcore_power));
 		dvfsrc->vcore_power = NULL;
 	}
@@ -238,7 +238,7 @@ static int mtk_dvfsrc_debug_probe(struct platform_device *pdev)
 		dvfsrc->dvfsrc_vcore_power =
 			regulator_get_optional(&pdev->dev, "rc-vcore");
 		if (IS_ERR(dvfsrc->dvfsrc_vcore_power)) {
-			dev_info(dev, "get dvfsrc_vcore failed = %ld\n",
+			dev_dbg(dev, "get dvfsrc_vcore failed = %ld\n",
 				PTR_ERR(dvfsrc->dvfsrc_vcore_power));
 			dvfsrc->dvfsrc_vcore_power = NULL;
 		}
@@ -246,14 +246,14 @@ static int mtk_dvfsrc_debug_probe(struct platform_device *pdev)
 		dvfsrc->dvfsrc_vscp_power =
 			regulator_get_optional(&pdev->dev, "rc-vscp");
 		if (IS_ERR(dvfsrc->dvfsrc_vscp_power)) {
-			dev_info(dev, "get dvfsrc vscp failed = %ld\n",
+			dev_dbg(dev, "get dvfsrc vscp failed = %ld\n",
 				PTR_ERR(dvfsrc->dvfsrc_vscp_power));
 			dvfsrc->dvfsrc_vscp_power = NULL;
 		}
 
 		dvfsrc->path = of_icc_get(&pdev->dev, "icc-bw-port");
 		if (IS_ERR(dvfsrc->path)) {
-			dev_info(dev, "get icc-bw-port fail\n");
+			dev_dbg(dev, "get icc-bw-port fail\n");
 			dvfsrc->path = NULL;
 		}
 	}

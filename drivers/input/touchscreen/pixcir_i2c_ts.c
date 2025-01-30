@@ -502,7 +502,7 @@ static int pixcir_i2c_ts_probe(struct i2c_client *client,
 	tsdata->max_fingers = tsdata->chip->max_fingers;
 	if (tsdata->max_fingers > PIXCIR_MAX_SLOTS) {
 		tsdata->max_fingers = PIXCIR_MAX_SLOTS;
-		dev_info(dev, "Limiting maximum fingers to %d\n",
+		dev_dbg(dev, "Limiting maximum fingers to %d\n",
 			 tsdata->max_fingers);
 	}
 

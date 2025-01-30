@@ -370,7 +370,7 @@ static int at25_probe(struct spi_device *spi)
 	if (IS_ERR(at25->nvmem))
 		return PTR_ERR(at25->nvmem);
 
-	dev_info(&spi->dev, "%d %s %s eeprom%s, pagesize %u\n",
+	dev_dbg(&spi->dev, "%d %s %s eeprom%s, pagesize %u\n",
 		(chip.byte_len < 1024) ? chip.byte_len : (chip.byte_len / 1024),
 		(chip.byte_len < 1024) ? "Byte" : "KByte",
 		at25->chip.name,

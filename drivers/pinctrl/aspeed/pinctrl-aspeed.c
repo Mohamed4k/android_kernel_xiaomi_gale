@@ -438,7 +438,7 @@ int aspeed_pinmux_set_mux(struct pinctrl_dev *pctldev, unsigned int function,
 			char *functions = get_defined_functions(pdesc);
 			char *signals = get_defined_signals(pdesc);
 
-			pr_warn("No function %s found on pin %s (%d). Found signal(s) %s for function(s) %s\n",
+			pr_debug("No function %s found on pin %s (%d). Found signal(s) %s for function(s) %s\n",
 				pfunc->name, pdesc->name, pin, signals,
 				functions);
 			kfree(signals);
@@ -515,7 +515,7 @@ int aspeed_gpio_request_enable(struct pinctrl_dev *pctldev,
 	if (!funcs) {
 		char *signals = get_defined_signals(pdesc);
 
-		pr_warn("No GPIO signal type found on pin %s (%d). Found: %s\n",
+		pr_debug("No GPIO signal type found on pin %s (%d). Found: %s\n",
 			pdesc->name, offset, signals);
 		kfree(signals);
 

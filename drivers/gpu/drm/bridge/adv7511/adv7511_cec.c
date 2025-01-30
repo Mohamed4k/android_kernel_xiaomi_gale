@@ -340,7 +340,7 @@ err_cec_register:
 	cec_delete_adapter(adv7511->cec_adap);
 	adv7511->cec_adap = NULL;
 err_cec_alloc:
-	dev_info(dev, "Initializing CEC failed with error %d, disabling CEC\n",
+	dev_dbg(dev, "Initializing CEC failed with error %d, disabling CEC\n",
 		 ret);
 err_cec_parse_dt:
 	regmap_write(adv7511->regmap, ADV7511_REG_CEC_CTRL + offset,

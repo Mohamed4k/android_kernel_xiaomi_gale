@@ -29,8 +29,8 @@ struct sc080cs {
 #define qvga_dev_err(dev, format, ...) \
 			pr_err("[%s]" format, dev_name(dev), ##__VA_ARGS__)
 
-#define qvga_dev_info(dev, format, ...) \
-			pr_info("[%s]" format, dev_name(dev), ##__VA_ARGS__)
+#define qvga_dev_dbg(dev, format, ...) \
+			pr_debug("[%s]" format, dev_name(dev), ##__VA_ARGS__)
 
 #define qvga_dev_dbg(dev, format, ...) \
 			pr_debug("[%s]" format, dev_name(dev), ##__VA_ARGS__)

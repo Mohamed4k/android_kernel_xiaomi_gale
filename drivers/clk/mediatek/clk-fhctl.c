@@ -78,12 +78,12 @@ static int mtk_fhctl_parse_dt(struct mtk_fhctl *fhctl)
 		/* search for fhctl id */
 		err = of_property_read_u32(child, "mediatek,fh-id", &id);
 		if (err) {
-			dev_info(dev, "miss fh-id property: %s", child->name);
+			dev_dbg(dev, "miss fh-id property: %s", child->name);
 			return err;
 		}
 
 		if (id >= pll_num) {
-			dev_info(dev, "invalid %s fh-id:%d", child->name, id);
+			dev_dbg(dev, "invalid %s fh-id:%d", child->name, id);
 			return -EINVAL;
 		}
 
@@ -108,7 +108,7 @@ static int mtk_fhctl_parse_dt(struct mtk_fhctl *fhctl)
 							pll_data->hp_tbl,
 							tbl_size);
 			if (err) {
-				dev_info(dev, "invalid fh-tbl property of %s",
+				dev_dbg(dev, "invalid fh-tbl property of %s",
 								child->name);
 				return err;
 			}
@@ -143,7 +143,7 @@ static int __add_fh_obj_tbl(struct mtk_fhctl *pfhctl, int posi,
 			struct clk_mt_fhctl *pfh)
 {
 	if (pfhctl == NULL) {
-		pr_info("Error: null pointer pfhctl");
+		pr_debug("Error: null pointer pfhctl");
 		return -EFAULT;
 	}
 
@@ -160,14 +160,14 @@ struct clk_mt_fhctl *mtk_fh_get_fh_obj_tbl(struct mtk_fhctl *pfhctl, int posi)
 	struct clk_mt_fhctl *pfh;
 
 	if (pfhctl == NULL) {
-		pr_info("Error: null pointer pfhctl");
+		pr_debug("Error: null pointer pfhctl");
 		return ERR_PTR(-EFAULT);
 	}
 
 	size = pfhctl->pll_num;
 
 	if (posi >= size) {
-		dev_info(pfhctl->dev, "Error: size:%d posi:%d", size, posi);
+		dev_dbg(pfhctl->dev, "Error: size:%d posi:%d", size, posi);
 		return ERR_PTR(-EINVAL);
 	}
 
@@ -194,7 +194,7 @@ bool _mtk_fh_set_rate(int pll_id, unsigned long dds, int postdiv)
 
 	fhctl = __get_fhctl();
 	if (fhctl == NULL) {
-		pr_info("ERROR: fhctl is not initialized");
+		pr_debug("ERROR: fhctl is not initialized");
 		return false;
 	}
 
@@ -222,12 +222,12 @@ bool _mtk_fh_set_rate(int pll_id, unsigned long dds, int postdiv)
 		return false;
 
 	if (fh->pll_data->pll_type == FH_PLL_TYPE_NOT_SUPPORT) {
-		pr_info("ERROR: pll not support");
+		pr_debug("ERROR: pll not support");
 		return false;
 	}
 
 	if (fh->pll_data->pll_type == FH_PLL_TYPE_CPU) {
-		pr_info("ERROR: CPU hopping not support in AP side");
+		pr_debug("ERROR: CPU hopping not support in AP side");
 		return false;
 	}
 
@@ -239,7 +239,7 @@ bool _mtk_fh_set_rate(int pll_id, unsigned long dds, int postdiv)
 
 	/* Look up hopping support table */
 	if (fh->pll_data->hp_tbl == NULL) {
-		pr_info("ERROR: fh->pll_data->hp_tbl NULL!");
+		pr_debug("ERROR: fh->pll_data->hp_tbl NULL!");
 		return false;
 	}
 
@@ -331,7 +331,7 @@ static int mt_fh_plt_drv_probe(struct platform_device *pdev)
 	struct resource *res;
 	struct device_node *apmixed_node;
 
-	dev_info(&pdev->dev, "FHCTL driver probe start");
+	dev_dbg(&pdev->dev, "FHCTL driver probe start");
 
 	fhctl = devm_kmalloc(&pdev->dev, sizeof(*fhctl), GFP_KERNEL);
 	if (!fhctl)
@@ -346,7 +346,7 @@ static int mt_fh_plt_drv_probe(struct platform_device *pdev)
 	apmixed_node = of_parse_phandle(pdev->dev.of_node,
 					"mediatek,apmixed", 0);
 	if (!apmixed_node) {
-		dev_info(&pdev->dev, "fhctl: missing mediatek,apmixed node");
+		dev_dbg(&pdev->dev, "fhctl: missing mediatek,apmixed node");
 		return -ENODEV;
 	}
 	fhctl->apmixed_base = of_iomap(apmixed_node, 0);
@@ -400,14 +400,14 @@ static int mt_fh_plt_drv_probe(struct platform_device *pdev)
 		/* Init fhctl PLL regs */
 		fh_regs = __mt_fhctl_fh_regs_init(fhctl, i);
 		if (IS_ERR_OR_NULL(fh_regs)) {
-			dev_info(&pdev->dev, "ERROR: init fh_regs fail.");
+			dev_dbg(&pdev->dev, "ERROR: init fh_regs fail.");
 			return PTR_ERR(fh_regs);
 		}
 
 		fh = clk_register_fhctl_pll(&pdev->dev, &mt_fhctl_hal_ops,
 				pll_data, fh_regs);
 		if (IS_ERR(fh)) {
-			dev_info(&pdev->dev,
+			dev_dbg(&pdev->dev,
 				"register clk fhctl failed: %s",
 				pll_data->pll_name);
 			return PTR_ERR(fh);
@@ -418,7 +418,7 @@ static int mt_fh_plt_drv_probe(struct platform_device *pdev)
 		/* Add fh object to table */
 		err = __add_fh_obj_tbl(fhctl, i, fh);
 		if (err)
-			dev_info(&pdev->dev,
+			dev_dbg(&pdev->dev,
 				"add fh object %d to table failed", i);
 
 	}
@@ -427,7 +427,7 @@ static int mt_fh_plt_drv_probe(struct platform_device *pdev)
 	/* Read fhctl setting by device tree */
 	err = mtk_fhctl_parse_dt(fhctl);
 	if (err) {
-		dev_info(&pdev->dev, "ERROR mtk_fhctl_parse_dt fail");
+		dev_dbg(&pdev->dev, "ERROR mtk_fhctl_parse_dt fail");
 		return err;
 	}
 
@@ -440,10 +440,10 @@ static int mt_fh_plt_drv_probe(struct platform_device *pdev)
 
 	mtk_fh_set_rate = _mtk_fh_set_rate;
 
-	dev_info(&pdev->dev, "FHCTL Init Done");
+	dev_dbg(&pdev->dev, "FHCTL Init Done");
 
 	for (i = 0; i < fhctl->pll_num; i++)
-		dev_info(&pdev->dev, "pllid_map[%d]=%d", i, fhctl->idmap[i]);
+		dev_dbg(&pdev->dev, "pllid_map[%d]=%d", i, fhctl->idmap[i]);
 
 	/* show setting value */
 	dev_dbg(&pdev->dev, "pll_num:%d", fhctl->pll_num);
@@ -488,7 +488,7 @@ static void mt_fh_plt_drv_shutdown(struct platform_device *pdev)
 
 	list_for_each_entry(fh, &clk_mt_fhctl_list, node) {
 		if (fh->pll_data->pll_default_ssc_rate > 0) {
-			dev_info(&pdev->dev, "Shutdown to Disable SSC => PLL:%s ",
+			dev_dbg(&pdev->dev, "Shutdown to Disable SSC => PLL:%s ",
 					fh->pll_data->pll_name);
 			fh->hal_ops->pll_ssc_disable(fh);
 		}

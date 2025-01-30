@@ -161,7 +161,7 @@ static void __init zynq_clk_register_fclk(enum zynq_clk fclk,
 	enable_reg = clk_readl(fclk_gate_reg) & 1;
 	if (enable && !enable_reg) {
 		if (clk_prepare_enable(clks[fclk]))
-			pr_warn("%s: FCLK%u enable failed\n", __func__,
+			pr_debug("%s: FCLK%u enable failed\n", __func__,
 					fclk - fclk0);
 	}
 	kfree(mux_name);
@@ -238,7 +238,7 @@ static void __init zynq_clk_setup(struct device_node *np)
 	const char *can_mio_mux_parents[NUM_MIO_PINS];
 	const char *dummy_nm = "dummy_name";
 
-	pr_info("Zynq clock init\n");
+	pr_debug("Zynq clock init\n");
 
 	/* get clock output names from DT */
 	for (i = 0; i < clk_max; i++) {
@@ -262,7 +262,7 @@ static void __init zynq_clk_setup(struct device_node *np)
 	/* ps_clk */
 	ret = of_property_read_u32(np, "ps-clk-frequency", &tmp);
 	if (ret) {
-		pr_warn("ps_clk frequency not specified, using 33 MHz.\n");
+		pr_debug("ps_clk frequency not specified, using 33 MHz.\n");
 		tmp = 33333333;
 	}
 	ps_clk = clk_register_fixed_rate(NULL, "ps_clk", NULL, 0, tmp);
@@ -513,10 +513,10 @@ static void __init zynq_clk_setup(struct device_node *np)
 	tmp = clk_readl(SLCR_DBG_CLK_CTRL);
 	if (tmp & DBG_CLK_CTRL_CLKACT_TRC)
 		if (clk_prepare_enable(clks[dbg_trc]))
-			pr_warn("%s: trace clk enable failed\n", __func__);
+			pr_debug("%s: trace clk enable failed\n", __func__);
 	if (tmp & DBG_CLK_CTRL_CPU_1XCLKACT)
 		if (clk_prepare_enable(clks[dbg_apb]))
-			pr_warn("%s: debug APB clk enable failed\n", __func__);
+			pr_debug("%s: debug APB clk enable failed\n", __func__);
 
 	/* One gated clock for all APER clocks. */
 	clks[dma] = clk_register_gate(NULL, clk_output_name[dma],
@@ -616,7 +616,7 @@ void __init zynq_clock_init(void)
 		goto np_err;
 	}
 
-	pr_info("%s: clkc starts at %p\n", __func__, zynq_clkc_base);
+	pr_debug("%s: clkc starts at %p\n", __func__, zynq_clkc_base);
 
 	of_node_put(slcr);
 	of_node_put(np);

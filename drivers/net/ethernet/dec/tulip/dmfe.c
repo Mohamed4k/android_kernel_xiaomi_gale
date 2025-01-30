@@ -164,7 +164,7 @@
 	} while (0)
 
 #define SHOW_MEDIA_TYPE(mode)				\
-	pr_info("Change Speed to %sMhz %s duplex\n" ,	\
+	pr_debug("Change Speed to %sMhz %s duplex\n" ,	\
 		(mode & 1) ? "100":"10",		\
 		(mode & 4) ? "full":"half");
 
@@ -373,7 +373,7 @@ static int dmfe_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	DMFE_DBUG(0, "dmfe_init_one()", 0);
 
 	if (!printed_version++)
-		pr_info("%s\n", version);
+		pr_debug("%s\n", version);
 
 	/*
 	 *	SPARC on-board DM910x chips should be handled by the main
@@ -385,7 +385,7 @@ static int dmfe_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		struct device_node *dp = pci_device_to_OF_node(pdev);
 
 		if (dp && of_get_property(dp, "local-mac-address", NULL)) {
-			pr_info("skipping on-board DM910x (use tulip)\n");
+			pr_debug("skipping on-board DM910x (use tulip)\n");
 			return -ENODEV;
 		}
 	}
@@ -398,7 +398,7 @@ static int dmfe_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	SET_NETDEV_DEV(dev, &pdev->dev);
 
 	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) {
-		pr_warn("32-bit PCI DMA not available\n");
+		pr_debug("32-bit PCI DMA not available\n");
 		err = -ENODEV;
 		goto err_out_free;
 	}
@@ -498,7 +498,7 @@ static int dmfe_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (err)
 		goto err_out_unmap;
 
-	dev_info(&dev->dev, "Davicom DM%04lx at pci%s, %pM, irq %d\n",
+	dev_dbg(&dev->dev, "Davicom DM%04lx at pci%s, %pM, irq %d\n",
 		 ent->driver_data >> 16,
 		 pci_name(pdev), dev->dev_addr, pdev->irq);
 
@@ -2212,7 +2212,7 @@ static int __init dmfe_init_module(void)
 {
 	int rc;
 
-	pr_info("%s\n", version);
+	pr_debug("%s\n", version);
 	printed_version = 1;
 
 	DMFE_DBUG(0, "init_module() ", debug);

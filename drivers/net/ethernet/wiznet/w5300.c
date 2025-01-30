@@ -598,7 +598,7 @@ static int w5300_hw_probe(struct platform_device *pdev)
 			priv->link_gpio = -EINVAL;
 	}
 
-	netdev_info(ndev, "at 0x%llx irq %d\n", (u64)mem->start, irq);
+	netdev_dbg(ndev, "at 0x%llx irq %d\n", (u64)mem->start, irq);
 	return 0;
 }
 

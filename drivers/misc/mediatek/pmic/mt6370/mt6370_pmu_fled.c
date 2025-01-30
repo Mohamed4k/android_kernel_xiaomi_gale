@@ -103,7 +103,7 @@ static irqreturn_t mt6370_pmu_fled2_strb_to_irq_handler(int irq, void *data)
 {
 	struct mt6370_pmu_fled_data *fi = (struct mt6370_pmu_fled_data *)data;
 
-	dev_info(fi->dev, "%s occurred\n", __func__);
+	dev_dbg(fi->dev, "%s occurred\n", __func__);
 	return IRQ_HANDLED;
 }
 
@@ -111,7 +111,7 @@ static irqreturn_t mt6370_pmu_fled1_strb_to_irq_handler(int irq, void *data)
 {
 	struct mt6370_pmu_fled_data *fi = (struct mt6370_pmu_fled_data *)data;
 
-	dev_info(fi->dev, "%s occurred\n", __func__);
+	dev_dbg(fi->dev, "%s occurred\n", __func__);
 	return IRQ_HANDLED;
 }
 
@@ -173,7 +173,7 @@ static inline int mt6370_fled_parse_dt(struct device *dev,
 	u32 val = 0;
 	unsigned char regval;
 
-	pr_info("%s start\n", __func__);
+	pr_debug("%s start\n", __func__);
 	if (!np) {
 		pr_err("%s cannot mt6370 fled dts node\n", __func__);
 		return -ENODEV;
@@ -183,7 +183,7 @@ static inline int mt6370_fled_parse_dt(struct device *dev,
 	if (ret < 0)
 		pr_err("%s use default torch cur\n", __func__);
 	else {
-		pr_info("%s use torch cur %d\n", __func__, val);
+		pr_debug("%s use torch cur %d\n", __func__, val);
 		regval = (val > 400000) ? 30 : (val - 25000)/12500;
 		mt6370_pmu_reg_update_bits(fi->chip,
 				fi->fled_tor_cur_reg,
@@ -195,7 +195,7 @@ static inline int mt6370_fled_parse_dt(struct device *dev,
 	if (ret < 0)
 		pr_err("%s use default strobe cur\n", __func__);
 	else {
-		pr_info("%s use strobe cur %d\n", __func__, val);
+		pr_debug("%s use strobe cur %d\n", __func__, val);
 		regval = (val > 1500000) ? 112 : (val - 100000)/12500;
 		mt6370_pmu_reg_update_bits(fi->chip,
 				fi->fled_strb_cur_reg,
@@ -207,7 +207,7 @@ static inline int mt6370_fled_parse_dt(struct device *dev,
 	if (ret < 0)
 		pr_err("%s use default strobe timeout\n", __func__);
 	else {
-		pr_info("%s use strobe timeout %d\n", __func__, val);
+		pr_debug("%s use strobe timeout %d\n", __func__, val);
 		regval = (val > 2432) ? 74 : (val - 64)/32;
 		mt6370_pmu_reg_update_bits(fi->chip,
 				MT6370_PMU_REG_FLEDSTRBCTRL,
@@ -323,7 +323,7 @@ static int mt6370_fled_set_mode(struct rt_fled_dev *info,
 		ret |= mt6370_pmu_reg_set_bit(fi->chip,
 				MT6370_PMU_REG_FLEDEN, MT6370_TORCH_EN_MASK);
 		udelay(500);
-		dev_info(fi->dev, "set to torch mode with 500 us delay\n");
+		dev_dbg(fi->dev, "set to torch mode with 500 us delay\n");
 		mt6370_global_mode = mode;
 		if (fi->id == MT6370_FLED1)
 			mt6370_fled_on |= 1 << MT6370_FLED1;
@@ -339,7 +339,7 @@ static int mt6370_fled_set_mode(struct rt_fled_dev *info,
 		ret |= mt6370_pmu_reg_set_bit(fi->chip,
 			MT6370_PMU_REG_FLEDEN, MT6370_STROBE_EN_MASK);
 		mdelay(5);
-		dev_info(fi->dev, "set to flash mode with 400/4500 us delay\n");
+		dev_dbg(fi->dev, "set to flash mode with 400/4500 us delay\n");
 		mt6370_global_mode = mode;
 		if (fi->id == MT6370_FLED1)
 			mt6370_fled_on |= 1 << MT6370_FLED1;
@@ -350,7 +350,7 @@ static int mt6370_fled_set_mode(struct rt_fled_dev *info,
 		ret = mt6370_pmu_reg_clr_bit(fi->chip,
 				MT6370_PMU_REG_FLEDEN,
 				fi->id == MT6370_FLED1 ? 0x02 : 0x01);
-		dev_info(fi->dev, "set to off mode\n");
+		dev_dbg(fi->dev, "set to off mode\n");
 		if (fi->id == MT6370_FLED1)
 			mt6370_fled_on &= ~(1 << MT6370_FLED1);
 		if (fi->id == MT6370_FLED2)
@@ -416,10 +416,10 @@ static int mt6370_fled_set_mode(struct rt_fled_dev *info,
 		return -EINVAL;
 	}
 	if (ret < 0)
-		dev_info(fi->dev, "%s set %s mode fail\n", __func__,
+		dev_dbg(fi->dev, "%s set %s mode fail\n", __func__,
 			 flashlight_mode_str[mode]);
 	else
-		dev_info(fi->dev, "%s set %s\n", __func__,
+		dev_dbg(fi->dev, "%s set %s\n", __func__,
 			 flashlight_mode_str[mode]);
 out:
 	mutex_unlock(&fled_lock);
@@ -731,7 +731,7 @@ static int mt6370_pmu_fled_probe(struct platform_device *pdev)
 	bool use_dt = pdev->dev.of_node;
 	int ret;
 
-	pr_info("%s: (%s) id = %d\n", __func__, MT6370_PMU_FLED_DRV_VERSION,
+	pr_debug("%s: (%s) id = %d\n", __func__, MT6370_PMU_FLED_DRV_VERSION,
 						pdev->id);
 	fled_data = mt6370_find_info(pdev->id);
 	if (fled_data == NULL) {
@@ -753,7 +753,7 @@ static int mt6370_pmu_fled_probe(struct platform_device *pdev)
 	else
 		fled_data->base.name = "mt-flash-led2";
 	fled_data->base.chip_name = "mt6370_pmu_fled";
-	pr_info("%s flash name = %s\n", __func__, fled_data->base.name);
+	pr_debug("%s flash name = %s\n", __func__, fled_data->base.name);
 	fled_data->mt_flash_dev = platform_device_register_resndata(
 			fled_data->dev, "rt-flash-led",
 			fled_data->id, NULL, 0, NULL, 0);
@@ -769,9 +769,9 @@ static int mt6370_pmu_fled_probe(struct platform_device *pdev)
 
 		mt6370_pmu_fled_irq_register(pdev);
 		mt6370_fled_inited = 1;
-		dev_info(&pdev->dev, "mt6370 fled inited\n");
+		dev_dbg(&pdev->dev, "mt6370 fled inited\n");
 	}
-	dev_info(&pdev->dev, "%s successfully\n", __func__);
+	dev_dbg(&pdev->dev, "%s successfully\n", __func__);
 	return 0;
 }
 
@@ -780,7 +780,7 @@ static int mt6370_pmu_fled_remove(struct platform_device *pdev)
 	struct mt6370_pmu_fled_data *fled_data = platform_get_drvdata(pdev);
 
 	platform_device_unregister(fled_data->mt_flash_dev);
-	dev_info(fled_data->dev, "%s successfully\n", __func__);
+	dev_dbg(fled_data->dev, "%s successfully\n", __func__);
 	return 0;
 }
 

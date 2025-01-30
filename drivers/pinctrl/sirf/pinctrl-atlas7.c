@@ -5461,7 +5461,7 @@ static int atlas7_pinmux_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, pmx);
 
-	dev_info(&pdev->dev, "initialized atlas7 pinmux driver\n");
+	dev_dbg(&pdev->dev, "initialized atlas7 pinmux driver\n");
 
 	return 0;
 
@@ -5802,7 +5802,7 @@ static void atlas7_gpio_handle_irq(struct irq_desc *desc)
 
 	status = readl(ATLAS7_GPIO_INT_STATUS(bank));
 	if (!status) {
-		pr_warn("%s: gpio [%s] status %#x no interrupt is flagged\n",
+		pr_debug("%s: gpio [%s] status %#x no interrupt is flagged\n",
 			__func__, gc->label, status);
 		handle_bad_irq(desc);
 		return;
@@ -6096,7 +6096,7 @@ static int atlas7_gpio_probe(struct platform_device *pdev)
 	}
 
 	platform_set_drvdata(pdev, a7gc);
-	dev_info(&pdev->dev, "add to system.\n");
+	dev_dbg(&pdev->dev, "add to system.\n");
 	return 0;
 failed:
 	return ret;

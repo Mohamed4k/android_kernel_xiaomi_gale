@@ -178,7 +178,7 @@ static int eeprom_probe(struct i2c_client *client,
 		name[3] = i2c_smbus_read_byte_data(client, 0x83);
 
 		if (!memcmp(name, "PCG-", 4) || !memcmp(name, "VGN-", 4)) {
-			dev_info(&client->dev, "Vaio EEPROM detected, "
+			dev_dbg(&client->dev, "Vaio EEPROM detected, "
 				 "enabling privacy protection\n");
 			data->nature = VAIO;
 		}

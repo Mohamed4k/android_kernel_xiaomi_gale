@@ -90,7 +90,7 @@ int lbs_process_command_response(struct lbs_private *priv, u8 *data, u32 len)
 	lbs_deb_hex(LBS_DEB_CMD, "CMD_RESP", (void *) resp, len);
 
 	if (resp->seqnum != priv->cur_cmd->cmdbuf->seqnum) {
-		netdev_info(priv->dev,
+		netdev_dbg(priv->dev,
 			    "Received CMD_RESP with invalid sequence %d (expected %d)\n",
 			    le16_to_cpu(resp->seqnum),
 			    le16_to_cpu(priv->cur_cmd->cmdbuf->seqnum));
@@ -100,7 +100,7 @@ int lbs_process_command_response(struct lbs_private *priv, u8 *data, u32 len)
 	}
 	if (respcmd != CMD_RET(curcmd) &&
 	    respcmd != CMD_RET_802_11_ASSOCIATE && curcmd != CMD_802_11_ASSOCIATE) {
-		netdev_info(priv->dev, "Invalid CMD_RESP %x to command %x!\n",
+		netdev_dbg(priv->dev, "Invalid CMD_RESP %x to command %x!\n",
 			    respcmd, curcmd);
 		spin_unlock_irqrestore(&priv->driver_lock, flags);
 		ret = -1;
@@ -110,7 +110,7 @@ int lbs_process_command_response(struct lbs_private *priv, u8 *data, u32 len)
 	if (resp->result == cpu_to_le16(0x0004)) {
 		/* 0x0004 means -EAGAIN. Drop the response, let it time out
 		   and be resubmitted */
-		netdev_info(priv->dev,
+		netdev_dbg(priv->dev,
 			    "Firmware returns DEFER to command %x. Will let it time out...\n",
 			    le16_to_cpu(resp->command));
 		spin_unlock_irqrestore(&priv->driver_lock, flags);
@@ -344,7 +344,7 @@ int lbs_process_event(struct lbs_private *priv, u32 event)
 
 	case MACREG_INT_CODE_MESH_AUTO_STARTED:
 		/* Ignore spurious autostart events */
-		netdev_info(priv->dev, "EVENT: MESH_AUTO_STARTED (ignoring)\n");
+		netdev_dbg(priv->dev, "EVENT: MESH_AUTO_STARTED (ignoring)\n");
 		break;
 
 	default:

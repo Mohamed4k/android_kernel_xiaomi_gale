@@ -78,7 +78,7 @@ static int dra7_apll_enable(struct clk_hw *hw)
 	}
 
 	if (i == MAX_APLL_WAIT_TRIES) {
-		pr_warn("clock: %s failed transition to '%s'\n",
+		pr_debug("clock: %s failed transition to '%s'\n",
 			clk_name, (state) ? "locked" : "bypassed");
 		r = -EBUSY;
 	} else
@@ -285,7 +285,7 @@ static int omap2_apll_enable(struct clk_hw *hw)
 	}
 
 	if (i == MAX_APLL_WAIT_TRIES) {
-		pr_warn("%s failed to transition to locked\n",
+		pr_debug("%s failed to transition to locked\n",
 			clk_hw_get_name(&clk->hw));
 		return -EBUSY;
 	}

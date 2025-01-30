@@ -316,7 +316,7 @@ static bool sel_valid(struct bcm_clk_sel *sel, const char *field_name,
 			return false;
 		}
 	} else {
-		pr_warn("%s: ignoring selector for %s (no parents)\n",
+		pr_debug("%s: ignoring selector for %s (no parents)\n",
 			__func__, clock_name);
 		selector_clear_exists(sel);
 		kfree(sel->parent_sel);
@@ -350,7 +350,7 @@ static bool div_valid(struct bcm_clk_div *div, const char *field_name,
 
 	if (divider_has_fraction(div))
 		if (div->u.s.frac_width > div->u.s.width) {
-			pr_warn("%s: bad %s fraction width for %s (%u > %u)\n",
+			pr_debug("%s: bad %s fraction width for %s (%u > %u)\n",
 				__func__, field_name, clock_name,
 				div->u.s.frac_width, div->u.s.width);
 			return false;
@@ -472,7 +472,7 @@ peri_clk_data_valid(struct kona_clk *bcm_clk)
 			}
 		}
 		if (!clk_requires_trigger(bcm_clk)) {
-			pr_warn("%s: ignoring trigger for %s (not needed)\n",
+			pr_debug("%s: ignoring trigger for %s (not needed)\n",
 				__func__, name);
 			trigger_clear_exists(trig);
 		}

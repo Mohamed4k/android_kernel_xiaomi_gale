@@ -1392,7 +1392,7 @@ static u16 sdhci_get_preset_value(struct sdhci_host *host)
 		preset = sdhci_readw(host, SDHCI_PRESET_FOR_HS400);
 		break;
 	default:
-		pr_warn("%s: Invalid UHS-I mode selected\n",
+		pr_debug("%s: Invalid UHS-I mode selected\n",
 			mmc_hostname(host->mmc));
 		preset = sdhci_readw(host, SDHCI_PRESET_FOR_SDR12);
 		break;
@@ -1819,7 +1819,7 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 			else if (ios->drv_type == MMC_SET_DRIVER_TYPE_D)
 				ctrl_2 |= SDHCI_CTRL_DRV_TYPE_D;
 			else {
-				pr_warn("%s: invalid driver type, default to driver type B\n",
+				pr_debug("%s: invalid driver type, default to driver type B\n",
 					mmc_hostname(mmc));
 				ctrl_2 |= SDHCI_CTRL_DRV_TYPE_B;
 			}
@@ -2025,7 +2025,7 @@ int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
 		if (!IS_ERR(mmc->supply.vqmmc)) {
 			ret = mmc_regulator_set_vqmmc(mmc, ios);
 			if (ret) {
-				pr_warn("%s: Switching to 3.3V signalling voltage failed\n",
+				pr_debug("%s: Switching to 3.3V signalling voltage failed\n",
 					mmc_hostname(mmc));
 				return -EIO;
 			}
@@ -2038,7 +2038,7 @@ int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
 		if (!(ctrl & SDHCI_CTRL_VDD_180))
 			return 0;
 
-		pr_warn("%s: 3.3V regulator output did not became stable\n",
+		pr_debug("%s: 3.3V regulator output did not became stable\n",
 			mmc_hostname(mmc));
 
 		return -EAGAIN;
@@ -2048,7 +2048,7 @@ int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
 		if (!IS_ERR(mmc->supply.vqmmc)) {
 			ret = mmc_regulator_set_vqmmc(mmc, ios);
 			if (ret) {
-				pr_warn("%s: Switching to 1.8V signalling voltage failed\n",
+				pr_debug("%s: Switching to 1.8V signalling voltage failed\n",
 					mmc_hostname(mmc));
 				return -EIO;
 			}
@@ -2070,7 +2070,7 @@ int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
 		if (ctrl & SDHCI_CTRL_VDD_180)
 			return 0;
 
-		pr_warn("%s: 1.8V regulator output did not became stable\n",
+		pr_debug("%s: 1.8V regulator output did not became stable\n",
 			mmc_hostname(mmc));
 
 		return -EAGAIN;
@@ -2080,7 +2080,7 @@ int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
 		if (!IS_ERR(mmc->supply.vqmmc)) {
 			ret = mmc_regulator_set_vqmmc(mmc, ios);
 			if (ret) {
-				pr_warn("%s: Switching to 1.2V signalling voltage failed\n",
+				pr_debug("%s: Switching to 1.2V signalling voltage failed\n",
 					mmc_hostname(mmc));
 				return -EIO;
 			}
@@ -2262,7 +2262,7 @@ static void __sdhci_execute_tuning(struct sdhci_host *host, u32 opcode)
 			mdelay(host->tuning_delay);
 	}
 
-	pr_info("%s: Tuning failed, falling back to fixed sampling clock\n",
+	pr_debug("%s: Tuning failed, falling back to fixed sampling clock\n",
 		mmc_hostname(host->mmc));
 	sdhci_reset_tuning(host);
 }
@@ -3378,7 +3378,7 @@ static int sdhci_set_dma_mask(struct sdhci_host *host)
 	if (host->flags & SDHCI_USE_64_BIT_DMA) {
 		ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
 		if (ret) {
-			pr_warn("%s: Failed to set 64-bit DMA mask.\n",
+			pr_debug("%s: Failed to set 64-bit DMA mask.\n",
 				mmc_hostname(mmc));
 			host->flags &= ~SDHCI_USE_64_BIT_DMA;
 		}
@@ -3388,7 +3388,7 @@ static int sdhci_set_dma_mask(struct sdhci_host *host)
 	if (ret) {
 		ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
 		if (ret)
-			pr_warn("%s: Failed to set 32-bit DMA mask.\n",
+			pr_debug("%s: Failed to set 32-bit DMA mask.\n",
 				mmc_hostname(mmc));
 	}
 
@@ -3502,7 +3502,7 @@ static int sdhci_allocate_bounce_buffer(struct sdhci_host *host)
 	mmc->max_seg_size = bounce_size;
 	mmc->max_req_size = bounce_size;
 
-	pr_info("%s bounce up to %u segments into one, max segment size %u bytes\n",
+	pr_debug("%s bounce up to %u segments into one, max segment size %u bytes\n",
 		mmc_hostname(mmc), max_blocks, bounce_size);
 
 	return 0;
@@ -3592,7 +3592,7 @@ int sdhci_setup_host(struct sdhci_host *host)
 			ret = host->ops->enable_dma(host);
 
 		if (ret) {
-			pr_warn("%s: No suitable DMA available - falling back to PIO\n",
+			pr_debug("%s: No suitable DMA available - falling back to PIO\n",
 				mmc_hostname(mmc));
 			host->flags &= ~(SDHCI_USE_SDMA | SDHCI_USE_ADMA);
 
@@ -3628,12 +3628,12 @@ int sdhci_setup_host(struct sdhci_host *host)
 		buf = dma_alloc_coherent(mmc_dev(mmc), host->align_buffer_sz +
 					 host->adma_table_sz, &dma, GFP_KERNEL);
 		if (!buf) {
-			pr_warn("%s: Unable to allocate ADMA buffers - falling back to standard DMA\n",
+			pr_debug("%s: Unable to allocate ADMA buffers - falling back to standard DMA\n",
 				mmc_hostname(mmc));
 			host->flags &= ~SDHCI_USE_ADMA;
 		} else if ((dma + host->align_buffer_sz) &
 			   (SDHCI_ADMA2_DESC_ALIGN - 1)) {
-			pr_warn("%s: unable to allocate aligned ADMA descriptor\n",
+			pr_debug("%s: unable to allocate aligned ADMA descriptor\n",
 				mmc_hostname(mmc));
 			host->flags &= ~SDHCI_USE_ADMA;
 			dma_free_coherent(mmc_dev(mmc), host->align_buffer_sz +
@@ -3799,7 +3799,7 @@ int sdhci_setup_host(struct sdhci_host *host)
 			host->flags &= ~SDHCI_SIGNALING_330;
 
 		if (ret) {
-			pr_warn("%s: Failed to enable vqmmc regulator: %d\n",
+			pr_debug("%s: Failed to enable vqmmc regulator: %d\n",
 				mmc_hostname(mmc), ret);
 			mmc->supply.vqmmc = ERR_PTR(-EINVAL);
 		}
@@ -4017,7 +4017,7 @@ int sdhci_setup_host(struct sdhci_host *host)
 		mmc->max_blk_size = (host->caps & SDHCI_MAX_BLOCK_MASK) >>
 				SDHCI_MAX_BLOCK_SHIFT;
 		if (mmc->max_blk_size >= 3) {
-			pr_warn("%s: Invalid maximum block size, assuming 512 bytes\n",
+			pr_debug("%s: Invalid maximum block size, assuming 512 bytes\n",
 				mmc_hostname(mmc));
 			mmc->max_blk_size = 0;
 		}
@@ -4109,7 +4109,7 @@ int __sdhci_add_host(struct sdhci_host *host)
 	if (ret)
 		goto unled;
 
-	pr_info("%s: SDHCI controller on %s [%s] using %s\n",
+	pr_debug("%s: SDHCI controller on %s [%s] using %s\n",
 		mmc_hostname(mmc), host->hw_name, dev_name(mmc_dev(mmc)),
 		(host->flags & SDHCI_USE_ADMA) ?
 		(host->flags & SDHCI_USE_64_BIT_DMA) ? "ADMA 64-bit" : "ADMA" :
@@ -4220,9 +4220,9 @@ EXPORT_SYMBOL_GPL(sdhci_free_host);
 
 static int __init sdhci_drv_init(void)
 {
-	pr_info(DRIVER_NAME
+	pr_debug(DRIVER_NAME
 		": Secure Digital Host Controller Interface driver\n");
-	pr_info(DRIVER_NAME ": Copyright(c) Pierre Ossman\n");
+	pr_debug(DRIVER_NAME ": Copyright(c) Pierre Ossman\n");
 
 	return 0;
 }

@@ -630,7 +630,7 @@ static unsigned long spll_calc_mult_div(struct pic32_sys_pll *pll,
 	}
 
 	if (!match_found) {
-		pr_warn("spll: no match found\n");
+		pr_debug("spll: no match found\n");
 		return 0;
 	}
 

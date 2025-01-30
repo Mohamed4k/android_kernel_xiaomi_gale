@@ -136,7 +136,7 @@ static int xen_wdt_probe(struct platform_device *pdev)
 	}
 
 	if (watchdog_init_timeout(&xen_wdt_dev, timeout, NULL))
-		dev_info(&pdev->dev, "timeout value invalid, using %d\n",
+		dev_dbg(&pdev->dev, "timeout value invalid, using %d\n",
 			xen_wdt_dev.timeout);
 	watchdog_set_nowayout(&xen_wdt_dev, nowayout);
 	watchdog_stop_on_reboot(&xen_wdt_dev);
@@ -149,7 +149,7 @@ static int xen_wdt_probe(struct platform_device *pdev)
 		return ret;
 	}
 
-	dev_info(&pdev->dev, "initialized (timeout=%ds, nowayout=%d)\n",
+	dev_dbg(&pdev->dev, "initialized (timeout=%ds, nowayout=%d)\n",
 		xen_wdt_dev.timeout, nowayout);
 
 	return 0;

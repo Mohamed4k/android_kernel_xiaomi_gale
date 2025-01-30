@@ -508,7 +508,7 @@ static void cpts_calc_mult_shift(struct cpts *cpts)
 
 	/* Calc overflow check period (maxsec / 2) */
 	cpts->ov_check_period = (HZ * maxsec) / 2;
-	dev_info(cpts->dev, "cpts: overflow check period %lu (jiffies)\n",
+	dev_dbg(cpts->dev, "cpts: overflow check period %lu (jiffies)\n",
 		 cpts->ov_check_period);
 
 	if (cpts->cc.mult || cpts->cc.shift)
@@ -520,7 +520,7 @@ static void cpts_calc_mult_shift(struct cpts *cpts)
 	frac = 0;
 	ns = cyclecounter_cyc2ns(&cpts->cc, freq, cpts->cc.mask, &frac);
 
-	dev_info(cpts->dev,
+	dev_dbg(cpts->dev,
 		 "CPTS: ref_clk_freq:%u calc_mult:%u calc_shift:%u error:%lld nsec/sec\n",
 		 freq, cpts->cc.mult, cpts->cc.shift, (ns - NSEC_PER_SEC));
 }

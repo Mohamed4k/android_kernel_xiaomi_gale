@@ -70,7 +70,7 @@ static void mtk_clk_mux_disable_unused(struct clk_hw *hw)
 {
 	const char *c_n = clk_hw_get_name(hw);
 
-	pr_notice("disable_unused - %s\n", c_n);
+	pr_debug("disable_unused - %s\n", c_n);
 
 	mtk_clk_mux_disable(hw);
 }
@@ -121,7 +121,7 @@ static void mtk_clk_mux_disable_setclr_unused(struct clk_hw *hw)
 {
 	const char *c_n = clk_hw_get_name(hw);
 
-	pr_notice("disable_unused - %s\n", c_n);
+	pr_debug("disable_unused - %s\n", c_n);
 
 	mtk_clk_mux_disable_setclr(hw);
 }

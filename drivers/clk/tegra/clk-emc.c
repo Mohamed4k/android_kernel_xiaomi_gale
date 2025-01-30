@@ -506,12 +506,12 @@ struct clk *tegra_clk_register_emc(void __iomem *base, struct device_node *np,
 	}
 
 	if (tegra->num_timings == 0)
-		pr_warn("%s: no memory timings registered\n", __func__);
+		pr_debug("%s: no memory timings registered\n", __func__);
 
 	tegra->emc_node = of_parse_phandle(np,
 			"nvidia,external-memory-controller", 0);
 	if (!tegra->emc_node)
-		pr_warn("%s: couldn't find node for EMC driver\n", __func__);
+		pr_debug("%s: couldn't find node for EMC driver\n", __func__);
 
 	init.name = "emc";
 	init.ops = &tegra_clk_emc_ops;

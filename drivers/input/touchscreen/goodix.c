@@ -637,7 +637,7 @@ static int goodix_read_version(struct goodix_ts_data *ts)
 
 	ts->version = get_unaligned_le16(&buf[4]);
 
-	dev_info(&ts->client->dev, "ID %d, version: %04x\n", ts->id,
+	dev_dbg(&ts->client->dev, "ID %d, version: %04x\n", ts->id,
 		 ts->version);
 
 	return 0;

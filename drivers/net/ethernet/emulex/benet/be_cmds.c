@@ -401,7 +401,7 @@ static void be_async_grp5_pvid_state_process(struct be_adapter *adapter,
 
 	if (evt->enabled) {
 		adapter->pvid = le16_to_cpu(evt->tag) & VLAN_VID_MASK;
-		dev_info(&adapter->pdev->dev, "LPVID: %d\n", adapter->pvid);
+		dev_dbg(&adapter->pdev->dev, "LPVID: %d\n", adapter->pvid);
 	} else {
 		adapter->pvid = 0;
 	}
@@ -769,7 +769,7 @@ int be_fw_wait_ready(struct be_adapter *adapter)
 		if (stage == POST_STAGE_ARMFW_RDY)
 			return 0;
 
-		dev_info(dev, "Waiting for POST, %ds elapsed\n", timeout);
+		dev_dbg(dev, "Waiting for POST, %ds elapsed\n", timeout);
 		if (msleep_interruptible(2000)) {
 			dev_err(dev, "Waiting for POST aborted\n");
 			return -EINTR;
@@ -2140,7 +2140,7 @@ int be_cmd_query_fw_cfg(struct be_adapter *adapter)
 		adapter->function_mode = le32_to_cpu(resp->function_mode);
 		adapter->function_caps = le32_to_cpu(resp->function_caps);
 		adapter->asic_rev = le32_to_cpu(resp->asic_revision) & 0xFF;
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "FW config: function_mode=0x%x, function_caps=0x%x\n",
 			 adapter->function_mode, adapter->function_caps);
 	}
@@ -2827,7 +2827,7 @@ static int be_flash_BEx(struct be_adapter *adapter,
 
 		if ((pflashcomp[i].optype == OPTYPE_NCSI_FW) &&
 		    !be_fw_ncsi_supported(adapter->fw_ver)) {
-			dev_info(dev, NCSI_UPDATE_LOG, adapter->fw_ver);
+			dev_dbg(dev, NCSI_UPDATE_LOG, adapter->fw_ver);
 			continue;
 		}
 
@@ -3110,10 +3110,10 @@ int lancer_fw_download(struct be_adapter *adapter,
 		return be_cmd_status(status);
 	}
 
-	dev_info(dev, "Firmware flashed successfully\n");
+	dev_dbg(dev, "Firmware flashed successfully\n");
 
 	if (change_status == LANCER_FW_RESET_NEEDED) {
-		dev_info(dev, "Resetting adapter to activate new FW\n");
+		dev_dbg(dev, "Resetting adapter to activate new FW\n");
 		status = lancer_physdev_ctrl(adapter,
 					     PHYSDEV_CONTROL_FW_RESET_MASK);
 		if (status) {
@@ -3121,7 +3121,7 @@ int lancer_fw_download(struct be_adapter *adapter,
 			dev_err(dev, "Reboot server to activate new FW\n");
 		}
 	} else if (change_status != LANCER_NO_RESET_NEEDED) {
-		dev_info(dev, "Reboot server to activate new FW\n");
+		dev_dbg(dev, "Reboot server to activate new FW\n");
 	}
 
 	return 0;
@@ -3208,7 +3208,7 @@ int be_fw_download(struct be_adapter *adapter, const struct firmware *fw)
 
 	dma_free_coherent(dev, flash_cmd.size, flash_cmd.va, flash_cmd.dma);
 	if (!status)
-		dev_info(dev, "Firmware flashed successfully\n");
+		dev_dbg(dev, "Firmware flashed successfully\n");
 
 	return status;
 }
@@ -4811,7 +4811,7 @@ int lancer_initiate_dump(struct be_adapter *adapter)
 	int status;
 
 	if (dump_present(adapter)) {
-		dev_info(dev, "Previous dump not cleared, not forcing dump\n");
+		dev_dbg(dev, "Previous dump not cleared, not forcing dump\n");
 		return -EEXIST;
 	}
 
@@ -5039,7 +5039,7 @@ err:
 	 */
 	if (base_status(status) == MCC_STATUS_ILLEGAL_REQUEST ||
 	    base_status(status) == MCC_STATUS_INVALID_LENGTH)
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "Adapter does not support HW error recovery\n");
 
 	mutex_unlock(&adapter->mcc_lock);

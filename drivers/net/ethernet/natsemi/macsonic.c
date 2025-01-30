@@ -311,7 +311,7 @@ static int mac_onboard_sonic_probe(struct net_device *dev)
 
 		card_present = hwreg_present((void*)ONBOARD_SONIC_REGISTERS);
 		if (!card_present) {
-			pr_info("Onboard/comm-slot SONIC not found\n");
+			pr_debug("Onboard/comm-slot SONIC not found\n");
 			return -ENODEV;
 		}
 	}
@@ -351,7 +351,7 @@ static int mac_onboard_sonic_probe(struct net_device *dev)
 		lp->dma_bitmode = SONIC_BITMODE32;
 	}
 
-	pr_info("Onboard/comm-slot SONIC, revision 0x%04x, %d bit DMA, register offset %d\n",
+	pr_debug("Onboard/comm-slot SONIC, revision 0x%04x, %d bit DMA, register offset %d\n",
 		SONIC_READ(SONIC_SR), lp->dma_bitmode ? 32 : 16,
 		lp->reg_offset);
 
@@ -379,7 +379,7 @@ static int mac_onboard_sonic_probe(struct net_device *dev)
 	/* Now look for the MAC address. */
 	mac_onboard_sonic_ethernet_addr(dev);
 
-	pr_info("SONIC ethernet @%08lx, MAC %pM, IRQ %d\n",
+	pr_debug("SONIC ethernet @%08lx, MAC %pM, IRQ %d\n",
 		dev->base_addr, dev->dev_addr, dev->irq);
 
 	/* Shared init code */
@@ -485,7 +485,7 @@ static int mac_sonic_nubus_probe_board(struct nubus_board *board, int id,
 	lp->dma_bitmode = dma_bitmode;
 	dev->irq = SLOT2IRQ(board->slot);
 
-	dev_info(&board->dev, "%s, revision 0x%04x, %d bit DMA, register offset %d\n",
+	dev_dbg(&board->dev, "%s, revision 0x%04x, %d bit DMA, register offset %d\n",
 		 board->name, SONIC_READ(SONIC_SR),
 		 lp->dma_bitmode ? 32 : 16, lp->reg_offset);
 
@@ -510,7 +510,7 @@ static int mac_sonic_nubus_probe_board(struct nubus_board *board, int id,
 	if (mac_sonic_nubus_ethernet_addr(dev, prom_addr, id) != 0)
 		return -ENODEV;
 
-	dev_info(&board->dev, "SONIC ethernet @%08lx, MAC %pM, IRQ %d\n",
+	dev_dbg(&board->dev, "SONIC ethernet @%08lx, MAC %pM, IRQ %d\n",
 		 dev->base_addr, dev->dev_addr, dev->irq);
 
 	/* Shared init code */

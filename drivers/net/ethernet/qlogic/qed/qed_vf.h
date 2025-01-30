@@ -111,7 +111,7 @@ struct channel_list_end_tlv {
 struct vfpf_acquire_tlv {
 	struct vfpf_first_tlv first_tlv;
 
-	struct vf_pf_vfdev_info {
+	struct vf_pf_vfdev_dbg {
 #define VFPF_ACQUIRE_CAP_PRE_FP_HSI     (1 << 0) /* VF pre-FP hsi version */
 #define VFPF_ACQUIRE_CAP_100G		(1 << 1) /* VF can support 100g */
 	/* A requirement for supporting multi-Tx queues on a single queue-zone,
@@ -136,7 +136,7 @@ struct vfpf_acquire_tlv {
 		u8 eth_fp_hsi_major;
 		u8 eth_fp_hsi_minor;
 		u8 padding[3];
-	} vfdev_info;
+	} vfdev_dbg;
 
 	struct vf_pf_resc_request resc_request;
 
@@ -177,7 +177,7 @@ struct pfvf_stats_info {
 struct pfvf_acquire_resp_tlv {
 	struct pfvf_tlv hdr;
 
-	struct pf_vf_pfdev_info {
+	struct pf_vf_pfdev_dbg {
 		u32 chip_num;
 		u32 mfw_ver;
 
@@ -222,7 +222,7 @@ struct pfvf_acquire_resp_tlv {
 		 */
 		u8 major_fp_hsi;
 		u8 minor_fp_hsi;
-	} pfdev_info;
+	} pfdev_dbg;
 
 	struct pf_vf_resc {
 #define PFVF_MAX_QUEUES_PER_VF		16
@@ -837,7 +837,7 @@ void qed_vf_get_num_mac_filters(struct qed_hwfn *p_hwfn, u8 *num_mac_filters);
 bool qed_vf_check_mac(struct qed_hwfn *p_hwfn, u8 *mac);
 
 /**
- * @brief Set firmware version information in dev_info from VFs acquire response tlv
+ * @brief Set firmware version information in dev_dbg from VFs acquire response tlv
  *
  * @param p_hwfn
  * @param fw_major

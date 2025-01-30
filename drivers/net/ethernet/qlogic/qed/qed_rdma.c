@@ -867,7 +867,7 @@ static void qed_rdma_cnq_prod_update(void *rdma_cxt, u8 qz_offset, u16 prod)
 	wmb();
 }
 
-static int qed_fill_rdma_dev_info(struct qed_dev *cdev,
+static int qed_fill_rdma_dev_dbg(struct qed_dev *cdev,
 				  struct qed_dev_rdma_info *info)
 {
 	struct qed_hwfn *p_hwfn = QED_LEADING_HWFN(cdev);
@@ -879,7 +879,7 @@ static int qed_fill_rdma_dev_info(struct qed_dev *cdev,
 
 	info->user_dpm_enabled = (p_hwfn->db_bar_no_edpm == 0);
 
-	qed_fill_dev_info(cdev, &info->common);
+	qed_fill_dev_dbg(cdev, &info->common);
 
 	return 0;
 }
@@ -1926,7 +1926,7 @@ static int qed_roce_ll2_set_mac_filter(struct qed_dev *cdev,
 
 static const struct qed_rdma_ops qed_rdma_ops_pass = {
 	.common = &qed_common_ops_pass,
-	.fill_dev_info = &qed_fill_rdma_dev_info,
+	.fill_dev_dbg = &qed_fill_rdma_dev_dbg,
 	.rdma_get_rdma_ctx = &qed_rdma_get_rdma_ctx,
 	.rdma_init = &qed_rdma_init,
 	.rdma_add_user = &qed_rdma_add_user,

@@ -127,7 +127,7 @@ static __init int exynos4_pm_init_power_domain(void)
 
 		pd->base = of_iomap(np, 0);
 		if (!pd->base) {
-			pr_warn("%s: failed to map memory\n", __func__);
+			pr_debug("%s: failed to map memory\n", __func__);
 			kfree_const(pd->pd.name);
 			kfree(pd);
 			continue;
@@ -156,10 +156,10 @@ static __init int exynos4_pm_init_power_domain(void)
 			continue;
 
 		if (of_genpd_add_subdomain(&parent, &child))
-			pr_warn("%pOF failed to add subdomain: %pOF\n",
+			pr_debug("%pOF failed to add subdomain: %pOF\n",
 				parent.np, child.np);
 		else
-			pr_info("%pOF has as child subdomain: %pOF.\n",
+			pr_debug("%pOF has as child subdomain: %pOF.\n",
 				parent.np, child.np);
 	}
 

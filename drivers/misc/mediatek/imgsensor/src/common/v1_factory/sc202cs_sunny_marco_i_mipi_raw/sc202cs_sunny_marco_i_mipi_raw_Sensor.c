@@ -256,7 +256,7 @@ static void sc202cs_fusion_id_read(void)
 	int i;
 	for (i=0; i<8; i++) {
 		fusion_id_back2[i] = read_cmos_sensor_sc202cs(0x10+i);
-		//pr_info("zengx %s addr = 0x%4x fusion_id_back2[%d]=0x%2x\n",__func__, 0x10 + i, i, fusion_id_back2[i]);
+		//pr_debug("zengx %s addr = 0x%4x fusion_id_back2[%d]=0x%2x\n",__func__, 0x10 + i, i, fusion_id_back2[i]);
 	}
 }
 static void sc202cs_sn_read(void)
@@ -264,7 +264,7 @@ static void sc202cs_sn_read(void)
 	int i;
 	for (i=0; i<14; i++) {
 		sn_back2[i] = read_cmos_sensor_sc202cs(0x1F92+i);
-		//pr_info("zengx %s addr = 0x%4x sn_back2[%d]=0x%2x\n",__func__, 0x1F92 + i, i, sn_back2[i]);
+		//pr_debug("zengx %s addr = 0x%4x sn_back2[%d]=0x%2x\n",__func__, 0x1F92 + i, i, sn_back2[i]);
 	}
 }
 static void set_dummy()

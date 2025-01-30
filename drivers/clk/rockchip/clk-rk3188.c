@@ -841,12 +841,12 @@ static void __init rk3188a_clk_init(struct device_node *np)
 
 		ret = clk_set_parent(clk1, clk2);
 		if (ret < 0)
-			pr_warn("%s: could not reparent aclk_cpu_pre to gpll\n",
+			pr_debug("%s: could not reparent aclk_cpu_pre to gpll\n",
 				__func__);
 
 		clk_set_rate(clk1, rate);
 	} else {
-		pr_warn("%s: missing clocks to reparent aclk_cpu_pre to gpll\n",
+		pr_debug("%s: missing clocks to reparent aclk_cpu_pre to gpll\n",
 			__func__);
 	}
 

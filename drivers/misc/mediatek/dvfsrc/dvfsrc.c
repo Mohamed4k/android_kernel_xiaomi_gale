@@ -258,7 +258,7 @@ static int mtk_dvfsrc_up_probe(struct platform_device *pdev)
 	if (!ares.a0)
 		dvfsrc->opp_type = ares.a1;
 	else {
-		dev_info(dev, "get opp type fails\n");
+		dev_dbg(dev, "get opp type fails\n");
 		return ares.a0;
 	}
 
@@ -269,7 +269,7 @@ static int mtk_dvfsrc_up_probe(struct platform_device *pdev)
 	if (!ares.a0)
 		dvfsrc->fw_type = ares.a1;
 	else {
-		dev_info(dev, "get fw type fails\n");
+		dev_dbg(dev, "get fw type fails\n");
 		return ares.a0;
 	}
 
@@ -278,7 +278,7 @@ static int mtk_dvfsrc_up_probe(struct platform_device *pdev)
 		&ares);
 
 	if (ares.a0) {
-		dev_info(dev, "vcore_dvfs kick fail\n");
+		dev_dbg(dev, "vcore_dvfs kick fail\n");
 		return ares.a0;
 	}
 
@@ -295,7 +295,7 @@ static int mtk_dvfsrc_up_probe(struct platform_device *pdev)
 
 	if (dvfsrc->dvd->fb_act_enable) {
 		if (fb_register_client(&dvfsrc_fb_notifier))
-			dev_info(dev, "unable to register fb\n");
+			dev_dbg(dev, "unable to register fb\n");
 	}
 
 	dvfsrc_up_drv = dvfsrc;

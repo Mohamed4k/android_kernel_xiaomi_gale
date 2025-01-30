@@ -49,12 +49,12 @@ static int clk_mt6779_apu0_probe(struct platform_device *pdev)
 
 	clk_data = mtk_alloc_clk_data(CLK_APU0_NR_CLK);
 	if (!clk_data) {
-		pr_notice("%s(): alloc clk data failed\n", __func__);
+		pr_debug("%s(): alloc clk data failed\n", __func__);
 		return -ENOMEM;
 	}
 
 #if CCF_SUBSYS_DEBUG
-	pr_info("%s(): clk data number: %d\n", __func__, clk_data->clk_num);
+	pr_debug("%s(): clk data number: %d\n", __func__, clk_data->clk_num);
 #endif
 
 	mtk_clk_register_gates(node, apu0_clks, ARRAY_SIZE(apu0_clks),
@@ -63,7 +63,7 @@ static int clk_mt6779_apu0_probe(struct platform_device *pdev)
 	ret = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
 
 	if (ret) {
-		pr_notice("%s(): could not register clock provider: %d\n",
+		pr_debug("%s(): could not register clock provider: %d\n",
 					__func__, ret);
 
 		kfree(clk_data);

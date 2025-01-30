@@ -309,7 +309,7 @@ static void mdla_reset(int res)
 {
 	const char *str = mdla_get_reason_str(res);
 
-	pr_info("%s: MDLA RESET: %s(%d)\n", __func__,
+	pr_debug("%s: MDLA RESET: %s(%d)\n", __func__,
 		str, res);
 
 	// Enable Bus prot, start to turn off, set bus protect - step 1:0
@@ -453,7 +453,7 @@ static int mdla_probe(struct platform_device *pdev)
 
 	mdlactlPlatformDevice = pdev;
 
-	dev_info(dev, "Device Tree Probing\n");
+	dev_dbg(dev, "Device Tree Probing\n");
 
 	/* Get iospace for MDLA Config */
 	apu_mdla_config = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -465,20 +465,20 @@ static int mdla_probe(struct platform_device *pdev)
 	/* Get iospace for MDLA Command */
 	apu_mdla_command = platform_get_resource(pdev, IORESOURCE_MEM, 1);
 	if (!apu_mdla_command) {
-		dev_info(dev, "invalid address\n");
+		dev_dbg(dev, "invalid address\n");
 		return -ENODEV;
 	}
 	/* Get iospace for MDAL PMU */
 	apu_mdla_biu = platform_get_resource(pdev, IORESOURCE_MEM, 2);
 	if (!apu_mdla_biu) {
-		dev_info(dev, "apu_mdla_biu address\n");
+		dev_dbg(dev, "apu_mdla_biu address\n");
 		return -ENODEV;
 	}
 
 	/* Get iospace GSM */
 	apu_mdla_gsm = platform_get_resource(pdev, IORESOURCE_MEM, 3);
 	if (!apu_mdla_gsm) {
-		dev_info(dev, "apu_mdla_biu address\n");
+		dev_dbg(dev, "apu_mdla_biu address\n");
 		return -ENODEV;
 	}
 
@@ -499,7 +499,7 @@ static int mdla_probe(struct platform_device *pdev)
 	apu_mdla_config_top = ioremap_nocache(apu_mdla_config->start,
 			apu_mdla_config->end - apu_mdla_config->start + 1);
 	if (!apu_mdla_config_top) {
-		dev_info(dev, "mtk_mdla: Could not allocate iomem\n");
+		dev_dbg(dev, "mtk_mdla: Could not allocate iomem\n");
 		rc = -EIO;
 		return rc;
 	}
@@ -507,7 +507,7 @@ static int mdla_probe(struct platform_device *pdev)
 	apu_mdla_cmde_mreg_top = ioremap_nocache(apu_mdla_command->start,
 			apu_mdla_command->end - apu_mdla_command->start + 1);
 	if (!apu_mdla_cmde_mreg_top) {
-		dev_info(dev, "mtk_mdla: Could not allocate iomem\n");
+		dev_dbg(dev, "mtk_mdla: Could not allocate iomem\n");
 		rc = -EIO;
 		return rc;
 	}
@@ -515,7 +515,7 @@ static int mdla_probe(struct platform_device *pdev)
 	apu_mdla_biu_top = ioremap_nocache(apu_mdla_biu->start,
 			apu_mdla_biu->end - apu_mdla_biu->start + 1);
 	if (!apu_mdla_biu_top) {
-		dev_info(dev, "mtk_mdla: Could not allocate iomem\n");
+		dev_dbg(dev, "mtk_mdla: Could not allocate iomem\n");
 		rc = -EIO;
 		return rc;
 	}
@@ -523,12 +523,12 @@ static int mdla_probe(struct platform_device *pdev)
 	apu_mdla_gsm_top = ioremap_nocache(apu_mdla_gsm->start,
 			apu_mdla_gsm->end - apu_mdla_gsm->start + 1);
 	if (!apu_mdla_gsm_top) {
-		dev_info(dev, "mtk_mdla: Could not allocate iomem\n");
+		dev_dbg(dev, "mtk_mdla: Could not allocate iomem\n");
 		rc = -EIO;
 		return rc;
 	}
 	apu_mdla_gsm_base = (void *) apu_mdla_gsm->start;
-	pr_info("%s: apu_mdla_gsm_top: %p, apu_mdla_gsm_base: %p\n",
+	pr_debug("%s: apu_mdla_gsm_top: %p, apu_mdla_gsm_base: %p\n",
 		__func__, apu_mdla_gsm_top, apu_mdla_gsm_base);
 
 	apu_conn_top = ioremap_nocache(apu_conn->start,
@@ -550,20 +550,20 @@ static int mdla_probe(struct platform_device *pdev)
 	/* Get IRQ for the device */
 	r_irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
 	if (!r_irq) {
-		dev_info(dev, "no IRQ found\n");
+		dev_dbg(dev, "no IRQ found\n");
 		return rc;
 	}
-	dev_info(dev, "platform_get_resource irq: %d\n", (int)r_irq->start);
+	dev_dbg(dev, "platform_get_resource irq: %d\n", (int)r_irq->start);
 
 	mdla_irq = r_irq->start;
 	rc = request_irq(mdla_irq, mdla_interrupt, IRQF_TRIGGER_LOW,
 	DRIVER_NAME, dev);
-	dev_info(dev, "request_irq\n");
+	dev_dbg(dev, "request_irq\n");
 	if (rc) {
 		rc = request_irq(mdla_irq, mdla_interrupt, IRQF_TRIGGER_HIGH,
 				DRIVER_NAME, dev);
 		if (rc) {
-			dev_info(dev, "mtk_mdla: Could not allocate interrupt %d.\n",
+			dev_dbg(dev, "mtk_mdla: Could not allocate interrupt %d.\n",
 					mdla_irq);
 			return rc;
 		}
@@ -571,20 +571,20 @@ static int mdla_probe(struct platform_device *pdev)
 
 	mdla_init_hw(0, pdev);
 
-	dev_info(dev, "apu_mdla_config_top at 0x%08lx mapped to 0x%08lx\n",
+	dev_dbg(dev, "apu_mdla_config_top at 0x%08lx mapped to 0x%08lx\n",
 			(unsigned long __force)apu_mdla_config->start,
 			(unsigned long __force)apu_mdla_config->end);
-	dev_info(dev, "apu_mdla_command at 0x%08lx mapped to 0x%08lx, irq=%d\n",
+	dev_dbg(dev, "apu_mdla_command at 0x%08lx mapped to 0x%08lx, irq=%d\n",
 			(unsigned long __force)apu_mdla_command->start,
 			(unsigned long __force)apu_mdla_command->end,
 			(int)r_irq->start);
-	dev_info(dev, "apu_mdla_biu_top at 0x%08lx mapped to 0x%08lx\n",
+	dev_dbg(dev, "apu_mdla_biu_top at 0x%08lx mapped to 0x%08lx\n",
 			(unsigned long __force)apu_mdla_biu->start,
 			(unsigned long __force)apu_mdla_biu->end);
-	dev_info(dev, "apu_conn_top at 0x%08lx mapped to 0x%08lx\n",
+	dev_dbg(dev, "apu_conn_top at 0x%08lx mapped to 0x%08lx\n",
 			(unsigned long __force)apu_conn->start,
 			(unsigned long __force)apu_conn->end);
-	dev_info(dev, "infracfg_ao_top at 0x%08lx mapped to 0x%08lx\n",
+	dev_dbg(dev, "infracfg_ao_top at 0x%08lx mapped to 0x%08lx\n",
 			(unsigned long __force)infracfg_ao->start,
 			(unsigned long __force)infracfg_ao->end);
 
@@ -661,7 +661,7 @@ static int mdlactl_init(void)
 	 */
 
 	if (majorNumber < 0) {
-		pr_info("MDLA failed to register a major number\n");
+		pr_debug("MDLA failed to register a major number\n");
 		return majorNumber;
 	}
 	mdla_drv_debug("MDLA: registered correctly with major number %d\n",
@@ -671,7 +671,7 @@ static int mdlactl_init(void)
 	mdlactlClass = class_create(THIS_MODULE, CLASS_NAME);
 	if (IS_ERR(mdlactlClass)) {  // Check for error and clean up if there is
 		unregister_chrdev(majorNumber, DEVICE_NAME);
-		pr_info("Failed to register device class\n");
+		pr_debug("Failed to register device class\n");
 		return PTR_ERR(mdlactlClass);
 	}
 	// Register the device driver
@@ -679,7 +679,7 @@ static int mdlactl_init(void)
 	NULL, DEVICE_NAME);
 	if (IS_ERR(mdlactlDevice)) {  // Clean up if there is an error
 		unregister_chrdev(majorNumber, DEVICE_NAME);
-		pr_info("Failed to create the device\n");
+		pr_debug("Failed to create the device\n");
 		return PTR_ERR(mdlactlDevice);
 	}
 
@@ -691,7 +691,7 @@ static int mdlactl_init(void)
 		ret = dma_set_mask_and_coherent(mdlactlDevice,
 					DMA_BIT_MASK(32));
 		if (ret)
-			pr_info("MDLA: set DMA mask failed: %d\n", ret);
+			pr_debug("MDLA: set DMA mask failed: %d\n", ret);
 	}
 
 	INIT_WORK(&mdla_queue, mdla_start_queue);

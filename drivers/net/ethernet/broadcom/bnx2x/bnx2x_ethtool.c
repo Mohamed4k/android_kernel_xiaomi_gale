@@ -1801,7 +1801,7 @@ static int bnx2x_set_eeprom(struct net_device *dev,
 
 	ext_phy_config =
 		SHMEM_RD(bp,
-			 dev_info.port_hw_config[port].external_phy_config);
+			 dev_dbg.port_hw_config[port].external_phy_config);
 
 	if (eeprom->magic == 0x50485950) {
 		/* 'PHYP' (0x50485950): prepare phy for FW upgrade */
@@ -2939,7 +2939,7 @@ static int bnx2x_test_nvram(struct bnx2x *bp)
 		goto test_nvram_exit;
 
 	if (!CHIP_IS_E1x(bp) && !CHIP_IS_57811xx(bp)) {
-		u32 hide = SHMEM_RD(bp, dev_info.shared_hw_config.config2) &
+		u32 hide = SHMEM_RD(bp, dev_dbg.shared_hw_config.config2) &
 			   SHARED_HW_CFG_HIDE_PORT1;
 
 		if (!hide) {

@@ -482,7 +482,7 @@ static void carl9170_restart_work(struct work_struct *work)
 			if (err)
 				dev_err(&ar->udev->dev, "Failed to restart device (%d).\n", err);
 			else
-				dev_info(&ar->udev->dev, "device restarted successfully.\n");
+				dev_dbg(&ar->udev->dev, "device restarted successfully.\n");
 		}
 	}
 	carl9170_zap_queues(ar);
@@ -2042,7 +2042,7 @@ int carl9170_register(struct ar9170 *ar)
 		goto err_unreg;
 #endif /* CONFIG_CARL9170_HWRNG */
 
-	dev_info(&ar->udev->dev, "Atheros AR9170 is registered as '%s'\n",
+	dev_dbg(&ar->udev->dev, "Atheros AR9170 is registered as '%s'\n",
 		 wiphy_name(ar->hw->wiphy));
 
 	return 0;

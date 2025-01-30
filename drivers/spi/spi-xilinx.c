@@ -488,7 +488,7 @@ static int xilinx_spi_probe(struct platform_device *pdev)
 		goto put_master;
 	}
 
-	dev_info(&pdev->dev, "at 0x%08llX mapped to 0x%p, irq=%d\n",
+	dev_dbg(&pdev->dev, "at 0x%08llX mapped to 0x%p, irq=%d\n",
 		(unsigned long long)res->start, xspi->regs, xspi->irq);
 
 	if (pdata) {

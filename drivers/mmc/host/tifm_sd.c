@@ -952,7 +952,7 @@ static int tifm_sd_probe(struct tifm_dev *sock)
 
 	if (!(TIFM_SOCK_STATE_OCCUPIED
 	      & readl(sock->addr + SOCK_PRESENT_STATE))) {
-		pr_warn("%s : card gone, unexpectedly\n",
+		pr_debug("%s : card gone, unexpectedly\n",
 			dev_name(&sock->dev));
 		return rc;
 	}

@@ -874,13 +874,13 @@ static int phy_switch_usb2uart_gpio(enum PORT_MODE portmode)
 	/* SET USB to UART GPIO to UART0 */
 	node = of_find_compatible_node(NULL, NULL, "mediatek,gpio");
 	if (!node) {
-		pr_info("error: can't find GPIO node\n");
+		pr_debug("error: can't find GPIO node\n");
 		return -EINVAL;
 	}
 
 	gpio_base = of_iomap(node, 0);
 	if (!gpio_base) {
-		pr_info("error: iomap fail for GPIO\n");
+		pr_debug("error: iomap fail for GPIO\n");
 		return -EINVAL;
 	}
 
@@ -967,17 +967,17 @@ int usb2jtag_usb_init(void)
 	void __iomem *usb3_sif2_base;
 	u32 temp;
 
-	pr_notice("[USB2JTAG] %s ++\n", __func__);
+	pr_debug("[USB2JTAG] %s ++\n", __func__);
 
 	node = of_find_compatible_node(NULL, NULL, "mediatek,usb3");
 	if (!node) {
-		pr_notice("[USB2JTAG] map node @ mediatek,usb3 failed\n");
+		pr_debug("[USB2JTAG] map node @ mediatek,usb3 failed\n");
 		return -1;
 	}
 
 	usb3_sif2_base = of_iomap(node, 2);
 	if (!usb3_sif2_base) {
-		pr_notice("[USB2JTAG] iomap usb3_sif2_base failed\n");
+		pr_debug("[USB2JTAG] iomap usb3_sif2_base failed\n");
 		return -1;
 	}
 
@@ -1019,7 +1019,7 @@ static int mtk_phy_drv_init(struct platform_device *pdev,
 
 	mtkphy->phy_base = devm_ioremap(dev, res->start, resource_size(res));
 	if (IS_ERR(mtkphy->phy_base)) {
-		dev_info(dev, "failed to remap phy regs\n");
+		dev_dbg(dev, "failed to remap phy regs\n");
 		return PTR_ERR(mtkphy->phy_base);
 	}
 
@@ -1029,14 +1029,14 @@ static int mtk_phy_drv_init(struct platform_device *pdev,
 
 	mtkphy->ippc_base = devm_ioremap(dev, res->start, resource_size(res));
 	if (IS_ERR(mtkphy->ippc_base)) {
-		dev_info(dev, "failed to remap ippc_base regs\n");
+		dev_dbg(dev, "failed to remap ippc_base regs\n");
 		return PTR_ERR(mtkphy->ippc_base);
 	}
 
 	mtkphy->clk = devm_clk_get(dev, "ref_clk");
 	if (IS_ERR(mtkphy->clk)) {
 		if (PTR_ERR(mtkphy->clk) == -EPROBE_DEFER) {
-			dev_info(dev, "mtkphy->clk EPROBE_DEFER\n");
+			dev_dbg(dev, "mtkphy->clk EPROBE_DEFER\n");
 			return -EPROBE_DEFER;
 		}
 		mtkphy->clk = NULL;

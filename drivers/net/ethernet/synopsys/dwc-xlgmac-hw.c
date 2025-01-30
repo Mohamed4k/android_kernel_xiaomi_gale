@@ -489,7 +489,7 @@ static void xlgmac_prepare_tx_stop(struct xlgmac_pdata *pdata,
 	}
 
 	if (!time_before(jiffies, tx_timeout))
-		netdev_info(pdata->netdev,
+		netdev_dbg(pdata->netdev,
 			    "timed out waiting for Tx DMA channel %u to stop\n",
 			    channel->queue_index);
 }
@@ -594,7 +594,7 @@ static void xlgmac_prepare_rx_stop(struct xlgmac_pdata *pdata,
 	}
 
 	if (!time_before(jiffies, rx_timeout))
-		netdev_info(pdata->netdev,
+		netdev_dbg(pdata->netdev,
 			    "timed out waiting for Rx queue %u to empty\n",
 			    queue);
 }

@@ -29,7 +29,7 @@ void __iomem *_get_virt_base_from_table(unsigned int pa)
 			if (br.table[k].pa == pa)
 				return (io_base = br.table[k].va);
 	} else
-		pr_info("Power_gs: cannot find virtual address\n");
+		pr_debug("Power_gs: cannot find virtual address\n");
 
 	return io_base;
 }
@@ -68,13 +68,13 @@ unsigned int mt_power_gs_base_remap_init(char *scenario, char *pmic_name,
 							REMAP_SIZE_MASK + 1);
 
 				if (!table[br.table_pos].va)
-					pr_info("ioremap_nocache(0x%x, 0x%x)\n",
+					pr_debug("ioremap_nocache(0x%x, 0x%x)\n",
 						base, REMAP_SIZE_MASK + 1);
 
 				if (br.table_pos < br.table_size)
 					br.table_pos++;
 				else {
-					pr_info("base_remap in maximum size\n");
+					pr_debug("base_remap in maximum size\n");
 					return 0;
 				}
 			}
@@ -160,14 +160,14 @@ static void mt_power_gs_clk_compare(char *pmic_name,
 
 			if (dump_cnt &&
 				((dump_cnt % PER_LINE_TO_PRINT) == 0)) {
-				pr_notice("%s", buf);
+				pr_debug("%s", buf);
 				p = buf;
 				p += snprintf(p, sizeof(buf), "\n");
 			}
 		}
 	}
 	if (dump_cnt % PER_LINE_TO_PRINT)
-		pr_notice("%s", buf);
+		pr_debug("%s", buf);
 }
 
 int mtk_lpm_gs_clk_cmp_init(void *data)

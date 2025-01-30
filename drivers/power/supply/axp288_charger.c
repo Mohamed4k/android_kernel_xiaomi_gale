@@ -841,7 +841,7 @@ static int axp288_charger_probe(struct platform_device *pdev)
 			dev_dbg(dev, "EXTCON_USB_HOST is not ready, probe deferred\n");
 			return -EPROBE_DEFER;
 		}
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "Using " USB_HOST_EXTCON_HID " extcon for usb-id\n");
 	}
 

@@ -320,15 +320,15 @@ static const struct fmeter_clk fclks[] = {
 static void devapc_dump_regs(void)
 {
 	print_enabled_clks();
-	pr_notice("[devapc] CLK_CFG_0-7 = 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x\n",
+	pr_debug("[devapc] CLK_CFG_0-7 = 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x\n",
 		clk_readl(CLK_CFG_0), clk_readl(CLK_CFG_1),
 		clk_readl(CLK_CFG_2), clk_readl(CLK_CFG_3),
 		clk_readl(CLK_CFG_4), clk_readl(CLK_CFG_5),
 		clk_readl(CLK_CFG_6), clk_readl(CLK_CFG_7));
-	pr_notice("[devapc] PWR_STATUS(0x180,0x184) = 0x%08x 0x%08x\n",
+	pr_debug("[devapc] PWR_STATUS(0x180,0x184) = 0x%08x 0x%08x\n",
 		clk_readl(SPM_PWR_STATUS), clk_readl(SPM_PWR_STATUS_2ND));
 
-	pr_notice("[devapc] INFRA_AO(0x90,0x94,0xAC,0xC8) = 0x%08x 0x%08x 0x%08x 0x%08x\n",
+	pr_debug("[devapc] INFRA_AO(0x90,0x94,0xAC,0xC8) = 0x%08x 0x%08x 0x%08x 0x%08x\n",
 		clk_readl(INFRA_AO_0), clk_readl(INFRA_AO_1),
 		clk_readl(INFRA_AO_2), clk_readl(INFRA_AO_3));
 }

@@ -611,7 +611,7 @@ void ice_print_link_msg(struct ice_vsi *vsi, bool isup)
 	vsi->current_isup = isup;
 
 	if (!isup) {
-		netdev_info(vsi->netdev, "NIC Link is Down\n");
+		netdev_dbg(vsi->netdev, "NIC Link is Down\n");
 		return;
 	}
 
@@ -663,7 +663,7 @@ void ice_print_link_msg(struct ice_vsi *vsi, bool isup)
 		break;
 	}
 
-	netdev_info(vsi->netdev, "NIC Link is up %sbps, Flow Control: %s\n",
+	netdev_dbg(vsi->netdev, "NIC Link is up %sbps, Flow Control: %s\n",
 		    speed, fc);
 }
 
@@ -2728,7 +2728,7 @@ static int ice_vsi_reinit_setup(struct ice_vsi *vsi)
 	ret = ice_cfg_vsi_lan(vsi->port_info, vsi->vsi_num,
 			      vsi->tc_cfg.ena_tc, max_txqs);
 	if (ret) {
-		dev_info(&vsi->back->pdev->dev,
+		dev_dbg(&vsi->back->pdev->dev,
 			 "Failed VSI lan queue config\n");
 		goto err_vectors;
 	}
@@ -2846,7 +2846,7 @@ ice_vsi_setup(struct ice_pf *pf, enum ice_vsi_type type,
 	ret = ice_cfg_vsi_lan(vsi->port_info, vsi->vsi_num,
 			      vsi->tc_cfg.ena_tc, max_txqs);
 	if (ret) {
-		dev_info(&pf->pdev->dev, "Failed VSI lan queue config\n");
+		dev_dbg(&pf->pdev->dev, "Failed VSI lan queue config\n");
 		goto err_rings;
 	}
 
@@ -3354,7 +3354,7 @@ static int ice_probe(struct pci_dev *pdev,
 		goto err_exit_unroll;
 	}
 
-	dev_info(&pdev->dev, "firmware %d.%d.%05d api %d.%d\n",
+	dev_dbg(&pdev->dev, "firmware %d.%d.%05d api %d.%d\n",
 		 hw->fw_maj_ver, hw->fw_min_ver, hw->fw_build,
 		 hw->api_maj_ver, hw->api_min_ver);
 
@@ -3517,8 +3517,8 @@ static int __init ice_module_init(void)
 {
 	int status;
 
-	pr_info("%s - version %s\n", ice_driver_string, ice_drv_ver);
-	pr_info("%s\n", ice_copyright);
+	pr_debug("%s - version %s\n", ice_driver_string, ice_drv_ver);
+	pr_debug("%s\n", ice_copyright);
 
 	ice_wq = alloc_ordered_workqueue("%s", WQ_MEM_RECLAIM, KBUILD_MODNAME);
 	if (!ice_wq) {
@@ -3546,7 +3546,7 @@ static void __exit ice_module_exit(void)
 {
 	pci_unregister_driver(&ice_driver);
 	destroy_workqueue(ice_wq);
-	pr_info("module unloaded\n");
+	pr_debug("module unloaded\n");
 }
 module_exit(ice_module_exit);
 

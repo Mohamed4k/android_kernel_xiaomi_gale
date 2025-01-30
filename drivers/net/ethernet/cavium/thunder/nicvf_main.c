@@ -251,14 +251,14 @@ static void  nicvf_handle_mbx_intr(struct nicvf *nic)
 		nic->speed = mbx.link_status.speed;
 		nic->mac_type = mbx.link_status.mac_type;
 		if (nic->link_up) {
-			netdev_info(nic->netdev, "Link is Up %d Mbps %s duplex\n",
+			netdev_dbg(nic->netdev, "Link is Up %d Mbps %s duplex\n",
 				    nic->speed,
 				    nic->duplex == DUPLEX_FULL ?
 				    "Full" : "Half");
 			netif_carrier_on(nic->netdev);
 			netif_tx_start_all_queues(nic->netdev);
 		} else {
-			netdev_info(nic->netdev, "Link is Down\n");
+			netdev_dbg(nic->netdev, "Link is Down\n");
 			netif_carrier_off(nic->netdev);
 			netif_tx_stop_all_queues(nic->netdev);
 		}
@@ -807,7 +807,7 @@ static void nicvf_rcv_pkt_handler(struct net_device *netdev,
 		return;
 
 	if (netif_msg_pktdata(nic)) {
-		netdev_info(nic->netdev, "skb 0x%p, len=%d\n", skb, skb->len);
+		netdev_dbg(nic->netdev, "skb 0x%p, len=%d\n", skb, skb->len);
 		print_hex_dump(KERN_INFO, "", DUMP_PREFIX_OFFSET, 16, 1,
 			       skb->data, skb->len, true);
 	}
@@ -2291,7 +2291,7 @@ static struct pci_driver nicvf_driver = {
 
 static int __init nicvf_init_module(void)
 {
-	pr_info("%s, ver %s\n", DRV_NAME, DRV_VERSION);
+	pr_debug("%s, ver %s\n", DRV_NAME, DRV_VERSION);
 	nicvf_rx_mode_wq = alloc_ordered_workqueue("nicvf_generic",
 						   WQ_MEM_RECLAIM);
 	return pci_register_driver(&nicvf_driver);

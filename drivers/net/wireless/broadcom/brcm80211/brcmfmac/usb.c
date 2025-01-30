@@ -135,7 +135,7 @@ struct brcmf_usb_image {
 	int image_len;
 };
 
-struct brcmf_usbdev_info {
+struct brcmf_usbdev_dbg {
 	struct brcmf_usbdev bus_pub; /* MUST BE FIRST */
 	spinlock_t qlock;
 	struct list_head rx_freeq;
@@ -179,7 +179,7 @@ struct brcmf_usbdev_info {
 	struct brcmf_mp_device *settings;
 };
 
-static void brcmf_usb_rx_refill(struct brcmf_usbdev_info *devinfo,
+static void brcmf_usb_rx_refill(struct brcmf_usbdev_dbg *devinfo,
 				struct brcmf_usbreq  *req);
 
 static struct brcmf_usbdev *brcmf_usb_get_buspub(struct device *dev)
@@ -188,24 +188,24 @@ static struct brcmf_usbdev *brcmf_usb_get_buspub(struct device *dev)
 	return bus_if->bus_priv.usb;
 }
 
-static struct brcmf_usbdev_info *brcmf_usb_get_businfo(struct device *dev)
+static struct brcmf_usbdev_dbg *brcmf_usb_get_businfo(struct device *dev)
 {
 	return brcmf_usb_get_buspub(dev)->devinfo;
 }
 
-static int brcmf_usb_ioctl_resp_wait(struct brcmf_usbdev_info *devinfo)
+static int brcmf_usb_ioctl_resp_wait(struct brcmf_usbdev_dbg *devinfo)
 {
 	return wait_event_timeout(devinfo->ioctl_resp_wait,
 				  devinfo->ctl_completed, IOCTL_RESP_TIMEOUT);
 }
 
-static void brcmf_usb_ioctl_resp_wake(struct brcmf_usbdev_info *devinfo)
+static void brcmf_usb_ioctl_resp_wake(struct brcmf_usbdev_dbg *devinfo)
 {
 	wake_up(&devinfo->ioctl_resp_wait);
 }
 
 static void
-brcmf_usb_ctl_complete(struct brcmf_usbdev_info *devinfo, int type, int status)
+brcmf_usb_ctl_complete(struct brcmf_usbdev_dbg *devinfo, int type, int status)
 {
 	brcmf_dbg(USB, "Enter, status=%d\n", status);
 
@@ -232,8 +232,8 @@ brcmf_usb_ctl_complete(struct brcmf_usbdev_info *devinfo, int type, int status)
 static void
 brcmf_usb_ctlread_complete(struct urb *urb)
 {
-	struct brcmf_usbdev_info *devinfo =
-		(struct brcmf_usbdev_info *)urb->context;
+	struct brcmf_usbdev_dbg *devinfo =
+		(struct brcmf_usbdev_dbg *)urb->context;
 
 	brcmf_dbg(USB, "Enter\n");
 	devinfo->ctl_urb_actual_length = urb->actual_length;
@@ -244,8 +244,8 @@ brcmf_usb_ctlread_complete(struct urb *urb)
 static void
 brcmf_usb_ctlwrite_complete(struct urb *urb)
 {
-	struct brcmf_usbdev_info *devinfo =
-		(struct brcmf_usbdev_info *)urb->context;
+	struct brcmf_usbdev_dbg *devinfo =
+		(struct brcmf_usbdev_dbg *)urb->context;
 
 	brcmf_dbg(USB, "Enter\n");
 	brcmf_usb_ctl_complete(devinfo, BRCMF_USB_CBCTL_WRITE,
@@ -253,7 +253,7 @@ brcmf_usb_ctlwrite_complete(struct urb *urb)
 }
 
 static int
-brcmf_usb_send_ctl(struct brcmf_usbdev_info *devinfo, u8 *buf, int len)
+brcmf_usb_send_ctl(struct brcmf_usbdev_dbg *devinfo, u8 *buf, int len)
 {
 	int ret;
 	u16 size;
@@ -285,7 +285,7 @@ brcmf_usb_send_ctl(struct brcmf_usbdev_info *devinfo, u8 *buf, int len)
 }
 
 static int
-brcmf_usb_recv_ctl(struct brcmf_usbdev_info *devinfo, u8 *buf, int len)
+brcmf_usb_recv_ctl(struct brcmf_usbdev_dbg *devinfo, u8 *buf, int len)
 {
 	int ret;
 	u16 size;
@@ -322,7 +322,7 @@ static int brcmf_usb_tx_ctlpkt(struct device *dev, u8 *buf, u32 len)
 {
 	int err = 0;
 	int timeout = 0;
-	struct brcmf_usbdev_info *devinfo = brcmf_usb_get_businfo(dev);
+	struct brcmf_usbdev_dbg *devinfo = brcmf_usb_get_businfo(dev);
 
 	brcmf_dbg(USB, "Enter\n");
 	if (devinfo->bus_pub.state != BRCMFMAC_USB_STATE_UP)
@@ -351,7 +351,7 @@ static int brcmf_usb_rx_ctlpkt(struct device *dev, u8 *buf, u32 len)
 {
 	int err = 0;
 	int timeout = 0;
-	struct brcmf_usbdev_info *devinfo = brcmf_usb_get_businfo(dev);
+	struct brcmf_usbdev_dbg *devinfo = brcmf_usb_get_businfo(dev);
 
 	brcmf_dbg(USB, "Enter\n");
 	if (devinfo->bus_pub.state != BRCMFMAC_USB_STATE_UP)
@@ -380,7 +380,7 @@ static int brcmf_usb_rx_ctlpkt(struct device *dev, u8 *buf, u32 len)
 		return err;
 }
 
-static struct brcmf_usbreq *brcmf_usb_deq(struct brcmf_usbdev_info *devinfo,
+static struct brcmf_usbreq *brcmf_usb_deq(struct brcmf_usbdev_dbg *devinfo,
 					  struct list_head *q, int *counter)
 {
 	unsigned long flags;
@@ -399,7 +399,7 @@ static struct brcmf_usbreq *brcmf_usb_deq(struct brcmf_usbdev_info *devinfo,
 
 }
 
-static void brcmf_usb_enq(struct brcmf_usbdev_info *devinfo,
+static void brcmf_usb_enq(struct brcmf_usbdev_dbg *devinfo,
 			  struct list_head *q, struct brcmf_usbreq *req,
 			  int *counter)
 {
@@ -465,7 +465,7 @@ static void brcmf_usb_free_q(struct list_head *q, bool pending)
 	}
 }
 
-static void brcmf_usb_del_fromq(struct brcmf_usbdev_info *devinfo,
+static void brcmf_usb_del_fromq(struct brcmf_usbdev_dbg *devinfo,
 				struct brcmf_usbreq *req)
 {
 	unsigned long flags;
@@ -479,7 +479,7 @@ static void brcmf_usb_del_fromq(struct brcmf_usbdev_info *devinfo,
 static void brcmf_usb_tx_complete(struct urb *urb)
 {
 	struct brcmf_usbreq *req = (struct brcmf_usbreq *)urb->context;
-	struct brcmf_usbdev_info *devinfo = req->devinfo;
+	struct brcmf_usbdev_dbg *devinfo = req->devinfo;
 	unsigned long flags;
 
 	brcmf_dbg(USB, "Enter, urb->status=%d, skb=%p\n", urb->status,
@@ -501,7 +501,7 @@ static void brcmf_usb_tx_complete(struct urb *urb)
 static void brcmf_usb_rx_complete(struct urb *urb)
 {
 	struct brcmf_usbreq  *req = (struct brcmf_usbreq *)urb->context;
-	struct brcmf_usbdev_info *devinfo = req->devinfo;
+	struct brcmf_usbdev_dbg *devinfo = req->devinfo;
 	struct sk_buff *skb;
 
 	brcmf_dbg(USB, "Enter, urb->status=%d\n", urb->status);
@@ -528,7 +528,7 @@ static void brcmf_usb_rx_complete(struct urb *urb)
 
 }
 
-static void brcmf_usb_rx_refill(struct brcmf_usbdev_info *devinfo,
+static void brcmf_usb_rx_refill(struct brcmf_usbdev_dbg *devinfo,
 				struct brcmf_usbreq  *req)
 {
 	struct sk_buff *skb;
@@ -560,7 +560,7 @@ static void brcmf_usb_rx_refill(struct brcmf_usbdev_info *devinfo,
 	return;
 }
 
-static void brcmf_usb_rx_fill_all(struct brcmf_usbdev_info *devinfo)
+static void brcmf_usb_rx_fill_all(struct brcmf_usbdev_dbg *devinfo)
 {
 	struct brcmf_usbreq *req;
 
@@ -573,7 +573,7 @@ static void brcmf_usb_rx_fill_all(struct brcmf_usbdev_info *devinfo)
 }
 
 static void
-brcmf_usb_state_change(struct brcmf_usbdev_info *devinfo, int state)
+brcmf_usb_state_change(struct brcmf_usbdev_dbg *devinfo, int state)
 {
 	struct brcmf_bus *bcmf_bus = devinfo->bus_pub.bus;
 	int old_state;
@@ -601,7 +601,7 @@ brcmf_usb_state_change(struct brcmf_usbdev_info *devinfo, int state)
 
 static int brcmf_usb_tx(struct device *dev, struct sk_buff *skb)
 {
-	struct brcmf_usbdev_info *devinfo = brcmf_usb_get_businfo(dev);
+	struct brcmf_usbdev_dbg *devinfo = brcmf_usb_get_businfo(dev);
 	struct brcmf_usbreq  *req;
 	int ret;
 	unsigned long flags;
@@ -652,7 +652,7 @@ fail:
 
 static int brcmf_usb_up(struct device *dev)
 {
-	struct brcmf_usbdev_info *devinfo = brcmf_usb_get_businfo(dev);
+	struct brcmf_usbdev_dbg *devinfo = brcmf_usb_get_businfo(dev);
 
 	brcmf_dbg(USB, "Enter\n");
 	if (devinfo->bus_pub.state == BRCMFMAC_USB_STATE_UP)
@@ -683,7 +683,7 @@ static int brcmf_usb_up(struct device *dev)
 	return 0;
 }
 
-static void brcmf_cancel_all_urbs(struct brcmf_usbdev_info *devinfo)
+static void brcmf_cancel_all_urbs(struct brcmf_usbdev_dbg *devinfo)
 {
 	int i;
 
@@ -701,7 +701,7 @@ static void brcmf_cancel_all_urbs(struct brcmf_usbdev_info *devinfo)
 
 static void brcmf_usb_down(struct device *dev)
 {
-	struct brcmf_usbdev_info *devinfo = brcmf_usb_get_businfo(dev);
+	struct brcmf_usbdev_dbg *devinfo = brcmf_usb_get_businfo(dev);
 
 	brcmf_dbg(USB, "Enter\n");
 	if (devinfo == NULL)
@@ -718,14 +718,14 @@ static void brcmf_usb_down(struct device *dev)
 static void
 brcmf_usb_sync_complete(struct urb *urb)
 {
-	struct brcmf_usbdev_info *devinfo =
-			(struct brcmf_usbdev_info *)urb->context;
+	struct brcmf_usbdev_dbg *devinfo =
+			(struct brcmf_usbdev_dbg *)urb->context;
 
 	devinfo->ctl_completed = true;
 	brcmf_usb_ioctl_resp_wake(devinfo);
 }
 
-static int brcmf_usb_dl_cmd(struct brcmf_usbdev_info *devinfo, u8 cmd,
+static int brcmf_usb_dl_cmd(struct brcmf_usbdev_dbg *devinfo, u8 cmd,
 			    void *buffer, int buflen)
 {
 	int ret;
@@ -774,7 +774,7 @@ finalize:
 }
 
 static bool
-brcmf_usb_dlneeded(struct brcmf_usbdev_info *devinfo)
+brcmf_usb_dlneeded(struct brcmf_usbdev_dbg *devinfo)
 {
 	struct bootrom_id_le id;
 	u32 chipid, chiprev;
@@ -807,7 +807,7 @@ brcmf_usb_dlneeded(struct brcmf_usbdev_info *devinfo)
 }
 
 static int
-brcmf_usb_resetcfg(struct brcmf_usbdev_info *devinfo)
+brcmf_usb_resetcfg(struct brcmf_usbdev_dbg *devinfo)
 {
 	struct bootrom_id_le id;
 	u32 loop_cnt;
@@ -842,7 +842,7 @@ brcmf_usb_resetcfg(struct brcmf_usbdev_info *devinfo)
 
 
 static int
-brcmf_usb_dl_send_bulk(struct brcmf_usbdev_info *devinfo, void *buffer, int len)
+brcmf_usb_dl_send_bulk(struct brcmf_usbdev_dbg *devinfo, void *buffer, int len)
 {
 	int ret;
 
@@ -867,7 +867,7 @@ brcmf_usb_dl_send_bulk(struct brcmf_usbdev_info *devinfo, void *buffer, int len)
 }
 
 static int
-brcmf_usb_dl_writeimage(struct brcmf_usbdev_info *devinfo, u8 *fw, int fwlen)
+brcmf_usb_dl_writeimage(struct brcmf_usbdev_dbg *devinfo, u8 *fw, int fwlen)
 {
 	unsigned int sendlen, sent, dllen;
 	char *bulkchunk = NULL, *dlpos;
@@ -953,7 +953,7 @@ fail:
 	return err;
 }
 
-static int brcmf_usb_dlstart(struct brcmf_usbdev_info *devinfo, u8 *fw, int len)
+static int brcmf_usb_dlstart(struct brcmf_usbdev_dbg *devinfo, u8 *fw, int len)
 {
 	int err;
 
@@ -975,7 +975,7 @@ static int brcmf_usb_dlstart(struct brcmf_usbdev_info *devinfo, u8 *fw, int len)
 	return err;
 }
 
-static int brcmf_usb_dlrun(struct brcmf_usbdev_info *devinfo)
+static int brcmf_usb_dlrun(struct brcmf_usbdev_dbg *devinfo)
 {
 	struct rdl_state_le state;
 
@@ -1006,7 +1006,7 @@ static int brcmf_usb_dlrun(struct brcmf_usbdev_info *devinfo)
 }
 
 static int
-brcmf_usb_fw_download(struct brcmf_usbdev_info *devinfo)
+brcmf_usb_fw_download(struct brcmf_usbdev_dbg *devinfo)
 {
 	int err;
 
@@ -1027,7 +1027,7 @@ brcmf_usb_fw_download(struct brcmf_usbdev_info *devinfo)
 }
 
 
-static void brcmf_usb_detach(struct brcmf_usbdev_info *devinfo)
+static void brcmf_usb_detach(struct brcmf_usbdev_dbg *devinfo)
 {
 	brcmf_dbg(USB, "Enter, devinfo %p\n", devinfo);
 
@@ -1068,7 +1068,7 @@ static int check_file(const u8 *headers)
 
 
 static
-struct brcmf_usbdev *brcmf_usb_attach(struct brcmf_usbdev_info *devinfo,
+struct brcmf_usbdev *brcmf_usb_attach(struct brcmf_usbdev_dbg *devinfo,
 				      int nrxq, int ntxq)
 {
 	brcmf_dbg(USB, "Enter\n");
@@ -1125,7 +1125,7 @@ error:
 
 static void brcmf_usb_wowl_config(struct device *dev, bool enabled)
 {
-	struct brcmf_usbdev_info *devinfo = brcmf_usb_get_businfo(dev);
+	struct brcmf_usbdev_dbg *devinfo = brcmf_usb_get_businfo(dev);
 
 	brcmf_dbg(USB, "Configuring WOWL, enabled=%d\n", enabled);
 	devinfo->wowl_enabled = enabled;
@@ -1171,7 +1171,7 @@ static void brcmf_usb_probe_phase2(struct device *dev, int ret,
 				   struct brcmf_fw_request *fwreq)
 {
 	struct brcmf_bus *bus = dev_get_drvdata(dev);
-	struct brcmf_usbdev_info *devinfo = bus->bus_priv.usb->devinfo;
+	struct brcmf_usbdev_dbg *devinfo = bus->bus_priv.usb->devinfo;
 	const struct firmware *fw;
 
 	if (ret)
@@ -1211,7 +1211,7 @@ error:
 }
 
 static struct brcmf_fw_request *
-brcmf_usb_prepare_fw_request(struct brcmf_usbdev_info *devinfo)
+brcmf_usb_prepare_fw_request(struct brcmf_usbdev_dbg *devinfo)
 {
 	struct brcmf_fw_request *fwreq;
 	struct brcmf_fw_name fwnames[] = {
@@ -1231,7 +1231,7 @@ brcmf_usb_prepare_fw_request(struct brcmf_usbdev_info *devinfo)
 	return fwreq;
 }
 
-static int brcmf_usb_probe_cb(struct brcmf_usbdev_info *devinfo)
+static int brcmf_usb_probe_cb(struct brcmf_usbdev_dbg *devinfo)
 {
 	struct brcmf_bus *bus = NULL;
 	struct brcmf_usbdev *bus_pub = NULL;
@@ -1304,7 +1304,7 @@ fail:
 }
 
 static void
-brcmf_usb_disconnect_cb(struct brcmf_usbdev_info *devinfo)
+brcmf_usb_disconnect_cb(struct brcmf_usbdev_dbg *devinfo)
 {
 	if (!devinfo)
 		return;
@@ -1319,7 +1319,7 @@ static int
 brcmf_usb_probe(struct usb_interface *intf, const struct usb_device_id *id)
 {
 	struct usb_device *usb = interface_to_usbdev(intf);
-	struct brcmf_usbdev_info *devinfo;
+	struct brcmf_usbdev_dbg *devinfo;
 	struct usb_interface_descriptor	*desc;
 	struct usb_endpoint_descriptor *endpoint;
 	int ret = 0;
@@ -1424,10 +1424,10 @@ fail:
 static void
 brcmf_usb_disconnect(struct usb_interface *intf)
 {
-	struct brcmf_usbdev_info *devinfo;
+	struct brcmf_usbdev_dbg *devinfo;
 
 	brcmf_dbg(USB, "Enter\n");
-	devinfo = (struct brcmf_usbdev_info *)usb_get_intfdata(intf);
+	devinfo = (struct brcmf_usbdev_dbg *)usb_get_intfdata(intf);
 
 	if (devinfo) {
 		wait_for_completion(&devinfo->dev_init_done);
@@ -1450,7 +1450,7 @@ done:
 static int brcmf_usb_suspend(struct usb_interface *intf, pm_message_t state)
 {
 	struct usb_device *usb = interface_to_usbdev(intf);
-	struct brcmf_usbdev_info *devinfo = brcmf_usb_get_businfo(&usb->dev);
+	struct brcmf_usbdev_dbg *devinfo = brcmf_usb_get_businfo(&usb->dev);
 
 	brcmf_dbg(USB, "Enter\n");
 	devinfo->bus_pub.state = BRCMFMAC_USB_STATE_SLEEP;
@@ -1467,7 +1467,7 @@ static int brcmf_usb_suspend(struct usb_interface *intf, pm_message_t state)
 static int brcmf_usb_resume(struct usb_interface *intf)
 {
 	struct usb_device *usb = interface_to_usbdev(intf);
-	struct brcmf_usbdev_info *devinfo = brcmf_usb_get_businfo(&usb->dev);
+	struct brcmf_usbdev_dbg *devinfo = brcmf_usb_get_businfo(&usb->dev);
 
 	brcmf_dbg(USB, "Enter\n");
 	if (!devinfo->wowl_enabled)
@@ -1481,7 +1481,7 @@ static int brcmf_usb_resume(struct usb_interface *intf)
 static int brcmf_usb_reset_resume(struct usb_interface *intf)
 {
 	struct usb_device *usb = interface_to_usbdev(intf);
-	struct brcmf_usbdev_info *devinfo = brcmf_usb_get_businfo(&usb->dev);
+	struct brcmf_usbdev_dbg *devinfo = brcmf_usb_get_businfo(&usb->dev);
 	struct brcmf_fw_request *fwreq;
 	int ret;
 

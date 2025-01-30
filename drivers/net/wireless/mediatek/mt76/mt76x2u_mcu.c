@@ -278,7 +278,7 @@ static int mt76x2u_mcu_load_rom_patch(struct mt76x2_dev *dev)
 	}
 
 	if (rom_protect && (mt76_rr(dev, patch_reg) & patch_mask)) {
-		dev_info(dev->mt76.dev, "ROM patch already applied\n");
+		dev_dbg(dev->mt76.dev, "ROM patch already applied\n");
 		return 0;
 	}
 
@@ -293,7 +293,7 @@ static int mt76x2u_mcu_load_rom_patch(struct mt76x2_dev *dev)
 	}
 
 	hdr = (struct mt76x2_patch_header *)fw->data;
-	dev_info(dev->mt76.dev, "ROM patch build: %.15s\n", hdr->build_time);
+	dev_dbg(dev->mt76.dev, "ROM patch build: %.15s\n", hdr->build_time);
 
 	/* enable USB_DMA_CFG */
 	val = MT_USB_DMA_CFG_RX_BULK_EN |
@@ -367,12 +367,12 @@ static int mt76x2u_mcu_load_firmware(struct mt76x2_dev *dev)
 	}
 
 	val = le16_to_cpu(hdr->fw_ver);
-	dev_info(dev->mt76.dev, "Firmware Version: %d.%d.%02d\n",
+	dev_dbg(dev->mt76.dev, "Firmware Version: %d.%d.%02d\n",
 		 (val >> 12) & 0xf, (val >> 8) & 0xf, val & 0xf);
 
 	val = le16_to_cpu(hdr->build_ver);
-	dev_info(dev->mt76.dev, "Build: %x\n", val);
-	dev_info(dev->mt76.dev, "Build Time: %.16s\n", hdr->build_time);
+	dev_dbg(dev->mt76.dev, "Build: %x\n", val);
+	dev_dbg(dev->mt76.dev, "Build Time: %.16s\n", hdr->build_time);
 
 	/* vendor reset */
 	mt76u_mcu_fw_reset(&dev->mt76);

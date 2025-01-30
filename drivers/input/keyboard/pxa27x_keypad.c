@@ -334,7 +334,7 @@ static int pxa27x_keypad_build_keycode_from_dt(struct pxa27x_keypad *keypad)
 
 static int pxa27x_keypad_build_keycode_from_dt(struct pxa27x_keypad *keypad)
 {
-	dev_info(keypad->input_dev->dev.parent, "missing platform data\n");
+	dev_dbg(keypad->input_dev->dev.parent, "missing platform data\n");
 
 	return -EINVAL;
 }

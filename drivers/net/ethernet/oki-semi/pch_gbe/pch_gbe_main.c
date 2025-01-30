@@ -2610,7 +2610,7 @@ static int pch_gbe_probe(struct pci_dev *pdev,
 
 	/* initialize the wol settings based on the eeprom settings */
 	adapter->wake_up_evt = PCH_GBE_WL_INIT_SETTING;
-	dev_info(&pdev->dev, "MAC address : %pM\n", netdev->dev_addr);
+	dev_dbg(&pdev->dev, "MAC address : %pM\n", netdev->dev_addr);
 
 	/* reset the hardware with the new settings */
 	pch_gbe_reset(adapter);

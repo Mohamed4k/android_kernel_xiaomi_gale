@@ -251,7 +251,7 @@ static int mtk_phy_connect_node(struct mtk_eth *eth, struct mtk_mac *mac,
 		return -ENODEV;
 	}
 
-	dev_info(eth->dev,
+	dev_dbg(eth->dev,
 		 "connected mac %d to PHY at %s [uid=%08x, driver=%s]\n",
 		 mac->id, phydev_name(phydev), phydev->phy_id,
 		 phydev->drv->name);
@@ -1122,7 +1122,7 @@ static int mtk_napi_tx(struct napi_struct *napi, int budget)
 	if (unlikely(netif_msg_intr(eth))) {
 		status = mtk_r32(eth, MTK_QMTK_INT_STATUS);
 		mask = mtk_r32(eth, MTK_QDMA_INT_MASK);
-		dev_info(eth->dev,
+		dev_dbg(eth->dev,
 			 "done tx %d, intr 0x%08x/0x%x\n",
 			 tx_done, status, mask);
 	}
@@ -1156,7 +1156,7 @@ poll_again:
 	if (unlikely(netif_msg_intr(eth))) {
 		status = mtk_r32(eth, MTK_PDMA_INT_STATUS);
 		mask = mtk_r32(eth, MTK_PDMA_INT_MASK);
-		dev_info(eth->dev,
+		dev_dbg(eth->dev,
 			 "done rx %d, intr 0x%08x/0x%x\n",
 			 rx_done, status, mask);
 	}
@@ -1584,7 +1584,7 @@ static netdev_features_t mtk_fix_features(struct net_device *dev,
 		int ip_cnt = mtk_hwlro_get_ip_cnt(mac);
 
 		if (ip_cnt) {
-			netdev_info(dev, "RX flow is programmed, LRO should keep on\n");
+			netdev_dbg(dev, "RX flow is programmed, LRO should keep on\n");
 
 			features |= NETIF_F_LRO;
 		}
@@ -2459,7 +2459,7 @@ static int mtk_probe(struct platform_device *pdev)
 		eth->infra = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
 							"mediatek,infracfg");
 		if (IS_ERR(eth->infra)) {
-			dev_info(&pdev->dev, "no ethsys regmap found\n");
+			dev_dbg(&pdev->dev, "no ethsys regmap found\n");
 			return PTR_ERR(eth->infra);
 		}
 	}

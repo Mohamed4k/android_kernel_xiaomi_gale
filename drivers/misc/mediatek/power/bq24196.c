@@ -40,7 +40,7 @@ static int bq24196_driver_probe(struct i2c_client *client,
 
 static void bq24196_shutdown(struct i2c_client *client)
 {
-	pr_notice("[%s] driver shutdown\n", __func__);
+	pr_debug("[%s] driver shutdown\n", __func__);
 	bq24196_set_chg_config(0x0);
 }
 static struct i2c_driver bq24196_driver = {
@@ -578,7 +578,7 @@ static int bq24196_user_space_probe(struct platform_device *dev)
 {
 	int ret_device_file = 0;
 
-	pr_notice("******** %s!! ********\n", __func__);
+	pr_debug("******** %s!! ********\n", __func__);
 
 	ret_device_file =
 		device_create_file(&(dev->dev), &dev_attr_bq24196_access);
@@ -602,31 +602,31 @@ static int __init bq24196_init(void)
 {
 	int ret = 0;
 
-	pr_notice("[%s] init start\n", __func__);
+	pr_debug("[%s] init start\n", __func__);
 
 #ifndef CONFIG_OF
 	i2c_register_board_info(bq24196_BUSNUM, &i2c_bq24196, 1);
 #endif
 
 	if (i2c_add_driver(&bq24196_driver) != 0)
-		pr_notice(
+		pr_debug(
 			"[%s] failed to register bq24196 i2c driver.\n",
 			__func__);
 	else
-		pr_notice(
+		pr_debug(
 			"[%s] Success to register bq24196 i2c driver.\n",
 			__func__);
 
 	/*bq24196 user space access interface*/
 	ret = platform_device_register(&bq24196_user_space_device);
 	if (ret) {
-		pr_notice("****[%s] Unable to device register(%d)\n",
+		pr_debug("****[%s] Unable to device register(%d)\n",
 			  __func__, ret);
 		return ret;
 	}
 	ret = platform_driver_register(&bq24196_user_space_driver);
 	if (ret) {
-		pr_notice("****[%s] Unable to register driver (%d)\n",
+		pr_debug("****[%s] Unable to register driver (%d)\n",
 			  __func__, ret);
 		return ret;
 	}

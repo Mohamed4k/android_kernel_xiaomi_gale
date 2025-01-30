@@ -1413,7 +1413,7 @@ static int g2d_bind(struct device *dev, struct device *master, void *data)
 	}
 	priv->g2d_dev = dev;
 
-	dev_info(dev, "The Exynos G2D (ver %d.%d) successfully registered.\n",
+	dev_dbg(dev, "The Exynos G2D (ver %d.%d) successfully registered.\n",
 			G2D_HW_MAJOR_VER, G2D_HW_MINOR_VER);
 	return 0;
 }

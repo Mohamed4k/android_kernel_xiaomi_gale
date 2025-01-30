@@ -1144,7 +1144,7 @@ static int pl022_dma_probe(struct pl022 *pl022)
 	if (!pl022->dummypage)
 		goto err_no_dummypage;
 
-	dev_info(&pl022->adev->dev, "setup for DMA on RX %s, TX %s\n",
+	dev_dbg(&pl022->adev->dev, "setup for DMA on RX %s, TX %s\n",
 		 dma_chan_name(pl022->dma_rx_channel),
 		 dma_chan_name(pl022->dma_tx_channel));
 
@@ -2106,7 +2106,7 @@ static int pl022_probe(struct amba_device *adev, const struct amba_id *id)
 	struct device_node *np = adev->dev.of_node;
 	int status = 0, i, num_cs;
 
-	dev_info(&adev->dev,
+	dev_dbg(&adev->dev,
 		 "ARM PL022 driver, device ID: 0x%08x\n", adev->periphid);
 	if (!platform_info && IS_ENABLED(CONFIG_OF))
 		platform_info = pl022_platform_data_dt_get(dev);
@@ -2207,7 +2207,7 @@ static int pl022_probe(struct amba_device *adev, const struct amba_id *id)
 		status = -ENOMEM;
 		goto err_no_ioremap;
 	}
-	dev_info(&adev->dev, "mapped registers from %pa to %p\n",
+	dev_dbg(&adev->dev, "mapped registers from %pa to %p\n",
 		&adev->res.start, pl022->virtbase);
 
 	pl022->clk = devm_clk_get(&adev->dev, NULL);
@@ -2267,7 +2267,7 @@ static int pl022_probe(struct amba_device *adev, const struct amba_id *id)
 
 	/* let runtime pm put suspend */
 	if (platform_info->autosuspend_delay > 0) {
-		dev_info(&adev->dev,
+		dev_dbg(&adev->dev,
 			"will use autosuspend for runtime pm, delay %dms\n",
 			platform_info->autosuspend_delay);
 		pm_runtime_set_autosuspend_delay(dev,

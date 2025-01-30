@@ -266,7 +266,7 @@ static int __init ne_probe_isapnp(struct net_device *dev)
 			/* found it */
 			dev->base_addr = pnp_port_start(idev, 0);
 			dev->irq = pnp_irq(idev, 0);
-			netdev_info(dev,
+			netdev_dbg(dev,
 				    "ne.c: ISAPnP reports %s at i/o %#lx, irq %d.\n",
 				    (char *) isapnp_clone_list[i].driver_data,
 				    dev->base_addr, dev->irq);
@@ -326,9 +326,9 @@ static int __init ne_probe1(struct net_device *dev, unsigned long ioaddr)
 	}
 
 	if ((ne_msg_enable & NETIF_MSG_DRV) && (version_printed++ == 0))
-		netdev_info(dev, "%s%s", version1, version2);
+		netdev_dbg(dev, "%s%s", version1, version2);
 
-	netdev_info(dev, "NE*000 ethercard probe at %#3lx:", ioaddr);
+	netdev_dbg(dev, "NE*000 ethercard probe at %#3lx:", ioaddr);
 
 	/* A user with a poor card that fails to ack the reset, or that
 	   does not have a valid 0x57,0x57 signature can still use this
@@ -532,7 +532,7 @@ static int __init ne_probe1(struct net_device *dev, unsigned long ioaddr)
 	ret = register_netdev(dev);
 	if (ret)
 		goto out_irq;
-	netdev_info(dev, "%s found at %#lx, using IRQ %d.\n",
+	netdev_dbg(dev, "%s found at %#lx, using IRQ %d.\n",
 		    name, ioaddr, dev->irq);
 	return 0;
 
@@ -930,7 +930,7 @@ int __init init_module(void)
 	retval = platform_driver_probe(&ne_driver, ne_drv_probe);
 	if (retval) {
 		if (io[0] == 0)
-			pr_notice("ne.c: You must supply \"io=0xNNN\""
+			pr_debug("ne.c: You must supply \"io=0xNNN\""
 			       " value(s) for ISA cards.\n");
 		ne_loop_rm_unreg(1);
 		return retval;

@@ -1224,7 +1224,7 @@ int mei_hbm_dispatch(struct mei_device *dev, struct mei_msg_hdr *hdr)
 		}
 
 		dev->dev_state = MEI_DEV_POWER_DOWN;
-		dev_info(dev->dev, "hbm: stop response: resetting.\n");
+		dev_dbg(dev->dev, "hbm: stop response: resetting.\n");
 		/* force the reset */
 		return -EPROTO;
 		break;

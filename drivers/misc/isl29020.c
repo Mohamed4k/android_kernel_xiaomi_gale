@@ -176,7 +176,7 @@ static int  isl29020_probe(struct i2c_client *client,
 		dev_err(&client->dev, "isl29020: device create file failed\n");
 		return res;
 	}
-	dev_info(&client->dev, "%s isl29020: ALS chip found\n", client->name);
+	dev_dbg(&client->dev, "%s isl29020: ALS chip found\n", client->name);
 	als_set_power_state(client, 0);
 	pm_runtime_enable(&client->dev);
 	return res;

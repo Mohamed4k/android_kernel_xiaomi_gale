@@ -322,18 +322,18 @@ static void mrdump_mini_build_task_info(struct pt_regs *regs)
 	struct aee_process_info *cur_proc;
 
 	if (!mrdump_mini_ehdr) {
-		pr_notice("mrdump: ehder invalid\n");
+		pr_debug("mrdump: ehder invalid\n");
 		return;
 	}
 
 	if (!mrdump_virt_addr_valid(current_thread_info())) {
-		pr_notice("current thread info invalid\n");
+		pr_debug("current thread info invalid\n");
 		return;
 	}
 	cur = current;
 	tsk = cur;
 	if (!mrdump_virt_addr_valid(tsk)) {
-		pr_notice("tsk invalid\n");
+		pr_debug("tsk invalid\n");
 		return;
 	}
 	cur_proc = (struct aee_process_info *)((void *)mrdump_mini_ehdr +
@@ -342,7 +342,7 @@ static void mrdump_mini_build_task_info(struct pt_regs *regs)
 	sz = 0;
 	do {
 		if (!tsk) {
-			pr_notice("No tsk info\n");
+			pr_debug("No tsk info\n");
 			memset_io(cur_proc, 0x0,
 				sizeof(struct aee_process_info));
 			break;
@@ -353,13 +353,13 @@ static void mrdump_mini_build_task_info(struct pt_regs *regs)
 		previous = tsk;
 		tsk = tsk->real_parent;
 		if (!mrdump_virt_addr_valid(tsk)) {
-			pr_notice("tsk(%p) invalid (previous: [%s, %d])\n", tsk,
+			pr_debug("tsk(%p) invalid (previous: [%s, %d])\n", tsk,
 					previous->comm, previous->pid);
 			break;
 		}
 	} while (tsk && (tsk->pid != 0) && (tsk->pid != 1));
 	if (!strncmp(cur_proc->process_path, symbol, sz)) {
-		pr_notice("same process path\n");
+		pr_debug("same process path\n");
 		return;
 	}
 
@@ -415,14 +415,14 @@ static void mrdump_mini_build_task_info(struct pt_regs *regs)
 			(void *)(unsigned long)cur_proc->ke_frame.pc,
 			(void *)(unsigned long)cur_proc->ke_frame.pc);
 	else
-		pr_info("[<%llu>] invalid pc", cur_proc->ke_frame.pc);
+		pr_debug("[<%llu>] invalid pc", cur_proc->ke_frame.pc);
 	if (mrdump_virt_addr_valid(cur_proc->ke_frame.lr))
 		snprintf(cur_proc->ke_frame.lr_symbol, AEE_SZ_SYMBOL_L,
 			"[<%px>] %pS",
 			(void *)(unsigned long)cur_proc->ke_frame.lr,
 			(void *)(unsigned long)cur_proc->ke_frame.lr);
 	else
-		pr_info("[<%llu>] invalid lr", cur_proc->ke_frame.lr);
+		pr_debug("[<%llu>] invalid lr", cur_proc->ke_frame.lr);
 
 }
 
@@ -499,7 +499,7 @@ void mrdump_mini_add_extra_misc(void)
 			ret = _mrdump_mini_add_extra_misc(vaddr, size,
 					extra_members[i].dump_name);
 			if (ret < 0)
-				pr_notice("mrdump: add %s:0x%lx sz:0x%lx failed\n",
+				pr_debug("mrdump: add %s:0x%lx sz:0x%lx failed\n",
 					extra_members[i].dump_name,
 					vaddr, size);
 		}
@@ -509,7 +509,7 @@ EXPORT_SYMBOL(mrdump_mini_add_extra_misc);
 
 static void mrdump_mini_fatal(const char *str)
 {
-	pr_notice("minirdump: FATAL:%s\n", str);
+	pr_debug("minirdump: FATAL:%s\n", str);
 }
 
 static unsigned int mrdump_mini_addr;
@@ -534,7 +534,7 @@ static void mrdump_mini_build_elf_misc(void)
 		task_info_pa = (unsigned long)(mrdump_mini_addr +
 				MRDUMP_MINI_HEADER_SIZE);
 	} else {
-		pr_notice("minirdump: unexpected addr:0x%x, size:0x%x(0x%x)\n",
+		pr_debug("minirdump: unexpected addr:0x%x, size:0x%x(0x%x)\n",
 			mrdump_mini_addr, mrdump_mini_size,
 			(unsigned int)MRDUMP_MINI_HEADER_SIZE);
 		mrdump_mini_fatal("illegal addr size");
@@ -610,9 +610,9 @@ static void mrdump_mini_clear_loads(void)
 
 void mrdump_mini_add_hang_raw(unsigned long vaddr, unsigned long size)
 {
-	pr_notice("mrdump: hang data 0x%lx size:0x%lx\n", vaddr, size);
+	pr_debug("mrdump: hang data 0x%lx size:0x%lx\n", vaddr, size);
 	if (!mrdump_mini_ehdr) {
-		pr_notice("mrdump: ehdr invalid");
+		pr_debug("mrdump: ehdr invalid");
 		return;
 	}
 	mrdump_mini_add_misc(vaddr, size, 0, "_HANG_DETECT_");
@@ -649,7 +649,7 @@ static void *remap_lowmem(phys_addr_t start, phys_addr_t size)
 	vaddr = vmap(pages, page_count, VM_MAP, PAGE_KERNEL);
 	kfree(pages);
 	if (!vaddr) {
-		pr_notice("%s: Failed to map %u pages\n", __func__, page_count);
+		pr_debug("%s: Failed to map %u pages\n", __func__, page_count);
 		return NULL;
 	}
 
@@ -662,19 +662,19 @@ static void __init mrdump_mini_elf_header_init(void)
 		mrdump_mini_ehdr =
 		    remap_lowmem(mrdump_mini_addr,
 				 mrdump_mini_size);
-		pr_notice("minirdump: [DT] reserved 0x%x+0x%lx->%p\n",
+		pr_debug("minirdump: [DT] reserved 0x%x+0x%lx->%p\n",
 			mrdump_mini_addr,
 			(unsigned long)mrdump_mini_size,
 			mrdump_mini_ehdr);
 	} else {
-		pr_notice("minirdump: [DT] illegal value 0x%x(0x%x)\n",
+		pr_debug("minirdump: [DT] illegal value 0x%x(0x%x)\n",
 				mrdump_mini_addr,
 				mrdump_mini_size);
 		mrdump_mini_fatal("illegal addr size");
 		return;
 	}
 	if (!mrdump_mini_ehdr) {
-		pr_notice("mrdump mini reserve buffer fail");
+		pr_debug("mrdump mini reserve buffer fail");
 		mrdump_mini_fatal("header null pointer");
 		return;
 	}
@@ -691,7 +691,7 @@ int __init mrdump_mini_init(const struct mrdump_params *mparams)
 
 	mrdump_mini_elf_header_init();
 	if (!mrdump_mini_ehdr) {
-		pr_notice("mrdump: mini init fail\n");
+		pr_debug("mrdump: mini init fail\n");
 		return -1;
 	}
 	fill_psinfo(&mrdump_mini_ehdr->psinfo.data);
@@ -749,7 +749,7 @@ int __init mrdump_mini_init(const struct mrdump_params *mparams)
 
 int mini_rdump_reserve_memory(struct reserved_mem *rmem)
 {
-	pr_info("[memblock]%s: 0x%llx - 0x%llx (0x%llx)\n",
+	pr_debug("[memblock]%s: 0x%llx - 0x%llx (0x%llx)\n",
 		"mediatek,minirdump",
 		 (unsigned long long)rmem->base,
 		 (unsigned long long)rmem->base +

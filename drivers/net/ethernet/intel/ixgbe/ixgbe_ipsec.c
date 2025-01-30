@@ -442,7 +442,7 @@ static int ixgbe_ipsec_parse_proto_keys(struct xfrm_state *xs,
 		netdev_err(dev, "IPsec hw offload only supports keys up to 128 bits with a 32 bit salt\n");
 		return -EINVAL;
 	} else {
-		netdev_info(dev, "IPsec hw offload parameters missing 32 bit salt value\n");
+		netdev_dbg(dev, "IPsec hw offload parameters missing 32 bit salt value\n");
 		*mysalt = 0;
 	}
 	memcpy(mykey, key_data, 16);

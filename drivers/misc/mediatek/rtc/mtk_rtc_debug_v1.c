@@ -34,12 +34,12 @@ static ssize_t mtk_rtc_debug_write(struct file *file,
 	lbuf[size] = '\0';
 
 	if (sscanf(lbuf, "%15s %d", option, &setting) != 2) {
-		pr_notice("Invalid para %s\n", lbuf);
+		pr_debug("Invalid para %s\n", lbuf);
 		return -EFAULT;
 	}
 
 	if (!strncmp(option, "alarm", strlen("alarm"))) {
-		pr_notice("alarm = %d\n", setting);
+		pr_debug("alarm = %d\n", setting);
 		rtc_alarm_enabled = setting;
 		if (rtc_alarm_enabled)
 			enable_irq(irq);

@@ -48,7 +48,7 @@ static struct bman_portal *init_pcfg(struct bm_portal_config *pcfg)
 	bman_p_irqsource_add(p, BM_PIRQ_RCRI);
 	affine_bportals[pcfg->cpu] = p;
 
-	dev_info(pcfg->dev, "Portal initialised, cpu %d\n", pcfg->cpu);
+	dev_dbg(pcfg->dev, "Portal initialised, cpu %d\n", pcfg->cpu);
 
 	return p;
 }

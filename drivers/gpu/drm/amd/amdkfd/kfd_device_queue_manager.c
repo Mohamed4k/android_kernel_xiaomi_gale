@@ -256,7 +256,7 @@ static int create_queue_nocpsch(struct device_queue_manager *dqm,
 	dqm_lock(dqm);
 
 	if (dqm->total_queue_count >= max_num_of_queues_per_device) {
-		pr_warn("Can't create new usermode queue because %d queues were already created\n",
+		pr_debug("Can't create new usermode queue because %d queues were already created\n",
 				dqm->total_queue_count);
 		retval = -EPERM;
 		goto out_unlock;
@@ -449,7 +449,7 @@ static int destroy_queue_nocpsch_locked(struct device_queue_manager *dqm,
 	list_del(&q->list);
 	if (list_empty(&qpd->queues_list)) {
 		if (qpd->reset_wavefronts) {
-			pr_warn("Resetting wave fronts (nocpsch) on dev %p\n",
+			pr_debug("Resetting wave fronts (nocpsch) on dev %p\n",
 					dqm->dev);
 			/* dbgdev_wave_reset_wavefronts has to be called before
 			 * deallocate_vmid(), i.e. when vmid is still in use.
@@ -1115,7 +1115,7 @@ static int create_kernel_queue_cpsch(struct device_queue_manager *dqm,
 {
 	dqm_lock(dqm);
 	if (dqm->total_queue_count >= max_num_of_queues_per_device) {
-		pr_warn("Can't create new kernel queue because %d queues were already created\n",
+		pr_debug("Can't create new kernel queue because %d queues were already created\n",
 				dqm->total_queue_count);
 		dqm_unlock(dqm);
 		return -EPERM;
@@ -1168,7 +1168,7 @@ static int create_queue_cpsch(struct device_queue_manager *dqm, struct queue *q,
 	dqm_lock(dqm);
 
 	if (dqm->total_queue_count >= max_num_of_queues_per_device) {
-		pr_warn("Can't create new usermode queue because %d queues were already created\n",
+		pr_debug("Can't create new usermode queue because %d queues were already created\n",
 				dqm->total_queue_count);
 		retval = -EPERM;
 		goto out_unlock;
@@ -1604,7 +1604,7 @@ static int process_termination_cpsch(struct device_queue_manager *dqm,
 
 	retval = execute_queues_cpsch(dqm, filter, 0);
 	if ((!dqm->is_hws_hang) && (retval || qpd->reset_wavefronts)) {
-		pr_warn("Resetting wave fronts (cpsch) on dev %p\n", dqm->dev);
+		pr_debug("Resetting wave fronts (cpsch) on dev %p\n", dqm->dev);
 		dbgdev_wave_reset_wavefronts(dqm->dev, qpd->pqm->process);
 		qpd->reset_wavefronts = false;
 	}

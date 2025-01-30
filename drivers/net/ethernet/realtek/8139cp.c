@@ -1894,7 +1894,7 @@ static int cp_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	if (pdev->vendor == PCI_VENDOR_ID_REALTEK &&
 	    pdev->device == PCI_DEVICE_ID_REALTEK_8139 && pdev->revision < 0x20) {
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "This (id %04x:%04x rev %02x) is not an 8139C+ compatible chip, use 8139too\n",
 			 pdev->vendor, pdev->device, pdev->revision);
 		return -ENODEV;
@@ -2013,7 +2013,7 @@ static int cp_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (rc)
 		goto err_out_iomap;
 
-	netdev_info(dev, "RTL-8139C+ at 0x%p, %pM, IRQ %d\n",
+	netdev_dbg(dev, "RTL-8139C+ at 0x%p, %pM, IRQ %d\n",
 		    regs, dev->dev_addr, pdev->irq);
 
 	pci_set_drvdata(pdev, dev);

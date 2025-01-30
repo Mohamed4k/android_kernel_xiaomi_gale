@@ -1432,7 +1432,7 @@ int sunxi_pinctrl_init_with_variant(struct platform_device *pdev,
 
 	sunxi_pinctrl_setup_debounce(pctl, node);
 
-	dev_info(&pdev->dev, "initialized sunXi PIO driver\n");
+	dev_dbg(&pdev->dev, "initialized sunXi PIO driver\n");
 
 	return 0;
 

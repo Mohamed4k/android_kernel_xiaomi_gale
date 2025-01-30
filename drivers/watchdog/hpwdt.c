@@ -232,7 +232,7 @@ static int hpwdt_init_nmi_decoding(struct pci_dev *dev)
 	if (retval)
 		goto error2;
 
-	dev_info(&dev->dev,
+	dev_dbg(&dev->dev,
 		"HPE Watchdog Timer Driver: NMI decoding initialized\n");
 
 	return 0;
@@ -320,7 +320,7 @@ static int hpwdt_init_one(struct pci_dev *dev,
 		goto error_wd_register;
 	}
 
-	dev_info(&dev->dev, "HPE Watchdog Timer Driver: %s"
+	dev_dbg(&dev->dev, "HPE Watchdog Timer Driver: %s"
 			", timer margin: %d seconds (nowayout=%d).\n",
 			HPWDT_VERSION, hpwdt_dev.timeout, nowayout);
 

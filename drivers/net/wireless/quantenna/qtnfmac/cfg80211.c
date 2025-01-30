@@ -403,14 +403,14 @@ qtnf_mgmt_frame_register(struct wiphy *wiphy, struct wireless_dev *wdev,
 		qlink_frame_type = QLINK_MGMT_FRAME_ACTION;
 		break;
 	default:
-		pr_warn("VIF%u.%u: unsupported frame type: %X\n",
+		pr_debug("VIF%u.%u: unsupported frame type: %X\n",
 			vif->mac->macid, vif->vifid,
 			(frame_type & IEEE80211_FCTL_STYPE) >> 4);
 		return;
 	}
 
 	if (qtnf_cmd_send_register_mgmt(vif, qlink_frame_type, reg)) {
-		pr_warn("VIF%u.%u: failed to %sregister mgmt frame type 0x%x\n",
+		pr_debug("VIF%u.%u: failed to %sregister mgmt frame type 0x%x\n",
 			vif->mac->macid, vif->vifid, reg ? "" : "un",
 			frame_type);
 		return;
@@ -812,7 +812,7 @@ static int qtnf_channel_switch(struct wiphy *wiphy, struct net_device *dev,
 
 	ret = qtnf_cmd_send_chan_switch(vif, params);
 	if (ret)
-		pr_warn("%s: failed to switch to channel (%u)\n",
+		pr_debug("%s: failed to switch to channel (%u)\n",
 			dev->name, params->chandef.chan->hw_value);
 
 	return ret;

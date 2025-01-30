@@ -136,7 +136,7 @@ void __init tegra124_init_speedo_data(struct tegra_sku_info *sku_info)
 	sku_info->cpu_speedo_value = cpu_speedo_0_value;
 
 	if (sku_info->cpu_speedo_value == 0) {
-		pr_warn("Tegra Warning: Speedo value not fused.\n");
+		pr_debug("Tegra Warning: Speedo value not fused.\n");
 		WARN_ON(1);
 		return;
 	}

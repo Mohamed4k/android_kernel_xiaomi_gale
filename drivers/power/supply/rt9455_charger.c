@@ -1101,7 +1101,7 @@ static int rt9455_irq_handler_check_irq3_register(struct rt9455_info *info,
 	}
 
 	if (alert_userspace) {
-		dev_info(dev, "Boost fault occurred, therefore the charger goes into charge mode\n");
+		dev_dbg(dev, "Boost fault occurred, therefore the charger goes into charge mode\n");
 		ret = rt9455_set_voreg_before_charge_mode(info);
 		if (ret) {
 			dev_err(dev, "Failed to set VOREG before entering charge mode\n");

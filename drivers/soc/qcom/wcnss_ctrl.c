@@ -142,7 +142,7 @@ static int wcnss_ctrl_smd_callback(struct rpmsg_device *rpdev,
 		}
 
 		version = data;
-		dev_info(wcnss->dev, "WCNSS Version %d.%d %d.%d\n",
+		dev_dbg(wcnss->dev, "WCNSS Version %d.%d %d.%d\n",
 			 version->major, version->minor,
 			 version->version, version->revision);
 
@@ -164,7 +164,7 @@ static int wcnss_ctrl_smd_callback(struct rpmsg_device *rpdev,
 		complete(&wcnss->cbc);
 		break;
 	default:
-		dev_info(wcnss->dev, "unknown message type %d\n", hdr->type);
+		dev_dbg(wcnss->dev, "unknown message type %d\n", hdr->type);
 		break;
 	}
 

@@ -1123,7 +1123,7 @@ static void hclgevf_reset_event(struct hnae3_handle *handle)
 {
 	struct hclgevf_dev *hdev = hclgevf_ae_get_hdev(handle);
 
-	dev_info(&hdev->pdev->dev, "received reset request from VF enet\n");
+	dev_dbg(&hdev->pdev->dev, "received reset request from VF enet\n");
 
 	handle->reset_level = HNAE3_VF_RESET;
 
@@ -1901,7 +1901,7 @@ static int hclgevf_init_hdev(struct hclgevf_dev *hdev)
 		goto err_config;
 	}
 
-	pr_info("finished initializing %s driver\n", HCLGEVF_DRIVER_NAME);
+	pr_debug("finished initializing %s driver\n", HCLGEVF_DRIVER_NAME);
 
 	return 0;
 
@@ -2065,7 +2065,7 @@ static struct hnae3_ae_algo ae_algovf = {
 
 static int hclgevf_init(void)
 {
-	pr_info("%s is initializing\n", HCLGEVF_NAME);
+	pr_debug("%s is initializing\n", HCLGEVF_NAME);
 
 	hnae3_register_ae_algo(&ae_algovf);
 

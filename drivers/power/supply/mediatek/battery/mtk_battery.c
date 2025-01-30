@@ -203,7 +203,7 @@ int __attribute__ ((weak))
 
 void __attribute__ ((weak)) enable_bat_temp_det(bool en)
 {
-	pr_notice("[%s] not support!\n", __func__);
+	pr_debug("[%s] not support!\n", __func__);
 }
 
 unsigned int __attribute__ ((weak)) mt6358_irq_get_virq(struct device *dev,
@@ -666,10 +666,10 @@ static int battery_get_property(struct power_supply *psy,
 		power_supply_get_property(data->psy, POWER_SUPPLY_PROP_CAPACITY, &pval);
 		gauge_get_current(&fgcurrent);
 		if (pval.intval > 0 && pval.intval <= 1) {
-			pr_info("vbat_mv:%d, is_charging:%d, shutdown_delay0:%d, UI_soc:%d", data->BAT_batt_vol, data->BAT_STATUS, val->intval, pval.intval);
+			pr_debug("vbat_mv:%d, is_charging:%d, shutdown_delay0:%d, UI_soc:%d", data->BAT_batt_vol, data->BAT_STATUS, val->intval, pval.intval);
 			if (data->BAT_STATUS == POWER_SUPPLY_STATUS_CHARGING && val->intval) {
 				if (data->BAT_batt_vol <= HARD_SHUTDOWN_BATT_VOL_MV) {
-					pr_info("vbat_mv:%d, is_charging:%d, shutdown_delay1:%d, UI_soc:%d", data->BAT_batt_vol, data->BAT_STATUS, val->intval, pval.intval);
+					pr_debug("vbat_mv:%d, is_charging:%d, shutdown_delay1:%d, UI_soc:%d", data->BAT_batt_vol, data->BAT_STATUS, val->intval, pval.intval);
 					//kernel_power_off();
 					power_supply_changed(data->psy);
 				} else {
@@ -682,11 +682,11 @@ static int battery_get_property(struct power_supply *psy,
 				} else if (data->BAT_batt_vol > HARD_SHUTDOWN_BATT_VOL_MV) {
 					if (data->BAT_STATUS != POWER_SUPPLY_STATUS_CHARGING){
 						val->intval = 1;
-						pr_info("vbat_mv:%d, is_charging:%d, shutdown_delay2:%d, UI_soc:%d", data->BAT_batt_vol, data->BAT_STATUS, val->intval, pval.intval);
+						pr_debug("vbat_mv:%d, is_charging:%d, shutdown_delay2:%d, UI_soc:%d", data->BAT_batt_vol, data->BAT_STATUS, val->intval, pval.intval);
 					}
 					data->BAT_CAPACITY = 1;
 				} else {
-					pr_info("vbat_mv:%d, is_charging:%d, shutdown_delay3:%d, UI_soc:%d", data->BAT_batt_vol, data->BAT_STATUS, val->intval,pval.intval);
+					pr_debug("vbat_mv:%d, is_charging:%d, shutdown_delay3:%d, UI_soc:%d", data->BAT_batt_vol, data->BAT_STATUS, val->intval,pval.intval);
 					//kernel_power_off();
 					power_supply_changed(data->psy);
 				}
@@ -695,7 +695,7 @@ static int battery_get_property(struct power_supply *psy,
 			val->intval = 0;
 		}
 		if (gm.tbat_precise < 50 && data->BAT_CAPACITY > 1){
-			pr_info("temp is %d, too low and uisoc is %d, not 0\n", gm.tbat_precise, data->BAT_CAPACITY);
+			pr_debug("temp is %d, too low and uisoc is %d, not 0\n", gm.tbat_precise, data->BAT_CAPACITY);
 			val->intval = 0;
 		}
 		// Begin for  HTH-324850
@@ -704,7 +704,7 @@ static int battery_get_property(struct power_supply *psy,
 		}
 		// End for HTH-324850
 		if(last_shutdown_delay != val->intval) {
-			pr_info("%s shutdown_delay: %d -> %d \n", __func__, last_shutdown_delay, val->intval);
+			pr_debug("%s shutdown_delay: %d -> %d \n", __func__, last_shutdown_delay, val->intval);
 			last_shutdown_delay = val->intval;
 			power_supply_changed(data->psy);
 		}

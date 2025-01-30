@@ -342,26 +342,26 @@ static int gfar_scoalesce(struct net_device *dev,
 
 	/* Check the bounds of the values */
 	if (cvals->rx_coalesce_usecs > GFAR_MAX_COAL_USECS) {
-		netdev_info(dev, "Coalescing is limited to %d microseconds\n",
+		netdev_dbg(dev, "Coalescing is limited to %d microseconds\n",
 			    GFAR_MAX_COAL_USECS);
 		return -EINVAL;
 	}
 
 	if (cvals->rx_max_coalesced_frames > GFAR_MAX_COAL_FRAMES) {
-		netdev_info(dev, "Coalescing is limited to %d frames\n",
+		netdev_dbg(dev, "Coalescing is limited to %d frames\n",
 			    GFAR_MAX_COAL_FRAMES);
 		return -EINVAL;
 	}
 
 	/* Check the bounds of the values */
 	if (cvals->tx_coalesce_usecs > GFAR_MAX_COAL_USECS) {
-		netdev_info(dev, "Coalescing is limited to %d microseconds\n",
+		netdev_dbg(dev, "Coalescing is limited to %d microseconds\n",
 			    GFAR_MAX_COAL_USECS);
 		return -EINVAL;
 	}
 
 	if (cvals->tx_max_coalesced_frames > GFAR_MAX_COAL_FRAMES) {
-		netdev_info(dev, "Coalescing is limited to %d frames\n",
+		netdev_dbg(dev, "Coalescing is limited to %d frames\n",
 			    GFAR_MAX_COAL_FRAMES);
 		return -EINVAL;
 	}
@@ -862,7 +862,7 @@ static int gfar_check_filer_hardware(struct gfar_private *priv)
 		i = gfar_read(&regs->rctrl);
 		i &= RCTRL_PRSDEP_MASK | RCTRL_PRSFM;
 		if (i == (RCTRL_PRSDEP_MASK | RCTRL_PRSFM)) {
-			netdev_info(priv->ndev,
+			netdev_dbg(priv->ndev,
 				    "Receive Queue Filtering enabled\n");
 		} else {
 			netdev_warn(priv->ndev,
@@ -875,7 +875,7 @@ static int gfar_check_filer_hardware(struct gfar_private *priv)
 		i = gfar_read(&regs->rctrl);
 		i &= RCTRL_PRSDEP_MASK;
 		if (i == RCTRL_PRSDEP_MASK) {
-			netdev_info(priv->ndev,
+			netdev_dbg(priv->ndev,
 				    "Receive Queue Filtering enabled\n");
 		} else {
 			netdev_warn(priv->ndev,

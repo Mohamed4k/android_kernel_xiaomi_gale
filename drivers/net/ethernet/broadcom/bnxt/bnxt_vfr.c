@@ -43,7 +43,7 @@ static int hwrm_cfa_vfr_alloc(struct bnxt *bp, u16 vf_idx,
 		netdev_dbg(bp->dev, "tx_cfa_action=0x%x, rx_cfa_code=0x%x",
 			   *tx_cfa_action, *rx_cfa_code);
 	} else {
-		netdev_info(bp->dev, "%s error rc=%d", __func__, rc);
+		netdev_dbg(bp->dev, "%s error rc=%d", __func__, rc);
 	}
 
 	mutex_unlock(&bp->hwrm_cmd_lock);
@@ -60,7 +60,7 @@ static int hwrm_cfa_vfr_free(struct bnxt *bp, u16 vf_idx)
 
 	rc = hwrm_send_message(bp, &req, sizeof(req), HWRM_CMD_TIMEOUT);
 	if (rc)
-		netdev_info(bp->dev, "%s error rc=%d", __func__, rc);
+		netdev_dbg(bp->dev, "%s error rc=%d", __func__, rc);
 	return rc;
 }
 
@@ -419,7 +419,7 @@ static int bnxt_pcie_dsn_get(struct bnxt *bp, u8 dsn[])
 	u32 dw;
 
 	if (!pos) {
-		netdev_info(bp->dev, "Unable do read adapter's DSN");
+		netdev_dbg(bp->dev, "Unable do read adapter's DSN");
 		return -EOPNOTSUPP;
 	}
 
@@ -508,7 +508,7 @@ static int bnxt_vf_reps_create(struct bnxt *bp)
 	return 0;
 
 err:
-	netdev_info(bp->dev, "%s error=%d", __func__, rc);
+	netdev_dbg(bp->dev, "%s error=%d", __func__, rc);
 	kfree(cfa_code_map);
 	__bnxt_vf_reps_destroy(bp);
 	return rc;
@@ -530,7 +530,7 @@ int bnxt_dl_eswitch_mode_set(struct devlink *devlink, u16 mode)
 
 	mutex_lock(&bp->sriov_lock);
 	if (bp->eswitch_mode == mode) {
-		netdev_info(bp->dev, "already in %s eswitch mode",
+		netdev_dbg(bp->dev, "already in %s eswitch mode",
 			    mode == DEVLINK_ESWITCH_MODE_LEGACY ?
 			    "legacy" : "switchdev");
 		rc = -EINVAL;
@@ -550,7 +550,7 @@ int bnxt_dl_eswitch_mode_set(struct devlink *devlink, u16 mode)
 		}
 
 		if (pci_num_vf(bp->pdev) == 0) {
-			netdev_info(bp->dev, "Enable VFs before setting switchdev mode");
+			netdev_dbg(bp->dev, "Enable VFs before setting switchdev mode");
 			rc = -EPERM;
 			goto done;
 		}

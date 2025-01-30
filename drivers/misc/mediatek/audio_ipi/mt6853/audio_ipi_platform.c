@@ -53,14 +53,14 @@ bool is_audio_dsp_ready(const uint32_t dsp_id)
 	case AUDIO_OPENDSP_USE_CM4_B:
 #ifdef CONFIG_MTK_AUDIO_CM4_SUPPORT
 		if (dsp_id >= SCP_CORE_TOTAL) {
-			pr_notice("dsp_id %u/%u not support!!\n",
+			pr_debug("dsp_id %u/%u not support!!\n",
 				  dsp_id, SCP_CORE_TOTAL);
 			ret = false;
 			break;
 		}
 		ret = is_scp_ready((enum scp_core_id)dsp_id);
 #else
-		pr_notice("%s(), dsp_id %u not build!!\n", __func__, dsp_id);
+		pr_debug("%s(), dsp_id %u not build!!\n", __func__, dsp_id);
 		ret = false;
 #endif
 		break;
@@ -68,12 +68,12 @@ bool is_audio_dsp_ready(const uint32_t dsp_id)
 #ifdef CONFIG_MTK_AUDIODSP_SUPPORT
 		ret = (is_adsp_ready(dsp_id - AUDIO_OPENDSP_USE_HIFI3_A) == 1);
 #else
-		pr_notice("%s(), dsp_id %u not build!!\n", __func__, dsp_id);
+		pr_debug("%s(), dsp_id %u not build!!\n", __func__, dsp_id);
 		ret = false;
 #endif
 		break;
 	default:
-		pr_notice("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
+		pr_debug("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
 	}
 
 	return ret;
@@ -122,7 +122,7 @@ uint32_t audio_get_dsp_id(const uint8_t task)
 		dsp_id = AUDIO_OPENDSP_USE_HIFI3_A;
 		break;
 	default:
-		pr_notice("%s(), task %d not support!!\n", __func__, task);
+		pr_debug("%s(), task %d not support!!\n", __func__, task);
 		dsp_id = AUDIO_OPENDSP_ID_INVALID;
 	}
 
@@ -141,7 +141,7 @@ uint32_t audio_get_ipi_id(const uint8_t task)
 #if defined(CONFIG_MTK_AUDIO_CM4_SUPPORT)
 		ipi_id = IPI_AUDIO;
 #else
-		pr_notice("%s(), dsp_id %u task %d not build!!\n",
+		pr_debug("%s(), dsp_id %u task %d not build!!\n",
 			  __func__, dsp_id, task);
 		ipi_id = 0xFFFFFFFF;
 #endif
@@ -150,13 +150,13 @@ uint32_t audio_get_ipi_id(const uint8_t task)
 #if defined(CONFIG_MTK_AUDIODSP_SUPPORT)
 		ipi_id = ADSP_IPI_AUDIO;
 #else
-		pr_notice("%s(), dsp_id %u task %d not build!!\n",
+		pr_debug("%s(), dsp_id %u task %d not build!!\n",
 			  __func__, dsp_id, task);
 		ipi_id = 0xFFFFFFFF;
 #endif
 		break;
 	default:
-		pr_notice("%s(), dsp_id %u task %d not support!!\n",
+		pr_debug("%s(), dsp_id %u task %d not support!!\n",
 			  __func__, dsp_id, task);
 		ipi_id = 0xFFFFFFFF;
 	}
@@ -181,7 +181,7 @@ bool is_audio_dsp_support(const uint32_t dsp_id)
 #endif
 		break;
 	default:
-		pr_info("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
+		pr_debug("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
 	}
 
 	return is_opendsp_support;
@@ -230,7 +230,7 @@ int get_reserve_mem_size(const uint32_t dsp_id,
 #endif
 		break;
 	default:
-		pr_notice("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
+		pr_debug("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
 	}
 
 	return ret;
@@ -253,7 +253,7 @@ void *get_reserve_mem_virt(const uint32_t dsp_id, const uint32_t mem_id)
 #endif
 		break;
 	default:
-		pr_notice("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
+		pr_debug("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
 	}
 	return addr_mem_virt;
 }
@@ -275,7 +275,7 @@ phys_addr_t get_reserve_mem_phys(const uint32_t dsp_id, const uint32_t mem_id)
 #endif
 		break;
 	default:
-		pr_notice("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
+		pr_debug("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
 	}
 	return addr_mem_phys;
 }
@@ -296,7 +296,7 @@ uint8_t get_cache_aligned_order(const uint32_t dsp_id)
 		order = 7;
 		break;
 	default:
-		pr_notice("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
+		pr_debug("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
 	}
 	return order;
 }

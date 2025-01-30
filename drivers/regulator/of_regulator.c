@@ -95,7 +95,7 @@ static void of_get_regulation_constraints(struct device_node *np,
 	if (!ret)
 		constraints->settling_time_up = pval;
 	if (constraints->settling_time_up && constraints->settling_time) {
-		pr_warn("%s: ambiguous configuration for settling time, ignoring 'regulator-settling-time-up-us'\n",
+		pr_debug("%s: ambiguous configuration for settling time, ignoring 'regulator-settling-time-up-us'\n",
 			np->name);
 		constraints->settling_time_up = 0;
 	}
@@ -105,7 +105,7 @@ static void of_get_regulation_constraints(struct device_node *np,
 	if (!ret)
 		constraints->settling_time_down = pval;
 	if (constraints->settling_time_down && constraints->settling_time) {
-		pr_warn("%s: ambiguous configuration for settling time, ignoring 'regulator-settling-time-down-us'\n",
+		pr_debug("%s: ambiguous configuration for settling time, ignoring 'regulator-settling-time-down-us'\n",
 			np->name);
 		constraints->settling_time_down = 0;
 	}
@@ -131,7 +131,7 @@ static void of_get_regulation_constraints(struct device_node *np,
 			else
 				constraints->initial_mode = mode;
 		} else {
-			pr_warn("%s: mapping for mode %d not defined\n",
+			pr_debug("%s: mapping for mode %d not defined\n",
 				np->name, pval);
 		}
 	}
@@ -159,7 +159,7 @@ static void of_get_regulation_constraints(struct device_node *np,
 				constraints->valid_ops_mask
 					|= REGULATOR_CHANGE_MODE;
 		} else {
-			pr_warn("%s: mode mapping not defined\n", np->name);
+			pr_debug("%s: mode mapping not defined\n", np->name);
 		}
 	}
 
@@ -202,7 +202,7 @@ static void of_get_regulation_constraints(struct device_node *np,
 				else
 					suspend_state->mode = mode;
 			} else {
-				pr_warn("%s: mapping for mode %d not defined\n",
+				pr_debug("%s: mapping for mode %d not defined\n",
 					np->name, pval);
 			}
 		}

@@ -279,7 +279,7 @@ static int ath79_wdt_probe(struct platform_device *pdev)
 	max_timeout = (0xfffffffful / wdt_freq);
 	if (timeout < 1 || timeout > max_timeout) {
 		timeout = max_timeout;
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			"timeout value must be 0 < timeout < %d, using %d\n",
 			max_timeout, timeout);
 	}

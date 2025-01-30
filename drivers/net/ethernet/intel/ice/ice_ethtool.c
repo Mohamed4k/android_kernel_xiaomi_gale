@@ -181,7 +181,7 @@ static u32 ice_get_msglevel(struct net_device *netdev)
 
 #ifndef CONFIG_DYNAMIC_DEBUG
 	if (pf->hw.debug_mask)
-		netdev_info(netdev, "hw debug_mask: 0x%llX\n",
+		netdev_dbg(netdev, "hw debug_mask: 0x%llX\n",
 			    pf->hw.debug_mask);
 #endif /* !CONFIG_DYNAMIC_DEBUG */
 
@@ -509,12 +509,12 @@ ice_set_ringparam(struct net_device *netdev, struct ethtool_ringparam *ring)
 
 	new_tx_cnt = ALIGN(ring->tx_pending, ICE_REQ_DESC_MULTIPLE);
 	if (new_tx_cnt != ring->tx_pending)
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "Requested Tx descriptor count rounded up to %d\n",
 			    new_tx_cnt);
 	new_rx_cnt = ALIGN(ring->rx_pending, ICE_REQ_DESC_MULTIPLE);
 	if (new_rx_cnt != ring->rx_pending)
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "Requested Rx descriptor count rounded up to %d\n",
 			    new_rx_cnt);
 
@@ -546,7 +546,7 @@ ice_set_ringparam(struct net_device *netdev, struct ethtool_ringparam *ring)
 		goto process_rx;
 
 	/* alloc updated Tx resources */
-	netdev_info(netdev, "Changing Tx descriptor count from %d to %d\n",
+	netdev_dbg(netdev, "Changing Tx descriptor count from %d to %d\n",
 		    vsi->tx_rings[0]->count, new_tx_cnt);
 
 	tx_rings = devm_kcalloc(&pf->pdev->dev, vsi->alloc_txq,
@@ -578,7 +578,7 @@ process_rx:
 		goto process_link;
 
 	/* alloc updated Rx resources */
-	netdev_info(netdev, "Changing Rx descriptor count from %d to %d\n",
+	netdev_dbg(netdev, "Changing Rx descriptor count from %d to %d\n",
 		    vsi->rx_rings[0]->count, new_rx_cnt);
 
 	rx_rings = devm_kcalloc(&pf->pdev->dev, vsi->alloc_rxq,
@@ -684,7 +684,7 @@ static int ice_nway_reset(struct net_device *netdev)
 
 	status = ice_aq_set_link_restart_an(pi, link_up, NULL);
 	if (status) {
-		netdev_info(netdev, "link restart failed, err %d aq_err %d\n",
+		netdev_dbg(netdev, "link restart failed, err %d aq_err %d\n",
 			    status, pi->hw->adminq.sq_last_status);
 		return -EIO;
 	}
@@ -745,12 +745,12 @@ ice_set_pauseparam(struct net_device *netdev, struct ethtool_pauseparam *pause)
 	 * PF VSI
 	 */
 	if (vsi->type != ICE_VSI_PF) {
-		netdev_info(netdev, "Changing flow control parameters only supported for PF VSI\n");
+		netdev_dbg(netdev, "Changing flow control parameters only supported for PF VSI\n");
 		return -EOPNOTSUPP;
 	}
 
 	if (pause->autoneg != (hw_link_info->an_info & ICE_AQ_AN_COMPLETED)) {
-		netdev_info(netdev, "To change autoneg please use: ethtool -s <dev> autoneg <on|off>\n");
+		netdev_dbg(netdev, "To change autoneg please use: ethtool -s <dev> autoneg <on|off>\n");
 		return -EOPNOTSUPP;
 	}
 
@@ -758,7 +758,7 @@ ice_set_pauseparam(struct net_device *netdev, struct ethtool_pauseparam *pause)
 	if (!test_bit(__ICE_DOWN, pf->state) &&
 	    !(hw_link_info->an_info & ICE_AQ_AN_COMPLETED)) {
 		/* Send message that it might not necessarily work*/
-		netdev_info(netdev, "Autoneg did not complete so changing settings may not result in an actual change.\n");
+		netdev_dbg(netdev, "Autoneg did not complete so changing settings may not result in an actual change.\n");
 	}
 
 	if (pause->rx_pause && pause->tx_pause)
@@ -776,15 +776,15 @@ ice_set_pauseparam(struct net_device *netdev, struct ethtool_pauseparam *pause)
 	status = ice_set_fc(pi, &aq_failures, link_up);
 
 	if (aq_failures & ICE_SET_FC_AQ_FAIL_GET) {
-		netdev_info(netdev, "Set fc failed on the get_phy_capabilities call with err %d aq_err %d\n",
+		netdev_dbg(netdev, "Set fc failed on the get_phy_capabilities call with err %d aq_err %d\n",
 			    status, hw->adminq.sq_last_status);
 		err = -EAGAIN;
 	} else if (aq_failures & ICE_SET_FC_AQ_FAIL_SET) {
-		netdev_info(netdev, "Set fc failed on the set_phy_config call with err %d aq_err %d\n",
+		netdev_dbg(netdev, "Set fc failed on the set_phy_config call with err %d aq_err %d\n",
 			    status, hw->adminq.sq_last_status);
 		err = -EAGAIN;
 	} else if (aq_failures & ICE_SET_FC_AQ_FAIL_UPDATE) {
-		netdev_info(netdev, "Set fc failed on the get_link_info call with err %d aq_err %d\n",
+		netdev_dbg(netdev, "Set fc failed on the get_link_info call with err %d aq_err %d\n",
 			    status, hw->adminq.sq_last_status);
 		err = -EAGAIN;
 	}

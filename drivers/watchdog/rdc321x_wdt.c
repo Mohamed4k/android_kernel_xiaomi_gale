@@ -265,7 +265,7 @@ static int rdc321x_wdt_probe(struct platform_device *pdev)
 
 	timer_setup(&rdc321x_wdt_device.timer, rdc321x_wdt_trigger, 0);
 
-	dev_info(&pdev->dev, "watchdog init success\n");
+	dev_dbg(&pdev->dev, "watchdog init success\n");
 
 	return 0;
 }

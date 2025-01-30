@@ -495,7 +495,7 @@ static int dma_buf_test_alloc_dealloc(int port, struct sg_table *table,
 	int ret = 0;
 
 	if (!dev) {
-		pr_notice("%s, %d, invalid port:%d\n",
+		pr_debug("%s, %d, invalid port:%d\n",
 			  __func__, __LINE__, port);
 		return -1;
 	}
@@ -505,7 +505,7 @@ static int dma_buf_test_alloc_dealloc(int port, struct sg_table *table,
 			DMA_ATTR_SKIP_CPU_SYNC);
 
 	if (!ret) {
-		pr_notice("%s, %d, failed at mapping sg table, ret:%d\n",
+		pr_debug("%s, %d, failed at mapping sg table, ret:%d\n",
 			  __func__, __LINE__, ret);
 		return -1;
 	}
@@ -855,7 +855,7 @@ static int m4u_debug_set(void *data, u64 val)
 		__m4u_dump_pgtable(NULL, 1, true, 0);
 
 #if (CONFIG_MTK_IOMMU_PGTABLE_EXT > 32)
-		pr_notice(" >> boundary 0 top 5 user\n");
+		pr_debug(" >> boundary 0 top 5 user\n");
 #if BITS_PER_LONG == 32
 		m4u_find_max_port_size(0, (1ULL << 32) - 1,
 					&err_port, &err_size);
@@ -867,7 +867,7 @@ static int m4u_debug_set(void *data, u64 val)
 					    iommu_get_port_name(err_port),
 					    err_size);
 
-		pr_notice(" >> boundary 1 top 5 user\n");
+		pr_debug(" >> boundary 1 top 5 user\n");
 #if BITS_PER_LONG == 32
 		m4u_find_max_port_size(1ULL << 32, (2ULL << 32) - 1,
 					&err_port, &err_size);
@@ -880,7 +880,7 @@ static int m4u_debug_set(void *data, u64 val)
 					    iommu_get_port_name(err_port),
 					    err_size);
 
-		pr_notice(" >> boundary 2 top 5 user\n");
+		pr_debug(" >> boundary 2 top 5 user\n");
 #if BITS_PER_LONG == 32
 		m4u_find_max_port_size(2ULL << 32, (3ULL << 32) - 1,
 					&err_port, &err_size);
@@ -892,7 +892,7 @@ static int m4u_debug_set(void *data, u64 val)
 					    iommu_get_port_name(err_port),
 					    err_size);
 
-		pr_notice(" >> boundary 3 top 5 user\n");
+		pr_debug(" >> boundary 3 top 5 user\n");
 #if BITS_PER_LONG == 32
 		m4u_find_max_port_size(3ULL << 32, (4ULL << 32) - 1,
 					&err_port, &err_size);
@@ -904,7 +904,7 @@ static int m4u_debug_set(void *data, u64 val)
 					    iommu_get_port_name(err_port),
 					    err_size);
 
-		pr_notice(" >> CCU domain top 5 user\n");
+		pr_debug(" >> CCU domain top 5 user\n");
 		m4u_find_max_port_size(0x240000000UL,
 					0x248000000UL - 1,
 					&err_port, &err_size);
@@ -912,7 +912,7 @@ static int m4u_debug_set(void *data, u64 val)
 					    iommu_get_port_name(err_port),
 					    err_size);
 #else
-		pr_notice(" >> boundary 0 top 5 user\n");
+		pr_debug(" >> boundary 0 top 5 user\n");
 #if BITS_PER_LONG == 32
 		m4u_find_max_port_size(0, (1ULL << 32) - 1,
 					&err_port, &err_size);
@@ -924,7 +924,7 @@ static int m4u_debug_set(void *data, u64 val)
 					    iommu_get_port_name(err_port),
 					    err_size);
 
-		pr_notice(" >> CCU domain top 5 user\n");
+		pr_debug(" >> CCU domain top 5 user\n");
 		m4u_find_max_port_size(0x40000000UL,
 					0x48000000UL - 1,
 					&err_port, &err_size);
@@ -1058,13 +1058,13 @@ static int m4u_debug_set(void *data, u64 val)
 		for (i = 0; i < MTK_IOMMU_M4U_COUNT; i++) {
 			ret = mtk_iommu_power_switch_by_id(i, true, "dump_mau");
 			if (ret) {
-				pr_notice("%s, m4u%d open clk failed\n",
+				pr_debug("%s, m4u%d open clk failed\n",
 					      __func__, i);
 				continue;
 			}
 			ret = mtk_switch_secure_debug_func(i, 1);
 			if (ret) {
-				pr_notice("%s, m4u%d failed to enable secure debug signal\n",
+				pr_debug("%s, m4u%d failed to enable secure debug signal\n",
 					      __func__, i);
 				mtk_iommu_power_switch_by_id(i,
 						false, "dump_mau");
@@ -1077,7 +1077,7 @@ static int m4u_debug_set(void *data, u64 val)
 				cfg.slave = j;
 				cfg.mau = 0;
 				mau_get_config_info(&cfg);
-				pr_notice("%s, m4u:%d,slave:%d,mau:%d,s:0x%x(0x%x),e:0x%x(0x%x),io:0x%x,wr:0x%x,virt:0x%x,larb:0x%x,port:0x%x\n",
+				pr_debug("%s, m4u:%d,slave:%d,mau:%d,s:0x%x(0x%x),e:0x%x(0x%x),io:0x%x,wr:0x%x,virt:0x%x,larb:0x%x,port:0x%x\n",
 					__func__,
 					i, j, cfg.mau,
 					cfg.start, cfg.start_bit32,
@@ -1088,12 +1088,12 @@ static int m4u_debug_set(void *data, u64 val)
 			ret = mtk_iommu_power_switch_by_id(i,
 						false, "dump_mau");
 			if (ret) {
-				pr_notice("%s, m4u%d close clk failed\n",
+				pr_debug("%s, m4u%d close clk failed\n",
 					      __func__, i);
 			}
 			ret = mtk_switch_secure_debug_func(i, 0);
 			if (ret)
-				pr_notice("%s, m4u%d failed to disable secure debug signal\n",
+				pr_debug("%s, m4u%d failed to disable secure debug signal\n",
 					      __func__, i);
 		}
 	}
@@ -1333,7 +1333,7 @@ const struct file_operations m4u_proc_help_fops = {
 
 int m4u_debug_domain_show(struct seq_file *s, void *unused)
 {
-	pr_notice("[iommu][debug]: %s\n", __func__);
+	pr_debug("[iommu][debug]: %s\n", __func__);
 	pseudo_dump_iova_reserved_region(s);
 	return 0;
 }
@@ -1368,7 +1368,7 @@ const struct file_operations m4u_proc_domain_fops = {
 
 int m4u_debug_port_show(struct seq_file *s, void *unused)
 {
-	pr_notice("[iommu][debug]: %s\n", __func__);
+	pr_debug("[iommu][debug]: %s\n", __func__);
 	pseudo_dump_all_port_status(s);
 	return 0;
 }
@@ -1403,7 +1403,7 @@ const struct file_operations m4u_proc_port_fops = {
 
 int m4u_debug_buf_show(struct seq_file *s, void *unused)
 {
-	pr_notice("[iommu][debug]: %s\n", __func__);
+	pr_debug("[iommu][debug]: %s\n", __func__);
 	__m4u_dump_pgtable(s, 1, true, 0);
 	return 0;
 }
@@ -1440,7 +1440,7 @@ int m4u_debug_monitor_show(struct seq_file *s, void *unused)
 {
 	int i, j;
 
-	pr_notice("[iommu][debug]: %s\n", __func__);
+	pr_debug("[iommu][debug]: %s\n", __func__);
 	for (i = 0; i < MTK_IOMMU_M4U_COUNT; i++)
 		for (j = 0; j < MTK_IOMMU_MMU_COUNT; j++)
 			iommu_perf_print_counter(i, j, "monitor");
@@ -1480,7 +1480,7 @@ int m4u_debug_register_show(struct seq_file *s, void *unused)
 {
 	int i;
 
-	pr_notice("[iommu][debug]: %s\n", __func__);
+	pr_debug("[iommu][debug]: %s\n", __func__);
 	for (i = 0; i < MTK_IOMMU_M4U_COUNT; i++)
 		mtk_iommu_dump_reg(i, 0, 400, "/d/m4u/register");
 

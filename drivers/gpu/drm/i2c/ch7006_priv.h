@@ -135,7 +135,7 @@ void ch7006_state_save(struct i2c_client *client,
 				   "%s: " format, __func__, ## __VA_ARGS__); \
 	} while (0)
 #define ch7006_info(client, format, ...) \
-				dev_info(&client->dev, format, __VA_ARGS__)
+				dev_dbg(&client->dev, format, __VA_ARGS__)
 #define ch7006_err(client, format, ...) \
 				dev_err(&client->dev, format, __VA_ARGS__)
 

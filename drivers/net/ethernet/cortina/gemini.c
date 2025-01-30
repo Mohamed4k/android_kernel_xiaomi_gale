@@ -346,7 +346,7 @@ static void gmac_speed_set(struct net_device *netdev)
 
 	if (netif_msg_link(port)) {
 		phy_print_status(phydev);
-		netdev_info(netdev, "link flow control: %s\n",
+		netdev_dbg(netdev, "link flow control: %s\n",
 			    phydev->pause
 			    ? (phydev->asym_pause ? "tx" : "both")
 			    : (phydev->asym_pause ? "rx" : "none")
@@ -955,7 +955,7 @@ static int geth_setup_freeq(struct gemini_ethernet *geth)
 		goto err_freeq;
 	geth->num_freeq_pages = pages;
 
-	dev_info(geth->dev, "allocate %d pages for queue\n", pages);
+	dev_dbg(geth->dev, "allocate %d pages for queue\n", pages);
 	for (pn = 0; pn < pages; pn++)
 		if (!geth_freeq_alloc_map_page(geth, pn))
 			goto err_freeq_alloc;
@@ -2390,7 +2390,7 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
 	else
 		return -ENODEV;
 
-	dev_info(dev, "probe %s ID %d\n", dev_name(dev), id);
+	dev_dbg(dev, "probe %s ID %d\n", dev_name(dev), id);
 
 	netdev = devm_alloc_etherdev_mqs(dev, sizeof(*port), TX_QUEUE_NUM, TX_QUEUE_NUM);
 	if (!netdev) {
@@ -2495,7 +2495,7 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
 		dev_dbg(dev, "ethernet address 0x%08x%08x%08x invalid\n",
 			port->mac_addr[0], port->mac_addr[1],
 			port->mac_addr[2]);
-		dev_info(dev, "using a random ethernet address\n");
+		dev_dbg(dev, "using a random ethernet address\n");
 		eth_random_addr(netdev->dev_addr);
 	}
 	gmac_write_mac_address(netdev);
@@ -2514,13 +2514,13 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
 	if (ret)
 		goto unprepare;
 
-	netdev_info(netdev,
+	netdev_dbg(netdev,
 		    "irq %d, DMA @ 0x%pap, GMAC @ 0x%pap\n",
 		    port->irq, &dmares->start,
 		    &gmacres->start);
 	ret = gmac_setup_phy(netdev);
 	if (ret)
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "PHY init failed, deferring to ifup time\n");
 	return 0;
 
@@ -2584,7 +2584,7 @@ static int gemini_ethernet_probe(struct platform_device *pdev)
 		dev_err(dev, "failed to reset ethernet\n");
 		return -EIO;
 	}
-	dev_info(dev, "Ethernet device ID: 0x%03x, revision 0x%01x\n",
+	dev_dbg(dev, "Ethernet device ID: 0x%03x, revision 0x%01x\n",
 		 (val >> 4) & 0xFFFU, val & 0xFU);
 
 	spin_lock_init(&geth->irq_lock);

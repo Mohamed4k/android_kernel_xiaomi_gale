@@ -947,7 +947,7 @@ int rcar_du_crtc_create(struct rcar_du_group *rgrp, unsigned int swindex,
 	if (!IS_ERR(clk)) {
 		rcrtc->extclock = clk;
 	} else if (PTR_ERR(rcrtc->clock) == -EPROBE_DEFER) {
-		dev_info(rcdu->dev, "can't get external clock %u\n", hwindex);
+		dev_dbg(rcdu->dev, "can't get external clock %u\n", hwindex);
 		return -EPROBE_DEFER;
 	}
 

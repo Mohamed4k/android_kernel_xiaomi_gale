@@ -266,7 +266,7 @@ static int sama5d4_wdt_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, wdt);
 
-	dev_info(&pdev->dev, "initialized (timeout = %d sec, nowayout = %d)\n",
+	dev_dbg(&pdev->dev, "initialized (timeout = %d sec, nowayout = %d)\n",
 		 wdd->timeout, nowayout);
 
 	return 0;

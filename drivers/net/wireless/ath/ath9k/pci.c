@@ -1027,7 +1027,7 @@ static int ath_pci_suspend(struct device *device)
 	struct ath_common *common = ath9k_hw_common(sc->sc_ah);
 
 	if (test_bit(ATH_OP_WOW_ENABLED, &common->op_flags)) {
-		dev_info(&pdev->dev, "WOW is enabled, bypassing PCI suspend\n");
+		dev_dbg(&pdev->dev, "WOW is enabled, bypassing PCI suspend\n");
 		return 0;
 	}
 

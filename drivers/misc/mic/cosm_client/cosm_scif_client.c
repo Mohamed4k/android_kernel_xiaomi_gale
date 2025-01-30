@@ -44,7 +44,7 @@ static int cosm_reboot_event(struct notifier_block *this, unsigned long event,
 	int rc;
 
 	event = (event == SYS_RESTART) ? SYSTEM_RESTART : event;
-	dev_info(&client_spdev->dev, "%s %d received event %ld\n",
+	dev_dbg(&client_spdev->dev, "%s %d received event %ld\n",
 		 __func__, __LINE__, event);
 
 	msg.shutdown_status = event;

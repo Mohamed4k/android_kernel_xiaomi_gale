@@ -137,7 +137,7 @@ u32 mt_irq_get_pol_hw(u32 hwirq)
 	void __iomem *base = INT_POL_CTL0;
 
 	if (hwirq < 32) {
-		pr_notice("Fail to set polarity of interrupt %d\n", hwirq);
+		pr_debug("Fail to set polarity of interrupt %d\n", hwirq);
 		return 0;
 	}
 
@@ -148,7 +148,7 @@ u32 mt_irq_get_pol_hw(u32 hwirq)
 	 */
 	if ((reg_len_pol0 != 0) && (reg >= reg_len_pol0)) {
 		if (!INT_POL_CTL1) {
-			pr_notice("MUST have 2nd INT_POL_CTRL\n");
+			pr_debug("MUST have 2nd INT_POL_CTRL\n");
 			/* is a bug */
 			WARN_ON(1);
 			return 0;
@@ -379,7 +379,7 @@ void mt_irq_unmask_for_sleep_ex(unsigned int virq)
 	mask = 1 << (hwirq % 32);
 
 	if (hwirq < 16) {
-		pr_notice("Fail to enable interrupt %d\n", hwirq);
+		pr_debug("Fail to enable interrupt %d\n", hwirq);
 		return;
 	}
 
@@ -402,7 +402,7 @@ void mt_irq_unmask_for_sleep(unsigned int hwirq)
 	dist_base = GIC_DIST_BASE;
 
 	if (hwirq < 16) {
-		pr_notice("Fail to enable interrupt %d\n", hwirq);
+		pr_debug("Fail to enable interrupt %d\n", hwirq);
 		return;
 	}
 
@@ -426,7 +426,7 @@ void mt_irq_mask_for_sleep(unsigned int irq)
 	dist_base = GIC_DIST_BASE;
 
 	if (irq < 16) {
-		pr_notice("Fail to enable interrupt %d\n", irq);
+		pr_debug("Fail to enable interrupt %d\n", irq);
 		return;
 	}
 
@@ -516,7 +516,7 @@ void mt_irq_dump_status(int irq)
 		return;
 
 	if (mt_irq_dump_status_buf(irq, buf))
-		pr_notice("%s", buf);
+		pr_debug("%s", buf);
 
 	kfree(buf);
 }
@@ -534,7 +534,7 @@ void _mt_irq_set_polarity(unsigned int hwirq, unsigned int polarity)
 	void __iomem *base = INT_POL_CTL0;
 
 	if (hwirq < 32) {
-		pr_notice("Fail to set polarity of interrupt %d\n", hwirq);
+		pr_debug("Fail to set polarity of interrupt %d\n", hwirq);
 		return;
 	}
 
@@ -546,7 +546,7 @@ void _mt_irq_set_polarity(unsigned int hwirq, unsigned int polarity)
 	 */
 	if ((reg_len_pol0 != 0) && (reg >= reg_len_pol0)) {
 		if (!INT_POL_CTL1) {
-			pr_notice("MUST have 2nd INT_POL_CTRL\n");
+			pr_debug("MUST have 2nd INT_POL_CTRL\n");
 			/* is a bug */
 			WARN_ON(1);
 			return;
@@ -659,7 +659,7 @@ void irq_sw_mode_init(void)
 	int ret;
 
 	if (irq_sw_mode_support() != 1) {
-		pr_notice("### IRQ SW mode not support ###\n");
+		pr_debug("### IRQ SW mode not support ###\n");
 		return;
 	}
 
@@ -667,7 +667,7 @@ void irq_sw_mode_init(void)
 	if (node)
 		MCUSYS_BASE_SWMODE = of_iomap(node, 0);
 	else
-		pr_info("[gic_ext] fail to find mcucfg node\n");
+		pr_debug("[gic_ext] fail to find mcucfg node\n");
 
 	spin_lock_init(&domain_lock);
 	gic_sched_pm_init();
@@ -686,7 +686,7 @@ int __init mt_gic_ext_init(void)
 
 	node = of_find_compatible_node(NULL, NULL, "arm,gic-v3");
 	if (!node) {
-		pr_notice("[gic_ext] find arm,gic-v3 node failed\n");
+		pr_debug("[gic_ext] find arm,gic-v3 node failed\n");
 		return -EINVAL;
 	}
 
@@ -715,7 +715,7 @@ int __init mt_gic_ext_init(void)
 #endif
 
 	irq_sw_mode_init();
-	pr_notice("### gic-v3 init done. ###\n");
+	pr_debug("### gic-v3 init done. ###\n");
 
 	return 0;
 }

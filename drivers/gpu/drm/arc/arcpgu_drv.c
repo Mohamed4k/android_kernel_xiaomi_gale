@@ -83,7 +83,7 @@ static int arcpgu_load(struct drm_device *drm)
 	if (IS_ERR(arcpgu->regs))
 		return PTR_ERR(arcpgu->regs);
 
-	dev_info(drm->dev, "arc_pgu ID: 0x%x\n",
+	dev_dbg(drm->dev, "arc_pgu ID: 0x%x\n",
 		 arc_pgu_read(arcpgu, ARCPGU_REG_ID));
 
 	/* Get the optional framebuffer memory resource */

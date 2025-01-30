@@ -102,7 +102,7 @@ static void mv64x60_wdt_handler_enable(void)
 	if (mv64x60_wdt_toggle_wdc(MV64x60_WDC_ENABLED_FALSE,
 				   MV64x60_WDC_ENABLE_SHIFT)) {
 		mv64x60_wdt_service();
-		pr_notice("watchdog activated\n");
+		pr_debug("watchdog activated\n");
 	}
 }
 
@@ -110,7 +110,7 @@ static void mv64x60_wdt_handler_disable(void)
 {
 	if (mv64x60_wdt_toggle_wdc(MV64x60_WDC_ENABLED_TRUE,
 				   MV64x60_WDC_ENABLE_SHIFT))
-		pr_notice("watchdog deactivated\n");
+		pr_debug("watchdog deactivated\n");
 }
 
 static void mv64x60_wdt_set_timeout(unsigned int timeout)
@@ -306,7 +306,7 @@ static struct platform_driver mv64x60_wdt_driver = {
 
 static int __init mv64x60_wdt_init(void)
 {
-	pr_info("MV64x60 watchdog driver\n");
+	pr_debug("MV64x60 watchdog driver\n");
 
 	return platform_driver_register(&mv64x60_wdt_driver);
 }

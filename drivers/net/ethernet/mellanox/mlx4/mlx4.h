@@ -225,7 +225,7 @@ do {									\
 #define mlx4_err(mdev, format, ...)					\
 	dev_err(&(mdev)->persist->pdev->dev, format, ##__VA_ARGS__)
 #define mlx4_info(mdev, format, ...)					\
-	dev_info(&(mdev)->persist->pdev->dev, format, ##__VA_ARGS__)
+	dev_dbg(&(mdev)->persist->pdev->dev, format, ##__VA_ARGS__)
 #define mlx4_warn(mdev, format, ...)					\
 	dev_warn(&(mdev)->persist->pdev->dev, format, ##__VA_ARGS__)
 

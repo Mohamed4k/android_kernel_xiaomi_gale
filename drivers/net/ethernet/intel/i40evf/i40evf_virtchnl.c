@@ -97,7 +97,7 @@ int i40evf_verify_api_ver(struct i40evf_adapter *adapter)
 		goto out_alloc;
 
 	if (op != VIRTCHNL_OP_VERSION) {
-		dev_info(&adapter->pdev->dev, "Invalid reply type %d from PF\n",
+		dev_dbg(&adapter->pdev->dev, "Invalid reply type %d from PF\n",
 			op);
 		err = -EIO;
 		goto out_alloc;
@@ -166,10 +166,10 @@ static void i40evf_validate_num_queues(struct i40evf_adapter *adapter)
 		struct virtchnl_vsi_resource *vsi_res;
 		int i;
 
-		dev_info(&adapter->pdev->dev, "Received %d queues, but can only have a max of %d\n",
+		dev_dbg(&adapter->pdev->dev, "Received %d queues, but can only have a max of %d\n",
 			 adapter->vf_res->num_queue_pairs,
 			 I40EVF_MAX_REQ_QUEUES);
-		dev_info(&adapter->pdev->dev, "Fixing by reducing queues to %d\n",
+		dev_dbg(&adapter->pdev->dev, "Fixing by reducing queues to %d\n",
 			 I40EVF_MAX_REQ_QUEUES);
 		adapter->vf_res->num_queue_pairs = I40EVF_MAX_REQ_QUEUES;
 		for (i = 0; i < adapter->vf_res->num_vsis; i++) {
@@ -735,13 +735,13 @@ void i40evf_set_promiscuous(struct i40evf_adapter *adapter, int flags)
 	if ((flags & promisc_all) == promisc_all) {
 		adapter->flags |= I40EVF_FLAG_PROMISC_ON;
 		adapter->aq_required &= ~I40EVF_FLAG_AQ_REQUEST_PROMISC;
-		dev_info(&adapter->pdev->dev, "Entering promiscuous mode\n");
+		dev_dbg(&adapter->pdev->dev, "Entering promiscuous mode\n");
 	}
 
 	if (flags & FLAG_VF_MULTICAST_PROMISC) {
 		adapter->flags |= I40EVF_FLAG_ALLMULTI_ON;
 		adapter->aq_required &= ~I40EVF_FLAG_AQ_REQUEST_ALLMULTI;
-		dev_info(&adapter->pdev->dev, "Entering multicast promiscuous mode\n");
+		dev_dbg(&adapter->pdev->dev, "Entering multicast promiscuous mode\n");
 	}
 
 	if (!flags) {
@@ -749,7 +749,7 @@ void i40evf_set_promiscuous(struct i40evf_adapter *adapter, int flags)
 				    I40EVF_FLAG_ALLMULTI_ON);
 		adapter->aq_required &= ~(I40EVF_FLAG_AQ_RELEASE_PROMISC |
 					  I40EVF_FLAG_AQ_RELEASE_ALLMULTI);
-		dev_info(&adapter->pdev->dev, "Leaving promiscuous mode\n");
+		dev_dbg(&adapter->pdev->dev, "Leaving promiscuous mode\n");
 	}
 
 	adapter->current_op = VIRTCHNL_OP_CONFIG_PROMISCUOUS_MODE;
@@ -942,7 +942,7 @@ static void i40evf_print_link_message(struct i40evf_adapter *adapter)
 	char *speed = "Unknown ";
 
 	if (!adapter->link_up) {
-		netdev_info(netdev, "NIC Link is Down\n");
+		netdev_dbg(netdev, "NIC Link is Down\n");
 		return;
 	}
 
@@ -969,7 +969,7 @@ static void i40evf_print_link_message(struct i40evf_adapter *adapter)
 		break;
 	}
 
-	netdev_info(netdev, "NIC Link is Up %sbps Full Duplex\n", speed);
+	netdev_dbg(netdev, "NIC Link is Up %sbps Full Duplex\n", speed);
 }
 
 /**
@@ -1051,7 +1051,7 @@ static void i40evf_print_cloud_filter(struct i40evf_adapter *adapter,
 {
 	switch (f->flow_type) {
 	case VIRTCHNL_TCP_V4_FLOW:
-		dev_info(&adapter->pdev->dev, "dst_mac: %pM src_mac: %pM vlan_id: %hu dst_ip: %pI4 src_ip %pI4 dst_port %hu src_port %hu\n",
+		dev_dbg(&adapter->pdev->dev, "dst_mac: %pM src_mac: %pM vlan_id: %hu dst_ip: %pI4 src_ip %pI4 dst_port %hu src_port %hu\n",
 			 &f->data.tcp_spec.dst_mac,
 			 &f->data.tcp_spec.src_mac,
 			 ntohs(f->data.tcp_spec.vlan_id),
@@ -1061,7 +1061,7 @@ static void i40evf_print_cloud_filter(struct i40evf_adapter *adapter,
 			 ntohs(f->data.tcp_spec.src_port));
 		break;
 	case VIRTCHNL_TCP_V6_FLOW:
-		dev_info(&adapter->pdev->dev, "dst_mac: %pM src_mac: %pM vlan_id: %hu dst_ip: %pI6 src_ip %pI6 dst_port %hu src_port %hu\n",
+		dev_dbg(&adapter->pdev->dev, "dst_mac: %pM src_mac: %pM vlan_id: %hu dst_ip: %pI6 src_ip %pI6 dst_port %hu src_port %hu\n",
 			 &f->data.tcp_spec.dst_mac,
 			 &f->data.tcp_spec.src_mac,
 			 ntohs(f->data.tcp_spec.vlan_id),
@@ -1247,10 +1247,10 @@ void i40evf_virtchnl_completion(struct i40evf_adapter *adapter,
 			i40evf_print_link_message(adapter);
 			break;
 		case VIRTCHNL_EVENT_RESET_IMPENDING:
-			dev_info(&adapter->pdev->dev, "Reset warning received from the PF\n");
+			dev_dbg(&adapter->pdev->dev, "Reset warning received from the PF\n");
 			if (!(adapter->flags & I40EVF_FLAG_RESET_PENDING)) {
 				adapter->flags |= I40EVF_FLAG_RESET_PENDING;
-				dev_info(&adapter->pdev->dev, "Scheduling reset task\n");
+				dev_dbg(&adapter->pdev->dev, "Scheduling reset task\n");
 				schedule_work(&adapter->reset_task);
 			}
 			break;
@@ -1302,7 +1302,7 @@ void i40evf_virtchnl_completion(struct i40evf_adapter *adapter,
 						 list) {
 				if (cf->state == __I40EVF_CF_ADD_PENDING) {
 					cf->state = __I40EVF_CF_INVALID;
-					dev_info(&adapter->pdev->dev, "Failed to add cloud filter, error %s\n",
+					dev_dbg(&adapter->pdev->dev, "Failed to add cloud filter, error %s\n",
 						 i40evf_stat_str(&adapter->hw,
 								 v_retval));
 					i40evf_print_cloud_filter(adapter,
@@ -1321,7 +1321,7 @@ void i40evf_virtchnl_completion(struct i40evf_adapter *adapter,
 					    list) {
 				if (cf->state == __I40EVF_CF_DEL_PENDING) {
 					cf->state = __I40EVF_CF_ACTIVE;
-					dev_info(&adapter->pdev->dev, "Failed to del cloud filter, error %s\n",
+					dev_dbg(&adapter->pdev->dev, "Failed to del cloud filter, error %s\n",
 						 i40evf_stat_str(&adapter->hw,
 								 v_retval));
 					i40evf_print_cloud_filter(adapter,
@@ -1416,7 +1416,7 @@ void i40evf_virtchnl_completion(struct i40evf_adapter *adapter,
 		struct virtchnl_vf_res_request *vfres =
 			(struct virtchnl_vf_res_request *)msg;
 		if (vfres->num_queue_pairs != adapter->num_req_queues) {
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "Requested %d queues, PF can support %d\n",
 				 adapter->num_req_queues,
 				 vfres->num_queue_pairs);

@@ -901,13 +901,13 @@ static irqreturn_t rocker_cmd_irq_handler(int irq, void *dev_id)
 static void rocker_port_link_up(const struct rocker_port *rocker_port)
 {
 	netif_carrier_on(rocker_port->dev);
-	netdev_info(rocker_port->dev, "Link is up\n");
+	netdev_dbg(rocker_port->dev, "Link is up\n");
 }
 
 static void rocker_port_link_down(const struct rocker_port *rocker_port)
 {
 	netif_carrier_off(rocker_port->dev);
-	netdev_info(rocker_port->dev, "Link is down\n");
+	netdev_dbg(rocker_port->dev, "Link is down\n");
 }
 
 static int rocker_event_link_change(const struct rocker *rocker,
@@ -1978,7 +1978,7 @@ static int rocker_port_change_mtu(struct net_device *dev, int new_mtu)
 	if (running)
 		rocker_port_stop(dev);
 
-	netdev_info(dev, "MTU change from %d to %d\n", dev->mtu, new_mtu);
+	netdev_dbg(dev, "MTU change from %d to %d\n", dev->mtu, new_mtu);
 	dev->mtu = new_mtu;
 
 	err = rocker_cmd_set_port_settings_mtu(rocker_port, new_mtu);
@@ -2934,7 +2934,7 @@ static int rocker_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 
 	rocker->hw.id = rocker_read64(rocker, SWITCH_ID);
 
-	dev_info(&pdev->dev, "Rocker switch with id %*phN\n",
+	dev_dbg(&pdev->dev, "Rocker switch with id %*phN\n",
 		 (int)sizeof(rocker->hw.id), &rocker->hw.id);
 
 	return 0;

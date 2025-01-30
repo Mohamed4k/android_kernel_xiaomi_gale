@@ -378,7 +378,7 @@ static int vt8500_find_pll_bits(unsigned long rate, unsigned long parent_rate,
 	tclk = (parent_rate / *prediv) * *multiplier;
 
 	if (tclk != rate)
-		pr_warn("%s: requested rate %lu, found rate %lu\n", __func__,
+		pr_debug("%s: requested rate %lu, found rate %lu\n", __func__,
 								rate, tclk);
 
 	return 0;
@@ -426,7 +426,7 @@ static int wm8650_find_pll_bits(unsigned long rate,
 	if ((*multiplier < 3) || (*multiplier > 1023))
 		return -EINVAL;
 
-	pr_warn("%s: rate error is %lu\n", __func__, min_err);
+	pr_debug("%s: rate error is %lu\n", __func__, min_err);
 
 	return 0;
 }
@@ -437,7 +437,7 @@ static u32 wm8750_get_filter(u32 parent_rate, u32 divisor1)
 	u32 freq = (parent_rate / 1000000) / (divisor1 + 1);
 
 	if ((freq < 10) || (freq > 200))
-		pr_warn("%s: PLL recommended input frequency 10..200Mhz (requested %d Mhz)\n",
+		pr_debug("%s: PLL recommended input frequency 10..200Mhz (requested %d Mhz)\n",
 				__func__, freq);
 
 	if (freq >= 166)
@@ -493,12 +493,12 @@ static int wm8750_find_pll_bits(unsigned long rate, unsigned long parent_rate,
 			}
 
 	if (best_err == (unsigned long)-1) {
-		pr_warn("%s: impossible rate %lu\n", __func__, rate);
+		pr_debug("%s: impossible rate %lu\n", __func__, rate);
 		return -EINVAL;
 	}
 
 	/* if we got here, it wasn't an exact match */
-	pr_warn("%s: requested rate %lu, found rate %lu\n", __func__, rate,
+	pr_debug("%s: requested rate %lu, found rate %lu\n", __func__, rate,
 							rate - best_err);
 
 	*filter = wm8750_get_filter(parent_rate, *divisor1);
@@ -541,12 +541,12 @@ static int wm8850_find_pll_bits(unsigned long rate, unsigned long parent_rate,
 			}
 
 	if (best_err == (unsigned long)-1) {
-		pr_warn("%s: impossible rate %lu\n", __func__, rate);
+		pr_debug("%s: impossible rate %lu\n", __func__, rate);
 		return -EINVAL;
 	}
 
 	/* if we got here, it wasn't an exact match */
-	pr_warn("%s: requested rate %lu, found rate %lu\n", __func__, rate,
+	pr_debug("%s: requested rate %lu, found rate %lu\n", __func__, rate,
 							rate - best_err);
 
 	return 0;

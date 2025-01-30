@@ -3031,7 +3031,7 @@ qed_get_hw_info(struct qed_hwfn *p_hwfn,
 	return qed_hw_get_resc(p_hwfn, p_ptt);
 }
 
-static int qed_get_dev_info(struct qed_hwfn *p_hwfn, struct qed_ptt *p_ptt)
+static int qed_get_dev_dbg(struct qed_hwfn *p_hwfn, struct qed_ptt *p_ptt)
 {
 	struct qed_dev *cdev = p_hwfn->cdev;
 	u16 device_id_mask;
@@ -3128,7 +3128,7 @@ static int qed_hw_prepare_single(struct qed_hwfn *p_hwfn,
 
 	/* First hwfn learns basic information, e.g., number of hwfns */
 	if (!p_hwfn->my_id) {
-		rc = qed_get_dev_info(p_hwfn, p_hwfn->p_main_ptt);
+		rc = qed_get_dev_dbg(p_hwfn, p_hwfn->p_main_ptt);
 		if (rc)
 			goto err1;
 	}

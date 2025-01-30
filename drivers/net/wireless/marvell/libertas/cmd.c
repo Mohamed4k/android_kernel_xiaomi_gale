@@ -110,7 +110,7 @@ int lbs_update_hw_spec(struct lbs_private *priv)
 	 * CF card    firmware 5.0.16p0:   cap 0x00000303
 	 * USB dongle firmware 5.110.17p2: cap 0x00000303
 	 */
-	netdev_info(priv->dev, "%pM, fw %u.%u.%up%u, cap 0x%08x\n",
+	netdev_dbg(priv->dev, "%pM, fw %u.%u.%up%u, cap 0x%08x\n",
 		cmd.permanentaddr,
 		priv->fwrelease >> 24 & 0xff,
 		priv->fwrelease >> 16 & 0xff,
@@ -141,7 +141,7 @@ int lbs_update_hw_spec(struct lbs_private *priv)
 	/* if it's unidentified region code, use the default (USA) */
 	if (i >= MRVDRV_MAX_REGION_CODE) {
 		priv->regioncode = 0x10;
-		netdev_info(priv->dev,
+		netdev_dbg(priv->dev,
 			    "unidentified region code; using the default (USA)\n");
 	}
 
@@ -210,7 +210,7 @@ int lbs_host_sleep_cfg(struct lbs_private *priv, uint32_t criteria,
 					(uint8_t *)&cmd_config.wol_conf,
 					sizeof(struct wol_config));
 	} else {
-		netdev_info(priv->dev, "HOST_SLEEP_CFG failed %d\n", ret);
+		netdev_dbg(priv->dev, "HOST_SLEEP_CFG failed %d\n", ret);
 	}
 
 	return ret;
@@ -368,7 +368,7 @@ int lbs_set_host_sleep(struct lbs_private *priv, int host_sleep)
 			ret = lbs_host_sleep_cfg(priv, priv->wol_criteria,
 					(struct wol_config *)NULL);
 			if (ret) {
-				netdev_info(priv->dev,
+				netdev_dbg(priv->dev,
 					    "Host sleep configuration failed: %d\n",
 					    ret);
 				return ret;
@@ -380,7 +380,7 @@ int lbs_set_host_sleep(struct lbs_private *priv, int host_sleep)
 						sizeof(cmd),
 						lbs_ret_host_sleep_activate, 0);
 				if (ret)
-					netdev_info(priv->dev,
+					netdev_dbg(priv->dev,
 						    "HOST_SLEEP_ACTIVATE failed: %d\n",
 						    ret);
 			}
@@ -960,7 +960,7 @@ static void lbs_submit_command(struct lbs_private *priv,
 	ret = priv->hw_host_to_card(priv, MVMS_CMD, (u8 *) cmd, cmdsize);
 
 	if (ret) {
-		netdev_info(priv->dev, "DNLD_CMD: hw_host_to_card failed: %d\n",
+		netdev_dbg(priv->dev, "DNLD_CMD: hw_host_to_card failed: %d\n",
 			    ret);
 		/* Reset dnld state machine, report failure */
 		priv->dnld_sent = DNLD_RES_RECEIVED;
@@ -1585,7 +1585,7 @@ int __lbs_cmd(struct lbs_private *priv, uint16_t command,
 	spin_lock_irqsave(&priv->driver_lock, flags);
 	ret = cmdnode->result;
 	if (ret)
-		netdev_info(priv->dev, "PREP_CMD: command 0x%04x failed: %d\n",
+		netdev_dbg(priv->dev, "PREP_CMD: command 0x%04x failed: %d\n",
 			    command, ret);
 
 	__lbs_cleanup_and_insert_cmd(priv, cmdnode);

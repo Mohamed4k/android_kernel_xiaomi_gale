@@ -301,7 +301,7 @@ static void cleanup_aer_uncorrect_error_status(struct pci_dev *dev)
 	int pos = 0x100;
 	u32 status, mask;
 
-	pr_info("%s :\n", __func__);
+	pr_debug("%s :\n", __func__);
 
 	pci_read_config_dword(dev, pos + PCI_ERR_UNCOR_STATUS, &status);
 	pci_read_config_dword(dev, pos + PCI_ERR_UNCOR_SEVER, &mask);
@@ -906,7 +906,7 @@ liquidio_probe(struct pci_dev *pdev,
 	else
 		oct_dev->ptp_enable = false;
 
-	dev_info(&pdev->dev, "Initializing device %x:%x.\n",
+	dev_dbg(&pdev->dev, "Initializing device %x:%x.\n",
 		 (u32)pdev->vendor, (u32)pdev->device);
 
 	/* Assign octeon_device for this device to the private data area. */
@@ -1387,7 +1387,7 @@ static void liquidio_remove(struct pci_dev *pdev)
 	 */
 	octeon_destroy_resources(oct_dev);
 
-	dev_info(&oct_dev->pci_dev->dev, "Device removed\n");
+	dev_dbg(&oct_dev->pci_dev->dev, "Device removed\n");
 
 	/* This octeon device has been removed. Update the global
 	 * data structure to reflect this. Free the device structure.
@@ -1442,7 +1442,7 @@ static int octeon_chip_specific_setup(struct octeon_device *oct)
 	}
 
 	if (!ret)
-		dev_info(&oct->pci_dev->dev, "%s PASS%d.%d %s Version: %s\n", s,
+		dev_dbg(&oct->pci_dev->dev, "%s PASS%d.%d %s Version: %s\n", s,
 			 OCTEON_MAJOR_REV(oct),
 			 OCTEON_MINOR_REV(oct),
 			 octeon_get_conf(oct)->card_name,
@@ -1876,7 +1876,7 @@ static int liquidio_open(struct net_device *netdev)
 	/* tell Octeon to start forwarding packets to host */
 	send_rx_ctrl_cmd(lio, 1);
 
-	dev_info(&oct->pci_dev->dev, "%s interface is opened\n",
+	dev_dbg(&oct->pci_dev->dev, "%s interface is opened\n",
 		 netdev->name);
 
 	return 0;
@@ -1936,7 +1936,7 @@ static int liquidio_stop(struct net_device *netdev)
 			oct->droq[0]->ops.poll_mode = 0;
 	}
 
-	dev_info(&oct->pci_dev->dev, "%s interface is stopped\n", netdev->name);
+	dev_dbg(&oct->pci_dev->dev, "%s interface is stopped\n", netdev->name);
 
 	return 0;
 }
@@ -2384,7 +2384,7 @@ static netdev_tx_t liquidio_xmit(struct sk_buff *skb, struct net_device *netdev)
 		return NETDEV_TX_BUSY;
 	}
 
-	/* pr_info(" XMIT - valid Qs: %d, 1st Q no: %d, cpu:  %d, q_no:%d\n",
+	/* pr_debug(" XMIT - valid Qs: %d, 1st Q no: %d, cpu:  %d, q_no:%d\n",
 	 *	lio->linfo.num_txpciq, lio->txq, cpu, ndata.q_no);
 	 */
 
@@ -3430,7 +3430,7 @@ static int setup_nic_devices(struct octeon_device *octeon_dev)
 			goto setup_nic_dev_fail;
 		} else if (atomic_read(octeon_dev->adapter_fw_state) ==
 			   FW_IS_PRELOADED) {
-			dev_info(&octeon_dev->pci_dev->dev,
+			dev_dbg(&octeon_dev->pci_dev->dev,
 				 "Using auto-loaded firmware version %s.\n",
 				 fw_ver);
 		}
@@ -3691,7 +3691,7 @@ static int setup_nic_devices(struct octeon_device *octeon_dev)
 
 			/* speed control unsupported in f/w older than 1.7.2 */
 			if (cur_ver < OCT_FW_VER(1, 7, 2)) {
-				dev_info(&octeon_dev->pci_dev->dev,
+				dev_dbg(&octeon_dev->pci_dev->dev,
 					 "speed setting not supported by f/w.");
 				octeon_dev->speed_setting = 25;
 				octeon_dev->no_speed_setting = 1;
@@ -3806,7 +3806,7 @@ static int lio_pci_sriov_disable(struct octeon_device *oct)
 	}
 
 	oct->sriov_info.num_vfs_alloced = 0;
-	dev_info(&oct->pci_dev->dev, "oct->pf_num:%d disabled VFs\n",
+	dev_dbg(&oct->pci_dev->dev, "oct->pf_num:%d disabled VFs\n",
 		 oct->pf_num);
 
 	return 0;
@@ -3819,7 +3819,7 @@ static int liquidio_enable_sriov(struct pci_dev *dev, int num_vfs)
 
 	if ((num_vfs == oct->sriov_info.num_vfs_alloced) &&
 	    (oct->sriov_info.sriov_enabled)) {
-		dev_info(&oct->pci_dev->dev, "oct->pf_num:%d already enabled num_vfs:%d\n",
+		dev_dbg(&oct->pci_dev->dev, "oct->pf_num:%d already enabled num_vfs:%d\n",
 			 oct->pf_num, num_vfs);
 		return 0;
 	}
@@ -3835,11 +3835,11 @@ static int liquidio_enable_sriov(struct pci_dev *dev, int num_vfs)
 	} else {
 		oct->sriov_info.num_vfs_alloced = num_vfs;
 		ret = octeon_enable_sriov(oct);
-		dev_info(&oct->pci_dev->dev, "oct->pf_num:%d num_vfs:%d\n",
+		dev_dbg(&oct->pci_dev->dev, "oct->pf_num:%d num_vfs:%d\n",
 			 oct->pf_num, num_vfs);
 		ret = lio_vf_rep_create(oct);
 		if (ret)
-			dev_info(&oct->pci_dev->dev,
+			dev_dbg(&oct->pci_dev->dev,
 				 "vf representor create failed");
 	}
 
@@ -3969,7 +3969,7 @@ octeon_recv_vf_drv_notice(struct octeon_recv_info *recv_info, void *buf)
 	if (notice == VF_DRV_LOADED) {
 		if (!(oct->sriov_info.vf_drv_loaded_mask & BIT_ULL(vf_idx))) {
 			oct->sriov_info.vf_drv_loaded_mask |= BIT_ULL(vf_idx);
-			dev_info(&oct->pci_dev->dev,
+			dev_dbg(&oct->pci_dev->dev,
 				 "driver for VF%d was loaded\n", vf_idx);
 			if (!cores_crashed)
 				try_module_get(THIS_MODULE);
@@ -3977,7 +3977,7 @@ octeon_recv_vf_drv_notice(struct octeon_recv_info *recv_info, void *buf)
 	} else if (notice == VF_DRV_REMOVED) {
 		if (oct->sriov_info.vf_drv_loaded_mask & BIT_ULL(vf_idx)) {
 			oct->sriov_info.vf_drv_loaded_mask &= ~BIT_ULL(vf_idx);
-			dev_info(&oct->pci_dev->dev,
+			dev_dbg(&oct->pci_dev->dev,
 				 "driver for VF%d was removed\n", vf_idx);
 			if (!cores_crashed)
 				module_put(THIS_MODULE);
@@ -3986,7 +3986,7 @@ octeon_recv_vf_drv_notice(struct octeon_recv_info *recv_info, void *buf)
 		u8 *b = (u8 *)&data[1];
 
 		oct->sriov_info.vf_macaddr[vf_idx] = data[1];
-		dev_info(&oct->pci_dev->dev,
+		dev_dbg(&oct->pci_dev->dev,
 			 "VF driver changed VF%d's MAC address to %pM\n",
 			 vf_idx, b + 2);
 	}
@@ -4207,7 +4207,7 @@ static int octeon_device_init(struct octeon_device *octeon_dev)
 	if (fw_state == FW_NEEDS_TO_BE_LOADED) {
 		dev_dbg(&octeon_dev->pci_dev->dev, "Waiting for DDR initialization...\n");
 		if (!ddr_timeout) {
-			dev_info(&octeon_dev->pci_dev->dev,
+			dev_dbg(&octeon_dev->pci_dev->dev,
 				 "WAITING. Set ddr_timeout to non-zero value to proceed with initialization.\n");
 		}
 
@@ -4295,12 +4295,12 @@ static int octeon_dbg_console_print(struct octeon_device *oct, u32 console_num,
 				    char *prefix, char *suffix)
 {
 	if (prefix && suffix)
-		dev_info(&oct->pci_dev->dev, "%u: %s%s\n", console_num, prefix,
+		dev_dbg(&oct->pci_dev->dev, "%u: %s%s\n", console_num, prefix,
 			 suffix);
 	else if (prefix)
-		dev_info(&oct->pci_dev->dev, "%u: %s\n", console_num, prefix);
+		dev_dbg(&oct->pci_dev->dev, "%u: %s\n", console_num, prefix);
 	else if (suffix)
-		dev_info(&oct->pci_dev->dev, "%u: %s\n", console_num, suffix);
+		dev_dbg(&oct->pci_dev->dev, "%u: %s\n", console_num, suffix);
 
 	return 0;
 }
@@ -4312,7 +4312,7 @@ static void __exit liquidio_exit(void)
 {
 	liquidio_deinit_pci();
 
-	pr_info("LiquidIO network module is now unloaded\n");
+	pr_debug("LiquidIO network module is now unloaded\n");
 }
 
 module_init(liquidio_init);

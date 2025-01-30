@@ -363,9 +363,9 @@ static int axp288_extcon_probe(struct platform_device *pdev)
 			if (!info->id_extcon)
 				return -EPROBE_DEFER;
 
-			dev_info(dev, "controlling USB role\n");
+			dev_dbg(dev, "controlling USB role\n");
 		} else {
-			dev_info(dev, "controlling USB role based on Vbus presence\n");
+			dev_dbg(dev, "controlling USB role based on Vbus presence\n");
 		}
 	}
 

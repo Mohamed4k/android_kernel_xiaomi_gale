@@ -64,7 +64,7 @@ static int macb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	res[1].name = PCI_DRIVER_NAME;
 	res[1].flags = IORESOURCE_IRQ;
 
-	dev_info(&pdev->dev, "EMAC physical base addr: %pa\n",
+	dev_dbg(&pdev->dev, "EMAC physical base addr: %pa\n",
 		 &res[0].start);
 
 	/* set up macb platform data */

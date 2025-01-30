@@ -894,7 +894,7 @@ static int au1550_spi_probe(struct platform_device *pdev)
 		goto err_register;
 	}
 
-	dev_info(&pdev->dev,
+	dev_dbg(&pdev->dev,
 		"spi master registered: bus_num=%d num_chipselect=%d\n",
 		master->bus_num, master->num_chipselect);
 
@@ -934,7 +934,7 @@ static int au1550_spi_remove(struct platform_device *pdev)
 {
 	struct au1550_spi *hw = platform_get_drvdata(pdev);
 
-	dev_info(&pdev->dev, "spi master remove: bus_num=%d\n",
+	dev_dbg(&pdev->dev, "spi master remove: bus_num=%d\n",
 		hw->master->bus_num);
 
 	spi_bitbang_stop(&hw->bitbang);

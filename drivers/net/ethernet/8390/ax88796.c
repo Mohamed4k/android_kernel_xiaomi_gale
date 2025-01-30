@@ -381,7 +381,7 @@ static int ax_mii_probe(struct net_device *dev)
 	phy_dev->supported &= PHY_BASIC_FEATURES;
 	phy_dev->advertising = phy_dev->supported;
 
-	netdev_info(dev, "PHY driver [%s] (mii_bus:phy_addr=%s, irq=%d)\n",
+	netdev_dbg(dev, "PHY driver [%s] (mii_bus:phy_addr=%s, irq=%d)\n",
 		    phy_dev->drv->name, phydev_name(phy_dev), phy_dev->irq);
 
 	return 0;
@@ -759,7 +759,7 @@ static int ax_init_dev(struct net_device *dev)
 
 	if (!is_valid_ether_addr(dev->dev_addr)) {
 		eth_hw_addr_random(dev);
-		dev_info(&dev->dev, "Using random MAC address: %pM\n",
+		dev_dbg(&dev->dev, "Using random MAC address: %pM\n",
 			 dev->dev_addr);
 	}
 
@@ -797,7 +797,7 @@ static int ax_init_dev(struct net_device *dev)
 	if (ret)
 		goto err_out;
 
-	netdev_info(dev, "%dbit, irq %d, %lx, MAC: %pM\n",
+	netdev_dbg(dev, "%dbit, irq %d, %lx, MAC: %pM\n",
 		    ei_local->word16 ? 16 : 8, dev->irq, dev->base_addr,
 		    dev->dev_addr);
 

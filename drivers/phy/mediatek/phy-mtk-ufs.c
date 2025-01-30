@@ -77,13 +77,13 @@ static int ufs_mtk_phy_clk_init(struct ufs_mtk_phy *phy)
 
 	phy->unipro_clk = devm_clk_get(dev, "unipro");
 	if (IS_ERR(phy->unipro_clk)) {
-		dev_info(dev, "unipro clock is not found, ignored.");
+		dev_dbg(dev, "unipro clock is not found, ignored.");
 		phy->unipro_clk = NULL;
 	}
 
 	phy->mp_clk = devm_clk_get(dev, "mp");
 	if (IS_ERR(phy->mp_clk)) {
-		dev_info(dev, "mp clock is not found, ignored.");
+		dev_dbg(dev, "mp clock is not found, ignored.");
 		phy->mp_clk = NULL;
 	}
 

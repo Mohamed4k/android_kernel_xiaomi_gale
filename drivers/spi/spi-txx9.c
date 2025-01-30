@@ -375,7 +375,7 @@ static int txx9spi_probe(struct platform_device *dev)
 
 	c->last_chipselect = -1;
 
-	dev_info(&dev->dev, "at %#llx, irq %d, %dMHz\n",
+	dev_dbg(&dev->dev, "at %#llx, irq %d, %dMHz\n",
 		 (unsigned long long)res->start, irq,
 		 (c->baseclk + 500000) / 1000000);
 

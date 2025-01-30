@@ -72,7 +72,7 @@ static bool smi_sspm_ipi_register;
 		if (cmdq != 0) \
 			cmdq_util_msg(string, ##args); \
 		else \
-			pr_info(string, ##args); \
+			pr_debug(string, ##args); \
 	} while (0)
 #elif IS_ENABLED(CONFIG_MTK_CMDQ)
 #include <cmdq_helper_ext.h>
@@ -80,15 +80,15 @@ static bool smi_sspm_ipi_register;
 	do { \
 		if (cmdq != 0) \
 			cmdq_core_save_first_dump(string, ##args); \
-		pr_info(string, ##args); \
+		pr_debug(string, ##args); \
 	} while (0)
 #else
-#define SMIWRN(cmdq, string, args...) pr_info(string, ##args)
+#define SMIWRN(cmdq, string, args...) pr_debug(string, ##args)
 #endif
 
 #define SMIERR(string, args...) \
 	do { \
-		pr_notice(string, ##args); \
+		pr_debug(string, ##args); \
 		aee_kernel_warning(DEV_NAME, string, ##args); \
 	} while (0)
 
@@ -465,7 +465,7 @@ void smi_ostd_update(const struct plist_head *head, const char *user)
 #if defined (CONFIG_MACH_MT6833)
 // TODO Migration
 	if (smi_dev[larb] == NULL){
-                 pr_notice("[SMI 6833] ERROR smi_ostd_update larb not ready \n");
+                 pr_debug("[SMI 6833] ERROR smi_ostd_update larb not ready \n");
 		return;
 	}
 #endif
@@ -716,7 +716,7 @@ static inline void smi_larb_port_set(const struct mtk_smi_dev *smi)
 			smi->base + SMI_LARB_NON_SEC_CON(i));
 #if IS_ENABLED(CONFIG_MACH_MT6853)
 		if (readl(smi->base + SMI_LARB_NON_SEC_CON(i)) & 0x4)
-			pr_info("[SMI LOG]smi_larb%d, port%d[2]:%#x\n",
+			pr_debug("[SMI LOG]smi_larb%d, port%d[2]:%#x\n",
 				smi->id, i,
 				readl(smi->base + SMI_LARB_NON_SEC_CON(i)));
 #endif
@@ -739,13 +739,13 @@ s32 smi_larb_port_check(void)
 	for (i = smi_larb_bw_thrt_en_port[2][0];
 		i < smi_larb_bw_thrt_en_port[2][1]; i++)
 		if (readl(smi_dev[2]->base + SMI_LARB_NON_SEC_CON(i)) & 0x4) {
-			pr_info("[SMI LOG]cmdq smi_larb2 port%d:%#x\n",
+			pr_debug("[SMI LOG]cmdq smi_larb2 port%d:%#x\n",
 				i, readl(smi_dev[2]->base
 				+ SMI_LARB_NON_SEC_CON(i)));
 			writel(readl(smi_dev[2]->base + SMI_LARB_NON_SEC_CON(i))
 				& 0xFFFFFFFB,
 				smi_dev[2]->base + SMI_LARB_NON_SEC_CON(i));
-			pr_info("[SMI LOG]new cmdq smi_larb2 port%d:%#x\n",
+			pr_debug("[SMI LOG]new cmdq smi_larb2 port%d:%#x\n",
 				i, readl(smi_dev[2]->base
 				+ SMI_LARB_NON_SEC_CON(i)));
 		}
@@ -1510,7 +1510,7 @@ static inline void smi_dram_init(void)
 	smi_dram.node = debugfs_create_file(
 		"smi_mon", 0444, NULL, (void *)0, &smi_dram_file_opers);
 	if (IS_ERR(smi_dram.node))
-		pr_info("debugfs_create_file failed: %ld\n",
+		pr_debug("debugfs_create_file failed: %ld\n",
 			PTR_ERR(smi_dram.node));
 }
 

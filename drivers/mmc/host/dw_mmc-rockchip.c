@@ -214,7 +214,7 @@ static int dw_mci_rk3288_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
 
 	if (ranges[0].start == 0 && ranges[0].end == priv->num_phases - 1) {
 		clk_set_phase(priv->sample_clk, priv->default_sample_phase);
-		dev_info(host->dev, "All phases work, using default phase %d.",
+		dev_dbg(host->dev, "All phases work, using default phase %d.",
 			 priv->default_sample_phase);
 		goto free;
 	}
@@ -250,7 +250,7 @@ static int dw_mci_rk3288_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
 
 	middle_phase = ranges[longest_range].start + longest_range_len / 2;
 	middle_phase %= priv->num_phases;
-	dev_info(host->dev, "Successfully tuned phase to %d\n",
+	dev_dbg(host->dev, "Successfully tuned phase to %d\n",
 		 TUNING_ITERATION_TO_PHASE(middle_phase, priv->num_phases));
 
 	clk_set_phase(priv->sample_clk,

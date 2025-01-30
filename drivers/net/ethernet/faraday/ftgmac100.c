@@ -197,7 +197,7 @@ static void ftgmac100_initial_mac(struct ftgmac100 *priv)
 	addr = device_get_mac_address(priv->dev, mac, ETH_ALEN);
 	if (addr) {
 		ether_addr_copy(priv->netdev->dev_addr, mac);
-		dev_info(priv->dev, "Read MAC address %pM from device tree\n",
+		dev_dbg(priv->dev, "Read MAC address %pM from device tree\n",
 			 mac);
 		return;
 	}
@@ -214,10 +214,10 @@ static void ftgmac100_initial_mac(struct ftgmac100 *priv)
 
 	if (is_valid_ether_addr(mac)) {
 		ether_addr_copy(priv->netdev->dev_addr, mac);
-		dev_info(priv->dev, "Read MAC address %pM from chip\n", mac);
+		dev_dbg(priv->dev, "Read MAC address %pM from chip\n", mac);
 	} else {
 		eth_hw_addr_random(priv->netdev);
-		dev_info(priv->dev, "Generated random MAC address %pM\n",
+		dev_dbg(priv->dev, "Generated random MAC address %pM\n",
 			 priv->netdev->dev_addr);
 	}
 }
@@ -1063,7 +1063,7 @@ static int ftgmac100_mii_probe(struct ftgmac100 *priv, phy_interface_t intf)
 
 	phydev = phy_find_first(priv->mii_bus);
 	if (!phydev) {
-		netdev_info(netdev, "%s: no PHY found\n", netdev->name);
+		netdev_dbg(netdev, "%s: no PHY found\n", netdev->name);
 		return -ENODEV;
 	}
 
@@ -1839,7 +1839,7 @@ static int ftgmac100_probe(struct platform_device *pdev)
 			goto err_ncsi_dev;
 		}
 
-		dev_info(&pdev->dev, "Using NCSI interface\n");
+		dev_dbg(&pdev->dev, "Using NCSI interface\n");
 		priv->use_ncsi = true;
 		priv->ndev = ncsi_register_dev(netdev, ftgmac100_ncsi_handler);
 		if (!priv->ndev)
@@ -1880,7 +1880,7 @@ static int ftgmac100_probe(struct platform_device *pdev)
 		goto err_register_netdev;
 	}
 
-	netdev_info(netdev, "irq %d, mapped at %p\n", netdev->irq, priv->base);
+	netdev_dbg(netdev, "irq %d, mapped at %p\n", netdev->irq, priv->base);
 
 	return 0;
 

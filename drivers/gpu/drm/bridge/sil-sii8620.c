@@ -509,7 +509,7 @@ static void sii8620_identify_sink(struct sii8620 *ctx)
 
 	drm_edid_get_monitor_name(ctx->edid, sink_name, ARRAY_SIZE(sink_name));
 
-	dev_info(dev, "detected sink(type: %s): %s\n",
+	dev_dbg(dev, "detected sink(type: %s): %s\n",
 		 sink_str[ctx->sink_type], sink_name);
 }
 
@@ -522,7 +522,7 @@ static void sii8620_mr_devcap(struct sii8620 *ctx)
 	if (ctx->error < 0)
 		return;
 
-	dev_info(dev, "detected dongle MHL %d.%d, ChipID %02x%02x:%02x%02x\n",
+	dev_dbg(dev, "detected dongle MHL %d.%d, ChipID %02x%02x:%02x%02x\n",
 		 dcap[MHL_DCAP_MHL_VERSION] / 16,
 		 dcap[MHL_DCAP_MHL_VERSION] % 16,
 		 dcap[MHL_DCAP_ADOPTER_ID_H], dcap[MHL_DCAP_ADOPTER_ID_L],
@@ -2073,7 +2073,7 @@ static void sii8620_cable_in(struct sii8620 *ctx)
 		return;
 	}
 
-	dev_info(dev, "ChipID %02x%02x:%02x%02x rev %02x.\n", ver[1], ver[0],
+	dev_dbg(dev, "ChipID %02x%02x:%02x%02x rev %02x.\n", ver[1], ver[0],
 		 ver[3], ver[2], ver[4]);
 
 	sii8620_write(ctx, REG_DPD,
@@ -2174,7 +2174,7 @@ static int sii8620_extcon_init(struct sii8620 *ctx)
 	muic = of_get_next_parent(musb);
 
 	if (!muic) {
-		dev_info(ctx->dev, "no extcon found, switching to 'always on' mode\n");
+		dev_dbg(ctx->dev, "no extcon found, switching to 'always on' mode\n");
 		return 0;
 	}
 

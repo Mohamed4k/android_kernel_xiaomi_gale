@@ -165,7 +165,7 @@ static int spislv_sync_sub(u32 addr, void *val, u32 len, bool is_read)
 	if (addr == SPISLV_CTRL && !is_read)
 		status = 0x6;
 	if ((status & CONFIG_READY) != CONFIG_READY) {
-		pr_notice("SPI config %s but status error: 0x%x, latched by %dHZ, err addr: 0x%x\n",
+		pr_debug("SPI config %s but status error: 0x%x, latched by %dHZ, err addr: 0x%x\n",
 				is_read ? "read" : "write", status, slv_data.rx_speed_hz, addr);
 		ret = SPI_READ_STA_ERR_RET;
 		goto tail;
@@ -217,7 +217,7 @@ static int spislv_sync_sub(u32 addr, void *val, u32 len, bool is_read)
 		((status & SR_WR_ERR) == SR_WR_ERR) ||
 		((status & SR_TIMEOUT_ERR) == SR_TIMEOUT_ERR)) {
 
-		pr_notice("SPI %s error, status: 0x%x, latched by %dHZ, err addr: 0x%x\n",
+		pr_debug("SPI %s error, status: 0x%x, latched by %dHZ, err addr: 0x%x\n",
 				is_read ? "read" : "write", status, slv_data.rx_speed_hz, addr);
 
 		/* WS */
@@ -235,7 +235,7 @@ static int spislv_sync_sub(u32 addr, void *val, u32 len, bool is_read)
 		ret = SPI_READ_STA_ERR_RET;
 	} else {
 		while (((status & SR_RDWR_FINISH) != SR_RDWR_FINISH)) {
-			pr_notice("SPI %s not finish, status: 0x%x, latched by %dHZ, err addr: 0x%x, polling: %d\n",
+			pr_debug("SPI %s not finish, status: 0x%x, latched by %dHZ, err addr: 0x%x, polling: %d\n",
 				is_read ? "read" : "write",
 				status, slv_data.rx_speed_hz, addr, retry);
 			if (retry++ >= MAX_SPI_TRY_CNT) {
@@ -281,7 +281,7 @@ static int spislv_sync(u32 addr, void *val, u32 len, bool is_read)
 	while (len_local > MAX_SPI_XFER_SIZE_ONCE) {
 		ret = spislv_sync_sub(addr_local, val_local, MAX_SPI_XFER_SIZE_ONCE, is_read);
 		while (ret) {
-			pr_notice("spi slave error, addr: 0x%x, ret(%d), retry: %d\n",
+			pr_debug("spi slave error, addr: 0x%x, ret(%d), retry: %d\n",
 				addr_local, ret, try);
 			if (try++ == MAX_SPI_TRY_CNT)
 				goto tail;
@@ -297,7 +297,7 @@ transfer_drect:
 	try = 0;
 	ret = spislv_sync_sub(addr_local, val_local, len_local, is_read);
 	while (ret) {
-		pr_notice("spi slave error, addr: 0x%x, ret(%d), retry: %d\n",
+		pr_debug("spi slave error, addr: 0x%x, ret(%d), retry: %d\n",
 			addr_local, ret, try);
 		if (try++ == MAX_SPI_TRY_CNT)
 			goto tail;
@@ -400,33 +400,33 @@ static int spi_slave_probe(struct spi_device *spi)
 	slv_data.spi = spi;
 	ret = of_property_read_u8(nc, "slave-drive-strength", &(slv_data.slave_drive_strength));
 	if (ret)
-		pr_info("slave-drive-strength isn't setting!\n");
+		pr_debug("slave-drive-strength isn't setting!\n");
 	else
-		pr_info("slave-drive-strength = %d\n", slv_data.slave_drive_strength);
+		pr_debug("slave-drive-strength = %d\n", slv_data.slave_drive_strength);
 
 	ret = of_property_read_u8(nc, "high-speed-tick-delay", &(slv_data.high_speed_tick_delay));
 	if (ret)
-		pr_info("high-speed-tick-delay isn't setting!\n");
+		pr_debug("high-speed-tick-delay isn't setting!\n");
 	else
-		pr_info("high-speed-tick-delay = %d\n", slv_data.high_speed_tick_delay);
+		pr_debug("high-speed-tick-delay = %d\n", slv_data.high_speed_tick_delay);
 
 	ret = of_property_read_u8(nc, "low-speed-tick-delay", &(slv_data.low_speed_tick_delay));
 	if (ret)
-		pr_info("low-speed-tick-delay isn't setting!\n");
+		pr_debug("low-speed-tick-delay isn't setting!\n");
 	else
-		pr_info("low-speed-tick-delay = %d\n", slv_data.low_speed_tick_delay);
+		pr_debug("low-speed-tick-delay = %d\n", slv_data.low_speed_tick_delay);
 
 	ret = of_property_read_u8(nc, "high-speed-early-trans", &(slv_data.high_speed_early_trans));
 	if (ret)
-		pr_info("high-speed-early-trans isn't setting!\n");
+		pr_debug("high-speed-early-trans isn't setting!\n");
 	else
-		pr_info("high-speed-early-trans = %d\n", slv_data.high_speed_early_trans);
+		pr_debug("high-speed-early-trans = %d\n", slv_data.high_speed_early_trans);
 
 	ret = of_property_read_u8(nc, "low-speed-early-trans", &(slv_data.low_speed_early_trans));
 	if (ret)
-		pr_info("low-speed-early-trans isn't setting!\n");
+		pr_debug("low-speed-early-trans isn't setting!\n");
 	else
-		pr_info("low-speed-early-trans = %d\n", slv_data.low_speed_early_trans);
+		pr_debug("low-speed-early-trans = %d\n", slv_data.low_speed_early_trans);
 
 	if (spi->mode & SPI_TX_DUAL)
 		slv_data.tx_nbits = SPI_NBITS_DUAL;
@@ -445,18 +445,18 @@ static int spi_slave_probe(struct spi_device *spi)
 	/* set spi master driving */
 	spislv_pinctrl = devm_pinctrl_get(slv_data.spi->controller->dev.parent);
 	if (IS_ERR_OR_NULL(spislv_pinctrl))
-		pr_notice("Failed to get pinctrl handler!\n");
+		pr_debug("Failed to get pinctrl handler!\n");
 	pin_spi_mode = pinctrl_lookup_state(spislv_pinctrl, "default");
 	ret = pinctrl_select_state(spislv_pinctrl, pin_spi_mode);
 	if (ret < 0)
-		pr_notice("Failed to select pinctrl!\n");
+		pr_debug("Failed to select pinctrl!\n");
 
 	/* init transfers */
 	if (slv_data.tx_nbits == SPI_NBITS_SINGLE) {
 		CT_TRANSFER.tx_buf = cmd_trans_type_4byte_single;
 		CT_TRANSFER.len = ARRAY_SIZE(cmd_trans_type_4byte_single);
 	} else {
-		pr_notice("spi slave: don't support other transfer type.\n");
+		pr_debug("spi slave: don't support other transfer type.\n");
 		return -EINVAL;
 	}
 	CT_TRANSFER.tx_nbits = slv_data.tx_nbits;

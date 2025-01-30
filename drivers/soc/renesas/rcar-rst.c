@@ -82,7 +82,7 @@ static int __init rcar_rst_init(void)
 
 	base = of_iomap(np, 0);
 	if (!base) {
-		pr_warn("%pOF: Cannot map regs\n", np);
+		pr_debug("%pOF: Cannot map regs\n", np);
 		error = -ENOMEM;
 		goto out_put;
 	}
@@ -93,7 +93,7 @@ static int __init rcar_rst_init(void)
 	if (cfg->configure) {
 		error = cfg->configure(base);
 		if (error) {
-			pr_warn("%pOF: Cannot run SoC specific configuration\n",
+			pr_debug("%pOF: Cannot run SoC specific configuration\n",
 				np);
 			goto out_put;
 		}

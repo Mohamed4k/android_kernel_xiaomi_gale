@@ -599,7 +599,7 @@ int wmt_pinctrl_probe(struct platform_device *pdev,
 	if (err)
 		goto fail_range;
 
-	dev_info(&pdev->dev, "Pin controller initialized\n");
+	dev_dbg(&pdev->dev, "Pin controller initialized\n");
 
 	return 0;
 

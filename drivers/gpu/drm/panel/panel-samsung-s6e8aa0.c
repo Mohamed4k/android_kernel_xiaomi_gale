@@ -829,7 +829,7 @@ static void s6e8aa0_read_mtp_id(struct s6e8aa0 *ctx)
 		return;
 	}
 
-	dev_info(ctx->dev, "ID: 0x%2x, 0x%2x, 0x%2x\n", id[0], id[1], id[2]);
+	dev_dbg(ctx->dev, "ID: 0x%2x, 0x%2x, 0x%2x\n", id[0], id[1], id[2]);
 
 	for (i = 0; i < ARRAY_SIZE(s6e8aa0_variants); ++i) {
 		if (id[1] == s6e8aa0_variants[i].version)

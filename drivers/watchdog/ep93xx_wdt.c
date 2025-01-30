@@ -125,7 +125,7 @@ static int ep93xx_wdt_probe(struct platform_device *pdev)
 	if (ret)
 		return ret;
 
-	dev_info(&pdev->dev, "EP93XX watchdog driver %s\n",
+	dev_dbg(&pdev->dev, "EP93XX watchdog driver %s\n",
 		(val & 0x08) ? " (nCS1 disable detected)" : "");
 
 	return 0;

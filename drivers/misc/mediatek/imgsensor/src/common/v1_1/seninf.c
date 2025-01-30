@@ -49,13 +49,13 @@ static int seninf_dfs_init(struct seninf_dfs_ctx *ctx, struct device *dev)
 
 	ret = dev_pm_opp_of_add_table(dev);
 	if (ret < 0) {
-		dev_info(dev, "fail to init opp table: %d\n", ret);
+		dev_dbg(dev, "fail to init opp table: %d\n", ret);
 		return ret;
 	}
 
 	ctx->reg = devm_regulator_get_optional(dev, "dvfsrc-vcore");
 	if (IS_ERR(ctx->reg)) {
-		dev_info(dev, "can't get dvfsrc-vcore\n");
+		dev_dbg(dev, "can't get dvfsrc-vcore\n");
 		return PTR_ERR(ctx->reg);
 	}
 
@@ -91,7 +91,7 @@ static int seninf_dfs_ctrl(struct seninf_dfs_ctx *ctx,
 {
 	int i4RetValue = 0;
 
-	/*pr_info("%s\n", __func__);*/
+	/*pr_debug("%s\n", __func__);*/
 
 	switch (option) {
 	case DFS_CTRL_ENABLE:
@@ -123,7 +123,7 @@ static int seninf_dfs_ctrl(struct seninf_dfs_ctx *ctx,
 		pIspclks->clklevelcnt = ctx->cnt;
 
 		if (pIspclks->clklevelcnt > ISP_CLK_LEVEL_CNT) {
-			pr_info("ERR: clklevelcnt is exceeded\n");
+			pr_debug("ERR: clklevelcnt is exceeded\n");
 			i4RetValue = -EFAULT;
 			break;
 		}
@@ -149,7 +149,7 @@ static int seninf_dfs_ctrl(struct seninf_dfs_ctx *ctx,
 	}
 		break;
 	default:
-		pr_info("None\n");
+		pr_debug("None\n");
 		break;
 	}
 	return i4RetValue;

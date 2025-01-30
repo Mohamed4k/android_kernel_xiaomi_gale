@@ -533,14 +533,14 @@ static bool ice_aq_ver_check(struct ice_hw *hw)
 		return false;
 	} else if (hw->api_maj_ver == EXP_FW_API_VER_MAJOR) {
 		if (hw->api_min_ver > (EXP_FW_API_VER_MINOR + 2))
-			dev_info(ice_hw_to_dev(hw),
+			dev_dbg(ice_hw_to_dev(hw),
 				 "The driver for the device detected a newer version of the NVM image than expected. Please install the most recent version of the network driver.\n");
 		else if ((hw->api_min_ver + 2) < EXP_FW_API_VER_MINOR)
-			dev_info(ice_hw_to_dev(hw),
+			dev_dbg(ice_hw_to_dev(hw),
 				 "The driver for the device detected an older version of the NVM image than expected. Please update the NVM image.\n");
 	} else {
 		/* Major API version is older than expected, log a warning */
-		dev_info(ice_hw_to_dev(hw),
+		dev_dbg(ice_hw_to_dev(hw),
 			 "The driver for the device detected an older version of the NVM image than expected. Please update the NVM image.\n");
 	}
 	return true;

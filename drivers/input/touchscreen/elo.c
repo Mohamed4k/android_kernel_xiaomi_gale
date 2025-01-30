@@ -275,7 +275,7 @@ static int elo_setup_10(struct elo *elo)
 	if (packet[3] & ELO10_PRESSURE)
 		input_set_abs_params(dev, ABS_PRESSURE, 0, 255, 0, 0);
 
-	dev_info(&elo->serio->dev,
+	dev_dbg(&elo->serio->dev,
 		 "%sTouch touchscreen, fw: %02x.%02x, features: 0x%02x, controller: 0x%02x\n",
 		 elo_types[(packet[1] -'0') & 0x03],
 		 packet[5], packet[4], packet[3], packet[7]);

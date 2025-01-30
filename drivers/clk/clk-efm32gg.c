@@ -38,7 +38,7 @@ static void __init efm32gg_cmu_init(struct device_node *np)
 
 	base = of_iomap(np, 0);
 	if (!base) {
-		pr_warn("Failed to map address range for efm32gg,cmu node\n");
+		pr_debug("Failed to map address range for efm32gg,cmu node\n");
 		return;
 	}
 

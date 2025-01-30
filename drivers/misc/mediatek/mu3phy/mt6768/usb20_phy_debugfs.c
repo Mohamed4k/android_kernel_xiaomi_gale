@@ -25,7 +25,7 @@ U3PhyReadReg8((u3phy_addr_t)(uintptr_t)(SSUSB_SIFSLV_U2PHY_COM_BASE+offset))|(ma
 #define USBPHY_CLR8(offset, mask) \
 U3PhyWriteReg8((u3phy_addr_t)(uintptr_t)(SSUSB_SIFSLV_U2PHY_COM_BASE+offset), \
 U3PhyReadReg8((u3phy_addr_t)(uintptr_t)(SSUSB_SIFSLV_U2PHY_COM_BASE+offset))&(~mask))
-#define MYDBG(fmt, args...) pr_notice("MTK_ICUSB [DBG], <%s(), %d> " fmt, __func__, __LINE__, ## args)
+#define MYDBG(fmt, args...) pr_debug("MTK_ICUSB [DBG], <%s(), %d> " fmt, __func__, __LINE__, ## args)
 
 /* general */
 #define BIT_WIDTH_1		1

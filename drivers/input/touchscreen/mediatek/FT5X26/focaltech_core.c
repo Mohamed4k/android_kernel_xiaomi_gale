@@ -1045,7 +1045,7 @@ int fts_i2c_read(struct i2c_client *client, char *writebuf, int writelen,
 		};
 		ret = i2c_transfer(client->adapter, msgs, 2);
 		if (ret < 0)
-			pr_notice("f%s: i2c read error.\n", __func__);
+			pr_debug("f%s: i2c read error.\n", __func__);
 	} else {
 		struct i2c_msg msgs[] = {
 			{
@@ -1057,7 +1057,7 @@ int fts_i2c_read(struct i2c_client *client, char *writebuf, int writelen,
 		};
 		ret = i2c_transfer(client->adapter, msgs, 1);
 		if (ret < 0)
-			pr_notice("%s:i2c read error.\n", __func__);
+			pr_debug("%s:i2c read error.\n", __func__);
 	}
 	return ret;
 }
@@ -1084,7 +1084,7 @@ int fts_i2c_write(struct i2c_client *client, char *writebuf, int writelen)
 
 	ret = i2c_transfer(client->adapter, msg, 1);
 	if (ret < 0)
-		pr_notice("%s i2c write error.\n", __func__);
+		pr_debug("%s i2c write error.\n", __func__);
 
 	return ret;
 }
@@ -1606,7 +1606,7 @@ reset_proc:
 
 	ret = get_md32_semaphore(SEMAPHORE_TOUCH);
 	if (ret < 0)
-		pr_notice("[TOUCH] HW semaphore reqiure timeout\n");
+		pr_debug("[TOUCH] HW semaphore reqiure timeout\n");
 #endif
 
 	return 0;
@@ -1688,13 +1688,13 @@ static s8 ftp_enter_doze(struct i2c_client *client)
 	int i;
 
 	/* TPD_DEBUG("Entering doze mode..."); */
-	pr_notice("Entering doze mode...");
+	pr_debug("Entering doze mode...");
 
 	/* Enter gestrue recognition mode */
 	ret = fts_write_reg(i2c_client, FT_GESTRUE_MODE_SWITCH_REG, gestrue_on);
 	if (ret < 0) {
 		/* TPD_DEBUG("Failed to enter Doze %d", retry); */
-		pr_notice("Failed to enter Doze %d", retry);
+		pr_debug("Failed to enter Doze %d", retry);
 		return ret;
 	}
 	msleep(30);
@@ -1705,7 +1705,7 @@ static s8 ftp_enter_doze(struct i2c_client *client)
 		if (gestrue_data == 0x01) {
 			doze_status = DOZE_ENABLED;
 			/* TPD_DEBUG("FTP has been working in doze mode!"); */
-			pr_notice("FTP has been working in doze mode!");
+			pr_debug("FTP has been working in doze mode!");
 			break;
 		}
 		msleep(20);
@@ -1912,7 +1912,7 @@ static void tpd_suspend(struct device *h)
 /*
  * while(release_md32_semaphore(SEMAPHORE_TOUCH) <= 0) {
  *	TPD_DEBUG("GTP release md32 sem failed\n");
- *	pr_notice("GTP release md32 sem failed\n");
+ *	pr_debug("GTP release md32 sem failed\n");
  * }
  */
 		}

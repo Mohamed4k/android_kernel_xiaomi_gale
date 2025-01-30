@@ -1103,7 +1103,7 @@ static int vortex_probe1(struct device *gendev, void __iomem *ioaddr, int irq,
 	struct eisa_device *edev = NULL;
 
 	if (!printed_version) {
-		pr_info("%s", version);
+		pr_debug("%s", version);
 		printed_version = 1;
 	}
 
@@ -1151,9 +1151,9 @@ static int vortex_probe1(struct device *gendev, void __iomem *ioaddr, int irq,
 
 	print_info = (vortex_debug > 1);
 	if (print_info)
-		pr_info("See Documentation/networking/vortex.txt\n");
+		pr_debug("See Documentation/networking/vortex.txt\n");
 
-	pr_info("%s: 3Com %s %s at %p.\n",
+	pr_debug("%s: 3Com %s %s at %p.\n",
 	       print_name,
 	       pdev ? "PCI" : "EISA",
 	       vci->name,
@@ -1191,7 +1191,7 @@ static int vortex_probe1(struct device *gendev, void __iomem *ioaddr, int irq,
 			   chip only. */
 			pci_read_config_byte(pdev, PCI_LATENCY_TIMER, &pci_latency);
 			if (pci_latency < new_latency) {
-				pr_info("%s: Overriding PCI latency timer (CFLT) setting of %d, new value is %d.\n",
+				pr_debug("%s: Overriding PCI latency timer (CFLT) setting of %d, new value is %d.\n",
 					print_name, pci_latency, new_latency);
 				pci_write_config_byte(pdev, PCI_LATENCY_TIMER, new_latency);
 			}
@@ -1303,12 +1303,12 @@ static int vortex_probe1(struct device *gendev, void __iomem *ioaddr, int irq,
 		pr_cont(", IRQ %d\n", dev->irq);
 	/* Tell them about an invalid IRQ. */
 	if (dev->irq <= 0 || dev->irq >= nr_irqs)
-		pr_warn(" *** Warning: IRQ %d is unlikely to work! ***\n",
+		pr_debug(" *** Warning: IRQ %d is unlikely to work! ***\n",
 			dev->irq);
 
 	step = (window_read8(vp, 4, Wn4_NetDiag) & 0x1e) >> 1;
 	if (print_info) {
-		pr_info("  product code %02x%02x rev %02x.%d date %02d-%02d-%02d\n",
+		pr_debug("  product code %02x%02x rev %02x.%d date %02d-%02d-%02d\n",
 			eeprom[6]&0xff, eeprom[6]>>8, eeprom[0x14],
 			step, (eeprom[4]>>5) & 15, eeprom[4] & 31, eeprom[4]>>9);
 	}
@@ -1324,7 +1324,7 @@ static int vortex_probe1(struct device *gendev, void __iomem *ioaddr, int irq,
 		}
 
 		if (print_info) {
-			pr_info("%s: CardBus functions mapped %16.16llx->%p\n",
+			pr_debug("%s: CardBus functions mapped %16.16llx->%p\n",
 				print_name,
 				(unsigned long long)pci_resource_start(pdev, 2),
 				vp->cb_fn_base);
@@ -1349,7 +1349,7 @@ static int vortex_probe1(struct device *gendev, void __iomem *ioaddr, int irq,
 	if (vp->info1 & 0x8000) {
 		vp->full_duplex = 1;
 		if (print_info)
-			pr_info("Full duplex capable\n");
+			pr_debug("Full duplex capable\n");
 	}
 
 	{
@@ -1362,7 +1362,7 @@ static int vortex_probe1(struct device *gendev, void __iomem *ioaddr, int irq,
 		if (print_info) {
 			pr_debug("  Internal config register is %4.4x, transceivers %#x.\n",
 				config, window_read16(vp, 3, Wn3_Options));
-			pr_info("  %dK %s-wide RAM %s Rx:Tx split, %s%s interface.\n",
+			pr_debug("  %dK %s-wide RAM %s Rx:Tx split, %s%s interface.\n",
 				   8 << RAM_SIZE(config),
 				   RAM_WIDTH(config) ? "word" : "byte",
 				   ram_split[RAM_SPLIT(config)],
@@ -1377,7 +1377,7 @@ static int vortex_probe1(struct device *gendev, void __iomem *ioaddr, int irq,
 	}
 
 	if (vp->media_override != 7) {
-		pr_info("%s:  Media override to transceiver type %d (%s).\n",
+		pr_debug("%s:  Media override to transceiver type %d (%s).\n",
 				print_name, vp->media_override,
 				media_tbl[vp->media_override].name);
 		dev->if_port = vp->media_override;
@@ -1409,7 +1409,7 @@ static int vortex_probe1(struct device *gendev, void __iomem *ioaddr, int irq,
 			if (mii_status  &&  mii_status != 0xffff) {
 				vp->phys[phy_idx++] = phyx;
 				if (print_info) {
-					pr_info("  MII transceiver found at address %d, status %4x.\n",
+					pr_debug("  MII transceiver found at address %d, status %4x.\n",
 						phyx, mii_status);
 				}
 				if ((mii_status & 0x0040) == 0)
@@ -1418,7 +1418,7 @@ static int vortex_probe1(struct device *gendev, void __iomem *ioaddr, int irq,
 		}
 		mii_preamble_required--;
 		if (phy_idx == 0) {
-			pr_warn("  ***WARNING*** No MII transceivers found!\n");
+			pr_debug("  ***WARNING*** No MII transceivers found!\n");
 			vp->phys[0] = 24;
 		} else {
 			vp->advertising = mdio_read(dev, vp->phys[0], MII_ADVERTISE);
@@ -1434,7 +1434,7 @@ static int vortex_probe1(struct device *gendev, void __iomem *ioaddr, int irq,
 	if (vp->capabilities & CapBusMaster) {
 		vp->full_bus_master_tx = 1;
 		if (print_info) {
-			pr_info("  Enabling bus-master transmits and %s receives.\n",
+			pr_debug("  Enabling bus-master transmits and %s receives.\n",
 			(vp->info2 & 1) ? "early" : "whole-frame" );
 		}
 		vp->full_bus_master_rx = (vp->info2 & 1) ? 1 : 2;
@@ -1454,7 +1454,7 @@ static int vortex_probe1(struct device *gendev, void __iomem *ioaddr, int irq,
 		dev->netdev_ops =  &vortex_netdev_ops;
 
 	if (print_info) {
-		pr_info("%s: scatter/gather %sabled. h/w checksums %sabled\n",
+		pr_debug("%s: scatter/gather %sabled. h/w checksums %sabled\n",
 				print_name,
 				(dev->features & NETIF_F_SG) ? "en":"dis",
 				(dev->features & NETIF_F_IP_CSUM) ? "en":"dis");
@@ -1501,7 +1501,7 @@ issue_and_wait(struct net_device *dev, int cmd)
 	for (i = 0; i < 100000; i++) {
 		if (!(ioread16(ioaddr + EL3_STATUS) & CmdInProgress)) {
 			if (vortex_debug > 1)
-				pr_info("%s: command 0x%04x took %d usecs\n",
+				pr_debug("%s: command 0x%04x took %d usecs\n",
 					   dev->name, cmd, i * 10);
 			return;
 		}
@@ -1516,7 +1516,7 @@ vortex_set_duplex(struct net_device *dev)
 {
 	struct vortex_private *vp = netdev_priv(dev);
 
-	pr_info("%s:  setting %s-duplex.\n",
+	pr_debug("%s:  setting %s-duplex.\n",
 		dev->name, (vp->full_duplex) ? "full" : "half");
 
 	/* Set the full-duplex bit. */
@@ -1558,7 +1558,7 @@ vortex_up(struct net_device *dev)
 			pci_restore_state(VORTEX_PCI(vp));
 		err = pci_enable_device(VORTEX_PCI(vp));
 		if (err) {
-			pr_warn("%s: Could not enable device\n", dev->name);
+			pr_debug("%s: Could not enable device\n", dev->name);
 			goto err_out;
 		}
 	}
@@ -1567,14 +1567,14 @@ vortex_up(struct net_device *dev)
 	config = window_read32(vp, 3, Wn3_Config);
 
 	if (vp->media_override != 7) {
-		pr_info("%s: Media override to transceiver %d (%s).\n",
+		pr_debug("%s: Media override to transceiver %d (%s).\n",
 			   dev->name, vp->media_override,
 			   media_tbl[vp->media_override].name);
 		dev->if_port = vp->media_override;
 	} else if (vp->autoselect) {
 		if (vp->has_nway) {
 			if (vortex_debug > 1)
-				pr_info("%s: using NWAY device table, not %d\n",
+				pr_debug("%s: using NWAY device table, not %d\n",
 								dev->name, dev->if_port);
 			dev->if_port = XCVR_NWAY;
 		} else {
@@ -1583,13 +1583,13 @@ vortex_up(struct net_device *dev)
 			while (! (vp->available_media & media_tbl[dev->if_port].mask))
 				dev->if_port = media_tbl[dev->if_port].next;
 			if (vortex_debug > 1)
-				pr_info("%s: first available media type: %s\n",
+				pr_debug("%s: first available media type: %s\n",
 					dev->name, media_tbl[dev->if_port].name);
 		}
 	} else {
 		dev->if_port = vp->default_media;
 		if (vortex_debug > 1)
-			pr_info("%s: using default media %s\n",
+			pr_debug("%s: using default media %s\n",
 				dev->name, media_tbl[dev->if_port].name);
 	}
 
@@ -1986,7 +1986,7 @@ vortex_error(struct net_device *dev, int status)
 		/* This occurs when we have the wrong media type! */
 		if (DoneDidThat == 0  &&
 			ioread16(ioaddr + EL3_STATUS) & StatsFull) {
-			pr_warn("%s: Updating statistics failed, disabling stats as an interrupt source\n",
+			pr_debug("%s: Updating statistics failed, disabling stats as an interrupt source\n",
 				dev->name);
 			iowrite16(SetIntrEnb |
 				  (window_read16(vp, 5, 10) & ~StatsFull),
@@ -2136,7 +2136,7 @@ boomerang_start_xmit(struct sk_buff *skb, struct net_device *dev)
 
 	if (vp->cur_tx - vp->dirty_tx >= TX_RING_SIZE) {
 		if (vortex_debug > 0)
-			pr_warn("%s: BUG! Tx Ring full, refusing to send buffer\n",
+			pr_debug("%s: BUG! Tx Ring full, refusing to send buffer\n",
 				dev->name);
 		netif_stop_queue(dev);
 		return NETDEV_TX_BUSY;
@@ -2334,7 +2334,7 @@ _vortex_interrupt(int irq, struct net_device *dev)
 		}
 
 		if (--work_done < 0) {
-			pr_warn("%s: Too much work in interrupt, status %4.4x\n",
+			pr_debug("%s: Too much work in interrupt, status %4.4x\n",
 				dev->name, status);
 			/* Disable all pending interrupts. */
 			do {
@@ -2470,7 +2470,7 @@ _boomerang_interrupt(int irq, struct net_device *dev)
 			vortex_error(dev, status);
 
 		if (--work_done < 0) {
-			pr_warn("%s: Too much work in interrupt, status %4.4x\n",
+			pr_debug("%s: Too much work in interrupt, status %4.4x\n",
 				dev->name, status);
 			/* Disable all pending interrupts. */
 			do {
@@ -2577,7 +2577,7 @@ static int vortex_rx(struct net_device *dev)
 						break;
 				continue;
 			} else if (vortex_debug > 0)
-				pr_notice("%s: No memory to allocate a sk_buff of size %d.\n",
+				pr_debug("%s: No memory to allocate a sk_buff of size %d.\n",
 					dev->name, pkt_len);
 			dev->stats.rx_dropped++;
 		}
@@ -2744,7 +2744,7 @@ vortex_close(struct net_device *dev)
 	if (vp->rx_csumhits &&
 	    (vp->drv_flags & HAS_HWCKSM) == 0 &&
 	    (vp->card_idx >= MAX_UNITS || hw_checksums[vp->card_idx] == -1)) {
-		pr_warn("%s supports hardware checksums, and we're not using them!\n",
+		pr_debug("%s supports hardware checksums, and we're not using them!\n",
 			dev->name);
 	}
 #endif
@@ -3059,7 +3059,7 @@ static void set_rx_mode(struct net_device *dev)
 
 	if (dev->flags & IFF_PROMISC) {
 		if (vortex_debug > 3)
-			pr_notice("%s: Setting promiscuous mode.\n", dev->name);
+			pr_debug("%s: Setting promiscuous mode.\n", dev->name);
 		new_mode = SetRxFilter|RxStation|RxMulticast|RxBroadcast|RxProm;
 	} else	if (!netdev_mc_empty(dev) || dev->flags & IFF_ALLMULTI) {
 		new_mode = SetRxFilter|RxStation|RxMulticast|RxBroadcast;
@@ -3238,7 +3238,7 @@ static void acpi_set_WOL(struct net_device *dev)
 		iowrite16(RxEnable, ioaddr + EL3_CMD);
 
 		if (pci_enable_wake(VORTEX_PCI(vp), PCI_D3hot, 1)) {
-			pr_info("%s: WOL not supported.\n", pci_name(VORTEX_PCI(vp)));
+			pr_debug("%s: WOL not supported.\n", pci_name(VORTEX_PCI(vp)));
 
 			vp->enable_wol = 0;
 			return;

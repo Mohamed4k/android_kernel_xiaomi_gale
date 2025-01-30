@@ -20,13 +20,13 @@ static int mtk_usb2jtag_hw_init(void)
 
 	node = of_find_compatible_node(NULL, NULL, "mediatek,infracfg_ao");
 	if (!node) {
-		pr_notice("[U2J] map compatible node failed\n");
+		pr_debug("[U2J] map compatible node failed\n");
 		return -1;
 	}
 
 	INFRACFG_AO_BASE = of_iomap(node, 0);
 	if (!INFRACFG_AO_BASE) {
-		pr_notice("[U2J] map failed\n");
+		pr_debug("[U2J] map failed\n");
 		return -1;
 	}
 
@@ -35,7 +35,7 @@ static int mtk_usb2jtag_hw_init(void)
 
 	/* Init USB config */
 	if (usb2jtag_usb_init() != 0) {
-		pr_notice("[U2J] initial failed\n");
+		pr_debug("[U2J] initial failed\n");
 		return -1;
 	}
 

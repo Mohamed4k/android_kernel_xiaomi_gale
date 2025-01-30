@@ -409,11 +409,11 @@ static int ariadne_open(struct net_device *dev)
 	lance->RAP = CSR89;		/* Chip ID */
 	version |= swapw(lance->RDP) << 16;
 	if ((version & 0x00000fff) != 0x00000003) {
-		pr_warn("Couldn't find AMD Ethernet Chip\n");
+		pr_debug("Couldn't find AMD Ethernet Chip\n");
 		return -EAGAIN;
 	}
 	if ((version & 0x0ffff000) != 0x00003000) {
-		pr_warn("Couldn't find Am79C960 (Wrong part number = %ld)\n",
+		pr_debug("Couldn't find Am79C960 (Wrong part number = %ld)\n",
 		       (version & 0x0ffff000) >> 12);
 		return -EAGAIN;
 	}
@@ -762,7 +762,7 @@ static int ariadne_init_one(struct zorro_dev *z,
 	}
 	zorro_set_drvdata(z, dev);
 
-	netdev_info(dev, "Ariadne at 0x%08lx, Ethernet Address %pM\n",
+	netdev_dbg(dev, "Ariadne at 0x%08lx, Ethernet Address %pM\n",
 		    board, dev->dev_addr);
 
 	return 0;

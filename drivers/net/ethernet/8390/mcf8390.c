@@ -398,7 +398,7 @@ static int mcf8390_init(struct net_device *dev)
 		return ret;
 	}
 
-	netdev_info(dev, "addr=0x%08x irq=%d, Ethernet Address %pM\n",
+	netdev_dbg(dev, "addr=0x%08x irq=%d, Ethernet Address %pM\n",
 		addr, dev->irq, dev->dev_addr);
 	return 0;
 }

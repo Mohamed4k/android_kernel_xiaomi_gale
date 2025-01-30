@@ -729,7 +729,7 @@ static irqreturn_t mmc_omap_irq(int irq, void *dev_id)
 
 	if (host->cmd == NULL && host->data == NULL) {
 		status = OMAP_MMC_READ(host, STAT);
-		dev_info(mmc_dev(host->slots[0]->mmc),
+		dev_dbg(mmc_dev(host->slots[0]->mmc),
 			 "Spurious IRQ 0x%04x\n", status);
 		if (status != 0) {
 			OMAP_MMC_WRITE(host, STAT, status);

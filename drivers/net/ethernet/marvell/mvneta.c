@@ -1033,7 +1033,7 @@ static  int mvneta_bm_port_mbus_init(struct mvneta_port *pp)
 	err = mvneta_mbus_io_win_set(pp, pp->bm_priv->bppi_phys_addr, wsize,
 				     target, attr);
 	if (err < 0) {
-		netdev_info(pp->dev, "fail to configure mbus window to BM\n");
+		netdev_dbg(pp->dev, "fail to configure mbus window to BM\n");
 		return err;
 	}
 	return 0;
@@ -1057,7 +1057,7 @@ static int mvneta_bm_port_init(struct platform_device *pdev,
 	}
 
 	if (of_property_read_u32(dn, "bm,pool-long", &long_pool_id)) {
-		netdev_info(pp->dev, "missing long pool id\n");
+		netdev_dbg(pp->dev, "missing long pool id\n");
 		return -EINVAL;
 	}
 
@@ -1066,7 +1066,7 @@ static int mvneta_bm_port_init(struct platform_device *pdev,
 					   MVNETA_BM_LONG, pp->id,
 					   MVNETA_RX_PKT_SIZE(pp->dev->mtu));
 	if (!pp->pool_long) {
-		netdev_info(pp->dev, "fail to obtain long pool for port\n");
+		netdev_dbg(pp->dev, "fail to obtain long pool for port\n");
 		return -ENOMEM;
 	}
 
@@ -1084,7 +1084,7 @@ static int mvneta_bm_port_init(struct platform_device *pdev,
 					    MVNETA_BM_SHORT, pp->id,
 					    MVNETA_BM_SHORT_PKT_SIZE);
 	if (!pp->pool_short) {
-		netdev_info(pp->dev, "fail to obtain short pool for port\n");
+		netdev_dbg(pp->dev, "fail to obtain short pool for port\n");
 		mvneta_bm_pool_destroy(pp->bm_priv, pp->pool_long, 1 << pp->id);
 		return -ENOMEM;
 	}
@@ -1135,7 +1135,7 @@ bm_mtu_err:
 
 	pp->bm_priv = NULL;
 	mvreg_write(pp, MVNETA_ACC_MODE, MVNETA_ACC_MODE_EXT1);
-	netdev_info(pp->dev, "fail to update MTU, fall back to software BM\n");
+	netdev_dbg(pp->dev, "fail to update MTU, fall back to software BM\n");
 }
 
 /* Start the Ethernet port RX and TX activity */
@@ -2298,7 +2298,7 @@ static int mvneta_tx_tso(struct sk_buff *skb, struct net_device *dev,
 		return 0;
 
 	if (skb_headlen(skb) < (skb_transport_offset(skb) + tcp_hdrlen(skb))) {
-		pr_info("*** Is this even  possible???!?!?\n");
+		pr_debug("*** Is this even  possible???!?!?\n");
 		return 0;
 	}
 
@@ -2647,14 +2647,14 @@ static int mvneta_mcast_addr_set(struct mvneta_port *pp, unsigned char *p_addr,
 	crc_result = mvneta_addr_crc(p_addr);
 	if (queue == -1) {
 		if (pp->mcast_count[crc_result] == 0) {
-			netdev_info(pp->dev, "No valid Mcast for crc8=0x%02x\n",
+			netdev_dbg(pp->dev, "No valid Mcast for crc8=0x%02x\n",
 				    crc_result);
 			return -EINVAL;
 		}
 
 		pp->mcast_count[crc_result]--;
 		if (pp->mcast_count[crc_result] != 0) {
-			netdev_info(pp->dev,
+			netdev_dbg(pp->dev,
 				    "After delete there are %d valid Mcast for crc8=0x%02x\n",
 				    pp->mcast_count[crc_result], crc_result);
 			return -EINVAL;
@@ -3252,7 +3252,7 @@ static int mvneta_change_mtu(struct net_device *dev, int mtu)
 	int ret;
 
 	if (!IS_ALIGNED(MVNETA_RX_PKT_SIZE(mtu), 8)) {
-		netdev_info(dev, "Illegal MTU value %d, rounding to %d\n",
+		netdev_dbg(dev, "Illegal MTU value %d, rounding to %d\n",
 			    mtu, ALIGN(MVNETA_RX_PKT_SIZE(mtu), 8));
 		mtu = ALIGN(MVNETA_RX_PKT_SIZE(mtu), 8);
 	}
@@ -3308,7 +3308,7 @@ static netdev_features_t mvneta_fix_features(struct net_device *dev,
 
 	if (pp->tx_csum_limit && dev->mtu > pp->tx_csum_limit) {
 		features &= ~(NETIF_F_IP_CSUM | NETIF_F_TSO);
-		netdev_info(dev,
+		netdev_dbg(dev,
 			    "Disable IP checksum for MTU greater than %dB\n",
 			    pp->tx_csum_limit);
 	}
@@ -4540,7 +4540,7 @@ static int mvneta_probe(struct platform_device *pdev)
 		if (tx_csum_limit < 0 ||
 		    tx_csum_limit > MVNETA_TX_CSUM_MAX_SIZE) {
 			tx_csum_limit = MVNETA_TX_CSUM_DEF_SIZE;
-			dev_info(&pdev->dev,
+			dev_dbg(&pdev->dev,
 				 "Wrong TX csum limit in DT, set to %dB\n",
 				 MVNETA_TX_CSUM_DEF_SIZE);
 		}
@@ -4576,7 +4576,7 @@ static int mvneta_probe(struct platform_device *pdev)
 		if (pp->bm_priv) {
 			err = mvneta_bm_port_init(pdev, pp);
 			if (err < 0) {
-				dev_info(&pdev->dev,
+				dev_dbg(&pdev->dev,
 					 "use SW buffer management\n");
 				mvneta_bm_put(pp->bm_priv);
 				pp->bm_priv = NULL;
@@ -4635,7 +4635,7 @@ static int mvneta_probe(struct platform_device *pdev)
 		goto err_netdev;
 	}
 
-	netdev_info(dev, "Using %s mac address %pM\n", mac_from,
+	netdev_dbg(dev, "Using %s mac address %pM\n", mac_from,
 		    dev->dev_addr);
 
 	platform_set_drvdata(pdev, pp->dev);
@@ -4750,7 +4750,7 @@ static int mvneta_resume(struct device *device)
 	if (pp->bm_priv) {
 		err = mvneta_bm_port_init(pdev, pp);
 		if (err < 0) {
-			dev_info(&pdev->dev, "use SW buffer management\n");
+			dev_dbg(&pdev->dev, "use SW buffer management\n");
 			pp->bm_priv = NULL;
 		}
 	}

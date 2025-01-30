@@ -88,7 +88,7 @@ static void vop_virtio_init_post(struct vop_vdev *vdev)
 
 	vdev->dc->used_address_updated = 0;
 
-	dev_info(vop_dev(vdev), "%s: device type %d LINKUP\n",
+	dev_dbg(vop_dev(vdev), "%s: device type %d LINKUP\n",
 		 __func__, vdev->virtio_id);
 }
 

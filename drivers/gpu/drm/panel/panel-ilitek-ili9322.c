@@ -461,11 +461,11 @@ static int ili9322_init(struct drm_panel *panel, struct ili9322 *ili)
 		dev_err(ili->dev, "can't write ENTRY reg (%d)\n", ret);
 		return ret;
 	}
-	dev_info(ili->dev, "display is in %s mode, syncmode %02x\n",
+	dev_dbg(ili->dev, "display is in %s mode, syncmode %02x\n",
 		 ili9322_inputs[ili->input],
 		 ili->conf->syncmode);
 
-	dev_info(ili->dev, "initialized display\n");
+	dev_dbg(ili->dev, "initialized display\n");
 
 	return 0;
 }

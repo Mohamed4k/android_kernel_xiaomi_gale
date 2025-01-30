@@ -978,7 +978,7 @@ static int artpec6_pmx_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, pmx);
 
-	dev_info(&pdev->dev, "initialised Axis ARTPEC-6 pinctrl driver\n");
+	dev_dbg(&pdev->dev, "initialised Axis ARTPEC-6 pinctrl driver\n");
 
 	return 0;
 }

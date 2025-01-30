@@ -983,7 +983,7 @@ static void __init px30_clk_init(struct device_node *np)
 	/* aclk_dmac is controlled by sgrf_soc_con1[11]. */
 	clk = clk_register_fixed_factor(NULL, "aclk_dmac", "aclk_bus_pre", 0, 1, 1);
 	if (IS_ERR(clk))
-		pr_warn("%s: could not register clock aclk_dmac: %ld\n",
+		pr_debug("%s: could not register clock aclk_dmac: %ld\n",
 			__func__, PTR_ERR(clk));
 	else
 		rockchip_clk_add_lookup(ctx, clk, ACLK_DMAC);

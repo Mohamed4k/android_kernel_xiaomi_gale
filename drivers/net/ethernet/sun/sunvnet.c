@@ -329,7 +329,7 @@ static struct vnet *vnet_new(const u64 *local_mac,
 		goto err_out_free_dev;
 	}
 
-	netdev_info(dev, "Sun LDOM vnet %pM\n", dev->dev_addr);
+	netdev_dbg(dev, "Sun LDOM vnet %pM\n", dev->dev_addr);
 
 	list_add(&vp->list, &vnet_list);
 
@@ -491,7 +491,7 @@ static int vnet_port_probe(struct vio_dev *vdev, const struct vio_device_id *id)
 
 	dev_set_drvdata(&vdev->dev, port);
 
-	pr_info("%s: PORT ( remote-mac %pM%s )\n",
+	pr_debug("%s: PORT ( remote-mac %pM%s )\n",
 		vp->dev->name, port->raddr, switch_port ? " switch-port" : "");
 
 	timer_setup(&port->clean_timer, sunvnet_clean_timer_expire_common, 0);
@@ -554,7 +554,7 @@ static struct vio_driver vnet_port_driver = {
 
 static int __init vnet_init(void)
 {
-	pr_info("%s\n", version);
+	pr_debug("%s\n", version);
 	return vio_register_driver(&vnet_port_driver);
 }
 

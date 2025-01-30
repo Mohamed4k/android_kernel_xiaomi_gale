@@ -417,7 +417,7 @@ static int meson_drv_probe(struct platform_device *pdev)
 
 	/* If some endpoints were found, initialize the nodes */
 	if (count) {
-		dev_info(&pdev->dev, "Queued %d outputs on vpu\n", count);
+		dev_dbg(&pdev->dev, "Queued %d outputs on vpu\n", count);
 
 		return component_master_add_with_match(&pdev->dev,
 						       &meson_drv_master_ops,

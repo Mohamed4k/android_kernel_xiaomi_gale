@@ -1222,7 +1222,7 @@ static void __init stm32h7_rcc_init(struct device_node *np)
 
 	pdrm = syscon_regmap_lookup_by_phandle(np, "st,syscfg");
 	if (IS_ERR(pdrm))
-		pr_warn("%s: Unable to get syscfg\n", __func__);
+		pr_debug("%s: Unable to get syscfg\n", __func__);
 	else
 		/* In any case disable backup domain write protection
 		 * and will never be enabled.

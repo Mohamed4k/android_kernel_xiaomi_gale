@@ -842,7 +842,7 @@ static int omap_dmm_probe(struct platform_device *dev)
 			dev_err(omap_dmm->dev, "refill failed");
 	}
 
-	dev_info(omap_dmm->dev, "initialized all PAT entries\n");
+	dev_dbg(omap_dmm->dev, "initialized all PAT entries\n");
 
 	return 0;
 

@@ -403,11 +403,11 @@ int intel_uc_init_hw(struct drm_i915_private *i915)
 			goto err_communication;
 	}
 
-	dev_info(i915->drm.dev, "GuC firmware version %u.%u\n",
+	dev_dbg(i915->drm.dev, "GuC firmware version %u.%u\n",
 		 guc->fw.major_ver_found, guc->fw.minor_ver_found);
-	dev_info(i915->drm.dev, "GuC submission %s\n",
+	dev_dbg(i915->drm.dev, "GuC submission %s\n",
 		 enableddisabled(USES_GUC_SUBMISSION(i915)));
-	dev_info(i915->drm.dev, "HuC %s\n",
+	dev_dbg(i915->drm.dev, "HuC %s\n",
 		 enableddisabled(USES_HUC(i915)));
 
 	return 0;

@@ -143,12 +143,12 @@ static int __init integrator_soc_init(void)
 	device_create_file(dev, &integrator_fpga_attr);
 	device_create_file(dev, &integrator_build_attr);
 
-	dev_info(dev, "Detected ARM core module:\n");
-	dev_info(dev, "    Manufacturer: %02x\n", (val >> 24));
-	dev_info(dev, "    Architecture: %s\n", integrator_arch_str(val));
-	dev_info(dev, "    FPGA: %s\n", integrator_fpga_str(val));
-	dev_info(dev, "    Build: %02x\n", (val >> 4) & 0xFF);
-	dev_info(dev, "    Rev: %c\n", ('A' + (val & 0x03)));
+	dev_dbg(dev, "Detected ARM core module:\n");
+	dev_dbg(dev, "    Manufacturer: %02x\n", (val >> 24));
+	dev_dbg(dev, "    Architecture: %s\n", integrator_arch_str(val));
+	dev_dbg(dev, "    FPGA: %s\n", integrator_fpga_str(val));
+	dev_dbg(dev, "    Build: %02x\n", (val >> 4) & 0xFF);
+	dev_dbg(dev, "    Rev: %c\n", ('A' + (val & 0x03)));
 
 	return 0;
 }

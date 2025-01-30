@@ -2918,7 +2918,7 @@ static void rndis_wlan_auth_indication(struct usbnet *usbdev,
 	/* must have at least one array entry */
 	if (len < offsetof(struct ndis_80211_status_indication, u) +
 				sizeof(struct ndis_80211_auth_request)) {
-		netdev_info(usbdev->net, "authentication indication: too short message (%i)\n",
+		netdev_dbg(usbdev->net, "authentication indication: too short message (%i)\n",
 			    len);
 		return;
 	}
@@ -2948,7 +2948,7 @@ static void rndis_wlan_auth_indication(struct usbnet *usbdev,
 			type = "group_error";
 		}
 
-		netdev_info(usbdev->net, "authentication indication: %s (0x%08x)\n",
+		netdev_dbg(usbdev->net, "authentication indication: %s (0x%08x)\n",
 			    type, le32_to_cpu(auth_req->flags));
 
 		if (pairwise_error) {
@@ -2985,7 +2985,7 @@ static void rndis_wlan_pmkid_cand_list_indication(struct usbnet *usbdev,
 
 	if (len < offsetof(struct ndis_80211_status_indication, u) +
 				sizeof(struct ndis_80211_pmkid_cand_list)) {
-		netdev_info(usbdev->net, "pmkid candidate list indication: too short message (%i)\n",
+		netdev_dbg(usbdev->net, "pmkid candidate list indication: too short message (%i)\n",
 			    len);
 		return;
 	}
@@ -2996,14 +2996,14 @@ static void rndis_wlan_pmkid_cand_list_indication(struct usbnet *usbdev,
 			offsetof(struct ndis_80211_status_indication, u);
 
 	if (len < expected_len) {
-		netdev_info(usbdev->net, "pmkid candidate list indication: list larger than buffer (%i < %i)\n",
+		netdev_dbg(usbdev->net, "pmkid candidate list indication: list larger than buffer (%i < %i)\n",
 			    len, expected_len);
 		return;
 	}
 
 	cand_list = &indication->u.cand_list;
 
-	netdev_info(usbdev->net, "pmkid candidate list indication: version %i, candidates %i\n",
+	netdev_dbg(usbdev->net, "pmkid candidate list indication: version %i, candidates %i\n",
 		    le32_to_cpu(cand_list->version),
 		    le32_to_cpu(cand_list->num_candidates));
 
@@ -3034,13 +3034,13 @@ static void rndis_wlan_media_specific_indication(struct usbnet *usbdev,
 	len = le32_to_cpu(msg->length);
 
 	if (len < 8) {
-		netdev_info(usbdev->net, "media specific indication, ignore too short message (%i < 8)\n",
+		netdev_dbg(usbdev->net, "media specific indication, ignore too short message (%i < 8)\n",
 			    len);
 		return;
 	}
 
 	if (len > buflen || offset > buflen || offset + len > buflen) {
-		netdev_info(usbdev->net, "media specific indication, too large to fit to buffer (%i > %i)\n",
+		netdev_dbg(usbdev->net, "media specific indication, too large to fit to buffer (%i > %i)\n",
 			    offset + len, buflen);
 		return;
 	}
@@ -3049,12 +3049,12 @@ static void rndis_wlan_media_specific_indication(struct usbnet *usbdev,
 
 	switch (le32_to_cpu(indication->status_type)) {
 	case NDIS_80211_STATUSTYPE_RADIOSTATE:
-		netdev_info(usbdev->net, "radio state indication: %i\n",
+		netdev_dbg(usbdev->net, "radio state indication: %i\n",
 			    le32_to_cpu(indication->u.radio_status));
 		return;
 
 	case NDIS_80211_STATUSTYPE_MEDIASTREAMMODE:
-		netdev_info(usbdev->net, "media stream mode indication: %i\n",
+		netdev_dbg(usbdev->net, "media stream mode indication: %i\n",
 			    le32_to_cpu(indication->u.media_stream_mode));
 		return;
 
@@ -3067,7 +3067,7 @@ static void rndis_wlan_media_specific_indication(struct usbnet *usbdev,
 		return;
 
 	default:
-		netdev_info(usbdev->net, "media specific indication: unknown status type 0x%08x\n",
+		netdev_dbg(usbdev->net, "media specific indication: unknown status type 0x%08x\n",
 			    le32_to_cpu(indication->status_type));
 	}
 }
@@ -3091,7 +3091,7 @@ static void rndis_wlan_indication(struct usbnet *usbdev, void *ind, int buflen)
 
 		usbnet_pause_rx(usbdev);
 
-		netdev_info(usbdev->net, "media connect\n");
+		netdev_dbg(usbdev->net, "media connect\n");
 
 		/* queue work to avoid recursive calls into rndis_command */
 		set_bit(WORK_LINK_UP, &priv->work_pending);
@@ -3099,7 +3099,7 @@ static void rndis_wlan_indication(struct usbnet *usbdev, void *ind, int buflen)
 		break;
 
 	case RNDIS_STATUS_MEDIA_DISCONNECT:
-		netdev_info(usbdev->net, "media disconnect\n");
+		netdev_dbg(usbdev->net, "media disconnect\n");
 
 		/* queue work to avoid recursive calls into rndis_command */
 		set_bit(WORK_LINK_DOWN, &priv->work_pending);
@@ -3111,7 +3111,7 @@ static void rndis_wlan_indication(struct usbnet *usbdev, void *ind, int buflen)
 		break;
 
 	default:
-		netdev_info(usbdev->net, "indication: 0x%08x\n",
+		netdev_dbg(usbdev->net, "indication: 0x%08x\n",
 			    le32_to_cpu(msg->status));
 		break;
 	}

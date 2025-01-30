@@ -274,7 +274,7 @@ static void fsa9480_detect_dev(struct fsa9480_usbsw *usbsw, int intr)
 	val2 = fsa9480_read_reg(client, FSA9480_REG_DEV_T2);
 	ctrl = fsa9480_read_reg(client, FSA9480_REG_CTRL);
 
-	dev_info(&client->dev, "intr: 0x%x, dev1: 0x%x, dev2: 0x%x\n",
+	dev_dbg(&client->dev, "intr: 0x%x, dev1: 0x%x, dev2: 0x%x\n",
 			intr, val1, val2);
 
 	if (!intr)

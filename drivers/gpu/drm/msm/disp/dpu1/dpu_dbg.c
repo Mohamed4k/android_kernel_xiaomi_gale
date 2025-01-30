@@ -1994,7 +1994,7 @@ static void _dpu_dbg_dump_dpu_dbg_bus(struct dpu_dbg_dpu_debug_bus *bus)
 	if (!in_log && !in_mem)
 		return;
 
-	dev_info(dpu_dbg_base.dev, "======== start %s dump =========\n",
+	dev_dbg(dpu_dbg_base.dev, "======== start %s dump =========\n",
 			bus->cmn.name);
 
 	if (in_mem) {
@@ -2004,7 +2004,7 @@ static void _dpu_dbg_dump_dpu_dbg_bus(struct dpu_dbg_dpu_debug_bus *bus)
 
 		if (*dump_mem) {
 			dump_addr = *dump_mem;
-			dev_info(dpu_dbg_base.dev,
+			dev_dbg(dpu_dbg_base.dev,
 				"%s: start_addr:0x%pK len:0x%x\n",
 				__func__, dump_addr, list_size);
 		} else {
@@ -2032,7 +2032,7 @@ static void _dpu_dbg_dump_dpu_dbg_bus(struct dpu_dbg_dpu_debug_bus *bus)
 		status = readl_relaxed(mem_base + offset);
 
 		if (in_log)
-			dev_info(dpu_dbg_base.dev,
+			dev_dbg(dpu_dbg_base.dev,
 					"waddr=0x%x blk=%d tst=%d val=0x%x\n",
 					head->wr_addr, head->block_id,
 					head->test_id, status);
@@ -2055,7 +2055,7 @@ static void _dpu_dbg_dump_dpu_dbg_bus(struct dpu_dbg_dpu_debug_bus *bus)
 	}
 	_dpu_dbg_enable_power(false);
 
-	dev_info(dpu_dbg_base.dev, "======== end %s dump =========\n",
+	dev_dbg(dpu_dbg_base.dev, "======== end %s dump =========\n",
 			bus->cmn.name);
 }
 
@@ -2086,7 +2086,7 @@ static void _dpu_dbg_dump_vbif_debug_bus_entry(
 				*dump_addr++ = val;
 			}
 			if (in_log)
-				dev_info(dpu_dbg_base.dev,
+				dev_dbg(dpu_dbg_base.dev,
 					"testpoint:%x arb/xin id=%d index=%d val=0x%x\n",
 					head->block_bus_addr, i, j, val);
 		}
@@ -2127,7 +2127,7 @@ static void _dpu_dbg_dump_vbif_dbg_bus(struct dpu_dbg_vbif_debug_bus *bus)
 	list_size = bus->cmn.entries_size;
 	dump_mem = &bus->cmn.dumped_content;
 
-	dev_info(dpu_dbg_base.dev, "======== start %s dump =========\n",
+	dev_dbg(dpu_dbg_base.dev, "======== start %s dump =========\n",
 			bus->cmn.name);
 
 	if (!dump_mem || !dbg_bus || !bus_size || !list_size)
@@ -2155,7 +2155,7 @@ static void _dpu_dbg_dump_vbif_dbg_bus(struct dpu_dbg_vbif_debug_bus *bus)
 
 		if (*dump_mem) {
 			dump_addr = *dump_mem;
-			dev_info(dpu_dbg_base.dev,
+			dev_dbg(dpu_dbg_base.dev,
 				"%s: start_addr:0x%pK len:0x%x\n",
 				__func__, dump_addr, list_size);
 		} else {
@@ -2217,7 +2217,7 @@ static void _dpu_dbg_dump_vbif_dbg_bus(struct dpu_dbg_vbif_debug_bus *bus)
 
 	_dpu_dbg_enable_power(false);
 
-	dev_info(dpu_dbg_base.dev, "======== end %s dump =========\n",
+	dev_dbg(dpu_dbg_base.dev, "======== end %s dump =========\n",
 			bus->cmn.name);
 }
 

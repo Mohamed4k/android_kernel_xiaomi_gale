@@ -871,7 +871,7 @@ static int qusb2_phy_probe(struct platform_device *pdev)
 
 	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
 	if (!IS_ERR(phy_provider))
-		dev_info(dev, "Registered Qcom-QUSB2 phy\n");
+		dev_dbg(dev, "Registered Qcom-QUSB2 phy\n");
 	else
 		pm_runtime_disable(dev);
 

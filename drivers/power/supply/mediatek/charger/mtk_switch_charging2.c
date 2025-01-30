@@ -288,7 +288,7 @@ static void swchg_select_charging_current_limit(struct charger_manager *info)
 		if (pdata->charging_current_limit > info->sw_jeita.cc)
 			pdata->charging_current_limit = info->sw_jeita.cc;
 	}
-	pr_info("%s: charging current = %d, sm = [%d], jeita current = %d\n",
+	pr_debug("%s: charging current = %d, sm = [%d], jeita current = %d\n",
 					__func__, pdata->charging_current_limit,
 					info->sw_jeita.sm, info->sw_jeita.cc);
 
@@ -616,7 +616,7 @@ static int mtk_switch_chr_pe50_run(struct charger_manager *info)
 	ret = pe50_run();
 
 	if (ret == 1) {
-		pr_info("retry pe5\n");
+		pr_debug("retry pe5\n");
 		goto retry;
 	}
 
@@ -1141,11 +1141,11 @@ static int charger_dev_event(struct notifier_block *nb,
 	switch (event) {
 	case CHARGER_DEV_NOTIFY_EOC:
 		charger_manager_notifier(info, CHARGER_NOTIFY_EOC);
-		pr_info("%s: end of charge\n", __func__);
+		pr_debug("%s: end of charge\n", __func__);
 		break;
 	case CHARGER_DEV_NOTIFY_RECHG:
 		charger_manager_notifier(info, CHARGER_NOTIFY_START_CHARGING);
-		pr_info("%s: recharge\n", __func__);
+		pr_debug("%s: recharge\n", __func__);
 		break;
 	case CHARGER_DEV_NOTIFY_SAFETY_TIMEOUT:
 		info->safety_timeout = true;

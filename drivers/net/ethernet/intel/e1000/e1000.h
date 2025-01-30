@@ -323,8 +323,8 @@ struct net_device *e1000_get_hw_dev(struct e1000_hw *hw);
 	netif_warn(adapter, msglvl, adapter->netdev, format, ## arg)
 #define e_notice(msglvl, format, arg...) \
 	netif_notice(adapter, msglvl, adapter->netdev, format, ## arg)
-#define e_dev_info(format, arg...) \
-	dev_info(&adapter->pdev->dev, format, ## arg)
+#define e_dev_dbg(format, arg...) \
+	dev_dbg(&adapter->pdev->dev, format, ## arg)
 #define e_dev_warn(format, arg...) \
 	dev_warn(&adapter->pdev->dev, format, ## arg)
 #define e_dev_err(format, arg...) \

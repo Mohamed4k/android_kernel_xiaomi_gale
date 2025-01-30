@@ -642,7 +642,7 @@ static void octeon_get_uboot_version(struct octeon_device *oct)
 		if (p) {
 			p--;
 			*p = '\0';
-			dev_info(&oct->pci_dev->dev, "%s\n", uboot_ver);
+			dev_dbg(&oct->pci_dev->dev, "%s\n", uboot_ver);
 		}
 	}
 
@@ -860,20 +860,20 @@ int octeon_download_firmware(struct octeon_device *oct, const u8 *data,
 		return -EINVAL;
 	}
 
-	dev_info(&oct->pci_dev->dev, "Firmware version: %s\n", h->version);
+	dev_dbg(&oct->pci_dev->dev, "Firmware version: %s\n", h->version);
 	snprintf(oct->fw_info.liquidio_firmware_version, 32, "LIQUIDIO: %s",
 		 h->version);
 
 	data += sizeof(struct octeon_firmware_file_header);
 
-	dev_info(&oct->pci_dev->dev, "%s: Loading %d images\n", __func__,
+	dev_dbg(&oct->pci_dev->dev, "%s: Loading %d images\n", __func__,
 		 be32_to_cpu(h->num_images));
 	/* load all images */
 	for (i = 0; i < be32_to_cpu(h->num_images); i++) {
 		load_addr = be64_to_cpu(h->desc[i].addr);
 		image_len = be32_to_cpu(h->desc[i].len);
 
-		dev_info(&oct->pci_dev->dev, "Loading firmware %d at %llx\n",
+		dev_dbg(&oct->pci_dev->dev, "Loading firmware %d at %llx\n",
 			 image_len, load_addr);
 
 		/* Write in 4MB chunks*/
@@ -914,13 +914,13 @@ int octeon_download_firmware(struct octeon_device *oct, const u8 *data,
 	strncat(h->bootcmd, boottime,
 		sizeof(h->bootcmd) - strnlen(h->bootcmd, sizeof(h->bootcmd)));
 
-	dev_info(&oct->pci_dev->dev, "Writing boot command: %s\n",
+	dev_dbg(&oct->pci_dev->dev, "Writing boot command: %s\n",
 		 h->bootcmd);
 
 	/* Invoke the bootcmd */
 	ret = octeon_console_send_cmd(oct, h->bootcmd, 50);
 	if (ret)
-		dev_info(&oct->pci_dev->dev, "Boot command send failed\n");
+		dev_dbg(&oct->pci_dev->dev, "Boot command send failed\n");
 
 	return ret;
 }

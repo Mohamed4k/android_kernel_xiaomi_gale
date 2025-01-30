@@ -234,14 +234,14 @@ static int __init ultra_probe1(struct net_device *dev, int ioaddr)
 	}
 
 	if ((ultra_msg_enable & NETIF_MSG_DRV) && (version_printed++ == 0))
-		netdev_info(dev, version);
+		netdev_dbg(dev, version);
 
 	model_name = (idreg & 0xF0) == 0x20 ? "SMC Ultra" : "SMC EtherEZ";
 
 	for (i = 0; i < 6; i++)
 		dev->dev_addr[i] = inb(ioaddr + 8 + i);
 
-	netdev_info(dev, "%s at %#3x, %pM", model_name,
+	netdev_dbg(dev, "%s at %#3x, %pM", model_name,
 		    ioaddr, dev->dev_addr);
 
 	/* Switch from the station address to the alternate register set and
@@ -359,7 +359,7 @@ static int __init ultra_probe_isapnp(struct net_device *dev)
                         /* found it */
 			dev->base_addr = pnp_port_start(idev, 0);
 			dev->irq = pnp_irq(idev, 0);
-			netdev_info(dev,
+			netdev_dbg(dev,
 				    "smc-ultra.c: ISAPnP reports %s at i/o %#lx, irq %d.\n",
 				    (char *) ultra_device_ids[i].driver_data,
 				    dev->base_addr, dev->irq);

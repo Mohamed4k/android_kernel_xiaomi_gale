@@ -271,7 +271,7 @@ ltq_wdt_probe(struct platform_device *pdev)
 	ltq_io_region_clk_rate = clk_get_rate(clk);
 	clk_put(clk);
 
-	dev_info(&pdev->dev, "Init done\n");
+	dev_dbg(&pdev->dev, "Init done\n");
 	return misc_register(&ltq_wdt_miscdev);
 }
 

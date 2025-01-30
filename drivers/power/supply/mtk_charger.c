@@ -1940,7 +1940,7 @@ static void mtk_charger_external_power_changed(struct power_supply *psy)
 	chg_psy = info->chg_psy;
 
 	if (IS_ERR_OR_NULL(chg_psy)) {
-		pr_notice("%s Couldn't get chg_psy\n", __func__);
+		pr_debug("%s Couldn't get chg_psy\n", __func__);
 		chg_psy = devm_power_supply_get_by_phandle(&info->pdev->dev,
 			"charger");
 		info->chg_psy = chg_psy;
@@ -1951,7 +1951,7 @@ static void mtk_charger_external_power_changed(struct power_supply *psy)
 			POWER_SUPPLY_PROP_USB_TYPE, &prop2);
 	}
 
-	pr_notice("%s event, name:%s online:%d type:%d vbus:%d\n", __func__,
+	pr_debug("%s event, name:%s online:%d type:%d vbus:%d\n", __func__,
 		psy->desc->name, prop.intval, prop2.intval,
 		get_vbus(info));
 

@@ -1121,9 +1121,9 @@ static int jz4740_mmc_probe(struct platform_device* pdev)
 		dev_err(&pdev->dev, "Failed to add mmc host: %d\n", ret);
 		goto err_release_dma;
 	}
-	dev_info(&pdev->dev, "JZ SD/MMC card driver registered\n");
+	dev_dbg(&pdev->dev, "JZ SD/MMC card driver registered\n");
 
-	dev_info(&pdev->dev, "Using %s, %d-bit mode\n",
+	dev_dbg(&pdev->dev, "Using %s, %d-bit mode\n",
 		 host->use_dma ? "DMA" : "PIO",
 		 (mmc->caps & MMC_CAP_4_BIT_DATA) ? 4 : 1);
 

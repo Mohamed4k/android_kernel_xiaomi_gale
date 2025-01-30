@@ -299,10 +299,10 @@ static void tlc_process_cmd(void)
 		u32 tlctui_dci_version =
 			TUI_DCI_VERSION(TUI_DCI_VERSION_MAJOR,
 					TUI_DCI_VERSION_MINOR);
-		tui_dev_info("TlcTui DCI Version (%u.%u)",
+		tui_dev_dbg("TlcTui DCI Version (%u.%u)",
 			     TUI_DCI_VERSION_GET_MAJOR(tlctui_dci_version),
 			     TUI_DCI_VERSION_GET_MINOR(tlctui_dci_version));
-		tui_dev_info("DrTui DCI Version (%u.%u)",
+		tui_dev_dbg("DrTui DCI Version (%u.%u)",
 			     TUI_DCI_VERSION_GET_MAJOR(drtui_dci_version),
 			     TUI_DCI_VERSION_GET_MINOR(drtui_dci_version));
 		/* Write the TlcTui DCI version in the response for the SWd */

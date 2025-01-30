@@ -486,7 +486,7 @@ static int cs2000_version_print(struct cs2000_priv *priv)
 		return -EIO;
 	}
 
-	dev_info(dev, "revision - %s\n", revision);
+	dev_dbg(dev, "revision - %s\n", revision);
 
 	return 0;
 }

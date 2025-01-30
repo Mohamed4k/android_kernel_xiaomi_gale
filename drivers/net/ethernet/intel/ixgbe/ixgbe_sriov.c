@@ -1355,9 +1355,9 @@ int ixgbe_ndo_set_vf_mac(struct net_device *netdev, int vf, u8 *mac)
 		return -EINVAL;
 
 	if (is_valid_ether_addr(mac)) {
-		dev_info(&adapter->pdev->dev, "setting MAC %pM on VF %d\n",
+		dev_dbg(&adapter->pdev->dev, "setting MAC %pM on VF %d\n",
 			 mac, vf);
-		dev_info(&adapter->pdev->dev, "Reload the VF driver to make this change effective.");
+		dev_dbg(&adapter->pdev->dev, "Reload the VF driver to make this change effective.");
 
 		retval = ixgbe_set_vf_mac(adapter, vf, mac);
 		if (retval >= 0) {
@@ -1378,7 +1378,7 @@ int ixgbe_ndo_set_vf_mac(struct net_device *netdev, int vf, u8 *mac)
 		if (is_zero_ether_addr(vf_mac_addr))
 			return 0;
 
-		dev_info(&adapter->pdev->dev, "removing MAC on VF %d\n", vf);
+		dev_dbg(&adapter->pdev->dev, "removing MAC on VF %d\n", vf);
 
 		retval = ixgbe_del_mac_filter(adapter, vf_mac_addr, vf);
 		if (retval >= 0) {
@@ -1417,7 +1417,7 @@ static int ixgbe_enable_port_vlan(struct ixgbe_adapter *adapter, int vf,
 
 	adapter->vfinfo[vf].pf_vlan = vlan;
 	adapter->vfinfo[vf].pf_qos = qos;
-	dev_info(&adapter->pdev->dev,
+	dev_dbg(&adapter->pdev->dev,
 		 "Setting VLAN %d, QOS 0x%x on VF %d\n", vlan, qos, vf);
 	if (test_bit(__IXGBE_DOWN, &adapter->state)) {
 		dev_warn(&adapter->pdev->dev,
@@ -1559,7 +1559,7 @@ void ixgbe_check_vf_rate_limit(struct ixgbe_adapter *adapter)
 
 	if (ixgbe_link_mbps(adapter) != adapter->vf_rate_link_speed) {
 		adapter->vf_rate_link_speed = 0;
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "Link speed has been changed. VF Transmit rate is disabled\n");
 	}
 

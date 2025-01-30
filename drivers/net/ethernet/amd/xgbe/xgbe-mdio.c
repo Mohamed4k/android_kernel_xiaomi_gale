@@ -1092,13 +1092,13 @@ static const char *xgbe_phy_speed_string(int speed)
 static void xgbe_phy_print_status(struct xgbe_prv_data *pdata)
 {
 	if (pdata->phy.link)
-		netdev_info(pdata->netdev,
+		netdev_dbg(pdata->netdev,
 			    "Link is Up - %s/%s - flow control %s\n",
 			    xgbe_phy_speed_string(pdata->phy.speed),
 			    pdata->phy.duplex == DUPLEX_FULL ? "Full" : "Half",
 			    xgbe_phy_fc_string(pdata));
 	else
-		netdev_info(pdata->netdev, "Link is Down\n");
+		netdev_dbg(pdata->netdev, "Link is Down\n");
 }
 
 static void xgbe_phy_adjust_link(struct xgbe_prv_data *pdata)

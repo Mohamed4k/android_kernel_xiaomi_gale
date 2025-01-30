@@ -959,7 +959,7 @@ static inline void be_set_error(struct be_adapter *adapter, int err_type)
 	adapter->err_flags |= err_type;
 	netif_carrier_off(netdev);
 
-	dev_info(&adapter->pdev->dev, "%s: Link down\n", netdev->name);
+	dev_dbg(&adapter->pdev->dev, "%s: Link down\n", netdev->name);
 }
 
 static inline void  be_clear_error(struct be_adapter *adapter, int err_type)

@@ -258,7 +258,7 @@ static int aspeed_lpc_ctrl_probe(struct platform_device *pdev)
 		goto err;
 	}
 
-	dev_info(dev, "Loaded at %pr\n", &resm);
+	dev_dbg(dev, "Loaded at %pr\n", &resm);
 
 	return 0;
 

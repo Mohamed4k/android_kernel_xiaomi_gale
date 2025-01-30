@@ -407,7 +407,7 @@ int tulip_check_duplex(struct net_device *dev)
 	bmsr = tulip_mdio_read(dev, tp->phys[0], MII_BMSR);
 	lpa = tulip_mdio_read(dev, tp->phys[0], MII_LPA);
 	if (tulip_debug > 1)
-		dev_info(&dev->dev, "MII status %04x, Link partner report %04x\n",
+		dev_dbg(&dev->dev, "MII status %04x, Link partner report %04x\n",
 			 bmsr, lpa);
 	if (bmsr == 0xffff)
 		return -2;
@@ -415,7 +415,7 @@ int tulip_check_duplex(struct net_device *dev)
 		int new_bmsr = tulip_mdio_read(dev, tp->phys[0], MII_BMSR);
 		if ((new_bmsr & BMSR_LSTATUS) == 0) {
 			if (tulip_debug  > 1)
-				dev_info(&dev->dev,
+				dev_dbg(&dev->dev,
 					 "No link beat on the MII interface, status %04x\n",
 					 new_bmsr);
 			return -1;
@@ -436,7 +436,7 @@ int tulip_check_duplex(struct net_device *dev)
 		tulip_restart_rxtx(tp);
 
 		if (tulip_debug > 0)
-			dev_info(&dev->dev,
+			dev_dbg(&dev->dev,
 				 "Setting %s-duplex based on MII#%d link partner capability of %04x\n",
 				 tp->full_duplex ? "full" : "half",
 				 tp->phys[0], lpa);
@@ -494,7 +494,7 @@ void tulip_find_mii(struct net_device *dev, int board_idx)
 
 		tp->phys[phy_idx++] = phy;
 
-		pr_info("tulip%d:  MII transceiver #%d config %04x status %04x advertising %04x\n",
+		pr_debug("tulip%d:  MII transceiver #%d config %04x status %04x advertising %04x\n",
 			board_idx, phy, mii_reg0, mii_status, mii_advert);
 
 		/* Fixup for DLink with miswired PHY. */
@@ -545,7 +545,7 @@ void tulip_find_mii(struct net_device *dev, int board_idx)
 	}
 	tp->mii_cnt = phy_idx;
 	if (tp->mtable && tp->mtable->has_mii && phy_idx == 0) {
-		pr_info("tulip%d: ***WARNING***: No MII transceiver found!\n",
+		pr_debug("tulip%d: ***WARNING***: No MII transceiver found!\n",
 			board_idx);
 		tp->phys[0] = 1;
 	}

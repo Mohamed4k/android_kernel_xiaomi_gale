@@ -177,7 +177,7 @@ static int ftwdt010_wdt_probe(struct platform_device *pdev)
 
 	/* Set up platform driver data */
 	platform_set_drvdata(pdev, gwdt);
-	dev_info(dev, "FTWDT010 watchdog driver enabled\n");
+	dev_dbg(dev, "FTWDT010 watchdog driver enabled\n");
 
 	return 0;
 }

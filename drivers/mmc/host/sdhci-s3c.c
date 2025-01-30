@@ -550,7 +550,7 @@ static int sdhci_s3c_probe(struct platform_device *pdev)
 		clks++;
 		sc->clk_rates[ptr] = clk_get_rate(sc->clk_bus[ptr]);
 
-		dev_info(dev, "clock source %d: %s (%ld Hz)\n",
+		dev_dbg(dev, "clock source %d: %s (%ld Hz)\n",
 				ptr, name, sc->clk_rates[ptr]);
 	}
 

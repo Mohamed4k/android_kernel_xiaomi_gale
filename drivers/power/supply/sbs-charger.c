@@ -226,7 +226,7 @@ static int sbs_probe(struct i2c_client *client,
 				      msecs_to_jiffies(SBS_CHARGER_POLL_TIME));
 	}
 
-	dev_info(&client->dev,
+	dev_dbg(&client->dev,
 		 "%s: smart charger device registered\n", client->name);
 
 	return 0;

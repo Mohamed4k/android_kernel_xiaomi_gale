@@ -302,7 +302,7 @@ int bcmgenet_mii_config(struct net_device *dev, bool init)
 	}
 
 	if (init)
-		dev_info(kdev, "configuring instance for %s\n", phy_name);
+		dev_dbg(kdev, "configuring instance for %s\n", phy_name);
 
 	return 0;
 }

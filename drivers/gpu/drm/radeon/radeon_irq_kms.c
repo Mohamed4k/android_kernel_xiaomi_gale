@@ -214,7 +214,7 @@ static bool radeon_msi_ok(struct radeon_device *rdev)
 	 * IBM POWER servers, so we limit them
 	 */
 	if (rdev->family < CHIP_BONAIRE) {
-		dev_info(rdev->dev, "radeon: MSI limited to 32-bit\n");
+		dev_dbg(rdev->dev, "radeon: MSI limited to 32-bit\n");
 		rdev->pdev->no_64bit_msi = 1;
 	}
 
@@ -299,7 +299,7 @@ int radeon_irq_kms_init(struct radeon_device *rdev)
 		int ret = pci_enable_msi(rdev->pdev);
 		if (!ret) {
 			rdev->msi_enabled = 1;
-			dev_info(rdev->dev, "radeon: using MSI.\n");
+			dev_dbg(rdev->dev, "radeon: using MSI.\n");
 		}
 	}
 

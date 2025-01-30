@@ -3907,7 +3907,7 @@ static int ql_adapter_reset(struct ql_adapter *qdev)
 	return status;
 }
 
-static void ql_display_dev_info(struct net_device *ndev)
+static void ql_display_dev_dbg(struct net_device *ndev)
 {
 	struct ql_adapter *qdev = netdev_priv(ndev);
 
@@ -4691,8 +4691,8 @@ static int ql_init_device(struct pci_dev *pdev, struct net_device *ndev,
 	mutex_init(&qdev->mpi_mutex);
 
 	if (!cards_found) {
-		dev_info(&pdev->dev, "%s\n", DRV_STRING);
-		dev_info(&pdev->dev, "Driver name: %s, Version: %s.\n",
+		dev_dbg(&pdev->dev, "%s\n", DRV_STRING);
+		dev_dbg(&pdev->dev, "Driver name: %s, Version: %s.\n",
 			 DRV_NAME, DRV_VERSION);
 	}
 	return 0;
@@ -4802,7 +4802,7 @@ static int qlge_probe(struct pci_dev *pdev,
 	timer_setup(&qdev->timer, ql_timer, TIMER_DEFERRABLE);
 	mod_timer(&qdev->timer, jiffies + (5*HZ));
 	ql_link_off(qdev);
-	ql_display_dev_info(ndev);
+	ql_display_dev_dbg(ndev);
 	atomic_set(&qdev->lb_count, 0);
 	cards_found++;
 	return 0;

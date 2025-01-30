@@ -412,7 +412,7 @@ static int brcmstb_pm_init(void)
 	for_each_matching_node(dn, ddr_phy_dt_ids) {
 		i = ctrl.num_memc;
 		if (i >= MAX_NUM_MEMC) {
-			pr_warn("Too many MEMCs (max %d)\n", MAX_NUM_MEMC);
+			pr_debug("Too many MEMCs (max %d)\n", MAX_NUM_MEMC);
 			break;
 		}
 		base = brcmstb_ioremap_node(dn, 0);

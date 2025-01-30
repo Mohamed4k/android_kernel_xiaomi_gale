@@ -48,7 +48,7 @@ struct sil164_priv {
 				   "%s: " format, __func__, ## __VA_ARGS__); \
 	} while (0)
 #define sil164_info(client, format, ...)		\
-	dev_info(&client->dev, format, __VA_ARGS__)
+	dev_dbg(&client->dev, format, __VA_ARGS__)
 #define sil164_err(client, format, ...)			\
 	dev_err(&client->dev, format, __VA_ARGS__)
 

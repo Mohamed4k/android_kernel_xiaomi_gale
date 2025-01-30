@@ -741,7 +741,7 @@ static int at24_probe(struct i2c_client *client)
 		goto err_clients;
 	}
 
-	dev_info(dev, "%u byte %s EEPROM, %s, %u bytes/write\n",
+	dev_dbg(dev, "%u byte %s EEPROM, %s, %u bytes/write\n",
 		 pdata.byte_len, client->name,
 		 writable ? "writable" : "read-only", at24->write_max);
 

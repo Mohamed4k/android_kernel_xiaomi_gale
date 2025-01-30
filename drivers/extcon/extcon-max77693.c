@@ -295,7 +295,7 @@ static int max77693_muic_set_path(struct max77693_muic_info *info,
 		return ret;
 	}
 
-	dev_info(info->dev,
+	dev_dbg(info->dev,
 		"CONTROL1 : 0x%02x, CONTROL2 : 0x%02x, state : %s\n",
 		ctrl1, ctrl2, attached ? "attached" : "detached");
 
@@ -464,7 +464,7 @@ static int max77693_muic_dock_handler(struct max77693_muic_info *info,
 	bool cable_attached;
 	unsigned int dock_id;
 
-	dev_info(info->dev,
+	dev_dbg(info->dev,
 		"external connector is %s (adc:0x%02x)\n",
 		attached ? "attached" : "detached", cable_type);
 
@@ -630,7 +630,7 @@ static int max77693_muic_jig_handler(struct max77693_muic_info *info,
 	int ret = 0;
 	u8 path = MAX77693_CONTROL1_SW_OPEN;
 
-	dev_info(info->dev,
+	dev_dbg(info->dev,
 		"external connector is %s (adc:0x%02x)\n",
 		attached ? "attached" : "detached", cable_type);
 
@@ -671,7 +671,7 @@ static int max77693_muic_adc_handler(struct max77693_muic_info *info)
 	cable_type = max77693_muic_get_cable_type(info,
 				MAX77693_CABLE_GROUP_ADC, &attached);
 
-	dev_info(info->dev,
+	dev_dbg(info->dev,
 		"external connector is %s (adc:0x%02x, prev_adc:0x%x)\n",
 		attached ? "attached" : "detached", cable_type,
 		info->prev_cable_type);
@@ -754,7 +754,7 @@ static int max77693_muic_adc_handler(struct max77693_muic_info *info)
 		 * needed to detect additional accessory, should implement
 		 * proper operation when this accessory is attached/detached.
 		 */
-		dev_info(info->dev,
+		dev_dbg(info->dev,
 			"accessory is %s but it isn't used (adc:0x%x)\n",
 			attached ? "attached" : "detached", cable_type);
 		return -EAGAIN;
@@ -780,7 +780,7 @@ static int max77693_muic_chg_handler(struct max77693_muic_info *info)
 	chg_type = max77693_muic_get_cable_type(info,
 				MAX77693_CABLE_GROUP_CHG, &attached);
 
-	dev_info(info->dev,
+	dev_dbg(info->dev,
 		"external connector is %s(chg_type:0x%x, prev_chg_type:0x%x)\n",
 			attached ? "attached" : "detached",
 			chg_type, info->prev_chg_type);
@@ -1232,7 +1232,7 @@ static int max77693_muic_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "failed to read revision number\n");
 		return ret;
 	}
-	dev_info(info->dev, "device ID : 0x%x\n", id);
+	dev_dbg(info->dev, "device ID : 0x%x\n", id);
 
 	/* Set ADC debounce time */
 	max77693_muic_set_debounce_time(info, ADC_DEBOUNCE_TIME_25MS);

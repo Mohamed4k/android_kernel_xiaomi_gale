@@ -1004,7 +1004,7 @@ xpc_do_exit(enum xp_retval reason)
 
 		if (xpc_arch_ops.any_partition_engaged()) {
 			if (time_is_before_jiffies(printmsg_time)) {
-				dev_info(xpc_part, "waiting for remote "
+				dev_dbg(xpc_part, "waiting for remote "
 					 "partitions to deactivate, timeout in "
 					 "%ld seconds\n", (disengage_timeout -
 					 jiffies) / HZ);
@@ -1015,14 +1015,14 @@ xpc_do_exit(enum xp_retval reason)
 
 		} else if (active_part_count > 0) {
 			if (printed_waiting_msg) {
-				dev_info(xpc_part, "waiting for local partition"
+				dev_dbg(xpc_part, "waiting for local partition"
 					 " to deactivate\n");
 				printed_waiting_msg = 0;
 			}
 
 		} else {
 			if (!xpc_disengage_timedout) {
-				dev_info(xpc_part, "all partitions have "
+				dev_dbg(xpc_part, "all partitions have "
 					 "deactivated\n");
 			}
 			break;
@@ -1131,7 +1131,7 @@ xpc_die_deactivate(void)
 	while (1) {
 		any_engaged = xpc_arch_ops.any_partition_engaged();
 		if (!any_engaged) {
-			dev_info(xpc_part, "all partitions have deactivated\n");
+			dev_dbg(xpc_part, "all partitions have deactivated\n");
 			break;
 		}
 
@@ -1139,7 +1139,7 @@ xpc_die_deactivate(void)
 			for (partid = 0; partid < xp_max_npartitions;
 			     partid++) {
 				if (xpc_arch_ops.partition_engaged(partid)) {
-					dev_info(xpc_part, "deactivate from "
+					dev_dbg(xpc_part, "deactivate from "
 						 "remote partition %d timed "
 						 "out\n", partid);
 				}
@@ -1148,7 +1148,7 @@ xpc_die_deactivate(void)
 		}
 
 		if (!wait_to_print--) {
-			dev_info(xpc_part, "waiting for remote partitions to "
+			dev_dbg(xpc_part, "waiting for remote partitions to "
 				 "deactivate, timeout in %ld seconds\n",
 				 keep_waiting / (1000 * 5));
 			wait_to_print = XPC_DEACTIVATE_PRINTMSG_INTERVAL *

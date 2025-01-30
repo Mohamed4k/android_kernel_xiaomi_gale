@@ -1775,7 +1775,7 @@ void mlx5_eswitch_vport_event(struct mlx5_eswitch *esw, struct mlx5_eqe *eqe)
 	struct mlx5_vport *vport;
 
 	if (!esw) {
-		pr_warn("MLX5 E-Switch: vport %d got an event while eswitch is not initialized\n",
+		pr_debug("MLX5 E-Switch: vport %d got an event while eswitch is not initialized\n",
 			vport_num);
 		return;
 	}

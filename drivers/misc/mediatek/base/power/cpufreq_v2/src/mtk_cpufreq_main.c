@@ -286,7 +286,7 @@ static inline void assert_volt_valid(int line, unsigned int volt,
 {
 	if (unlikely(cur_vsram < cur_vproc ||
 		     cur_vsram - cur_vproc > MAX_DIFF_VSRAM_VPROC)) {
-		pr_notice("@%d, volt = %u, cur_vsram = %u (%u), cur_vproc = %u (%u)\n",
+		pr_debug("@%d, volt = %u, cur_vsram = %u (%u), cur_vproc = %u (%u)\n",
 			line, volt, cur_vsram, old_vsram,
 			cur_vproc, old_vproc);
 	}
@@ -1449,7 +1449,7 @@ static int __init _mt_cpufreq_pdrv_init(void)
 	ret = platform_device_register(&_mt_cpufreq_pdev);
 
 	if (ret) {
-		pr_notice("fail to register cpufreq device @ %s()\n",
+		pr_debug("fail to register cpufreq device @ %s()\n",
 			__func__);
 		goto out;
 	}
@@ -1457,7 +1457,7 @@ static int __init _mt_cpufreq_pdrv_init(void)
 	ret = platform_driver_register(&_mt_cpufreq_pdrv);
 
 	if (ret) {
-		pr_notice("fail to register cpufreq driver @ %s()\n",
+		pr_debug("fail to register cpufreq driver @ %s()\n",
 			__func__);
 		platform_device_unregister(&_mt_cpufreq_pdev);
 	}

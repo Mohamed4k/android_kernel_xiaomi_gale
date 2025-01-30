@@ -734,7 +734,7 @@ static int activate_afu_directed(struct cxl_afu *afu)
 {
 	int rc;
 
-	dev_info(&afu->dev, "Activating AFU(%d) directed mode\n", afu->slice);
+	dev_dbg(&afu->dev, "Activating AFU(%d) directed mode\n", afu->slice);
 
 	afu->current_mode = CXL_MODE_DIRECTED;
 
@@ -775,7 +775,7 @@ static int guest_afu_activate_mode(struct cxl_afu *afu, int mode)
 
 static int deactivate_afu_directed(struct cxl_afu *afu)
 {
-	dev_info(&afu->dev, "Deactivating AFU(%d) directed mode\n", afu->slice);
+	dev_dbg(&afu->dev, "Deactivating AFU(%d) directed mode\n", afu->slice);
 
 	afu->current_mode = 0;
 	afu->num_procs = 0;
@@ -998,7 +998,7 @@ int cxl_guest_init_afu(struct cxl *adapter, int slice, struct device_node *afu_n
 	schedule_delayed_work(&afu->guest->work_err, msecs_to_jiffies(1000));
 
 	if ((rc = cxl_pci_vphb_add(afu)))
-		dev_info(&afu->dev, "Can't register vPHB\n");
+		dev_dbg(&afu->dev, "Can't register vPHB\n");
 
 	return 0;
 

@@ -1011,7 +1011,7 @@ static int mxcmci_probe(struct platform_device *pdev)
 	const struct of_device_id *of_id;
 	struct imxmmc_platform_data *pdata = pdev->dev.platform_data;
 
-	pr_info("i.MX/MPC512x SDHC driver\n");
+	pr_debug("i.MX/MPC512x SDHC driver\n");
 
 	of_id = of_match_device(mxcmci_of_match, &pdev->dev);
 
@@ -1147,7 +1147,7 @@ static int mxcmci_probe(struct platform_device *pdev)
 		mmc->max_seg_size = dma_get_max_seg_size(
 				host->dma->device->dev);
 	else
-		dev_info(mmc_dev(host->mmc), "dma not available. Using PIO\n");
+		dev_dbg(mmc_dev(host->mmc), "dma not available. Using PIO\n");
 
 	INIT_WORK(&host->datawork, mxcmci_datawork);
 

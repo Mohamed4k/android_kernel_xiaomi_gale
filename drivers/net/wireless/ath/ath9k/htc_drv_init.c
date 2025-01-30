@@ -211,7 +211,7 @@ static int ath9k_init_htc_services(struct ath9k_htc_priv *priv, u16 devid,
 	if (ret)
 		goto err;
 
-	dev_info(priv->dev, "ath9k_htc: HTC initialized with %d credits\n",
+	dev_dbg(priv->dev, "ath9k_htc: HTC initialized with %d credits\n",
 		 priv->htc->credits);
 
 	return 0;
@@ -803,7 +803,7 @@ static int ath9k_init_firmware_version(struct ath9k_htc_priv *priv)
 		 priv->fw_version_major,
 		 priv->fw_version_minor);
 
-	dev_info(priv->dev, "ath9k_htc: FW Version: %d.%d\n",
+	dev_dbg(priv->dev, "ath9k_htc: FW Version: %d.%d\n",
 		 priv->fw_version_major,
 		 priv->fw_version_minor);
 
@@ -821,7 +821,7 @@ static int ath9k_init_firmware_version(struct ath9k_htc_priv *priv)
 	if (priv->fw_version_major == 1 && priv->fw_version_minor < 4)
 		set_bit(HTC_FWFLAG_NO_RMW, &priv->fw_flags);
 
-	dev_info(priv->dev, "FW RMW support: %s\n",
+	dev_dbg(priv->dev, "FW RMW support: %s\n",
 		test_bit(HTC_FWFLAG_NO_RMW, &priv->fw_flags) ? "Off" : "On");
 
 	return 0;
@@ -1031,6 +1031,6 @@ module_init(ath9k_htc_init);
 static void __exit ath9k_htc_exit(void)
 {
 	ath9k_hif_usb_exit();
-	pr_info("Driver unloaded\n");
+	pr_debug("Driver unloaded\n");
 }
 module_exit(ath9k_htc_exit);

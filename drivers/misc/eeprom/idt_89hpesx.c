@@ -1163,7 +1163,7 @@ static void idt_get_fw_data(struct idt_89hpesx_dev *pdev)
 	else /* if (!fwnode_property_read_bool(node, "read-only")) */
 		pdev->eero = false;
 
-	dev_info(dev, "EEPROM of %d bytes found by 0x%x",
+	dev_dbg(dev, "EEPROM of %d bytes found by 0x%x",
 		pdev->eesize, pdev->eeaddr);
 }
 
@@ -1301,7 +1301,7 @@ static int idt_check_dev(struct idt_89hpesx_dev *pdev)
 		return -ENODEV;
 	}
 
-	dev_info(dev, "Found IDT 89HPES device VID:0x%04x, DID:0x%04x",
+	dev_dbg(dev, "Found IDT 89HPES device VID:0x%04x, DID:0x%04x",
 		(viddid & IDT_VID_MASK), (viddid >> 16));
 
 	return 0;

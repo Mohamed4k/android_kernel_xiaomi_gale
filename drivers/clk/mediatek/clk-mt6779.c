@@ -1932,42 +1932,42 @@ void pll_if_on(void)
 {
 	int ret = 0;
 	if (clk_readl(ARMPLL_LL_CON0) & 0x1)
-		pr_notice("suspend warning: ARMPLL_LL is on!!!\n");
+		pr_debug("suspend warning: ARMPLL_LL is on!!!\n");
 
 	if (clk_readl(ARMPLL_BL_CON0) & 0x1)
-		pr_notice("suspend warning: ARMPLL_BL is on!!!\n");
+		pr_debug("suspend warning: ARMPLL_BL is on!!!\n");
 
 	if (clk_readl(UNIVPLL_CON0) & 0x1) {
-		pr_notice("suspend warning: UNIVPLL is on!!!\n");
+		pr_debug("suspend warning: UNIVPLL is on!!!\n");
 		ret++;
 	}
 
 	if (clk_readl(MFGPLL_CON0) & 0x1) {
-		pr_notice("suspend warning: MFGPLL is on!!!\n");
+		pr_debug("suspend warning: MFGPLL is on!!!\n");
 		ret++;
 	}
 
 	if (clk_readl(MMPLL_CON0) & 0x1) {
-		pr_notice("suspend warning: MMPLL is on!!!\n");
+		pr_debug("suspend warning: MMPLL is on!!!\n");
 		ret++;
 	}
 
 	if (clk_readl(ADSPPLL_CON0) & 0x1)
-		pr_notice("suspend warning: ADSPPLL is on!!!\n");
+		pr_debug("suspend warning: ADSPPLL is on!!!\n");
 
 	if (clk_readl(MSDCPLL_CON0) & 0x1)
-		pr_notice("suspend warning: MSDCPLL is on!!!\n");
+		pr_debug("suspend warning: MSDCPLL is on!!!\n");
 
 	if (clk_readl(TVDPLL_CON0) & 0x1) {
-		pr_notice("suspend warning: TVDPLL is on!!!\n");
+		pr_debug("suspend warning: TVDPLL is on!!!\n");
 		ret++;
 	}
 
 	if (clk_readl(APLL1_CON0) & 0x1)
-		pr_notice("suspend warning: APLL1 is on!!!\n");
+		pr_debug("suspend warning: APLL1 is on!!!\n");
 
 	if (clk_readl(APLL2_CON0) & 0x1)
-		pr_notice("suspend warning: APLL2 is on!!!\n");
+		pr_debug("suspend warning: APLL2 is on!!!\n");
 
 	if (ret > 0)
 		WARN_ON(1);
@@ -2075,38 +2075,38 @@ void armpll_control(int id, int on)
 
 void check_mm0_clk_sts(void)
 {
-	pr_notice("CLK_CFG_0 = 0x%08x\r\n", clk_readl(CLK_CFG_0));
-	pr_notice("MMPLL_CON0 = 0x%08x, 0x%08x\r\n", clk_readl(MMPLL_CON0),
+	pr_debug("CLK_CFG_0 = 0x%08x\r\n", clk_readl(CLK_CFG_0));
+	pr_debug("MMPLL_CON0 = 0x%08x, 0x%08x\r\n", clk_readl(MMPLL_CON0),
 		clk_readl(MMPLL_CON1));
 }
 
 void check_vpu_clk_sts(void)
 {
 	int temp = 10;
-	pr_notice("CLK_CFG_2 = 0x%08x\r\n", clk_readl(CLK_CFG_2));
-	pr_notice("CLK_CFG_3 = 0x%08x\r\n", clk_readl(CLK_CFG_3));
+	pr_debug("CLK_CFG_2 = 0x%08x\r\n", clk_readl(CLK_CFG_2));
+	pr_debug("CLK_CFG_3 = 0x%08x\r\n", clk_readl(CLK_CFG_3));
 	temp = mt_get_abist_freq(24);
-	pr_notice("univ freq = %d\n", temp);
+	pr_debug("univ freq = %d\n", temp);
 	if (temp == 0)
 		temp = mt_get_abist_freq(23);
 	temp = mt_get_ckgen_freq(14);
-	pr_notice("ipu freq = %d\n", temp);
+	pr_debug("ipu freq = %d\n", temp);
 	if (temp == 0)
 		temp = mt_get_ckgen_freq(1);
 	temp = mt_get_ckgen_freq(13);
-	pr_notice("dsp3 freq = %d\n", temp);
+	pr_debug("dsp3 freq = %d\n", temp);
 	if (temp == 0)
 		temp = mt_get_ckgen_freq(1);
 	temp = mt_get_ckgen_freq(12);
-	pr_notice("dsp2 freq = %d\n", temp);
+	pr_debug("dsp2 freq = %d\n", temp);
 	if (temp == 0)
 		temp = mt_get_ckgen_freq(1);
 	temp = mt_get_ckgen_freq(11);
-	pr_notice("dsp1 freq = %d\n", temp);
+	pr_debug("dsp1 freq = %d\n", temp);
 	if (temp == 0)
 		temp = mt_get_ckgen_freq(1);
 	temp = mt_get_ckgen_freq(10);
-	pr_notice("dsp freq = %d\n", temp);
+	pr_debug("dsp freq = %d\n", temp);
 	if (temp == 0)
 		temp = mt_get_ckgen_freq(1);
 }
@@ -2125,18 +2125,18 @@ void check_ven_clk_sts(void)
 
 void check_cam_clk_sts(void)
 {
-	pr_notice("CLK_CFG_0 = 0x%08x\n", clk_readl(CLK_CFG_0));
-	pr_notice("CLK_CFG_1 = 0x%08x\n", clk_readl(CLK_CFG_1));
-	pr_notice("CLK_CFG_2 = 0x%08x\n", clk_readl(CLK_CFG_2));
-	pr_notice("MMPLL_CON0 = 0x%08x\n", clk_readl(MMPLL_CON0));
-	pr_notice("MMPLL_CON1 = 0x%08x\n", clk_readl(MMPLL_CON1));
-	pr_notice("MMPLL_PWR_CON0 = 0x%08x\n", clk_readl(MMPLL_PWR_CON0));
+	pr_debug("CLK_CFG_0 = 0x%08x\n", clk_readl(CLK_CFG_0));
+	pr_debug("CLK_CFG_1 = 0x%08x\n", clk_readl(CLK_CFG_1));
+	pr_debug("CLK_CFG_2 = 0x%08x\n", clk_readl(CLK_CFG_2));
+	pr_debug("MMPLL_CON0 = 0x%08x\n", clk_readl(MMPLL_CON0));
+	pr_debug("MMPLL_CON1 = 0x%08x\n", clk_readl(MMPLL_CON1));
+	pr_debug("MMPLL_PWR_CON0 = 0x%08x\n", clk_readl(MMPLL_PWR_CON0));
 	mt_get_ckgen_freq(1);
-	pr_notice("mm freq = %d\n", mt_get_ckgen_freq(2));
+	pr_debug("mm freq = %d\n", mt_get_ckgen_freq(2));
 	mt_get_ckgen_freq(1);
-	pr_notice("cam freq = %d\n", mt_get_ckgen_freq(8));
+	pr_debug("cam freq = %d\n", mt_get_ckgen_freq(8));
 	mt_get_ckgen_freq(1);
-	pr_notice("ccu freq = %d\n", mt_get_ckgen_freq(9));
+	pr_debug("ccu freq = %d\n", mt_get_ckgen_freq(9));
 }
 
 void aud_intbus_mux_sel(unsigned int aud_idx)
@@ -2155,18 +2155,18 @@ static int clk_mt6779_apmixed_probe(struct platform_device *pdev)
 
 	base = of_iomap(node, 0);
 	if (!base) {
-		pr_notice("%s(): ioremap failed\n", __func__);
+		pr_debug("%s(): ioremap failed\n", __func__);
 		return PTR_ERR(base);
 	}
 
 	clk_data = mtk_alloc_clk_data(CLK_APMIXED_NR_CLK);
 	if (!clk_data) {
-		pr_notice("%s(): alloc clk data failed!\n", __func__);
+		pr_debug("%s(): alloc clk data failed!\n", __func__);
 		return -ENOMEM;
 	}
 
 #if MT_CCF_DEBUG_LOG
-	pr_notice("%s(): clk data number: %d\n", __func__, clk_data->clk_num);
+	pr_debug("%s(): clk data number: %d\n", __func__, clk_data->clk_num);
 #endif
 
 	mtk_clk_register_plls(node, plls, ARRAY_SIZE(plls), clk_data);
@@ -2176,7 +2176,7 @@ static int clk_mt6779_apmixed_probe(struct platform_device *pdev)
 	ret = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
 
 	if (ret) {
-		pr_notice("%s(): could not register clock provider: %d\n",
+		pr_debug("%s(): could not register clock provider: %d\n",
 			__func__, ret);
 
 		kfree(clk_data);
@@ -2220,7 +2220,7 @@ static int clk_mt6779_top_probe(struct platform_device *pdev)
 
 	base = devm_ioremap_resource(&pdev->dev, res);
 	if (IS_ERR(base)) {
-		pr_notice("%s(): ioremap resource failed: %d\n",
+		pr_debug("%s(): ioremap resource failed: %d\n",
 					__func__, PTR_ERR(base));
 
 		return PTR_ERR(base);
@@ -2228,12 +2228,12 @@ static int clk_mt6779_top_probe(struct platform_device *pdev)
 
 	clk_data = mtk_alloc_clk_data(CLK_TOP_NR_CLK);
 	if (!clk_data) {
-		pr_notice("%s(): alloc clk data failed!\n", __func__);
+		pr_debug("%s(): alloc clk data failed!\n", __func__);
 		return -ENOMEM;
 	}
 
 #if MT_CCF_DEBUG_LOG
-	pr_notice("%s(): clk data number: %d\n", __func__, clk_data->clk_num);
+	pr_debug("%s(): clk data number: %d\n", __func__, clk_data->clk_num);
 #endif
 
 	mtk_clk_register_fixed_clks(top_fixed_clks, ARRAY_SIZE(top_fixed_clks),
@@ -2253,7 +2253,7 @@ static int clk_mt6779_top_probe(struct platform_device *pdev)
 	ret = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
 
 	if (ret) {
-		pr_notice("%s(): could not register clock provider: %d\n",
+		pr_debug("%s(): could not register clock provider: %d\n",
 			__func__, ret);
 
 		kfree(clk_data);
@@ -2323,18 +2323,18 @@ static int clk_mt6779_infra_probe(struct platform_device *pdev)
 
 	base = of_iomap(node, 0);
 	if (!base) {
-		pr_notice("%s(): ioremap failed\n", __func__);
+		pr_debug("%s(): ioremap failed\n", __func__);
 		return PTR_ERR(base);
 	}
 
 	clk_data = mtk_alloc_clk_data(CLK_INFRA_NR_CLK);
 	if (!clk_data) {
-		pr_notice("%s(): alloc clk data failed!\n", __func__);
+		pr_debug("%s(): alloc clk data failed!\n", __func__);
 		return -ENOMEM;
 	}
 
 #if MT_CCF_DEBUG_LOG
-	pr_notice("%s(): clk data number: %d\n", __func__, clk_data->clk_num);
+	pr_debug("%s(): clk data number: %d\n", __func__, clk_data->clk_num);
 #endif
 
 	mtk_clk_register_gates(node, infra_clks, ARRAY_SIZE(infra_clks),
@@ -2343,7 +2343,7 @@ static int clk_mt6779_infra_probe(struct platform_device *pdev)
 	ret = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
 
 	if (ret) {
-		pr_notice("%s(): could not register clock provider: %d\n",
+		pr_debug("%s(): could not register clock provider: %d\n",
 			__func__, ret);
 
 		kfree(clk_data);
@@ -2355,7 +2355,7 @@ static int clk_mt6779_infra_probe(struct platform_device *pdev)
 		clk_writel(INFRA_TOPAXI_SI0_CTL,
 				clk_readl(INFRA_TOPAXI_SI0_CTL) | 0x2);
 
-		pr_notice("%s: infra mfg debug: %08x\n",
+		pr_debug("%s: infra mfg debug: %08x\n",
 				__func__, clk_readl(INFRA_TOPAXI_SI0_CTL));
 
 		/*mtk_clk_enable_critical();*/
@@ -2397,7 +2397,7 @@ static int clk_mt6779_probe(struct platform_device *pdev)
 
 	r = clk_probe(pdev);
 	if (r)
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			"[ERROR] could not register clock provider: %s: %d\n",
 			pdev->name, r);
 

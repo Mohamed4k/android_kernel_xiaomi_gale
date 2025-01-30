@@ -246,7 +246,7 @@ static void update_linkspeed(struct net_device *dev)
 
 	update_linkspeed_register(dev, speed, duplex);
 
-	dev_info(&pdev->dev, "%s: Link now %i-%s\n", dev->name, speed,
+	dev_dbg(&pdev->dev, "%s: Link now %i-%s\n", dev->name, speed,
 			(duplex == DUPLEX_FULL) ? "FullDuplex" : "HalfDuplex");
 	ether->linkflag = 0x01;
 
@@ -828,7 +828,7 @@ static int w90p910_ether_open(struct net_device *dev)
 	netif_start_queue(dev);
 	w90p910_trigger_rx(dev);
 
-	dev_info(&pdev->dev, "%s is OPENED\n", dev->name);
+	dev_dbg(&pdev->dev, "%s is OPENED\n", dev->name);
 
 	return 0;
 }

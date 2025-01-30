@@ -857,30 +857,30 @@ netxen_set_dump(struct net_device *netdev, struct ethtool_dump *val)
 	switch (val->flag) {
 	case NX_FORCE_FW_DUMP_KEY:
 		if (!mdump->md_enabled) {
-			netdev_info(netdev, "FW dump not enabled\n");
+			netdev_dbg(netdev, "FW dump not enabled\n");
 			return 0;
 		}
 		if (adapter->fw_mdump_rdy) {
-			netdev_info(netdev, "Previous dump not cleared, not forcing dump\n");
+			netdev_dbg(netdev, "Previous dump not cleared, not forcing dump\n");
 			return 0;
 		}
-		netdev_info(netdev, "Forcing a fw dump\n");
+		netdev_dbg(netdev, "Forcing a fw dump\n");
 		nx_dev_request_reset(adapter);
 		break;
 	case NX_DISABLE_FW_DUMP:
 		if (mdump->md_enabled) {
-			netdev_info(netdev, "Disabling FW Dump\n");
+			netdev_dbg(netdev, "Disabling FW Dump\n");
 			mdump->md_enabled = 0;
 		}
 		break;
 	case NX_ENABLE_FW_DUMP:
 		if (!mdump->md_enabled) {
-			netdev_info(netdev, "Enabling FW dump\n");
+			netdev_dbg(netdev, "Enabling FW dump\n");
 			mdump->md_enabled = 1;
 		}
 		break;
 	case NX_FORCE_FW_RESET:
-		netdev_info(netdev, "Forcing FW reset\n");
+		netdev_dbg(netdev, "Forcing FW reset\n");
 		nx_dev_request_reset(adapter);
 		adapter->flags &= ~NETXEN_FW_RESET_OWNER;
 		break;
@@ -888,13 +888,13 @@ netxen_set_dump(struct net_device *netdev, struct ethtool_dump *val)
 		for (i = 0; i < ARRAY_SIZE(FW_DUMP_LEVELS); i++) {
 			if (val->flag == FW_DUMP_LEVELS[i]) {
 				mdump->md_capture_mask = val->flag;
-				netdev_info(netdev,
+				netdev_dbg(netdev,
 					"Driver mask changed to: 0x%x\n",
 					mdump->md_capture_mask);
 				return 0;
 			}
 		}
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			"Invalid dump level: 0x%x\n", val->flag);
 		return -EINVAL;
 	}
@@ -913,7 +913,7 @@ netxen_get_dump_data(struct net_device *netdev, struct ethtool_dump *dump,
 
 
 	if (!adapter->fw_mdump_rdy) {
-		netdev_info(netdev, "Dump not available\n");
+		netdev_dbg(netdev, "Dump not available\n");
 		return -EINVAL;
 	}
 	/* Copy template header first */
@@ -934,7 +934,7 @@ netxen_get_dump_data(struct net_device *netdev, struct ethtool_dump *dump,
 	vfree(mdump->md_capture_buff);
 	mdump->md_capture_buff = NULL;
 	adapter->fw_mdump_rdy = 0;
-	netdev_info(netdev, "extracted the fw dump Successfully\n");
+	netdev_dbg(netdev, "extracted the fw dump Successfully\n");
 	return 0;
 }
 

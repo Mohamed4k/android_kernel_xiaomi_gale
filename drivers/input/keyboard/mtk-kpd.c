@@ -241,7 +241,7 @@ static int kpd_pdrv_probe(struct platform_device *pdev)
 		goto err_unprepare_clk;
 	}
 
-	pr_info("kp base: 0x%p, addr:0x%p,  kp irq: %d\n",
+	pr_debug("kp base: 0x%p, addr:0x%p,  kp irq: %d\n",
 			keypad->base, &keypad->base, keypad->irqnr);
 	err = kpd_gpio_init(&pdev->dev);
 	if (err) {
@@ -259,7 +259,7 @@ static int kpd_pdrv_probe(struct platform_device *pdev)
 
 	keypad->input_dev = devm_input_allocate_device(&pdev->dev);
 	if (!keypad->input_dev) {
-		pr_notice("input allocate device fail.\n");
+		pr_debug("input allocate device fail.\n");
 		err = -ENOMEM;
 		goto err_unprepare_clk;
 	}
@@ -278,7 +278,7 @@ static int kpd_pdrv_probe(struct platform_device *pdev)
 
 	err = input_register_device(keypad->input_dev);
 	if (err) {
-		pr_notice("register input device failed (%d)\n", err);
+		pr_debug("register input device failed (%d)\n", err);
 		goto err_unprepare_clk;
 	}
 
@@ -286,7 +286,7 @@ static int kpd_pdrv_probe(struct platform_device *pdev)
 
 	keypad->suspend_lock = wakeup_source_register(NULL, "kpd wakelock");
 	if (!keypad->suspend_lock) {
-		pr_notice("wakeup source init failed.\n");
+		pr_debug("wakeup source init failed.\n");
 		goto err_unregister_device;
 	}
 
@@ -300,11 +300,11 @@ static int kpd_pdrv_probe(struct platform_device *pdev)
 	err = request_irq(keypad->irqnr, kpd_irq_handler, IRQF_TRIGGER_NONE,
 			KPD_NAME, keypad);
 	if (err) {
-		pr_notice("register IRQ failed (%d)\n", err);
+		pr_debug("register IRQ failed (%d)\n", err);
 		goto err_irq;
 	}
 
-	pr_info("kpd_probe OK.\n");
+	pr_debug("kpd_probe OK.\n");
 
 	return 0;
 

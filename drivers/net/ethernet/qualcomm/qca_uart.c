@@ -252,7 +252,7 @@ static void qcauart_netdev_tx_timeout(struct net_device *dev)
 {
 	struct qcauart *qca = netdev_priv(dev);
 
-	netdev_info(qca->net_dev, "Transmit timeout at %ld, latency %ld\n",
+	netdev_dbg(qca->net_dev, "Transmit timeout at %ld, latency %ld\n",
 		    jiffies, dev_trans_start(dev));
 	dev->stats.tx_errors++;
 	dev->stats.tx_dropped++;
@@ -356,7 +356,7 @@ static int qca_uart_probe(struct serdev_device *serdev)
 
 	if (!is_valid_ether_addr(qca->net_dev->dev_addr)) {
 		eth_hw_addr_random(qca->net_dev);
-		dev_info(&serdev->dev, "Using random MAC address: %pM\n",
+		dev_dbg(&serdev->dev, "Using random MAC address: %pM\n",
 			 qca->net_dev->dev_addr);
 	}
 
@@ -372,7 +372,7 @@ static int qca_uart_probe(struct serdev_device *serdev)
 	}
 
 	speed = serdev_device_set_baudrate(serdev, speed);
-	dev_info(&serdev->dev, "Using baudrate: %u\n", speed);
+	dev_dbg(&serdev->dev, "Using baudrate: %u\n", speed);
 
 	serdev_device_set_flow_control(serdev, false);
 

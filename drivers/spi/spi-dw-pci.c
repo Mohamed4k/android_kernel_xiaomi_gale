@@ -90,7 +90,7 @@ static int spi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	/* PCI hook and SPI hook use the same drv data */
 	pci_set_drvdata(pdev, dws);
 
-	dev_info(&pdev->dev, "found PCI SPI controller(ID: %04x:%04x)\n",
+	dev_dbg(&pdev->dev, "found PCI SPI controller(ID: %04x:%04x)\n",
 		pdev->vendor, pdev->device);
 
 	return 0;

@@ -325,7 +325,7 @@ static uint32_t vegam_get_mac_definition(uint32_t value)
 				SMU7_VCE_MCLK_HANDSHAKE_DISABLE;
 	}
 
-	pr_warn("can't get the mac of %x\n", value);
+	pr_debug("can't get the mac of %x\n", value);
 	return 0;
 }
 
@@ -2198,7 +2198,7 @@ static uint32_t vegam_get_offsetof(uint32_t type, uint32_t member)
 		}
 		break;
 	}
-	pr_warn("can't get the offset of type %x member %x\n", type, member);
+	pr_debug("can't get the offset of type %x member %x\n", type, member);
 	return 0;
 }
 

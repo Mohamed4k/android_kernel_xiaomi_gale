@@ -160,7 +160,7 @@ int __pe_increase_ta_vchr(struct chg_alg_device *alg)
 
 	/* TA is not exist */
 	ret_value = -ECABLEOUT;
-	pr_notice("%s: failed, cable out\n", __func__);
+	pr_debug("%s: failed, cable out\n", __func__);
 	return ret_value;
 }
 
@@ -826,7 +826,7 @@ static void mtk_pe_parse_dt(struct mtk_pe *pe,
 	if (of_property_read_u32(np, "pe_ichg_level_threshold", &val) >= 0)
 		pe->pe_ichg_level_threshold = val;
 	else {
-		pr_notice("use default PE_ICHG_LEAVE_THRESHOLD:%d\n",
+		pr_debug("use default PE_ICHG_LEAVE_THRESHOLD:%d\n",
 			PE_ICHG_LEAVE_THRESHOLD);
 		pe->pe_ichg_level_threshold =
 						PE_ICHG_LEAVE_THRESHOLD;
@@ -835,7 +835,7 @@ static void mtk_pe_parse_dt(struct mtk_pe *pe,
 	if (of_property_read_u32(np, "ta_start_battery_soc", &val) >= 0)
 		pe->ta_start_battery_soc = val;
 	else {
-		pr_notice("use default TA_START_BATTERY_SOC:%d\n",
+		pr_debug("use default TA_START_BATTERY_SOC:%d\n",
 			TA_START_BATTERY_SOC);
 		pe->ta_start_battery_soc = TA_START_BATTERY_SOC;
 	}
@@ -843,7 +843,7 @@ static void mtk_pe_parse_dt(struct mtk_pe *pe,
 	if (of_property_read_u32(np, "ta_stop_battery_soc", &val) >= 0)
 		pe->ta_stop_battery_soc = val;
 	else {
-		pr_notice("use default TA_STOP_BATTERY_SOC:%d\n",
+		pr_debug("use default TA_STOP_BATTERY_SOC:%d\n",
 			TA_STOP_BATTERY_SOC);
 		pe->ta_stop_battery_soc = TA_STOP_BATTERY_SOC;
 	}
@@ -851,14 +851,14 @@ static void mtk_pe_parse_dt(struct mtk_pe *pe,
 	if (of_property_read_u32(np, "min_charger_voltage", &val) >= 0)
 		pe->min_charger_voltage = val;
 	else {
-		pr_notice("use default V_CHARGER_MIN:%d\n", PE_V_CHARGER_MIN);
+		pr_debug("use default V_CHARGER_MIN:%d\n", PE_V_CHARGER_MIN);
 		pe->min_charger_voltage = PE_V_CHARGER_MIN;
 	}
 
 	if (of_property_read_u32(np, "ta_ac_12v_input_current", &val) >= 0)
 		pe->ta_ac_12v_input_current = val;
 	else {
-		pr_notice("use default TA_AC_12V_INPUT_CURRENT:%d\n",
+		pr_debug("use default TA_AC_12V_INPUT_CURRENT:%d\n",
 			TA_AC_12V_INPUT_CURRENT);
 		pe->ta_ac_12v_input_current = TA_AC_12V_INPUT_CURRENT;
 	}
@@ -866,7 +866,7 @@ static void mtk_pe_parse_dt(struct mtk_pe *pe,
 	if (of_property_read_u32(np, "ta_ac_9v_input_current", &val) >= 0)
 		pe->ta_ac_9v_input_current = val;
 	else {
-		pr_notice("use default TA_AC_9V_INPUT_CURRENT:%d\n",
+		pr_debug("use default TA_AC_9V_INPUT_CURRENT:%d\n",
 			TA_AC_9V_INPUT_CURRENT);
 		pe->ta_ac_9v_input_current = TA_AC_9V_INPUT_CURRENT;
 	}
@@ -874,7 +874,7 @@ static void mtk_pe_parse_dt(struct mtk_pe *pe,
 	if (of_property_read_u32(np, "ta_ac_7v_input_current", &val) >= 0)
 		pe->ta_ac_7v_input_current = val;
 	else {
-		pr_notice("use default TA_AC_7V_INPUT_CURRENT:%d\n",
+		pr_debug("use default TA_AC_7V_INPUT_CURRENT:%d\n",
 			TA_AC_7V_INPUT_CURRENT);
 		pe->ta_ac_7v_input_current = TA_AC_7V_INPUT_CURRENT;
 	}
@@ -882,7 +882,7 @@ static void mtk_pe_parse_dt(struct mtk_pe *pe,
 	if (of_property_read_u32(np, "pe_charger_current", &val) >= 0)
 		pe->ta_ac_charger_current = val;
 	else {
-		pr_notice("use default pe_charger_current:%d\n",
+		pr_debug("use default pe_charger_current:%d\n",
 			PE_CHARGING_CURRENT);
 		pe->ta_ac_charger_current = PE_CHARGING_CURRENT;
 	}
@@ -893,7 +893,7 @@ static int mtk_pe_probe(struct platform_device *pdev)
 {
 	struct mtk_pe *pe = NULL;
 
-	pr_notice("%s: starts\n", __func__);
+	pr_debug("%s: starts\n", __func__);
 
 	pe = devm_kzalloc(&pdev->dev, sizeof(*pe), GFP_KERNEL);
 	if (!pe)

@@ -409,7 +409,7 @@ static irqreturn_t s3c2410wdt_irq(int irqno, void *param)
 {
 	struct s3c2410_wdt *wdt = platform_get_drvdata(param);
 
-	dev_info(wdt->dev, "watchdog timer expired (irq)\n");
+	dev_dbg(wdt->dev, "watchdog timer expired (irq)\n");
 
 	s3c2410wdt_keepalive(&wdt->wdt_device);
 
@@ -596,11 +596,11 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
 					S3C2410_WATCHDOG_DEFAULT_TIME);
 
 		if (started == 0)
-			dev_info(dev,
+			dev_dbg(dev,
 				 "tmr_margin value out of range, default %d used\n",
 				 S3C2410_WATCHDOG_DEFAULT_TIME);
 		else
-			dev_info(dev, "default timer value is out of range, cannot start\n");
+			dev_dbg(dev, "default timer value is out of range, cannot start\n");
 	}
 
 	ret = devm_request_irq(dev, wdt_irq->start, s3c2410wdt_irq, 0,
@@ -627,7 +627,7 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
 		goto err_unregister;
 
 	if (tmr_atboot && started == 0) {
-		dev_info(dev, "starting watchdog timer\n");
+		dev_dbg(dev, "starting watchdog timer\n");
 		s3c2410wdt_start(&wdt->wdt_device);
 	} else if (!tmr_atboot) {
 		/* if we're not enabling the watchdog, then ensure it is
@@ -643,7 +643,7 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
 
 	wtcon = readl(wdt->reg_base + S3C2410_WTCON);
 
-	dev_info(dev, "watchdog %sactive, reset %sabled, irq %sabled\n",
+	dev_dbg(dev, "watchdog %sactive, reset %sabled, irq %sabled\n",
 		 (wtcon & S3C2410_WTCON_ENABLE) ?  "" : "in",
 		 (wtcon & S3C2410_WTCON_RSTEN) ? "en" : "dis",
 		 (wtcon & S3C2410_WTCON_INTEN) ? "en" : "dis");
@@ -725,7 +725,7 @@ static int s3c2410wdt_resume(struct device *dev)
 	if (ret < 0)
 		return ret;
 
-	dev_info(dev, "watchdog %sabled\n",
+	dev_dbg(dev, "watchdog %sabled\n",
 		(wdt->wtcon_save & S3C2410_WTCON_ENABLE) ? "en" : "dis");
 
 	return 0;

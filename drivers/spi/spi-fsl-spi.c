@@ -682,7 +682,7 @@ static struct spi_master * fsl_spi_probe(struct device *dev,
 	if (ret < 0)
 		goto err_probe;
 
-	dev_info(dev, "at 0x%p (irq = %d), %s mode\n", reg_base,
+	dev_dbg(dev, "at 0x%p (irq = %d), %s mode\n", reg_base,
 		 mpc8xxx_spi->irq, mpc8xxx_spi_strmode(mpc8xxx_spi->flags));
 
 	return master;

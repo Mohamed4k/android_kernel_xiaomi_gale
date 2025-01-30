@@ -1122,10 +1122,10 @@ static void hns_nic_adjust_link(struct net_device *ndev)
 		if (state) {
 			netif_carrier_on(ndev);
 			netif_tx_wake_all_queues(ndev);
-			netdev_info(ndev, "link up\n");
+			netdev_dbg(ndev, "link up\n");
 		} else {
 			netif_carrier_off(ndev);
-			netdev_info(ndev, "link down\n");
+			netdev_dbg(ndev, "link down\n");
 		}
 		priv->link = state;
 	}
@@ -1489,7 +1489,7 @@ static void hns_nic_net_timeout(struct net_device *ndev)
 
 	if (ndev->watchdog_timeo < HNS_TX_TIMEO_LIMIT) {
 		ndev->watchdog_timeo *= 2;
-		netdev_info(ndev, "watchdog_timo changed to %d.\n",
+		netdev_dbg(ndev, "watchdog_timo changed to %d.\n",
 			    ndev->watchdog_timeo);
 	} else {
 		ndev->watchdog_timeo = HNS_NIC_TX_TIMEOUT;
@@ -1789,7 +1789,7 @@ static int hns_nic_set_features(struct net_device *netdev,
 	switch (priv->enet_ver) {
 	case AE_VERSION_1:
 		if (features & (NETIF_F_TSO | NETIF_F_TSO6))
-			netdev_info(netdev, "enet v1 do not support tso!\n");
+			netdev_dbg(netdev, "enet v1 do not support tso!\n");
 		break;
 	default:
 		if (features & (NETIF_F_TSO | NETIF_F_TSO6)) {
@@ -1998,7 +1998,7 @@ static void hns_nic_dump(struct hns_nic_priv *priv)
 		if (data) {
 			ops->get_regs(priv->ae_handle, data);
 			for (i = 0; i < reg_num; i += 4)
-				pr_info("0x%08x: 0x%08x 0x%08x 0x%08x 0x%08x\n",
+				pr_debug("0x%08x: 0x%08x 0x%08x 0x%08x 0x%08x\n",
 					i, data[i], data[i + 1],
 					data[i + 2], data[i + 3]);
 			kfree(data);
@@ -2006,13 +2006,13 @@ static void hns_nic_dump(struct hns_nic_priv *priv)
 	}
 
 	for (i = 0; i < h->q_num; i++) {
-		pr_info("tx_queue%d_next_to_clean:%d\n",
+		pr_debug("tx_queue%d_next_to_clean:%d\n",
 			i, h->qs[i]->tx_ring.next_to_clean);
-		pr_info("tx_queue%d_next_to_use:%d\n",
+		pr_debug("tx_queue%d_next_to_use:%d\n",
 			i, h->qs[i]->tx_ring.next_to_use);
-		pr_info("rx_queue%d_next_to_clean:%d\n",
+		pr_debug("rx_queue%d_next_to_clean:%d\n",
 			i, h->qs[i]->rx_ring.next_to_clean);
-		pr_info("rx_queue%d_next_to_use:%d\n",
+		pr_debug("rx_queue%d_next_to_use:%d\n",
 			i, h->qs[i]->rx_ring.next_to_use);
 	}
 }
@@ -2033,7 +2033,7 @@ static void hns_nic_reset_subtask(struct hns_nic_priv *priv)
 		return;
 
 	hns_nic_dump(priv);
-	netdev_info(priv->netdev, "try to reset %s port!\n",
+	netdev_dbg(priv->netdev, "try to reset %s port!\n",
 		    (type == HNAE_PORT_DEBUG ? "debug" : "service"));
 
 	rtnl_lock();

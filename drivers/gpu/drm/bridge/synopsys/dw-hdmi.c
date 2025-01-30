@@ -426,7 +426,7 @@ static struct i2c_adapter *dw_hdmi_i2c_adapter(struct dw_hdmi *hdmi)
 
 	hdmi->i2c = i2c;
 
-	dev_info(hdmi->dev, "registered %s I2C bus driver\n", adap->name);
+	dev_dbg(hdmi->dev, "registered %s I2C bus driver\n", adap->name);
 
 	return adap;
 }
@@ -2442,7 +2442,7 @@ __dw_hdmi_probe(struct platform_device *pdev,
 	if (ret < 0)
 		goto err_iahb;
 
-	dev_info(dev, "Detected HDMI TX controller v%x.%03x %s HDCP (%s)\n",
+	dev_dbg(dev, "Detected HDMI TX controller v%x.%03x %s HDCP (%s)\n",
 		 hdmi->version >> 12, hdmi->version & 0xfff,
 		 prod_id1 & HDMI_PRODUCT_ID1_HDCP ? "with" : "without",
 		 hdmi->phy.name);

@@ -1324,7 +1324,7 @@ static int spi_init_queue(struct spi_controller *ctlr)
 	 * setting the message pump thread will remain at default priority.
 	 */
 	if (ctlr->rt) {
-		dev_info(&ctlr->dev,
+		dev_dbg(&ctlr->dev,
 			"will run message pump with realtime priority\n");
 		sched_setscheduler(ctlr->kworker_task, SCHED_FIFO, &param);
 	}
@@ -2278,7 +2278,7 @@ int spi_register_controller(struct spi_controller *ctlr)
 	 * memory operations.
 	 */
 	if (ctlr->transfer) {
-		dev_info(dev, "controller is unqueued, this is deprecated\n");
+		dev_dbg(dev, "controller is unqueued, this is deprecated\n");
 	} else if (ctlr->transfer_one || ctlr->transfer_one_message) {
 		status = spi_controller_initialize_queue(ctlr);
 		if (status) {

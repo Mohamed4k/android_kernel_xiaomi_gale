@@ -167,7 +167,7 @@ static void qtnf_netdev_tx_timeout(struct net_device *ndev)
 	mac = vif->mac;
 	bus = mac->bus;
 
-	pr_warn("VIF%u.%u: Tx timeout- %lu\n", mac->macid, vif->vifid, jiffies);
+	pr_debug("VIF%u.%u: Tx timeout- %lu\n", mac->macid, vif->vifid, jiffies);
 
 	qtnf_bus_data_tx_timeout(bus, ndev);
 	ndev->stats.tx_errors++;
@@ -376,7 +376,7 @@ static void qtnf_mac_scan_timeout(struct work_struct *work)
 	struct qtnf_wmac *mac =
 		container_of(work, struct qtnf_wmac, scan_timeout.work);
 
-	pr_warn("MAC%d: scan timed out\n", mac->macid);
+	pr_debug("MAC%d: scan timed out\n", mac->macid);
 	qtnf_mac_scan_finish(mac, true);
 }
 
@@ -407,7 +407,7 @@ static struct qtnf_wmac *qtnf_core_mac_alloc(struct qtnf_bus *bus,
 		mac->iflist[i].stats64 =
 			netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
 		if (!mac->iflist[i].stats64)
-			pr_warn("VIF%u.%u: per cpu stats allocation failed\n",
+			pr_debug("VIF%u.%u: per cpu stats allocation failed\n",
 				macid, i);
 	}
 
@@ -519,7 +519,7 @@ static int qtnf_core_mac_attach(struct qtnf_bus *bus, unsigned int macid)
 	int ret;
 
 	if (!(bus->hw_info.mac_bitmap & BIT(macid))) {
-		pr_info("MAC%u is not active in FW\n", macid);
+		pr_debug("MAC%u is not active in FW\n", macid);
 		return 0;
 	}
 

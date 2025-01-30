@@ -677,9 +677,9 @@ static inline void _pll_misc_chk_default(void __iomem *base,
 	boot_val &= mask;
 	default_val &= mask;
 	if (boot_val != default_val) {
-		pr_warn("boot misc%d 0x%x: expected 0x%x\n",
+		pr_debug("boot misc%d 0x%x: expected 0x%x\n",
 			misc_num, boot_val, default_val);
-		pr_warn(" (comparison mask = 0x%x)\n", mask);
+		pr_debug(" (comparison mask = 0x%x)\n", mask);
 		params->defaults_set = false;
 	}
 }
@@ -719,7 +719,7 @@ static void tegra210_pllcx_set_defaults(const char *name,
 		/* PLL is ON: only check if defaults already set */
 		pllcx_check_defaults(pllcx->params);
 		if (!pllcx->params->defaults_set)
-			pr_warn("%s already enabled. Postponing set full defaults\n",
+			pr_debug("%s already enabled. Postponing set full defaults\n",
 				name);
 		return;
 	}
@@ -774,11 +774,11 @@ static void tegra210_plla_set_defaults(struct tegra_clk_pll *plla)
 		 * that can be updated in flight.
 		 */
 		if (val & PLLA_BASE_IDDQ) {
-			pr_warn("PLL_A boot enabled with IDDQ set\n");
+			pr_debug("PLL_A boot enabled with IDDQ set\n");
 			plla->params->defaults_set = false;
 		}
 
-		pr_warn("PLL_A already enabled. Postponing set full defaults\n");
+		pr_debug("PLL_A already enabled. Postponing set full defaults\n");
 
 		val = PLLA_MISC0_DEFAULT_VALUE;	/* ignore lock enable */
 		mask = PLLA_MISC0_LOCK_ENABLE | PLLA_MISC0_LOCK_OVERRIDE;
@@ -839,7 +839,7 @@ static void tegra210_plld_set_defaults(struct tegra_clk_pll *plld)
 				~mask & PLLD_MISC0_WRITE_MASK);
 
 		if (!plld->params->defaults_set)
-			pr_warn("PLL_D already enabled. Postponing set full defaults\n");
+			pr_debug("PLL_D already enabled. Postponing set full defaults\n");
 
 		/* Enable lock detect */
 		mask = PLLD_MISC0_LOCK_ENABLE | PLLD_MISC0_LOCK_OVERRIDE;
@@ -881,7 +881,7 @@ static void plldss_defaults(const char *pll_name, struct tegra_clk_pll *plldss,
 		 * that can be updated in flight.
 		 */
 		if (val & PLLDSS_BASE_IDDQ) {
-			pr_warn("plldss boot enabled with IDDQ set\n");
+			pr_debug("plldss boot enabled with IDDQ set\n");
 			plldss->params->defaults_set = false;
 		}
 
@@ -914,7 +914,7 @@ static void plldss_defaults(const char *pll_name, struct tegra_clk_pll *plldss,
 		}
 
 		if (!plldss->params->defaults_set)
-			pr_warn("%s already enabled. Postponing set full defaults\n",
+			pr_debug("%s already enabled. Postponing set full defaults\n",
 				 pll_name);
 
 		/* Enable lock detect */
@@ -994,7 +994,7 @@ static void tegra210_pllre_set_defaults(struct tegra_clk_pll *pllre)
 	pllre->params->defaults_set = true;
 
 	if (val & PLL_ENABLE) {
-		pr_warn("PLL_RE already enabled. Postponing set full defaults\n");
+		pr_debug("PLL_RE already enabled. Postponing set full defaults\n");
 
 		/*
 		 * PLL is ON: check if defaults already set, then set those
@@ -1002,9 +1002,9 @@ static void tegra210_pllre_set_defaults(struct tegra_clk_pll *pllre)
 		 */
 		val &= PLLRE_BASE_DEFAULT_MASK;
 		if (val != PLLRE_BASE_DEFAULT_VALUE) {
-			pr_warn("pllre boot base 0x%x : expected 0x%x\n",
+			pr_debug("pllre boot base 0x%x : expected 0x%x\n",
 				val, PLLRE_BASE_DEFAULT_VALUE);
-			pr_warn("(comparison mask = 0x%x)\n",
+			pr_debug("(comparison mask = 0x%x)\n",
 				PLLRE_BASE_DEFAULT_MASK);
 			pllre->params->defaults_set = false;
 		}
@@ -1122,7 +1122,7 @@ static void tegra210_pllx_set_defaults(struct tegra_clk_pll *pllx)
 		pllx_check_defaults(pllx);
 
 		if (!pllx->params->defaults_set)
-			pr_warn("PLL_X already enabled. Postponing set full defaults\n");
+			pr_debug("PLL_X already enabled. Postponing set full defaults\n");
 		/* Configure dyn ramp, disable lock override */
 		writel_relaxed(val, clk_base + pllx->params->ext_misc_reg[2]);
 
@@ -1178,7 +1178,7 @@ static void tegra210_pllmb_set_defaults(struct tegra_clk_pll *pllmb)
 				~mask & PLLMB_MISC1_WRITE_MASK);
 
 		if (!pllmb->params->defaults_set)
-			pr_warn("PLL_MB already enabled. Postponing set full defaults\n");
+			pr_debug("PLL_MB already enabled. Postponing set full defaults\n");
 		/* Enable lock detect */
 		val = readl_relaxed(clk_base + pllmb->params->ext_misc_reg[0]);
 		val &= ~mask;
@@ -1235,7 +1235,7 @@ static void tegra210_pllp_set_defaults(struct tegra_clk_pll *pllp)
 		 */
 		pllp_check_defaults(pllp, true);
 		if (!pllp->params->defaults_set)
-			pr_warn("PLL_P already enabled. Postponing set full defaults\n");
+			pr_debug("PLL_P already enabled. Postponing set full defaults\n");
 
 		/* Enable lock detect */
 		val = readl_relaxed(clk_base + pllp->params->ext_misc_reg[0]);
@@ -1298,7 +1298,7 @@ static void tegra210_pllu_set_defaults(struct tegra_clk_pll_params *pllu)
 		 */
 		pllu_check_defaults(pllu, false);
 		if (!pllu->defaults_set)
-			pr_warn("PLL_U already enabled. Postponing set full defaults\n");
+			pr_debug("PLL_U already enabled. Postponing set full defaults\n");
 
 		/* Enable lock detect */
 		val = readl_relaxed(clk_base + pllu->ext_misc_reg[0]);
@@ -3046,7 +3046,7 @@ static __init void tegra210_periph_clk_init(void __iomem *clk_base,
 
 		clkp = tegra_lookup_dt_id(init->clk_id, tegra210_clks);
 		if (!clkp) {
-			pr_warn("clock %u not found\n", init->clk_id);
+			pr_debug("clock %u not found\n", init->clk_id);
 			continue;
 		}
 

@@ -3646,7 +3646,7 @@ static int battery_meter_suspend(struct platform_device *dev,
 {
 	/* -- hibernation path */
 	if (state.event == PM_EVENT_FREEZE) {
-		pr_notice("[%s] %p:%p\n", __func__, battery_meter_ctrl,
+		pr_debug("[%s] %p:%p\n", __func__, battery_meter_ctrl,
 			&bm_ctrl_cmd);
 		battery_meter_ctrl = bm_ctrl_cmd;
 	}

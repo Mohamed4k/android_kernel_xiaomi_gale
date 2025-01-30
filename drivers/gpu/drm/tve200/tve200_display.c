@@ -172,14 +172,14 @@ static void tve200_display_enable(struct drm_simple_display_pipe *pipe,
 	if ((mode->hdisplay == 352 && mode->vdisplay == 240) || /* SIF(525) */
 	    (mode->hdisplay == 352 && mode->vdisplay == 288)) { /* CIF(625) */
 		ctrl1 |= TVE200_CTRL_IPRESOL_CIF;
-		dev_info(drm->dev, "CIF mode\n");
+		dev_dbg(drm->dev, "CIF mode\n");
 	} else if (mode->hdisplay == 640 && mode->vdisplay == 480) {
 		ctrl1 |= TVE200_CTRL_IPRESOL_VGA;
-		dev_info(drm->dev, "VGA mode\n");
+		dev_dbg(drm->dev, "VGA mode\n");
 	} else if ((mode->hdisplay == 720 && mode->vdisplay == 480) ||
 		   (mode->hdisplay == 720 && mode->vdisplay == 576)) {
 		ctrl1 |= TVE200_CTRL_IPRESOL_D1;
-		dev_info(drm->dev, "D1 mode\n");
+		dev_dbg(drm->dev, "D1 mode\n");
 	}
 
 	if (format & DRM_FORMAT_BIG_ENDIAN) {

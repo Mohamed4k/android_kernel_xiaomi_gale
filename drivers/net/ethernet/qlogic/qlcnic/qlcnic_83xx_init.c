@@ -147,7 +147,7 @@ static void qlcnic_83xx_idc_log_state_history(struct qlcnic_adapter *adapter)
 	cur = adapter->ahw->idc.curr_state;
 	prev = adapter->ahw->idc.prev_state;
 
-	dev_info(&adapter->pdev->dev,
+	dev_dbg(&adapter->pdev->dev,
 		 "current state  = %s,  prev state = %s\n",
 		 adapter->ahw->idc.name[cur],
 		 adapter->ahw->idc.name[prev]);
@@ -249,7 +249,7 @@ static int qlcnic_83xx_idc_check_major_version(struct qlcnic_adapter *adapter)
 	version = val & 0xFF;
 
 	if (version != QLC_83XX_IDC_MAJOR_VERSION) {
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "%s:mismatch. version 0x%x, expected version 0x%x\n",
 			 __func__, version, QLC_83XX_IDC_MAJOR_VERSION);
 		return -EIO;
@@ -332,19 +332,19 @@ static int qlcnic_83xx_idc_check_reset_ack_reg(struct qlcnic_adapter *adapter)
 	timeout = QLC_83XX_IDC_RESET_TIMEOUT_SECS;
 	ack = QLCRDX(adapter->ahw, QLC_83XX_IDC_DRV_ACK);
 	presence = QLCRDX(adapter->ahw, QLC_83XX_IDC_DRV_PRESENCE);
-	dev_info(&adapter->pdev->dev,
+	dev_dbg(&adapter->pdev->dev,
 		 "%s: ack = 0x%x, presence = 0x%x\n", __func__, ack, presence);
 	if (!((ack & presence) == presence)) {
 		if (qlcnic_83xx_idc_check_timeout(adapter, timeout)) {
 			/* Clear functions which failed to ACK */
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "%s: ACK wait exceeds time limit\n", __func__);
 			val = QLCRDX(adapter->ahw, QLC_83XX_IDC_DRV_PRESENCE);
 			val = val & ~(ack ^ presence);
 			if (qlcnic_83xx_lock_driver(adapter))
 				return -EBUSY;
 			QLCWRX(adapter->ahw, QLC_83XX_IDC_DRV_PRESENCE, val);
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "%s: updated drv presence reg = 0x%x\n",
 				 __func__, val);
 			qlcnic_83xx_unlock_driver(adapter);
@@ -354,7 +354,7 @@ static int qlcnic_83xx_idc_check_reset_ack_reg(struct qlcnic_adapter *adapter)
 			return 1;
 		}
 	} else {
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "%s: Reset ACK received from all functions\n",
 			 __func__);
 		return 0;
@@ -383,7 +383,7 @@ static int qlcnic_83xx_idc_tx_soft_reset(struct qlcnic_adapter *adapter)
 	qlcnic_up(adapter, netdev);
 	netif_device_attach(netdev);
 	clear_bit(__QLCNIC_RESETTING, &adapter->state);
-	netdev_info(adapter->netdev, "%s: soft reset complete.\n", __func__);
+	netdev_dbg(adapter->netdev, "%s: soft reset complete.\n", __func__);
 
 	return 0;
 }
@@ -453,7 +453,7 @@ static int qlcnic_83xx_idc_enter_failed_state(struct qlcnic_adapter *adapter,
 		qlcnic_83xx_unlock_driver(adapter);
 
 	qlcnic_83xx_idc_log_state_history(adapter);
-	dev_info(&adapter->pdev->dev, "Device will enter failed state\n");
+	dev_dbg(&adapter->pdev->dev, "Device will enter failed state\n");
 
 	return 0;
 }
@@ -715,7 +715,7 @@ int qlcnic_83xx_idc_vnic_pf_entry(struct qlcnic_adapter *adapter)
 			qlcnic_83xx_idc_enter_failed_state(adapter, 1);
 			return -EIO;
 		}
-		dev_info(&adapter->pdev->dev, "vNIC mode disabled\n");
+		dev_dbg(&adapter->pdev->dev, "vNIC mode disabled\n");
 		return -EIO;
 
 	} else {
@@ -730,7 +730,7 @@ int qlcnic_83xx_idc_vnic_pf_entry(struct qlcnic_adapter *adapter)
 					return -EIO;
 			}
 			adapter->ahw->idc.vnic_state =  QLCNIC_DEV_NPAR_OPER;
-			dev_info(&adapter->pdev->dev, "vNIC mode enabled\n");
+			dev_dbg(&adapter->pdev->dev, "vNIC mode enabled\n");
 		}
 	}
 
@@ -850,7 +850,7 @@ static int qlcnic_83xx_idc_ready_state(struct qlcnic_adapter *adapter)
 			set_bit(__QLCNIC_RESETTING, &adapter->state);
 			qlcnic_83xx_idc_enter_need_reset_state(adapter, 1);
 		}  else {
-			netdev_info(adapter->netdev, "%s: Auto firmware recovery is disabled\n",
+			netdev_dbg(adapter->netdev, "%s: Auto firmware recovery is disabled\n",
 				    __func__);
 			qlcnic_83xx_idc_enter_failed_state(adapter, 1);
 		}
@@ -908,7 +908,7 @@ static int qlcnic_83xx_idc_need_reset_state(struct qlcnic_adapter *adapter)
 			qlcnic_83xx_disable_vnic_mode(adapter, 1);
 
 		if (qlcnic_check_diag_status(adapter)) {
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "%s: Wait for diag completion\n", __func__);
 			adapter->ahw->idc.delay_reset = 1;
 			return 0;
@@ -919,7 +919,7 @@ static int qlcnic_83xx_idc_need_reset_state(struct qlcnic_adapter *adapter)
 	}
 
 	if (qlcnic_check_diag_status(adapter)) {
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "%s: Wait for diag completion\n", __func__);
 		return  -1;
 	} else {
@@ -932,7 +932,7 @@ static int qlcnic_83xx_idc_need_reset_state(struct qlcnic_adapter *adapter)
 		/* Check for ACK from other functions */
 		ret = qlcnic_83xx_idc_check_reset_ack_reg(adapter);
 		if (ret) {
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "%s: Waiting for reset ACK\n", __func__);
 			return -1;
 		}
@@ -974,7 +974,7 @@ static void qlcnic_83xx_idc_failed_state(struct qlcnic_adapter *adapter)
 
 static int qlcnic_83xx_idc_quiesce_state(struct qlcnic_adapter *adapter)
 {
-	dev_info(&adapter->pdev->dev, "%s: TBD\n", __func__);
+	dev_dbg(&adapter->pdev->dev, "%s: TBD\n", __func__);
 	return 0;
 }
 
@@ -1080,7 +1080,7 @@ static int qlcnic_set_vxlan_parsing(struct qlcnic_adapter *adapter,
 			   "Failed to %s VXLAN parsing for port %d\n",
 			   state ? "enable" : "disable", vxlan_port);
 	else
-		netdev_info(adapter->netdev,
+		netdev_dbg(adapter->netdev,
 			    "%s VXLAN parsing for port %d\n",
 			    state ? "Enabled" : "Disabled", vxlan_port);
 
@@ -1175,7 +1175,7 @@ static void qlcnic_83xx_setup_idc_parameters(struct qlcnic_adapter *adapter)
 
 	if (qlcnic_83xx_flash_read32(adapter, QLC_83XX_IDC_FLASH_PARAM_ADDR,
 				     (u8 *)&idc_params, 1)) {
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "%s:failed to get IDC params from flash\n", __func__);
 		adapter->dev_init_timeo = QLC_83XX_IDC_INIT_TIMEOUT_SECS;
 		adapter->reset_ack_timeo = QLC_83XX_IDC_RESET_TIMEOUT_SECS;
@@ -1313,7 +1313,7 @@ void qlcnic_83xx_idc_request_reset(struct qlcnic_adapter *adapter, u32 key)
 
 	val = QLCRDX(adapter->ahw, QLC_83XX_IDC_CTRL);
 	if (val & QLC_83XX_IDC_DISABLE_FW_RESET_RECOVERY) {
-		netdev_info(adapter->netdev, "%s: Auto firmware recovery is disabled\n",
+		netdev_dbg(adapter->netdev, "%s: Auto firmware recovery is disabled\n",
 			    __func__);
 		qlcnic_83xx_idc_enter_failed_state(adapter, 0);
 		qlcnic_83xx_unlock_driver(adapter);
@@ -1440,15 +1440,15 @@ static void qlcnic_83xx_dump_pause_control_regs(struct qlcnic_adapter *adapter)
 	val = QLCRD32(adapter, QLC_83XX_SRE_SHIM_REG, &err);
 	if (err == -EIO)
 		return;
-	dev_info(&adapter->pdev->dev, "SRE-Shim Ctrl:0x%x\n", val);
+	dev_dbg(&adapter->pdev->dev, "SRE-Shim Ctrl:0x%x\n", val);
 
 	for (j = 0; j < 2; j++) {
 		if (j == 0) {
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "Port 0 RxB Pause Threshold Regs[TC7..TC0]:");
 			reg = QLC_83XX_PORT0_THRESHOLD;
 		} else if (j == 1) {
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "Port 1 RxB Pause Threshold Regs[TC7..TC0]:");
 			reg = QLC_83XX_PORT1_THRESHOLD;
 		}
@@ -1456,18 +1456,18 @@ static void qlcnic_83xx_dump_pause_control_regs(struct qlcnic_adapter *adapter)
 			val = QLCRD32(adapter, reg + (i * 0x4), &err);
 			if (err == -EIO)
 				return;
-			dev_info(&adapter->pdev->dev, "0x%x  ", val);
+			dev_dbg(&adapter->pdev->dev, "0x%x  ", val);
 		}
-		dev_info(&adapter->pdev->dev, "\n");
+		dev_dbg(&adapter->pdev->dev, "\n");
 	}
 
 	for (j = 0; j < 2; j++) {
 		if (j == 0) {
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "Port 0 RxB TC Max Cell Registers[4..1]:");
 			reg = QLC_83XX_PORT0_TC_MC_REG;
 		} else if (j == 1) {
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "Port 1 RxB TC Max Cell Registers[4..1]:");
 			reg = QLC_83XX_PORT1_TC_MC_REG;
 		}
@@ -1475,18 +1475,18 @@ static void qlcnic_83xx_dump_pause_control_regs(struct qlcnic_adapter *adapter)
 			val = QLCRD32(adapter, reg + (i * 0x4), &err);
 			if (err == -EIO)
 				return;
-			dev_info(&adapter->pdev->dev, "0x%x  ", val);
+			dev_dbg(&adapter->pdev->dev, "0x%x  ", val);
 		}
-		dev_info(&adapter->pdev->dev, "\n");
+		dev_dbg(&adapter->pdev->dev, "\n");
 	}
 
 	for (j = 0; j < 2; j++) {
 		if (j == 0) {
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "Port 0 RxB Rx TC Stats[TC7..TC0]:");
 			reg = QLC_83XX_PORT0_TC_STATS;
 		} else if (j == 1) {
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "Port 1 RxB Rx TC Stats[TC7..TC0]:");
 			reg = QLC_83XX_PORT1_TC_STATS;
 		}
@@ -1499,9 +1499,9 @@ static void qlcnic_83xx_dump_pause_control_regs(struct qlcnic_adapter *adapter)
 			val = QLCRD32(adapter, reg, &err);
 			if (err == -EIO)
 				return;
-			dev_info(&adapter->pdev->dev, "0x%x  ", val);
+			dev_dbg(&adapter->pdev->dev, "0x%x  ", val);
 		}
-		dev_info(&adapter->pdev->dev, "\n");
+		dev_dbg(&adapter->pdev->dev, "\n");
 	}
 
 	val = QLCRD32(adapter, QLC_83XX_PORT2_IFB_THRESHOLD, &err);
@@ -1510,7 +1510,7 @@ static void qlcnic_83xx_dump_pause_control_regs(struct qlcnic_adapter *adapter)
 	val1 = QLCRD32(adapter, QLC_83XX_PORT3_IFB_THRESHOLD, &err);
 	if (err == -EIO)
 		return;
-	dev_info(&adapter->pdev->dev,
+	dev_dbg(&adapter->pdev->dev,
 		 "IFB-Pause Thresholds: Port 2:0x%x, Port 3:0x%x\n",
 		 val, val1);
 }
@@ -1551,7 +1551,7 @@ static void qlcnic_83xx_disable_pause_frames(struct qlcnic_adapter *adapter)
 
 	QLCWR32(adapter, QLC_83XX_PORT2_IFB_THRESHOLD, 0);
 	QLCWR32(adapter, QLC_83XX_PORT3_IFB_THRESHOLD, 0);
-	dev_info(&adapter->pdev->dev,
+	dev_dbg(&adapter->pdev->dev,
 		 "Disabled pause frames successfully on all ports\n");
 	qlcnic_83xx_unlock_driver(adapter);
 }
@@ -1594,7 +1594,7 @@ static int qlcnic_83xx_check_heartbeat(struct qlcnic_adapter *p_dev)
 		qlcnic_83xx_disable_pause_frames(p_dev);
 		peg_status = QLC_SHARED_REG_RD32(p_dev,
 						 QLCNIC_PEG_HALT_STATUS1);
-		dev_info(&p_dev->pdev->dev, "Dumping HW/FW registers\n"
+		dev_dbg(&p_dev->pdev->dev, "Dumping HW/FW registers\n"
 			 "PEG_HALT_STATUS1: 0x%x, PEG_HALT_STATUS2: 0x%x,\n"
 			 "PEG_NET_0_PC: 0x%x, PEG_NET_1_PC: 0x%x,\n"
 			 "PEG_NET_2_PC: 0x%x, PEG_NET_3_PC: 0x%x,\n"
@@ -2154,7 +2154,7 @@ static int qlcnic_83xx_run_post(struct qlcnic_adapter *adapter)
 
 	switch (signature) {
 	case QLC_83XX_POST_PASS:
-		dev_info(dev, "POST passed, Signature = 0x%08x\n", signature);
+		dev_dbg(dev, "POST passed, Signature = 0x%08x\n", signature);
 		break;
 	case QLC_83XX_POST_ASIC_STRESS_TEST_FAIL:
 		dev_err(dev, "POST failed, Test case : ASIC STRESS TEST, Signature = 0x%08x\n",
@@ -2220,7 +2220,7 @@ static int qlcnic_83xx_restart_hw(struct qlcnic_adapter *adapter)
 		qlcnic_dump_fw(adapter);
 
 	if (val & QLC_83XX_IDC_DISABLE_FW_RESET_RECOVERY) {
-		netdev_info(adapter->netdev, "%s: Auto firmware recovery is disabled\n",
+		netdev_dbg(adapter->netdev, "%s: Auto firmware recovery is disabled\n",
 			    __func__);
 		qlcnic_83xx_idc_enter_failed_state(adapter, 1);
 		return err;
@@ -2370,7 +2370,7 @@ static int qlcnic_83xx_init_default_driver(struct qlcnic_adapter *adapter)
 	adapter->ahw->msix_supported = !!qlcnic_use_msi_x;
 	adapter->flags |= QLCNIC_ADAPTER_INITIALIZED;
 
-	dev_info(&adapter->pdev->dev, "HAL Version: %d\n",
+	dev_dbg(&adapter->pdev->dev, "HAL Version: %d\n",
 		 adapter->ahw->fw_hal_version);
 
 	return 0;

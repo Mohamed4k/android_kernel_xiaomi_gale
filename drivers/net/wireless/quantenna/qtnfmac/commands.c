@@ -28,25 +28,25 @@ static int qtnf_cmd_check_reply_header(const struct qlink_resp *resp,
 				       size_t resp_size)
 {
 	if (unlikely(le16_to_cpu(resp->cmd_id) != cmd_id)) {
-		pr_warn("VIF%u.%u CMD%x: bad cmd_id in response: 0x%.4X\n",
+		pr_debug("VIF%u.%u CMD%x: bad cmd_id in response: 0x%.4X\n",
 			mac_id, vif_id, cmd_id, le16_to_cpu(resp->cmd_id));
 		return -EINVAL;
 	}
 
 	if (unlikely(resp->macid != mac_id)) {
-		pr_warn("VIF%u.%u CMD%x: bad MAC in response: %u\n",
+		pr_debug("VIF%u.%u CMD%x: bad MAC in response: %u\n",
 			mac_id, vif_id, cmd_id, resp->macid);
 		return -EINVAL;
 	}
 
 	if (unlikely(resp->vifid != vif_id)) {
-		pr_warn("VIF%u.%u CMD%x: bad VIF in response: %u\n",
+		pr_debug("VIF%u.%u CMD%x: bad VIF in response: %u\n",
 			mac_id, vif_id, cmd_id, resp->vifid);
 		return -EINVAL;
 	}
 
 	if (unlikely(le16_to_cpu(resp->mhdr.len) < resp_size)) {
-		pr_warn("VIF%u.%u CMD%x: bad response size %u < %zu\n",
+		pr_debug("VIF%u.%u CMD%x: bad response size %u < %zu\n",
 			mac_id, vif_id, cmd_id,
 			le16_to_cpu(resp->mhdr.len), resp_size);
 		return -ENOSPC;
@@ -99,7 +99,7 @@ static int qtnf_cmd_send_with_reply(struct qtnf_bus *bus,
 
 	if (unlikely(bus->fw_state != QTNF_FW_STATE_ACTIVE &&
 		     le16_to_cpu(cmd->cmd_id) != QLINK_CMD_FW_INIT)) {
-		pr_warn("VIF%u.%u: drop cmd 0x%.4X in fw state %d\n",
+		pr_debug("VIF%u.%u: drop cmd 0x%.4X in fw state %d\n",
 			mac_id, vif_id, le16_to_cpu(cmd->cmd_id),
 			bus->fw_state);
 		dev_kfree_skb(cmd_skb);
@@ -427,7 +427,7 @@ int qtnf_cmd_send_mgmt_frame(struct qtnf_vif *vif, u32 cookie, u16 flags,
 	int ret;
 
 	if (sizeof(*cmd) + len > QTNF_MAX_CMD_BUF_SIZE) {
-		pr_warn("VIF%u.%u: frame is too big: %zu\n", vif->mac->macid,
+		pr_debug("VIF%u.%u: frame is too big: %zu\n", vif->mac->macid,
 			vif->vifid, len);
 		return -E2BIG;
 	}
@@ -473,7 +473,7 @@ int qtnf_cmd_send_mgmt_set_appie(struct qtnf_vif *vif, u8 frame_type,
 	int ret;
 
 	if (len > QTNF_MAX_CMD_BUF_SIZE) {
-		pr_warn("VIF%u.%u: %u frame is too big: %zu\n", vif->mac->macid,
+		pr_debug("VIF%u.%u: %u frame is too big: %zu\n", vif->mac->macid,
 			vif->vifid, frame_type, len);
 		return -E2BIG;
 	}
@@ -757,7 +757,7 @@ int qtnf_cmd_get_sta_info(struct qtnf_vif *vif, const u8 *sta_mac,
 	if (unlikely(res_code != QLINK_CMD_RESULT_OK)) {
 		switch (res_code) {
 		case QLINK_CMD_RESULT_ENOTFOUND:
-			pr_warn("VIF%u.%u: %pM STA not found\n",
+			pr_debug("VIF%u.%u: %pM STA not found\n",
 				vif->mac->macid, vif->vifid, sta_mac);
 			ret = -ENOENT;
 			break;
@@ -892,7 +892,7 @@ int qtnf_cmd_send_del_intf(struct qtnf_vif *vif)
 		cmd->intf_info.if_type = cpu_to_le16(QLINK_IFTYPE_STATION);
 		break;
 	default:
-		pr_warn("VIF%u.%u: unsupported iftype %d\n", vif->mac->macid,
+		pr_debug("VIF%u.%u: unsupported iftype %d\n", vif->mac->macid,
 			vif->vifid, vif->wdev.iftype);
 		dev_kfree_skb(cmd_skb);
 		ret = -EINVAL;
@@ -1038,7 +1038,7 @@ qtnf_cmd_resp_proc_hw_info(struct qtnf_bus *bus,
 		tlv_value_len = le16_to_cpu(tlv->len);
 
 		if (tlv_value_len + sizeof(*tlv) > info_len) {
-			pr_warn("malformed TLV 0x%.2X; LEN: %u\n",
+			pr_debug("malformed TLV 0x%.2X; LEN: %u\n",
 				tlv_type, tlv_value_len);
 			return -EINVAL;
 		}
@@ -1046,13 +1046,13 @@ qtnf_cmd_resp_proc_hw_info(struct qtnf_bus *bus,
 		switch (tlv_type) {
 		case QTN_TLV_ID_REG_RULE:
 			if (rule_idx >= resp->n_reg_rules) {
-				pr_warn("unexpected number of rules: %u\n",
+				pr_debug("unexpected number of rules: %u\n",
 					resp->n_reg_rules);
 				return -EINVAL;
 			}
 
 			if (tlv_value_len != sizeof(*tlv_rule) - sizeof(*tlv)) {
-				pr_warn("malformed TLV 0x%.2X; LEN: %u\n",
+				pr_debug("malformed TLV 0x%.2X; LEN: %u\n",
 					tlv_type, tlv_value_len);
 				return -EINVAL;
 			}
@@ -1108,20 +1108,20 @@ qtnf_cmd_resp_proc_hw_info(struct qtnf_bus *bus,
 	}
 
 	if (rule_idx != resp->n_reg_rules) {
-		pr_warn("unexpected number of rules: expected %u got %u\n",
+		pr_debug("unexpected number of rules: expected %u got %u\n",
 			resp->n_reg_rules, rule_idx);
 		kfree(hwinfo->rd);
 		hwinfo->rd = NULL;
 		return -EINVAL;
 	}
 
-	pr_info("fw_version=%d, MACs map %#x, alpha2=\"%c%c\", chains Tx=%u Rx=%u, capab=0x%x\n",
+	pr_debug("fw_version=%d, MACs map %#x, alpha2=\"%c%c\", chains Tx=%u Rx=%u, capab=0x%x\n",
 		hwinfo->fw_ver, hwinfo->mac_bitmap,
 		hwinfo->rd->alpha2[0], hwinfo->rd->alpha2[1],
 		hwinfo->total_tx_chain, hwinfo->total_rx_chain,
 		hwinfo->hw_capab);
 
-	pr_info("\nBuild name:            %s"  \
+	pr_debug("\nBuild name:            %s"  \
 		"\nBuild revision:        %s"  \
 		"\nBuild type:            %s"  \
 		"\nBuild label:           %s"  \
@@ -1166,7 +1166,7 @@ qtnf_parse_wowlan_info(struct qtnf_wmac *mac,
 		mac_info->wowlan = supp;
 		break;
 	default:
-		pr_warn("MAC%u: unsupported WoWLAN version 0x%x\n",
+		pr_debug("MAC%u: unsupported WoWLAN version 0x%x\n",
 			mac->macid, le16_to_cpu(wowlan->version));
 		kfree(supp);
 		break;
@@ -1200,7 +1200,7 @@ static int qtnf_parse_variable_mac_info(struct qtnf_wmac *mac,
 		tlv_value_len = le16_to_cpu(tlv->len);
 		tlv_full_len = tlv_value_len + sizeof(struct qlink_tlv_hdr);
 		if (tlv_full_len > tlv_buf_size) {
-			pr_warn("MAC%u: malformed TLV 0x%.2X; LEN: %u\n",
+			pr_debug("MAC%u: malformed TLV 0x%.2X; LEN: %u\n",
 				mac->macid, tlv_type, tlv_value_len);
 			return -EINVAL;
 		}
@@ -1234,13 +1234,13 @@ static int qtnf_parse_variable_mac_info(struct qtnf_wmac *mac,
 			break;
 		case QTN_TLV_ID_IFACE_LIMIT:
 			if (unlikely(!comb)) {
-				pr_warn("MAC%u: no combinations advertised\n",
+				pr_debug("MAC%u: no combinations advertised\n",
 					mac->macid);
 				return -EINVAL;
 			}
 
 			if (n_comb >= mac->macinfo.n_if_comb) {
-				pr_warn("MAC%u: combinations count exceeded\n",
+				pr_debug("MAC%u: combinations count exceeded\n",
 					mac->macid);
 				n_comb++;
 				break;
@@ -1250,7 +1250,7 @@ static int qtnf_parse_variable_mac_info(struct qtnf_wmac *mac,
 			rec_len = sizeof(*rec) + rec->n_limits * sizeof(*lim);
 
 			if (unlikely(tlv_value_len != rec_len)) {
-				pr_warn("MAC%u: record %zu size mismatch\n",
+				pr_debug("MAC%u: record %zu size mismatch\n",
 					mac->macid, n_comb);
 				return -EINVAL;
 			}
@@ -1297,14 +1297,14 @@ static int qtnf_parse_variable_mac_info(struct qtnf_wmac *mac,
 
 			wowlan = (void *)tlv->val;
 			if (!le16_to_cpu(wowlan->len)) {
-				pr_warn("MAC%u: skip empty WoWLAN data\n",
+				pr_debug("MAC%u: skip empty WoWLAN data\n",
 					mac->macid);
 				break;
 			}
 
 			rec_len = sizeof(*wowlan) + le16_to_cpu(wowlan->len);
 			if (unlikely(tlv_value_len != rec_len)) {
-				pr_warn("MAC%u: WoWLAN data size mismatch\n",
+				pr_debug("MAC%u: WoWLAN data size mismatch\n",
 					mac->macid);
 				return -EINVAL;
 			}
@@ -1314,7 +1314,7 @@ static int qtnf_parse_variable_mac_info(struct qtnf_wmac *mac,
 			qtnf_parse_wowlan_info(mac, wowlan);
 			break;
 		default:
-			pr_warn("MAC%u: unknown TLV type %u\n",
+			pr_debug("MAC%u: unknown TLV type %u\n",
 				mac->macid, tlv_type);
 			break;
 		}
@@ -1324,7 +1324,7 @@ static int qtnf_parse_variable_mac_info(struct qtnf_wmac *mac,
 	}
 
 	if (tlv_buf_size) {
-		pr_warn("MAC%u: malformed TLV buf; bytes left: %zu\n",
+		pr_debug("MAC%u: malformed TLV buf; bytes left: %zu\n",
 			mac->macid, tlv_buf_size);
 		return -EINVAL;
 	}
@@ -1476,7 +1476,7 @@ qtnf_cmd_resp_fill_band_info(struct ieee80211_supported_band *band,
 		tlv_len = tlv_dlen + sizeof(*tlv);
 
 		if (tlv_len > payload_len) {
-			pr_warn("malformed TLV 0x%.2X; LEN: %zu\n",
+			pr_debug("malformed TLV 0x%.2X; LEN: %zu\n",
 				tlv_type, tlv_len);
 			goto error_ret;
 		}
@@ -1579,7 +1579,7 @@ qtnf_cmd_resp_fill_band_info(struct ieee80211_supported_band *band,
 						       &band->vht_cap);
 			break;
 		default:
-			pr_warn("unknown TLV type: %#x\n", tlv_type);
+			pr_debug("unknown TLV type: %#x\n", tlv_type);
 			break;
 		}
 
@@ -1629,7 +1629,7 @@ static int qtnf_cmd_resp_proc_phy_params(struct qtnf_wmac *mac,
 		tlv_full_len = tlv_value_len + sizeof(struct qlink_tlv_hdr);
 
 		if (tlv_full_len > payload_len) {
-			pr_warn("MAC%u: malformed TLV 0x%.2X; LEN: %u\n",
+			pr_debug("MAC%u: malformed TLV 0x%.2X; LEN: %u\n",
 				mac->macid, tlv_type, tlv_value_len);
 			return -EINVAL;
 		}
@@ -1666,7 +1666,7 @@ static int qtnf_cmd_resp_proc_phy_params(struct qtnf_wmac *mac,
 	}
 
 	if (payload_len) {
-		pr_warn("MAC%u: malformed TLV buf; bytes left: %zu\n",
+		pr_debug("MAC%u: malformed TLV buf; bytes left: %zu\n",
 			mac->macid, payload_len);
 		return -EINVAL;
 	}
@@ -1690,7 +1690,7 @@ qtnf_cmd_resp_proc_chan_stat_info(struct qtnf_chan_stats *stats,
 		tlv_value_len = le16_to_cpu(tlv->len);
 		tlv_full_len = tlv_value_len + sizeof(struct qlink_tlv_hdr);
 		if (tlv_full_len > payload_len) {
-			pr_warn("malformed TLV 0x%.2X; LEN: %u\n",
+			pr_debug("malformed TLV 0x%.2X; LEN: %u\n",
 				tlv_type, tlv_value_len);
 			return -EINVAL;
 		}
@@ -1715,7 +1715,7 @@ qtnf_cmd_resp_proc_chan_stat_info(struct qtnf_chan_stats *stats,
 				 stats->cca_busy, stats->chan_noise);
 			break;
 		default:
-			pr_warn("Unknown TLV type: %#x\n",
+			pr_debug("Unknown TLV type: %#x\n",
 				le16_to_cpu(tlv->type));
 		}
 		payload_len -= tlv_full_len;
@@ -1723,7 +1723,7 @@ qtnf_cmd_resp_proc_chan_stat_info(struct qtnf_chan_stats *stats,
 	}
 
 	if (payload_len) {
-		pr_warn("malformed TLV buf; bytes left: %zu\n", payload_len);
+		pr_debug("malformed TLV buf; bytes left: %zu\n", payload_len);
 		return -EINVAL;
 	}
 
@@ -2615,11 +2615,11 @@ int qtnf_cmd_reg_notify(struct qtnf_bus *bus, struct regulatory_request *req)
 
 	switch (res_code) {
 	case QLINK_CMD_RESULT_ENOTSUPP:
-		pr_warn("reg update not supported\n");
+		pr_debug("reg update not supported\n");
 		ret = -EOPNOTSUPP;
 		break;
 	case QLINK_CMD_RESULT_EALREADY:
-		pr_info("regulatory domain is already set to %c%c",
+		pr_debug("regulatory domain is already set to %c%c",
 			req->alpha2[0], req->alpha2[1]);
 		ret = -EALREADY;
 		break;

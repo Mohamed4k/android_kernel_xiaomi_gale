@@ -133,7 +133,7 @@ static int __init gz_log_context_init(struct reserved_mem *rmem)
 	unsigned long node;
 
 	if (!rmem) {
-		pr_info("[%s] ERROR: invalid reserved memory\n", __func__);
+		pr_debug("[%s] ERROR: invalid reserved memory\n", __func__);
 		return -EFAULT;
 	}
 	glctx.paddr = rmem->base;
@@ -145,7 +145,7 @@ static int __init gz_log_context_init(struct reserved_mem *rmem)
 	else
 		glctx.flag = STATIC_NOMAP;
 
-	pr_info("[%s] rmem:%s base(0x%llx) size(0x%zx) flag(%u)\n",
+	pr_debug("[%s] rmem:%s base(0x%llx) size(0x%zx) flag(%u)\n",
 		__func__, rmem->name, glctx.paddr, glctx.size, glctx.flag);
 	return 0;
 }
@@ -158,19 +158,19 @@ static void gz_log_find_mblock(void)
 
 	mblock_root = of_find_node_by_path("/reserved-memory");
 	if (!mblock_root) {
-		pr_info("%s not found /reserved-memory\n", __func__);
+		pr_debug("%s not found /reserved-memory\n", __func__);
 		return;
 	}
 
 	gz_node = of_find_compatible_node(mblock_root, NULL, "mediatek,gz-log");
 	if (!gz_node) {
-		pr_info("%s not found gz-log\n", __func__);
+		pr_debug("%s not found gz-log\n", __func__);
 		return;
 	}
 
 	rmem = of_reserved_mem_lookup(gz_node);
 	if (!rmem) {
-		pr_info("[%s] ERROR: not found address\n", __func__);
+		pr_debug("[%s] ERROR: not found address\n", __func__);
 		return;
 	}
 
@@ -181,7 +181,7 @@ static void gz_log_find_mblock(void)
 	else
 		glctx.flag = STATIC_NOMAP;
 
-	pr_info("[%s] rmem:%s base(0x%llx) size(0x%zx) flag(%u)\n",
+	pr_debug("[%s] rmem:%s base(0x%llx) size(0x%zx) flag(%u)\n",
 		__func__, gz_node->name, glctx.paddr, glctx.size, glctx.flag);
 }
 #endif
@@ -213,7 +213,7 @@ static int gz_log_page_init(void)
 		glctx.paddr = virt_to_phys(glctx.virt);
 	}
 
-	pr_info("[%s] set by %s, virt addr:%p, sz:0x%zx\n",
+	pr_debug("[%s] set by %s, virt addr:%p, sz:0x%zx\n",
 		__func__,
 		glctx.flag == STATIC_NOMAP ? "static_nomap" :
 		glctx.flag == STATIC_MAP ? "static_map" : "dynamic",
@@ -230,12 +230,12 @@ void get_gz_log_buffer(unsigned long *addr, unsigned long *paddr,
 
 	if (!glctx.virt) {
 		*addr = *paddr = *size = *start = 0;
-		pr_info("[%s] ERR gz_log init failed\n", __func__);
+		pr_debug("[%s] ERR gz_log init failed\n", __func__);
 		return;
 	}
 	*addr = (unsigned long)glctx.virt;
 	*paddr = (unsigned long)glctx.paddr;
-	pr_info("[%s] virtual address:0x%lx, paddr:0x%lx\n",
+	pr_debug("[%s] virtual address:0x%lx, paddr:0x%lx\n",
 		__func__, (unsigned long)*addr, *paddr);
 	*size = glctx.size;
 	*start = 0;
@@ -296,7 +296,7 @@ static int trusty_log_panic_notify(struct notifier_block *nb,
 	 * Don't grab the spin lock to hold up the panic notifier, even
 	 * though this is racy.
 	 */
-	pr_info("trusty-log panic notifier - trusty version %s",
+	pr_debug("trusty-log panic notifier - trusty version %s",
 		trusty_version_str_get(gls->trusty_dev));
 	atomic_inc(&gls->gz_log_event_count);
 	wake_up_interruptible(&gls->gz_log_wq);
@@ -311,20 +311,20 @@ static bool trusty_supports_logging(struct device *device)
 				MTEE_SMCNR(SMCF_SC_SHARED_LOG_VERSION, device),
 				TRUSTY_LOG_API_VERSION, 0, 0);
 	if (ret == SM_ERR_UNDEFINED_SMC) {
-		pr_info("trusty-log not supported on secure side.\n");
+		pr_debug("trusty-log not supported on secure side.\n");
 		return false;
 	} else if (ret < 0) {
-		pr_info("trusty std call (GZ_SHARED_LOG_VERSION) failed: %d\n",
+		pr_debug("trusty std call (GZ_SHARED_LOG_VERSION) failed: %d\n",
 		       ret);
 		return false;
 	}
 
 	if (ret == TRUSTY_LOG_API_VERSION) {
-		pr_info("trusty-log API supported: %d\n", ret);
+		pr_debug("trusty-log API supported: %d\n", ret);
 		return true;
 	}
 
-	pr_info("trusty-log unsupported api version: %d, supported: %d\n",
+	pr_debug("trusty-log unsupported api version: %d, supported: %d\n",
 		ret, TRUSTY_LOG_API_VERSION);
 	return false;
 }
@@ -364,7 +364,7 @@ static int do_gz_log_read(struct gz_log_state *gls,
 	int ret = 0;
 
 	if (!is_power_of_2(log->sz))
-		pr_info("[%s] Error log size 0x%x\n", __func__, log->sz);
+		pr_debug("[%s] Error log size 0x%x\n", __func__, log->sz);
 
 	/*
 	 * For this ring buffer, at any given point, alloc >= put >= get.
@@ -380,7 +380,7 @@ static int do_gz_log_read(struct gz_log_state *gls,
 	alloc = log->alloc;
 
 	if (alloc - get > log->sz) {
-		pr_notice("trusty: log overflow, lose some msg.");
+		pr_debug("trusty: log overflow, lose some msg.");
 		get = alloc - log->sz;
 	}
 
@@ -400,7 +400,7 @@ static int do_gz_log_read(struct gz_log_state *gls,
 		ret = copy_to_user(buf + copy_chars, gls->line_buffer,
 				   read_chars);
 		if (ret) {
-			pr_notice("[%s] copy_to_user failed ret %d\n",
+			pr_debug("[%s] copy_to_user failed ret %d\n",
 				  __func__, ret);
 			break;
 		}
@@ -629,7 +629,7 @@ static int gz_trace_task_entry(void *data)
 	if (!gls || !gls->log)
 		return -ENOMEM;
 
-	dev_info(gls->dev, "%s->\n", __func__);
+	dev_dbg(gls->dev, "%s->\n", __func__);
 
 	while (!kthread_should_stop()) {
 		wait_for_completion_timeout(&gls->trace_dump_event, timeout);
@@ -651,7 +651,7 @@ static int gz_trace_task_entry(void *data)
 			put = trace_dump_info_use.put;
 
 			if (get > put)
-				dev_info(gls->dev, "%s get(%u)>put(%u)\n", __func__, get, put);
+				dev_dbg(gls->dev, "%s get(%u)>put(%u)\n", __func__, get, put);
 			else if (get < put)
 				gz_trace_parse(gls, get, put, &trace_dump_info_use);
 
@@ -660,7 +660,7 @@ static int gz_trace_task_entry(void *data)
 		if (gls->trace_exit)
 			timeout = msecs_to_jiffies(1000);
 	}
-	dev_info(gls->dev, "%s<-\n", __func__);
+	dev_dbg(gls->dev, "%s<-\n", __func__);
 	return 0;
 }
 
@@ -790,9 +790,9 @@ static int trusty_gz_log_probe(struct platform_device *pdev)
 
 	ret = of_property_read_u32(pnode, "tee-id", &tee_id);
 	if (ret != 0)
-		dev_info(&pdev->dev, "tee_id is not set\n");
+		dev_dbg(&pdev->dev, "tee_id is not set\n");
 	else
-		dev_info(&pdev->dev, "--- init gz-log for MTEE %d ---\n",
+		dev_dbg(&pdev->dev, "--- init gz-log for MTEE %d ---\n",
 			 tee_id);
 
 	gz_log_page_init();
@@ -817,7 +817,7 @@ static int trusty_gz_log_probe(struct platform_device *pdev)
 			(u32)(glctx.paddr), (u32)((u64)glctx.paddr >> 32),
 			glctx.size);
 		if (ret < 0) {
-			dev_info(&pdev->dev,
+			dev_dbg(&pdev->dev,
 				"std call(GZ_SHARED_LOG_ADD) failed: %d %pa\n",
 				ret, &glctx.paddr);
 			goto error_std_call;
@@ -825,7 +825,7 @@ static int trusty_gz_log_probe(struct platform_device *pdev)
 	}
 
 	gls->log = glctx.virt;
-	dev_info(&pdev->dev, "gls->log virtual address:%p\n", gls->log);
+	dev_dbg(&pdev->dev, "gls->log virtual address:%p\n", gls->log);
 	if (!gls->log) {
 		ret = -ENOMEM;
 		goto error_alloc_log;
@@ -837,7 +837,7 @@ static int trusty_gz_log_probe(struct platform_device *pdev)
 	ret = trusty_callback_notifier_register(gls->trusty_dev,
 					       &gls->callback_notifier);
 	if (ret < 0) {
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "can not register trusty callback notifier\n");
 		goto error_callback_notifier;
 	}
@@ -851,7 +851,7 @@ static int trusty_gz_log_probe(struct platform_device *pdev)
 	gls->trace_task_fd =
 			kthread_run(gz_trace_task_entry, (void *)gls, "gz_trace");
 	if (IS_ERR(gls->trace_task_fd)) {
-		dev_info(&pdev->dev, "%s unable create kthread\n", __func__);
+		dev_dbg(&pdev->dev, "%s unable create kthread\n", __func__);
 		ret = PTR_ERR(gls->trace_task_fd);
 		goto error_trace_task_run;
 	}
@@ -859,16 +859,16 @@ static int trusty_gz_log_probe(struct platform_device *pdev)
 	mask = (u32)trusty_fast_call32(gls->trusty_dev,
 					MTEE_SMCNR(SMCF_FC_GET_CMASK, gls->trusty_dev),
 					0, 0, 0);
-	dev_info(&pdev->dev, "%s mask=0x%x\n", __func__, mask);
+	dev_dbg(&pdev->dev, "%s mask=0x%x\n", __func__, mask);
 	if ((mask != U32_MAX) && (mask != 0x0)) {
 		struct cpumask task_cmask;
 
 		mask = ~mask;
-		dev_info(&pdev->dev, "%s bind mask=0x%x\n", __func__, mask);
+		dev_dbg(&pdev->dev, "%s bind mask=0x%x\n", __func__, mask);
 		cpumask_clear(&task_cmask);
 		for_each_possible_cpu(cpu) {
 			if (cpu > 31) {
-				dev_info(&pdev->dev,
+				dev_dbg(&pdev->dev,
 					 "%s not support cpu# > 32\n",
 					 __func__);
 				continue;
@@ -886,7 +886,7 @@ static int trusty_gz_log_probe(struct platform_device *pdev)
 	ret = trusty_call_notifier_register(gls->trusty_dev,
 					       &gls->call_notifier);
 	if (ret < 0) {
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "can not register trusty call notifier\n");
 		goto error_call_notifier;
 	}
@@ -895,7 +895,7 @@ static int trusty_gz_log_probe(struct platform_device *pdev)
 	ret = atomic_notifier_chain_register(&panic_notifier_list,
 					     &gls->panic_notifier);
 	if (ret < 0) {
-		dev_info(&pdev->dev, "failed to register panic notifier\n");
+		dev_dbg(&pdev->dev, "failed to register panic notifier\n");
 		goto error_panic_notifier;
 	}
 	init_waitqueue_head(&gls->gz_log_wq);
@@ -907,7 +907,7 @@ static int trusty_gz_log_probe(struct platform_device *pdev)
 	gls->proc = proc_create_data("gz_log", 0440, NULL, &proc_gz_log_fops,
 				     gls);
 	if (!gls->proc) {
-		dev_info(&pdev->dev, "gz_log proc_create failed!\n");
+		dev_dbg(&pdev->dev, "gz_log proc_create failed!\n");
 		return -ENOMEM;
 	}
 
@@ -917,7 +917,7 @@ static int trusty_gz_log_probe(struct platform_device *pdev)
 		debugfs_create_file("gz_trace_on", 0644, gls->gz_log_dbg_root,
 							gls, &gz_trace_on_fops);
 	if (!gls->sys_gz_trace_on) {
-		dev_info(&pdev->dev, "gz_trace_on node failed!\n");
+		dev_dbg(&pdev->dev, "gz_trace_on node failed!\n");
 		return -ENOMEM;
 	}
 #endif
@@ -955,7 +955,7 @@ static int trusty_gz_log_remove(struct platform_device *pdev)
 	int ret = 0;
 	struct gz_log_state *gls = platform_get_drvdata(pdev);
 
-	dev_info(&pdev->dev, "%s\n", __func__);
+	dev_dbg(&pdev->dev, "%s\n", __func__);
 
 	proc_remove(gls->proc);
 	atomic_notifier_chain_unregister(&panic_notifier_list,
@@ -975,7 +975,7 @@ static int trusty_gz_log_remove(struct platform_device *pdev)
 			MTEE_SMCNR(SMCF_SC_SHARED_LOG_RM, gls->trusty_dev),
 			(u32)glctx.paddr, (u32)((u64)glctx.paddr >> 32), 0);
 	if (ret)
-		pr_info("std call(GZ_SHARED_LOG_RM) failed: %d\n", ret);
+		pr_debug("std call(GZ_SHARED_LOG_RM) failed: %d\n", ret);
 
 	if (glctx.flag == STATIC_NOMAP)
 		memunmap(glctx.virt);

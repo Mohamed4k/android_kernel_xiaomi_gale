@@ -1458,7 +1458,7 @@ void m4u_find_max_port_size(unsigned long base, unsigned long max,
 			}
 #if 0
 			if (port_size[i][j] > 0)
-				pr_notice("%s, p:%d(%d/%d),s:%d, %d, %d, %d, %d, %d\n",
+				pr_debug("%s, p:%d(%d/%d),s:%d, %d, %d, %d, %d, %d\n",
 					  __func__, MTK_M4U_ID(i, j),
 					  i, j, port_size[i][j],
 					  port[0], port[1], port[2],
@@ -1466,7 +1466,7 @@ void m4u_find_max_port_size(unsigned long base, unsigned long max,
 #endif
 		}
 	}
-	pr_notice(" ******the top %d iova user in domain(0x%lx~0x%lx)******\n",
+	pr_debug(" ******the top %d iova user in domain(0x%lx~0x%lx)******\n",
 		  PORT_MAX_COUNT, base, max);
 
 	for (k = 0; k < PORT_MAX_COUNT; k++) {
@@ -1476,7 +1476,7 @@ void m4u_find_max_port_size(unsigned long base, unsigned long max,
 				*err_port = M4U_PORT_UNKNOWN;
 				*err_size = unknown_port_size;
 			}
-			pr_notice(" >>> unknown port: size:%uKB\n",
+			pr_debug(" >>> unknown port: size:%uKB\n",
 				  unknown_port_size);
 			unknown_port_size = 0;//only dump one time
 		} else {
@@ -1487,14 +1487,14 @@ void m4u_find_max_port_size(unsigned long base, unsigned long max,
 				*err_size = size[k];
 			}
 
-			pr_notice(" >>> %s(%d): size:%uKB\n",
+			pr_debug(" >>> %s(%d): size:%uKB\n",
 				  iommu_get_port_name(port[k]),
 				  port[k], size[k]);
 		}
 	}
 
 	if (*err_size)
-		pr_notice(" *********** suspect:%s(%d) used:%uKB***********\n",
+		pr_debug(" *********** suspect:%s(%d) used:%uKB***********\n",
 			  iommu_get_port_name(*err_port),
 			  *err_port, *err_size);
 }
@@ -2446,7 +2446,7 @@ void pseudo_m4u_bank_irq_debug(unsigned int domain)
 			if (!ret)
 				reg = mtk_iommu_dump_sec_larb(i, j);
 			else
-				pr_notice("%s, atf set sec larb fail, larb:%d, port:%d\n",
+				pr_debug("%s, atf set sec larb fail, larb:%d, port:%d\n",
 					__func__, i, j);
 #endif
 			pr_debug("%s, switch larb%d to dom:0x%x\n",
@@ -3682,7 +3682,7 @@ static int __pseudo_dump_iova_reserved_region(struct device *dev,
 				&base, &max, &owner,
 				&resv_regions);
 	if (domain < 0) {
-		pr_notice("%s, %d, failed to get iova space\n",
+		pr_debug("%s, %d, failed to get iova space\n",
 			  __func__, __LINE__);
 		return domain;
 	}

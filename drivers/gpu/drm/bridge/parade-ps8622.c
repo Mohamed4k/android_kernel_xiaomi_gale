@@ -91,7 +91,7 @@ static int ps8622_set(struct i2c_client *client, u8 page, u8 reg, u8 val)
 
 	ret = i2c_transfer(adap, &msg, 1);
 	if (ret != 1)
-		pr_warn("PS8622 I2C write (0x%02x,0x%02x,0x%02x) failed: %d\n",
+		pr_debug("PS8622 I2C write (0x%02x,0x%02x,0x%02x) failed: %d\n",
 			client->addr + page, reg, val, ret);
 	return !(ret == 1);
 }
@@ -548,7 +548,7 @@ static int ps8622_probe(struct i2c_client *client,
 
 	ps8622->v12 = devm_regulator_get(dev, "vdd12");
 	if (IS_ERR(ps8622->v12)) {
-		dev_info(dev, "no 1.2v regulator found for PS8622\n");
+		dev_dbg(dev, "no 1.2v regulator found for PS8622\n");
 		ps8622->v12 = NULL;
 	}
 
@@ -576,7 +576,7 @@ static int ps8622_probe(struct i2c_client *client,
 						&ps8622->lane_count)) {
 		ps8622->lane_count = ps8622->max_lane_count;
 	} else if (ps8622->lane_count > ps8622->max_lane_count) {
-		dev_info(dev, "lane-count property is too high,"
+		dev_dbg(dev, "lane-count property is too high,"
 						"using max_lane_count\n");
 		ps8622->lane_count = ps8622->max_lane_count;
 	}

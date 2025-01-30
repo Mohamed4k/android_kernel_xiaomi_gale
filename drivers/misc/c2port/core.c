@@ -934,8 +934,8 @@ struct c2port_device *c2port_device_register(char *name,
 	c2dev->access = c2dev->flash_access = 0;
 	ops->access(c2dev, 0);
 
-	dev_info(c2dev->dev, "C2 port %s added\n", name);
-	dev_info(c2dev->dev, "%s flash has %d blocks x %d bytes "
+	dev_dbg(c2dev->dev, "C2 port %s added\n", name);
+	dev_dbg(c2dev->dev, "%s flash has %d blocks x %d bytes "
 				"(%d bytes total)\n",
 				name, ops->blocks_num, ops->block_size,
 				ops->blocks_num * ops->block_size);
@@ -959,7 +959,7 @@ void c2port_device_unregister(struct c2port_device *c2dev)
 	if (!c2dev)
 		return;
 
-	dev_info(c2dev->dev, "C2 port %s removed\n", c2dev->name);
+	dev_dbg(c2dev->dev, "C2 port %s removed\n", c2dev->name);
 
 	spin_lock_irq(&c2port_idr_lock);
 	idr_remove(&c2port_idr, c2dev->id);

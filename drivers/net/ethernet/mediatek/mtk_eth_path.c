@@ -49,7 +49,7 @@ static int set_mux_gdm1_to_gmac1_esw(struct mtk_eth *eth, int path)
 		mtk_w32(eth, val, MTK_MAC_MISC);
 	}
 
-	dev_info(eth->dev, "path %s in %s updated = %d\n",
+	dev_dbg(eth->dev, "path %s in %s updated = %d\n",
 		 mtk_eth_path_name[path], __func__, updated);
 
 	return 0;
@@ -72,7 +72,7 @@ static int set_mux_gmac2_gmac0_to_gephy(struct mtk_eth *eth, int path)
 	if (updated)
 		regmap_update_bits(eth->infra, INFRA_MISC2, GEPHY_MAC_SEL, val);
 
-	dev_info(eth->dev, "path %s in %s updated = %d\n",
+	dev_dbg(eth->dev, "path %s in %s updated = %d\n",
 		 mtk_eth_path_name[path], __func__, updated);
 
 	return 0;
@@ -95,7 +95,7 @@ static int set_mux_u3_gmac2_to_qphy(struct mtk_eth *eth, int path)
 	if (updated)
 		regmap_update_bits(eth->infra, INFRA_MISC2, CO_QPHY_SEL, val);
 
-	dev_info(eth->dev, "path %s in %s updated = %d\n",
+	dev_dbg(eth->dev, "path %s in %s updated = %d\n",
 		 mtk_eth_path_name[path], __func__, updated);
 
 	return 0;
@@ -133,7 +133,7 @@ static int set_mux_gmac1_gmac2_to_sgmii_rgmii(struct mtk_eth *eth, int path)
 		regmap_update_bits(eth->ethsys, ETHSYS_SYSCFG0,
 				   SYSCFG0_SGMII_MASK, val);
 
-	dev_info(eth->dev, "path %s in %s updated = %d\n",
+	dev_dbg(eth->dev, "path %s in %s updated = %d\n",
 		 mtk_eth_path_name[path], __func__, updated);
 
 	return 0;
@@ -165,10 +165,10 @@ static int set_mux_gmac12_to_gephy_sgmii(struct mtk_eth *eth, int path)
 				   SYSCFG0_SGMII_MASK, val);
 
 	if (!updated)
-		dev_info(eth->dev, "path %s no needs updatiion in %s\n",
+		dev_dbg(eth->dev, "path %s no needs updatiion in %s\n",
 			 mtk_eth_path_name[path], __func__);
 
-	dev_info(eth->dev, "path %s in %s updated = %d\n",
+	dev_dbg(eth->dev, "path %s in %s updated = %d\n",
 		 mtk_eth_path_name[path], __func__, updated);
 
 	return 0;
@@ -187,7 +187,7 @@ static int mtk_eth_mux_setup(struct mtk_eth *eth, int path)
 	int i, err = 0;
 
 	if (!MTK_HAS_CAPS(eth->soc->caps, MTK_PATH_BIT(path))) {
-		dev_info(eth->dev, "path %s isn't support on the SoC\n",
+		dev_dbg(eth->dev, "path %s isn't support on the SoC\n",
 			 mtk_eth_path_name[path]);
 		return -EINVAL;
 	}
@@ -202,7 +202,7 @@ static int mtk_eth_mux_setup(struct mtk_eth *eth, int path)
 			if (err)
 				goto out;
 		} else {
-			dev_info(eth->dev, "mux %s isn't present on the SoC\n",
+			dev_dbg(eth->dev, "mux %s isn't present on the SoC\n",
 				 mtk_eth_mux_name[i]);
 		}
 	}

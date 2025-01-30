@@ -665,7 +665,7 @@ void oaktrail_hdmi_init(struct drm_device *dev,
 	connector->interlace_allowed = false;
 	connector->doublescan_allowed = false;
 	drm_connector_register(connector);
-	dev_info(dev->dev, "HDMI initialised.\n");
+	dev_dbg(dev->dev, "HDMI initialised.\n");
 
 	return;
 
@@ -721,7 +721,7 @@ void oaktrail_hdmi_setup(struct drm_device *dev)
 	dev_priv->hdmi_priv = hdmi_dev;
 	oaktrail_hdmi_audio_disable(dev);
 
-	dev_info(dev->dev, "HDMI hardware present.\n");
+	dev_dbg(dev->dev, "HDMI hardware present.\n");
 
 	return;
 

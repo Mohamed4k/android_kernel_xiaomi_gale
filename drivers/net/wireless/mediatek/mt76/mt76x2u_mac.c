@@ -227,7 +227,7 @@ void mt76x2u_mac_setaddr(struct mt76x2_dev *dev, u8 *addr)
 
 	if (!is_valid_ether_addr(dev->mt76.macaddr)) {
 		eth_random_addr(dev->mt76.macaddr);
-		dev_info(dev->mt76.dev,
+		dev_dbg(dev->mt76.dev,
 			 "Invalid MAC address, using random address %pM\n",
 			 dev->mt76.macaddr);
 	}

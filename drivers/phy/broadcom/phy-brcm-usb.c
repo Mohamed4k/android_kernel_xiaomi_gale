@@ -245,7 +245,7 @@ static int brcm_usb_phy_dvr_init(struct device *dev,
 
 	priv->usb_20_clk = of_clk_get_by_name(dn, "sw_usb");
 	if (IS_ERR(priv->usb_20_clk)) {
-		dev_info(dev, "Clock not found in Device Tree\n");
+		dev_dbg(dev, "Clock not found in Device Tree\n");
 		priv->usb_20_clk = NULL;
 	}
 	err = clk_prepare_enable(priv->usb_20_clk);
@@ -275,7 +275,7 @@ static int brcm_usb_phy_dvr_init(struct device *dev,
 
 		priv->usb_30_clk = of_clk_get_by_name(dn, "sw_usb3");
 		if (IS_ERR(priv->usb_30_clk)) {
-			dev_info(dev,
+			dev_dbg(dev,
 				 "USB3.0 clock not found in Device Tree\n");
 			priv->usb_30_clk = NULL;
 		}

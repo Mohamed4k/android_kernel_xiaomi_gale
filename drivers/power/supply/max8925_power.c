@@ -134,7 +134,7 @@ static irqreturn_t max8925_charger_handler(int irq, void *data)
 		break;
 	case MAX8925_IRQ_VCHG_SYSLOW_R:
 		/* VSYS is low */
-		dev_info(chip->dev, "Sys power is too low\n");
+		dev_dbg(chip->dev, "Sys power is too low\n");
 		break;
 	case MAX8925_IRQ_VCHG_SYSLOW_F:
 		dev_dbg(chip->dev, "Sys power is above low threshold\n");

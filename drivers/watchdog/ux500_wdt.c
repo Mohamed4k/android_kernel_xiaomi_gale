@@ -109,7 +109,7 @@ static int ux500_wdt_probe(struct platform_device *pdev)
 	if (ret)
 		return ret;
 
-	dev_info(&pdev->dev, "initialized\n");
+	dev_dbg(&pdev->dev, "initialized\n");
 
 	return 0;
 }

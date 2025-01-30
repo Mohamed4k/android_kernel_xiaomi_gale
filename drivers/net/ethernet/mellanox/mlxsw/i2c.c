@@ -494,7 +494,7 @@ static int mlxsw_i2c_probe(struct i2c_client *client,
 		goto errout;
 	}
 
-	dev_info(&client->dev, "%s mb size=%x off=0x%08x out mb size=%x off=0x%08x\n",
+	dev_dbg(&client->dev, "%s mb size=%x off=0x%08x out mb size=%x off=0x%08x\n",
 		 id->name, mlxsw_i2c->cmd.mb_size_in,
 		 mlxsw_i2c->cmd.mb_off_in, mlxsw_i2c->cmd.mb_size_out,
 		 mlxsw_i2c->cmd.mb_off_out);

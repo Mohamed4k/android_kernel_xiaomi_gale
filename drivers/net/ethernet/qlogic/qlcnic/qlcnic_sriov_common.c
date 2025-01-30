@@ -213,7 +213,7 @@ int qlcnic_sriov_init(struct qlcnic_adapter *adapter, int num_vfs)
 			vp->min_tx_bw = MIN_BW;
 			vp->spoofchk = false;
 			eth_random_addr(vp->mac);
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				 "MAC Address %pM is configured for VF %d\n",
 				 vp->mac, i);
 		}
@@ -402,7 +402,7 @@ int qlcnic_sriov_get_vf_vport_info(struct qlcnic_adapter *adapter,
 	npar_info->max_local_ipv6_addrs = MSW(cmd.rsp.arg[8]);
 	npar_info->max_remote_ipv6_addrs = LSW(cmd.rsp.arg[9]);
 
-	dev_info(dev, "\n\tmin_tx_bw: %d, max_tx_bw: %d max_tx_ques: %d,\n"
+	dev_dbg(dev, "\n\tmin_tx_bw: %d, max_tx_bw: %d max_tx_ques: %d,\n"
 		 "\tmax_tx_mac_filters: %d max_rx_mcast_mac_filters: %d,\n"
 		 "\tmax_rx_ucast_mac_filters: 0x%x, max_rx_ip_addr: %d,\n"
 		 "\tmax_rx_lro_flow: %d max_rx_status_rings: %d,\n"
@@ -441,7 +441,7 @@ static int qlcnic_sriov_set_guest_vlan_mode(struct qlcnic_adapter *adapter,
 
 	sriov->any_vlan = cmd->rsp.arg[2] & 0xf;
 	sriov->num_allowed_vlans = cmd->rsp.arg[2] >> 16;
-	dev_info(&adapter->pdev->dev, "Number of allowed Guest VLANs = %d\n",
+	dev_dbg(&adapter->pdev->dev, "Number of allowed Guest VLANs = %d\n",
 		 sriov->num_allowed_vlans);
 
 	qlcnic_sriov_alloc_vlans(adapter);
@@ -513,7 +513,7 @@ static int qlcnic_sriov_vf_init_driver(struct qlcnic_adapter *adapter)
 
 	qlcnic_sriov_vf_cfg_buff_desc(adapter);
 	adapter->flags |= QLCNIC_ADAPTER_INITIALIZED;
-	dev_info(&adapter->pdev->dev, "HAL Version: %d\n",
+	dev_dbg(&adapter->pdev->dev, "HAL Version: %d\n",
 		 adapter->ahw->fw_hal_version);
 
 	ahw->physical_port = (u8) nic_info.phys_port;
@@ -575,7 +575,7 @@ static int qlcnic_sriov_setup_vf(struct qlcnic_adapter *adapter,
 		goto err_out_send_channel_term;
 
 	pci_set_drvdata(adapter->pdev, adapter);
-	dev_info(&adapter->pdev->dev, "%s: XGbE port initialized\n",
+	dev_dbg(&adapter->pdev->dev, "%s: XGbE port initialized\n",
 		 adapter->netdev->name);
 
 	qlcnic_schedule_work(adapter, qlcnic_sriov_vf_poll_dev_state,
@@ -648,7 +648,7 @@ void qlcnic_sriov_vf_set_ops(struct qlcnic_adapter *adapter)
 	struct qlcnic_hardware_context *ahw = adapter->ahw;
 
 	ahw->op_mode = QLCNIC_SRIOV_VF_FUNC;
-	dev_info(&adapter->pdev->dev,
+	dev_dbg(&adapter->pdev->dev,
 		 "HAL Version: %d Non Privileged SRIOV function\n",
 		 ahw->fw_hal_version);
 	adapter->nic_ops = &qlcnic_sriov_vf_ops;
@@ -1750,7 +1750,7 @@ static int qlcnic_sriov_vf_handle_dev_ready(struct qlcnic_adapter *adapter)
 		if (!qlcnic_sriov_vf_reinit_driver(adapter)) {
 			qlcnic_sriov_vf_attach(adapter);
 			adapter->fw_fail_cnt = 0;
-			dev_info(dev,
+			dev_dbg(dev,
 				 "%s: Reinitialization of VF 0x%x done after FW reset\n",
 				 __func__, func);
 		} else {
@@ -1758,7 +1758,7 @@ static int qlcnic_sriov_vf_handle_dev_ready(struct qlcnic_adapter *adapter)
 				"%s: Reinitialization of VF 0x%x failed after FW reset\n",
 				__func__, func);
 			state = QLCRDX(ahw, QLC_83XX_IDC_DEV_STATE);
-			dev_info(dev, "Current state 0x%x after FW reset\n",
+			dev_dbg(dev, "Current state 0x%x after FW reset\n",
 				 state);
 		}
 	}
@@ -1781,7 +1781,7 @@ static int qlcnic_sriov_vf_handle_context_reset(struct qlcnic_adapter *adapter)
 	if (adapter->reset_ctx_cnt < 3) {
 		adapter->need_fw_reset = 1;
 		clear_bit(QLC_83XX_MBX_READY, &mbx->status);
-		dev_info(dev,
+		dev_dbg(dev,
 			 "Resetting context, wait here to check if FW is in failed state\n");
 		return 0;
 	}
@@ -1800,8 +1800,8 @@ static int qlcnic_sriov_vf_handle_context_reset(struct qlcnic_adapter *adapter)
 		return -EIO;
 	}
 
-	dev_info(dev, "Resetting context of VF 0x%x\n", func);
-	dev_info(dev, "%s: Context reset count %d for VF 0x%x\n",
+	dev_dbg(dev, "Resetting context of VF 0x%x\n", func);
+	dev_dbg(dev, "%s: Context reset count %d for VF 0x%x\n",
 		 __func__, adapter->reset_ctx_cnt, func);
 	set_bit(__QLCNIC_RESETTING, &adapter->state);
 	adapter->need_fw_reset = 1;
@@ -1814,12 +1814,12 @@ static int qlcnic_sriov_vf_handle_context_reset(struct qlcnic_adapter *adapter)
 		adapter->tx_timeo_cnt = 0;
 		adapter->reset_ctx_cnt = 0;
 		adapter->fw_fail_cnt = 0;
-		dev_info(dev, "Done resetting context for VF 0x%x\n", func);
+		dev_dbg(dev, "Done resetting context for VF 0x%x\n", func);
 	} else {
 		dev_err(dev, "%s: Reinitialization of VF 0x%x failed\n",
 			__func__, func);
 		state = QLCRDX(ahw, QLC_83XX_IDC_DEV_STATE);
-		dev_info(dev, "%s: Current state 0x%x\n", __func__, state);
+		dev_dbg(dev, "%s: Current state 0x%x\n", __func__, state);
 	}
 
 	return 0;
@@ -1858,7 +1858,7 @@ qlcnic_sriov_vf_idc_need_quiescent_state(struct qlcnic_adapter *adapter)
 	struct qlcnic_mailbox *mbx = adapter->ahw->mailbox;
 	struct qlc_83xx_idc *idc = &adapter->ahw->idc;
 
-	dev_info(&adapter->pdev->dev, "Device is in quiescent state\n");
+	dev_dbg(&adapter->pdev->dev, "Device is in quiescent state\n");
 	if (idc->prev_state == QLC_83XX_IDC_DEV_READY) {
 		set_bit(__QLCNIC_RESETTING, &adapter->state);
 		adapter->tx_timeo_cnt = 0;

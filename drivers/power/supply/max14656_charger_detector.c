@@ -207,7 +207,7 @@ static int max14656_hw_init(struct max14656_chip *chip)
 	if (max14656_write_reg(client, MAX14656_INTMASK_2, 0x1))
 		return -EINVAL;
 
-	dev_info(&client->dev, "detected revision %d\n", rev);
+	dev_dbg(&client->dev, "detected revision %d\n", rev);
 	return 0;
 }
 

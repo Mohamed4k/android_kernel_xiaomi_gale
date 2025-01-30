@@ -747,7 +747,7 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
 	DRM_DEBUG_DRIVER("\n");
 
 	if (!meson_hdmi_connector_is_available(dev)) {
-		dev_info(drm->dev, "HDMI Output connector not available\n");
+		dev_dbg(drm->dev, "HDMI Output connector not available\n");
 		return -ENODEV;
 	}
 

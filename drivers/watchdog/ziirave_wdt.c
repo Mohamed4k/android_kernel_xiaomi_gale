@@ -577,7 +577,7 @@ static ssize_t ziirave_wdt_sysfs_store_firm(struct device *dev,
 		goto unlock_mutex;
 	}
 
-	dev_info(&client->dev, "Firmware updated to version 02.%02u.%02u\n",
+	dev_dbg(&client->dev, "Firmware updated to version 02.%02u.%02u\n",
 		 w_priv->firmware_rev.major, w_priv->firmware_rev.minor);
 
 	/* Restore the watchdog timeout */
@@ -619,7 +619,7 @@ static int ziirave_wdt_init_duration(struct i2c_client *client)
 						   "reset-duration-ms",
 						   &reset_duration);
 		if (ret) {
-			dev_info(&client->dev,
+			dev_dbg(&client->dev,
 				 "Unable to set reset pulse duration, using default\n");
 			return 0;
 		}
@@ -628,7 +628,7 @@ static int ziirave_wdt_init_duration(struct i2c_client *client)
 	if (reset_duration < 1 || reset_duration > 255)
 		return -EINVAL;
 
-	dev_info(&client->dev, "Setting reset duration to %dms",
+	dev_dbg(&client->dev, "Setting reset duration to %dms",
 		 reset_duration);
 
 	return i2c_smbus_write_byte_data(client, ZIIRAVE_WDT_RESET_DURATION,
@@ -660,7 +660,7 @@ static int ziirave_wdt_probe(struct i2c_client *client,
 
 	ret = watchdog_init_timeout(&w_priv->wdd, wdt_timeout, &client->dev);
 	if (ret) {
-		dev_info(&client->dev,
+		dev_dbg(&client->dev,
 			 "Unable to select timeout value, using default\n");
 	}
 
@@ -684,7 +684,7 @@ static int ziirave_wdt_probe(struct i2c_client *client,
 		if (ret)
 			return ret;
 
-		dev_info(&client->dev, "Timeout set to %ds.",
+		dev_dbg(&client->dev, "Timeout set to %ds.",
 			 w_priv->wdd.timeout);
 	}
 

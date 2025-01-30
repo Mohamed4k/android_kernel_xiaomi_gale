@@ -1188,7 +1188,7 @@ static int hns3_nic_net_set_mac_address(struct net_device *netdev, void *p)
 		return -EADDRNOTAVAIL;
 
 	if (ether_addr_equal(netdev->dev_addr, mac_addr->sa_data)) {
-		netdev_info(netdev, "already using mac address %pM\n",
+		netdev_dbg(netdev, "already using mac address %pM\n",
 			    mac_addr->sa_data);
 		return 0;
 	}
@@ -1474,7 +1474,7 @@ static bool hns3_get_tx_timeo_queue_info(struct net_device *ndev)
 		    time_after(jiffies,
 			       (trans_start + ndev->watchdog_timeo))) {
 			timeout_queue = i;
-			netdev_info(ndev, "queue state: 0x%lx, delta msecs: %u\n",
+			netdev_dbg(ndev, "queue state: 0x%lx, delta msecs: %u\n",
 				    q->state,
 				    jiffies_to_msecs(jiffies - trans_start));
 			break;
@@ -1482,7 +1482,7 @@ static bool hns3_get_tx_timeo_queue_info(struct net_device *ndev)
 	}
 
 	if (i == ndev->num_tx_queues) {
-		netdev_info(ndev,
+		netdev_dbg(ndev,
 			    "no netdev TX timeout queue found, timeout count: %llu\n",
 			    priv->tx_timeout_count);
 		return false;
@@ -1494,7 +1494,7 @@ static bool hns3_get_tx_timeo_queue_info(struct net_device *ndev)
 				HNS3_RING_TX_RING_HEAD_REG);
 	hw_tail = readl_relaxed(tx_ring->tqp->io_base +
 				HNS3_RING_TX_RING_TAIL_REG);
-	netdev_info(ndev,
+	netdev_dbg(ndev,
 		    "tx_timeout count: %llu, queue id: %d, SW_NTU: 0x%x, SW_NTC: 0x%x, HW_HEAD: 0x%x, HW_TAIL: 0x%x, INT: 0x%x\n",
 		    priv->tx_timeout_count,
 		    timeout_queue,
@@ -3254,11 +3254,11 @@ static void hns3_link_status_change(struct hnae3_handle *handle, bool linkup)
 	if (linkup) {
 		netif_carrier_on(netdev);
 		netif_tx_wake_all_queues(netdev);
-		netdev_info(netdev, "link up\n");
+		netdev_dbg(netdev, "link up\n");
 	} else {
 		netif_carrier_off(netdev);
 		netif_tx_stop_all_queues(netdev);
-		netdev_info(netdev, "link down\n");
+		netdev_dbg(netdev, "link down\n");
 	}
 }
 
@@ -3682,7 +3682,7 @@ int hns3_set_channels(struct net_device *netdev,
 				"Revert to old tqp num fail, ret=%d", ret);
 			return ret;
 		}
-		dev_info(&netdev->dev,
+		dev_dbg(&netdev->dev,
 			 "Change tqp num fail, Revert to old tqp num");
 	}
 
@@ -3709,8 +3709,8 @@ static int __init hns3_init_module(void)
 {
 	int ret;
 
-	pr_info("%s: %s - version\n", hns3_driver_name, hns3_driver_string);
-	pr_info("%s: %s\n", hns3_driver_name, hns3_copyright);
+	pr_debug("%s: %s - version\n", hns3_driver_name, hns3_driver_string);
+	pr_debug("%s: %s\n", hns3_driver_name, hns3_copyright);
 
 	client.type = HNAE3_CLIENT_KNIC;
 	snprintf(client.name, HNAE3_CLIENT_NAME_LENGTH - 1, "%s",

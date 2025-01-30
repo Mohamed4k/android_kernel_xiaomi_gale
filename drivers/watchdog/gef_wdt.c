@@ -113,7 +113,7 @@ static void gef_wdt_handler_enable(void)
 	if (gef_wdt_toggle_wdc(GEF_WDC_ENABLED_FALSE,
 				   GEF_WDC_ENABLE_SHIFT)) {
 		gef_wdt_service();
-		pr_notice("watchdog activated\n");
+		pr_debug("watchdog activated\n");
 	}
 }
 
@@ -121,7 +121,7 @@ static void gef_wdt_handler_disable(void)
 {
 	if (gef_wdt_toggle_wdc(GEF_WDC_ENABLED_TRUE,
 				   GEF_WDC_ENABLE_SHIFT))
-		pr_notice("watchdog deactivated\n");
+		pr_debug("watchdog deactivated\n");
 }
 
 static void gef_wdt_set_timeout(unsigned int timeout)
@@ -316,7 +316,7 @@ static struct platform_driver gef_wdt_driver = {
 
 static int __init gef_wdt_init(void)
 {
-	pr_info("GE watchdog driver\n");
+	pr_debug("GE watchdog driver\n");
 	return platform_driver_register(&gef_wdt_driver);
 }
 

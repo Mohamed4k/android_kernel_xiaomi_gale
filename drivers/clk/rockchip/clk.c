@@ -311,7 +311,7 @@ static struct clk *rockchip_clk_register_frac_branch(
 				pr_err("%s: failed to register clock notifier for %s\n",
 						__func__, name);
 		} else {
-			pr_warn("%s: could not find %s as parent of %s, rate changes may not work\n",
+			pr_debug("%s: could not find %s as parent of %s, rate changes may not work\n",
 				__func__, name, child->name);
 		}
 	}

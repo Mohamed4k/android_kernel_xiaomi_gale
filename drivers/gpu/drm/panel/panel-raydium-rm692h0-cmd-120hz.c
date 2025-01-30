@@ -96,7 +96,7 @@ static void lcm_dcs_write(struct lcm *ctx, const void *data, size_t len)
 	else
 		ret = mipi_dsi_generic_write(dsi, data, len);
 	if (ret < 0) {
-		dev_info(ctx->dev, "error %zd writing seq: %ph\n", ret, data);
+		dev_dbg(ctx->dev, "error %zd writing seq: %ph\n", ret, data);
 		ctx->error = ret;
 	}
 }
@@ -112,7 +112,7 @@ static int lcm_dcs_read(struct lcm *ctx, u8 cmd, void *data, size_t len)
 
 	ret = mipi_dsi_dcs_read(dsi, cmd, data, len);
 	if (ret < 0) {
-		dev_info(ctx->dev, "error %d reading dcs seq:(%#x)\n", ret, cmd);
+		dev_dbg(ctx->dev, "error %d reading dcs seq:(%#x)\n", ret, cmd);
 		ctx->error = ret;
 	}
 
@@ -126,7 +126,7 @@ static void lcm_panel_get_data(struct lcm *ctx)
 
 	if (ret == 0) {
 		ret = lcm_dcs_read(ctx,  0x0A, buffer, 1);
-		dev_info(ctx->dev, "return %d data(0x%08x) to dsi engine\n",
+		dev_dbg(ctx->dev, "return %d data(0x%08x) to dsi engine\n",
 			 ret, buffer[0] | (buffer[1] << 8));
 	}
 }
@@ -138,25 +138,25 @@ static int lcm_vddi_enable(struct lcm *ctx)
 	unsigned int vol = 0;
 
 	if (!ctx->vddi) {
-		dev_info(ctx->dev, "vddi connot find\n");
+		dev_dbg(ctx->dev, "vddi connot find\n");
 		return -1;
 	}
 
 	ret = regulator_set_voltage(ctx->vddi, 1800000, 1800000);
 	if (ret) {
-		dev_info(ctx->dev, "vddi set voltage fail\n");
+		dev_dbg(ctx->dev, "vddi set voltage fail\n");
 		return ret;
 	}
 
 	vol = regulator_get_voltage(ctx->vddi);
 	if (vol == 1800000)
-		dev_info(ctx->dev, "check vol=1800000 pass!\n");
+		dev_dbg(ctx->dev, "check vol=1800000 pass!\n");
 	else
-		dev_info(ctx->dev, "check vol=1800000 fail!\n");
+		dev_dbg(ctx->dev, "check vol=1800000 fail!\n");
 
 	ret = regulator_enable(ctx->vddi);
 	if (ret)
-		dev_info(ctx->dev, "vddi enable fail\n");
+		dev_dbg(ctx->dev, "vddi enable fail\n");
 
 	return ret;
 }
@@ -167,7 +167,7 @@ static int lcm_vddi_disable(struct lcm *ctx)
 	int isenable = 0;
 
 	if (!ctx->vddi) {
-		dev_info(ctx->dev, "vddi connot find\n");
+		dev_dbg(ctx->dev, "vddi connot find\n");
 		return -1;
 	}
 
@@ -175,7 +175,7 @@ static int lcm_vddi_disable(struct lcm *ctx)
 	if (isenable) {
 		ret = regulator_disable(ctx->vddi);
 		if (ret)
-			dev_info(ctx->dev, "vddi disable fail\n");
+			dev_dbg(ctx->dev, "vddi disable fail\n");
 	}
 
 	return ret;
@@ -187,26 +187,26 @@ static int lcm_vci_enable(struct lcm *ctx)
 	int ret = 0;
 
 	if (!ctx->vci) {
-		dev_info(ctx->dev, "vci connot find\n");
+		dev_dbg(ctx->dev, "vci connot find\n");
 		return -1;
 	}
 
 	ret = regulator_set_voltage(ctx->vci, PANEL_VCI, PANEL_VCI);
 
 	if (ret) {
-		dev_info(ctx->dev, "vci set voltage fail\n");
+		dev_dbg(ctx->dev, "vci set voltage fail\n");
 		return ret;
 	}
 
 	vol = regulator_get_voltage(ctx->vci);
 	if (vol == PANEL_VCI)
-		dev_info(ctx->dev, "check vol=%d pass!\n", PANEL_VCI);
+		dev_dbg(ctx->dev, "check vol=%d pass!\n", PANEL_VCI);
 	else
-		dev_info(ctx->dev, "check vol=%d fail!\n", PANEL_VCI);
+		dev_dbg(ctx->dev, "check vol=%d fail!\n", PANEL_VCI);
 
 	ret = regulator_enable(ctx->vci);
 	if (ret)
-		dev_info(ctx->dev, "vci enable fail\n");
+		dev_dbg(ctx->dev, "vci enable fail\n");
 
 	return ret;
 }
@@ -217,7 +217,7 @@ static int lcm_vci_disable(struct lcm *ctx)
 	int isenable = 0;
 
 	if (!ctx->vci) {
-		dev_info(ctx->dev, "vci connot find\n");
+		dev_dbg(ctx->dev, "vci connot find\n");
 		return -1;
 	}
 
@@ -225,7 +225,7 @@ static int lcm_vci_disable(struct lcm *ctx)
 	if (isenable) {
 		ret = regulator_disable(ctx->vci);
 		if (ret)
-			dev_info(ctx->dev, "vci disable fail\n");
+			dev_dbg(ctx->dev, "vci disable fail\n");
 	}
 
 	return ret;
@@ -233,7 +233,7 @@ static int lcm_vci_disable(struct lcm *ctx)
 
 static void lcm_panel_init(struct lcm *ctx)
 {
-	pr_info("%s +\n", __func__);
+	pr_debug("%s +\n", __func__);
 
 #if WITH_DSC
 	lcm_dcs_write_seq_static(ctx, 0xFE, 0x00);
@@ -419,14 +419,14 @@ static void lcm_panel_init(struct lcm *ctx)
 	lcm_dcs_write_seq_static(ctx, 0x29);
 	mdelay(20);
 
-	pr_info("%s -\n", __func__);
+	pr_debug("%s -\n", __func__);
 }
 
 static int lcm_disable(struct drm_panel *panel)
 {
 	struct lcm *ctx = panel_to_lcm(panel);
 
-	pr_info("%s +\n", __func__);
+	pr_debug("%s +\n", __func__);
 
 	if (!ctx->enabled)
 		return 0;
@@ -438,7 +438,7 @@ static int lcm_disable(struct drm_panel *panel)
 
 	ctx->enabled = false;
 
-	pr_info("%s -\n", __func__);
+	pr_debug("%s -\n", __func__);
 
 	return 0;
 }
@@ -447,7 +447,7 @@ static int lcm_unprepare(struct drm_panel *panel)
 {
 	struct lcm *ctx = panel_to_lcm(panel);
 
-	pr_info("%s +\n", __func__);
+	pr_debug("%s +\n", __func__);
 
 	if (!ctx->prepared)
 		return 0;
@@ -463,7 +463,7 @@ static int lcm_unprepare(struct drm_panel *panel)
 	ctx->reset_gpio =
 		devm_gpiod_get(ctx->dev, "reset", GPIOD_OUT_HIGH);
 	if (IS_ERR(ctx->reset_gpio)) {
-		dev_info(ctx->dev, "%s: cannot get reset_gpio %ld\n",
+		dev_dbg(ctx->dev, "%s: cannot get reset_gpio %ld\n",
 			__func__, PTR_ERR(ctx->reset_gpio));
 		return PTR_ERR(ctx->reset_gpio);
 	}
@@ -478,7 +478,7 @@ static int lcm_unprepare(struct drm_panel *panel)
 	ctx->error = 0;
 	ctx->prepared = false;
 
-	pr_info("%s -\n", __func__);
+	pr_debug("%s -\n", __func__);
 
 	return 0;
 }
@@ -488,20 +488,20 @@ static int lcm_prepare(struct drm_panel *panel)
 	struct lcm *ctx = panel_to_lcm(panel);
 	int ret;
 
-	pr_info("%s +\n", __func__);
+	pr_debug("%s +\n", __func__);
 	if (ctx->prepared)
 		return 0;
 
 	ret = lcm_vddi_enable(ctx);
 	if (ret < 0) {
-		dev_info(ctx->dev, "vddi enable fail\n");
+		dev_dbg(ctx->dev, "vddi enable fail\n");
 		return 0;
 	}
 	mdelay(5);
 
 	ret = lcm_vci_enable(ctx);
 	if (ret < 0) {
-		dev_info(ctx->dev, "vci enable fail\n");
+		dev_dbg(ctx->dev, "vci enable fail\n");
 		return 0;
 	}
 
@@ -510,7 +510,7 @@ static int lcm_prepare(struct drm_panel *panel)
 	ctx->reset_gpio =
 		devm_gpiod_get(ctx->dev, "reset", GPIOD_OUT_HIGH);
 	if (IS_ERR(ctx->reset_gpio)) {
-		dev_info(ctx->dev, "%s: cannot get reset_gpio %ld\n",
+		dev_dbg(ctx->dev, "%s: cannot get reset_gpio %ld\n",
 			__func__, PTR_ERR(ctx->reset_gpio));
 		return 0;
 	}
@@ -529,7 +529,7 @@ static int lcm_prepare(struct drm_panel *panel)
 
 	ret = ctx->error;
 	if (ret < 0) {
-		dev_info(ctx->dev, "ctx error\n");
+		dev_dbg(ctx->dev, "ctx error\n");
 		lcm_unprepare(panel);
 	}
 
@@ -539,7 +539,7 @@ static int lcm_prepare(struct drm_panel *panel)
 	lcm_panel_get_data(ctx);
 #endif
 
-	pr_info("%s -\n", __func__);
+	pr_debug("%s -\n", __func__);
 
 	return ret;
 }
@@ -548,7 +548,7 @@ static int lcm_enable(struct drm_panel *panel)
 {
 	struct lcm *ctx = panel_to_lcm(panel);
 
-	pr_info("%s+\n", __func__);
+	pr_debug("%s+\n", __func__);
 
 	if (ctx->enabled)
 		return 0;
@@ -557,7 +557,7 @@ static int lcm_enable(struct drm_panel *panel)
 		ctx->backlight->props.power = FB_BLANK_UNBLANK;
 		backlight_update_status(ctx->backlight);
 	}
-	pr_info("%s-\n", __func__);
+	pr_debug("%s-\n", __func__);
 
 	ctx->enabled = true;
 
@@ -718,18 +718,18 @@ static int setbacklight_cmdq(void *dsi, dcs_write_gce cb, void *handle,
 	int level_mapping = 0;
 	char bl_tb0[] = {0x51, 0x07, 0xFF};
 
-	pr_info("%s+\n", __func__);
+	pr_debug("%s+\n", __func__);
 
 	if (level > 255)
 		level = 255;
 	bl_level = level;
 
 	level_mapping = level * 0x3FF / 255;
-	pr_info("%s backlight = %d, mapping to 0x%x\n", __func__, level, level_mapping);
+	pr_debug("%s backlight = %d, mapping to 0x%x\n", __func__, level, level_mapping);
 
 	bl_tb0[1] = (u8)((level_mapping >> 8) & 0x7);
 	bl_tb0[2] = (u8)(level_mapping & 0xFF);
-	pr_info("%s tb0=0x%x,tb1=0x%x\n", __func__, bl_tb0[1], bl_tb0[2]);
+	pr_debug("%s tb0=0x%x,tb1=0x%x\n", __func__, bl_tb0[1], bl_tb0[2]);
 
 	if (!cb)
 		return -1;
@@ -743,7 +743,7 @@ static int sethbm_cmdq(struct drm_panel *panel, void *dsi, dcs_write_gce cb, voi
 {
 	char bl_tb0[] = {0x51, 0x07, 0xFF};
 
-	pr_info("%s,benter:%d+\n", __func__, en);
+	pr_debug("%s,benter:%d+\n", __func__, en);
 
 	if (!cb)
 		return -1;
@@ -767,7 +767,7 @@ struct drm_display_mode *get_mode_by_id(struct drm_panel *panel,
 			return m;
 		i++;
 	}
-	pr_info("%s, %d, failed to get mode:%d, total:%u\n", __func__, __LINE__, mode, i);
+	pr_debug("%s, %d, failed to get mode:%d, total:%u\n", __func__, __LINE__, mode, i);
 	return NULL;
 }
 
@@ -777,7 +777,7 @@ static void lcm_mode_switch_to_120(struct drm_panel *panel,
 	if (stage == BEFORE_DSI_POWERDOWN) {
 		struct lcm *ctx = panel_to_lcm(panel);
 
-		pr_info("%s\n", __func__);
+		pr_debug("%s\n", __func__);
 		lcm_dcs_write_seq_static(ctx, 0xFE, 0x40);
 		lcm_dcs_write_seq_static(ctx, 0xBD, 0x00);//00:120HZ,05:60HZ
 		lcm_dcs_write_seq_static(ctx, 0xFE, 0x00);
@@ -790,7 +790,7 @@ static void lcm_mode_switch_to_60(struct drm_panel *panel,
 	if (stage == BEFORE_DSI_POWERDOWN) {
 		struct lcm *ctx = panel_to_lcm(panel);
 
-		pr_info("%s\n", __func__);
+		pr_debug("%s\n", __func__);
 		lcm_dcs_write_seq_static(ctx, 0xFE, 0x40);
 		lcm_dcs_write_seq_static(ctx, 0xBD, 0x05);//00:120HZ,05:60HZ
 		lcm_dcs_write_seq_static(ctx, 0xFE, 0x00);
@@ -825,7 +825,7 @@ static int mtk_panel_ext_param_set(struct drm_panel *panel,
 	struct mtk_panel_ext *ext = find_panel_ext(panel);
 	int ret = 0;
 
-	pr_info("%s+:mode=%d\n", __func__, mode);
+	pr_debug("%s+:mode=%d\n", __func__, mode);
 	if (mode == 0)
 		ext_params.pll_clk = 275;
 	else if (mode == 1)
@@ -876,11 +876,11 @@ static int lcm_get_modes(struct drm_panel *panel)
 	struct drm_display_mode *mode;
 //	struct drm_display_mode *mode_2;
 
-	pr_info("%s+\n", __func__);
+	pr_debug("%s+\n", __func__);
 
 	mode = drm_mode_duplicate(panel->drm, &default_mode);
 	if (!mode) {
-		dev_info(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
+		dev_dbg(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
 			default_mode.hdisplay, default_mode.vdisplay,
 			default_mode.vrefresh);
 		return -ENOMEM;
@@ -892,7 +892,7 @@ static int lcm_get_modes(struct drm_panel *panel)
 
 //	mode_2 = drm_mode_duplicate(panel->drm, &performance_mode_1);
 //	if (!mode_2) {
-//		dev_info(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
+//		dev_dbg(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
 //			performance_mode_1.hdisplay,
 //			performance_mode_1.vdisplay,
 //			performance_mode_1.vrefresh);
@@ -923,7 +923,7 @@ static int lcm_probe(struct mipi_dsi_device *dsi)
 	struct lcm *ctx;
 	int ret;
 
-	pr_info("%s+\n", __func__);
+	pr_debug("%s+\n", __func__);
 
 	ctx = devm_kzalloc(dev, sizeof(struct lcm), GFP_KERNEL);
 	if (!ctx)
@@ -949,7 +949,7 @@ static int lcm_probe(struct mipi_dsi_device *dsi)
 
 	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
 	if (IS_ERR(ctx->reset_gpio)) {
-		dev_info(dev, "%s: cannot get reset-gpios %ld\n",
+		dev_dbg(dev, "%s: cannot get reset-gpios %ld\n",
 			__func__, PTR_ERR(ctx->reset_gpio));
 		return PTR_ERR(ctx->reset_gpio);
 	}
@@ -957,13 +957,13 @@ static int lcm_probe(struct mipi_dsi_device *dsi)
 
 	ctx->vddi = devm_regulator_get(dev, "reg-vddi");
 	if (IS_ERR(ctx->vddi)) {
-		dev_info(dev, "%s: cannot get vddi %ld\n", PTR_ERR(ctx->vddi));
+		dev_dbg(dev, "%s: cannot get vddi %ld\n", PTR_ERR(ctx->vddi));
 		return PTR_ERR(ctx->vddi);
 	}
 
 	ctx->vci = devm_regulator_get(dev, "reg-vci");
 	if (IS_ERR(ctx->vci)) {
-		dev_info(dev, "%s: cannot get vci %ld\n", PTR_ERR(ctx->vci));
+		dev_dbg(dev, "%s: cannot get vci %ld\n", PTR_ERR(ctx->vci));
 		return PTR_ERR(ctx->vci);
 	}
 
@@ -973,7 +973,7 @@ static int lcm_probe(struct mipi_dsi_device *dsi)
 	ret |= lcm_vci_enable(ctx);
 	mdelay(5);
 	if (ret < 0) {
-		dev_info(dev, "lcm power enable fail\n");
+		dev_dbg(dev, "lcm power enable fail\n");
 		return ret;
 	}
 
@@ -986,24 +986,24 @@ static int lcm_probe(struct mipi_dsi_device *dsi)
 
 	ret = drm_panel_add(&ctx->panel);
 	if (ret < 0) {
-		dev_info(dev, "drm_panel_add fail\n");
+		dev_dbg(dev, "drm_panel_add fail\n");
 		return ret;
 	}
 
 	ret = mipi_dsi_attach(dsi);
 	if (ret < 0) {
-		dev_info(dev, "mipi_dsi_attach fail\n");
+		dev_dbg(dev, "mipi_dsi_attach fail\n");
 		drm_panel_remove(&ctx->panel);
 	}
 
 #if defined(CONFIG_MTK_PANEL_EXT)
 	ret = mtk_panel_ext_create(dev, &ext_params, &ext_funcs, &ctx->panel);
 	if (ret < 0) {
-		dev_info(dev, "mtk_panel_ext_create fail\n");
+		dev_dbg(dev, "mtk_panel_ext_create fail\n");
 		return ret;
 	}
 #endif
-	pr_info("%s-\n", __func__);
+	pr_debug("%s-\n", __func__);
 
 	return ret;
 }

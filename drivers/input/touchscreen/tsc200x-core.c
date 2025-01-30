@@ -394,7 +394,7 @@ static void tsc200x_esd_work(struct work_struct *work)
 	 * then we should reset the controller as if from power-up and start
 	 * scanning again.
 	 */
-	dev_info(ts->dev, "TSC200X not responding - resetting\n");
+	dev_dbg(ts->dev, "TSC200X not responding - resetting\n");
 
 	disable_irq(ts->irq);
 	del_timer_sync(&ts->penup_timer);

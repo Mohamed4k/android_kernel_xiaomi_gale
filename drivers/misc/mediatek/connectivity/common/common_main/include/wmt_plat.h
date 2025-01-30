@@ -62,7 +62,7 @@ do { \
 #define WMT_PLAT_PR_WARN(fmt, arg...) \
 do { \
 	if (wmtPlatLogLvl >= WMT_PLAT_LOG_WARN) \
-		pr_warn(DFT_TAG "[W]%s:"  fmt, __func__, ##arg); \
+		pr_info(DFT_TAG "[W]%s:"  fmt, __func__, ##arg); \
 } while (0)
 #define WMT_PLAT_PR_ERR(fmt, arg...) \
 do { \

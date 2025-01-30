@@ -599,7 +599,7 @@ static int bcm63xx_spi_probe(struct platform_device *pdev)
 		goto out_clk_disable;
 	}
 
-	dev_info(dev, "at %pr (irq %d, FIFOs size %d)\n",
+	dev_dbg(dev, "at %pr (irq %d, FIFOs size %d)\n",
 		 r, irq, bs->fifo_size);
 
 	return 0;

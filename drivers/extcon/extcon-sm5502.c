@@ -534,7 +534,7 @@ static void sm5502_init_dev_type(struct sm5502_muic_info *info)
 	version_id = ((reg_data & SM5502_REG_DEVICE_ID_VERSION_MASK) >>
 				SM5502_REG_DEVICE_ID_VERSION_SHIFT);
 
-	dev_info(info->dev, "Device type: version: 0x%x, vendor: 0x%x\n",
+	dev_dbg(info->dev, "Device type: version: 0x%x, vendor: 0x%x\n",
 			    version_id, vendor_id);
 
 	/* Initiazle the register of SM5502 device to bring-up */

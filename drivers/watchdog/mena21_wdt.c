@@ -198,7 +198,7 @@ static int a21_wdt_probe(struct platform_device *pdev)
 		return ret;
 	}
 
-	dev_info(&pdev->dev, "MEN A21 watchdog timer driver enabled\n");
+	dev_dbg(&pdev->dev, "MEN A21 watchdog timer driver enabled\n");
 
 	return 0;
 }

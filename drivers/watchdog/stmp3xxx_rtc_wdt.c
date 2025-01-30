@@ -105,7 +105,7 @@ static int stmp3xxx_wdt_probe(struct platform_device *pdev)
 	if (register_reboot_notifier(&wdt_notifier))
 		dev_warn(&pdev->dev, "cannot register reboot notifier\n");
 
-	dev_info(&pdev->dev, "initialized watchdog with heartbeat %ds\n",
+	dev_dbg(&pdev->dev, "initialized watchdog with heartbeat %ds\n",
 			stmp3xxx_wdd.timeout);
 	return 0;
 }

@@ -138,7 +138,7 @@ static void trusty_task_adjust_pri_cpu(struct trusty_ctx *tctx,
 	struct sched_param param;
 
 /*
- *	dev_info(tctx->dev, "%s mask/pri 0x%x/%d 0x%x/%d\n", __func__,
+ *	dev_dbg(tctx->dev, "%s mask/pri 0x%x/%d 0x%x/%d\n", __func__,
  *		mask[TRUSTY_TASK_KICK_ID], pri[TRUSTY_TASK_KICK_ID],
  *		mask[TRUSTY_TASK_CHK_ID], pri[TRUSTY_TASK_CHK_ID]);
  */
@@ -150,7 +150,7 @@ static void trusty_task_adjust_pri_cpu(struct trusty_ctx *tctx,
 		cpumask_clear(&task_cmask);
 		for_each_possible_cpu(cpu) {
 			if (cpu > 31) {
-				dev_info(tctx->dev, "%s not support cpu# > 32\n", __func__);
+				dev_dbg(tctx->dev, "%s not support cpu# > 32\n", __func__);
 				continue;
 			}
 			if (mask[task_id] & (1<<cpu))
@@ -158,7 +158,7 @@ static void trusty_task_adjust_pri_cpu(struct trusty_ctx *tctx,
 		}
 
 /*
- *		dev_info(tctx->dev, "%s cmask[%d]=%*pbl\n", __func__, task_id,
+ *		dev_dbg(tctx->dev, "%s cmask[%d]=%*pbl\n", __func__, task_id,
  *					cpumask_pr_args(&task_cmask));
  */
 
@@ -169,7 +169,7 @@ static void trusty_task_adjust_pri_cpu(struct trusty_ctx *tctx,
 
 			if (need_bindcpu) {
 				set_cpus_allowed_ptr(task_info->fd[task_cnt], &task_cmask);
-				dev_info(tctx->dev, "%s task[%d][%d]cmask=%*pbl\n", __func__,
+				dev_dbg(tctx->dev, "%s task[%d][%d]cmask=%*pbl\n", __func__,
 					task_id, task_cnt, cpumask_pr_args(&task_cmask));
 			}
 
@@ -186,7 +186,7 @@ static void trusty_task_adjust_pri_cpu(struct trusty_ctx *tctx,
 				sched_setscheduler(task_info->fd[task_cnt],
 						SCHED_FIFO, &param);
 #else
-				dev_info(tctx->dev, "%s not support rt\n", __func__);
+				dev_dbg(tctx->dev, "%s not support rt\n", __func__);
 #endif
 			}
 		}
@@ -241,7 +241,7 @@ static void kick_vq(struct trusty_ctx *tctx,
 	ret = trusty_std_call32(tctx->trusty_dev, smcnr_kick_vq,
 				tvdev->notifyid, tvr->notifyid, 0);
 	if (ret) {
-		dev_info(tctx->dev, "vq notify (%d, %d) returned %d\n",
+		dev_dbg(tctx->dev, "vq notify (%d, %d) returned %d\n",
 			 tvdev->notifyid, tvr->notifyid, ret);
 	}
 }
@@ -310,7 +310,7 @@ static int trusty_load_device_descr(struct trusty_ctx *tctx,
 	ret = trusty_call32_mem_buf(tctx->trusty_dev, smcnr_get_descr,
 				    virt_to_page(va), sz, PAGE_KERNEL);
 	if (ret < 0) {
-		dev_info(tctx->dev, "%s: virtio get descr returned (%d)\n",
+		dev_dbg(tctx->dev, "%s: virtio get descr returned (%d)\n",
 			 __func__, ret);
 		return -ENODEV;
 	}
@@ -328,7 +328,7 @@ static void trusty_virtio_stop(struct trusty_ctx *tctx, void *va, size_t sz)
 	ret = trusty_call32_mem_buf(tctx->trusty_dev, smcnr_virtio_stop,
 				    virt_to_page(va), sz, PAGE_KERNEL);
 	if (ret) {
-		dev_info(tctx->dev, "%s: virtio done returned (%d)\n",
+		dev_dbg(tctx->dev, "%s: virtio done returned (%d)\n",
 			 __func__, ret);
 		return;
 	}
@@ -345,7 +345,7 @@ static int trusty_virtio_start(struct trusty_ctx *tctx, void *va, size_t sz)
 	ret = trusty_call32_mem_buf(tctx->trusty_dev, smcnr_virtio_start,
 				    virt_to_page(va), sz, PAGE_KERNEL);
 	if (ret) {
-		dev_info(tctx->dev, "%s: virtio start returned (%d)\n",
+		dev_dbg(tctx->dev, "%s: virtio start returned (%d)\n",
 			 __func__, ret);
 		return -ENODEV;
 	}
@@ -478,7 +478,7 @@ static struct virtqueue *_find_vq(struct virtio_device *vdev,
 	/* allocate memory for the vring. */
 	tvr->vaddr = alloc_pages_exact(tvr->size, GFP_KERNEL | __GFP_ZERO);
 	if (!tvr->vaddr) {
-		dev_info(&vdev->dev, "vring alloc failed\n");
+		dev_dbg(&vdev->dev, "vring alloc failed\n");
 		return ERR_PTR(-ENOMEM);
 	}
 
@@ -501,7 +501,7 @@ static struct virtqueue *_find_vq(struct virtio_device *vdev,
 				      trusty_virtio_notify, callback, name);
 
 	if (!tvr->vq) {
-		dev_info(&vdev->dev, "vring_new_virtqueue %s failed\n", name);
+		dev_dbg(&vdev->dev, "vring_new_virtqueue %s failed\n", name);
 		goto err_new_virtqueue;
 	}
 
@@ -567,7 +567,7 @@ static int trusty_virtio_add_device(struct trusty_ctx *tctx,
 			vdev_descr->num_of_vrings * sizeof(struct trusty_vring),
 			GFP_KERNEL);
 	if (!tvdev) {
-		dev_info(tctx->dev, "Failed to allocate VDEV\n");
+		dev_dbg(tctx->dev, "Failed to allocate VDEV\n");
 		return -ENOMEM;
 	}
 
@@ -613,7 +613,7 @@ static int trusty_virtio_add_device(struct trusty_ctx *tctx,
 	/* register device */
 	ret = register_virtio_device(&tvdev->vdev);
 	if (ret) {
-		dev_info(tctx->dev,
+		dev_dbg(tctx->dev,
 			 "Failed (%d) to register device dev type %u\n",
 			 ret, vdev_descr->id);
 		goto err_register;
@@ -635,13 +635,13 @@ static int trusty_set_tee_name(struct trusty_ctx *tctx,
 	char *str;
 
 	if (!node) {
-		dev_info(tctx->dev, "[%s] of_node required\n", __func__);
+		dev_dbg(tctx->dev, "[%s] of_node required\n", __func__);
 		return -EINVAL;
 	}
 
 	of_property_read_string(node, "tee-name", (const char **)&str);
 	strncpy(cfg->dev_name.tee_name, str, MAX_MINOR_NAME_LEN - 1);
-	pr_info("[%s] set tee_name: %s\n", __func__, cfg->dev_name.tee_name);
+	pr_debug("[%s] set tee_name: %s\n", __func__, cfg->dev_name.tee_name);
 
 	return 0;
 }
@@ -653,19 +653,19 @@ static int trusty_parse_device_descr(struct trusty_ctx *tctx,
 	struct resource_table *descr = descr_va;
 
 	if (descr_sz < sizeof(*descr)) {
-		dev_info(tctx->dev, "descr table is too small (0x%x)\n",
+		dev_dbg(tctx->dev, "descr table is too small (0x%x)\n",
 			 (int)descr_sz);
 		return -ENODEV;
 	}
 
 	if (descr->ver != RSC_DESCR_VER) {
-		dev_info(tctx->dev, "unexpected descr ver (0x%x)\n",
+		dev_dbg(tctx->dev, "unexpected descr ver (0x%x)\n",
 			 (int)descr->ver);
 		return -ENODEV;
 	}
 
 	if (descr_sz < (sizeof(*descr) + descr->num * sizeof(u32))) {
-		dev_info(tctx->dev, "descr table is too small (0x%x)\n",
+		dev_dbg(tctx->dev, "descr table is too small (0x%x)\n",
 			 (int)descr->ver);
 		return -ENODEV;
 	}
@@ -683,14 +683,14 @@ static int trusty_parse_device_descr(struct trusty_ctx *tctx,
 		u32 offset = descr->offset[i];
 
 		if (offset >= descr_sz) {
-			dev_info(tctx->dev, "offset is out of bounds (%u)\n",
+			dev_dbg(tctx->dev, "offset is out of bounds (%u)\n",
 				 (uint) offset);
 			return -ENODEV;
 		}
 
 		/* check space for rsc header */
 		if ((descr_sz - offset) < sizeof(struct fw_rsc_hdr)) {
-			dev_info(tctx->dev, "no space for rsc header (%u)\n",
+			dev_dbg(tctx->dev, "no space for rsc header (%u)\n",
 				 (uint) offset);
 			return -ENODEV;
 		}
@@ -699,14 +699,14 @@ static int trusty_parse_device_descr(struct trusty_ctx *tctx,
 
 		/* check type */
 		if (hdr->type != RSC_VDEV) {
-			dev_info(tctx->dev, "unsupported rsc type (%u)\n",
+			dev_dbg(tctx->dev, "unsupported rsc type (%u)\n",
 				 (uint) hdr->type);
 			continue;
 		}
 
 		/* got vdev: check space for vdev */
 		if ((descr_sz - offset) < sizeof(struct fw_rsc_vdev)) {
-			dev_info(tctx->dev, "no space for vdev descr (%u)\n",
+			dev_dbg(tctx->dev, "no space for vdev descr (%u)\n",
 				 (uint) offset);
 			return -ENODEV;
 		}
@@ -718,7 +718,7 @@ static int trusty_parse_device_descr(struct trusty_ctx *tctx,
 		    vd->config_len;
 
 		if ((descr_sz - offset) < vd_sz) {
-			dev_info(tctx->dev, "no space for vdev (%u)\n",
+			dev_dbg(tctx->dev, "no space for vdev (%u)\n",
 				 (uint) offset);
 			return -ENODEV;
 		}
@@ -733,7 +733,7 @@ static int trusty_parse_device_descr(struct trusty_ctx *tctx,
 	return 0;
 
 err_wrong_tee_id:
-	pr_info("Raise a panic, cannot resume.");
+	pr_debug("Raise a panic, cannot resume.");
 	return 0;
 }
 
@@ -766,7 +766,7 @@ static int trusty_virtio_add_devices(struct trusty_ctx *tctx)
 	descr_buf_sz = PAGE_SIZE;
 	descr_va = alloc_pages_exact(descr_buf_sz, GFP_KERNEL | __GFP_ZERO);
 	if (!descr_va) {
-		dev_info(tctx->dev, "Failed to allocate shared area\n");
+		dev_dbg(tctx->dev, "Failed to allocate shared area\n");
 		return -ENOMEM;
 	}
 
@@ -776,7 +776,7 @@ static int trusty_virtio_add_devices(struct trusty_ctx *tctx)
 	 */
 	ret = trusty_load_device_descr(tctx, descr_va, descr_buf_sz);
 	if (ret < 0) {
-		dev_info(tctx->dev, "failed (%d) to load device descr\n", ret);
+		dev_dbg(tctx->dev, "failed (%d) to load device descr\n", ret);
 		goto err_load_descr;
 	}
 
@@ -787,7 +787,7 @@ static int trusty_virtio_add_devices(struct trusty_ctx *tctx)
 	/* parse device descriptor and add virtio devices */
 	ret = trusty_parse_device_descr(tctx, descr_va, descr_sz);
 	if (ret) {
-		dev_info(tctx->dev, "failed (%d) to parse device descr\n", ret);
+		dev_dbg(tctx->dev, "failed (%d) to parse device descr\n", ret);
 		goto err_parse_descr;
 	}
 	/* Next task is tipc_virtio_probe */
@@ -801,7 +801,7 @@ static int trusty_virtio_add_devices(struct trusty_ctx *tctx)
 	ret = trusty_call_notifier_register(tctx->trusty_dev,
 					    &tctx->call_notifier);
 	if (ret) {
-		dev_info(tctx->dev, "%s: failed (%d) to register notifier\n",
+		dev_dbg(tctx->dev, "%s: failed (%d) to register notifier\n",
 			 __func__, ret);
 		goto err_register_notifier;
 	}
@@ -809,7 +809,7 @@ static int trusty_virtio_add_devices(struct trusty_ctx *tctx)
 	ret = trusty_callback_notifier_register(tctx->trusty_dev,
 					    &tctx->callback_notifier);
 	if (ret) {
-		dev_info(tctx->dev, "%s: failed (%d) to register notifier\n",
+		dev_dbg(tctx->dev, "%s: failed (%d) to register notifier\n",
 			 __func__, ret);
 		goto err_register_callback;
 	}
@@ -817,7 +817,7 @@ static int trusty_virtio_add_devices(struct trusty_ctx *tctx)
 	/* start virtio */
 	ret = trusty_virtio_start(tctx, descr_va, descr_sz);
 	if (ret) {
-		dev_info(tctx->dev, "failed (%d) to start virtio\n", ret);
+		dev_dbg(tctx->dev, "failed (%d) to start virtio\n", ret);
 		goto err_start_virtio;
 	}
 
@@ -857,7 +857,7 @@ static int trusty_task_kick(void *data)
 	if (task_idx > TRUSTY_TASK_KICK_NUM)
 		return -EINVAL;
 	complete(&tctx->task_info[TRUSTY_TASK_KICK_ID].rdy[task_idx-1]);
-	pr_info("tee%d/%s_%d ->\n", tctx->tee_id, __func__, task_idx);
+	pr_debug("tee%d/%s_%d ->\n", tctx->tee_id, __func__, task_idx);
 
 	while (!kthread_should_stop()) {
 		wait_for_completion_interruptible_timeout(
@@ -868,7 +868,7 @@ static int trusty_task_kick(void *data)
 		} else
 			timeout = msecs_to_jiffies(1000);
 	}
-	pr_info("tee%d/%s_%d -<\n", tctx->tee_id, __func__, task_idx);
+	pr_debug("tee%d/%s_%d -<\n", tctx->tee_id, __func__, task_idx);
 	return 2;
 }
 
@@ -886,7 +886,7 @@ static int trusty_task_chk(void *data)
 	if (task_idx > TRUSTY_TASK_CHK_NUM)
 		return -EINVAL;
 	complete(&tctx->task_info[TRUSTY_TASK_CHK_ID].rdy[task_idx-1]);
-	pr_info("tee%d/%s_%d ->\n", tctx->tee_id, __func__, task_idx);
+	pr_debug("tee%d/%s_%d ->\n", tctx->tee_id, __func__, task_idx);
 
 	while (!kthread_should_stop()) {
 		wait_for_completion_interruptible_timeout(
@@ -896,7 +896,7 @@ static int trusty_task_chk(void *data)
 		else
 			timeout = msecs_to_jiffies(1000);
 	}
-	pr_info("tee%d/%s_%d -<\n", tctx->tee_id, __func__, task_idx);
+	pr_debug("tee%d/%s_%d -<\n", tctx->tee_id, __func__, task_idx);
 	return 2;
 }
 
@@ -908,13 +908,13 @@ static void trusty_task_default_bind(struct trusty_ctx *tctx, int mode)
 	int32_t task_pri[TRUSTY_TASK_MAX_ID];
 
 	if (mode == 0) {
-		dev_info(tctx->dev, "%s not support\n", __func__);
+		dev_dbg(tctx->dev, "%s not support\n", __func__);
 		return;
 	}
 
 	mask = (u32)trusty_fast_call32(tctx->trusty_dev, smcnr_get_cmask,
 			  0, 0, 0);
-	dev_info(tctx->dev, "%s mask=0x%x\n", __func__, mask);
+	dev_dbg(tctx->dev, "%s mask=0x%x\n", __func__, mask);
 	if (mask == 0xffffffff)
 		mask = 0x0;
 
@@ -946,10 +946,10 @@ static void free_trusty_kthread(struct trusty_ctx *tctx)
 			if (IS_ERR(task_info->fd[task_cnt]))
 				continue;
 
-			dev_info(tctx->dev, "%s tee%d task[%d][%d] stop\n",
+			dev_dbg(tctx->dev, "%s tee%d task[%d][%d] stop\n",
 				__func__, tctx->tee_id, task_id, task_cnt);
 			ret = kthread_stop(task_info->fd[task_cnt]);
-			dev_info(tctx->dev, "%s tee%d task[%d][%d] ret=%d\n",
+			dev_dbg(tctx->dev, "%s tee%d task[%d][%d] ret=%d\n",
 				__func__, tctx->tee_id, task_id, task_cnt, ret);
 		}
 
@@ -1002,7 +1002,7 @@ static int trusty_thread_create(struct trusty_ctx *tctx)
 			task_info->fd[task_cnt] =
 				kthread_run(trusty_task_ptr, (void *)tctx, task_name);
 			if (IS_ERR(task_info->fd[task_cnt])) {
-				dev_info(tctx->dev, "%s unable create kthread\n", __func__);
+				dev_dbg(tctx->dev, "%s unable create kthread\n", __func__);
 				ret = PTR_ERR(task_info->fd[task_cnt]);
 				return ret;
 			}
@@ -1025,7 +1025,7 @@ static int trusty_thread_rdy(struct trusty_ctx *tctx)
 			ret = wait_for_completion_timeout(
 				&task_info->rdy[task_cnt], msecs_to_jiffies(5000));
 			if (ret <= 0) {
-				dev_info(tctx->dev, "%s task_id/%d_%d ret=%d\n",
+				dev_dbg(tctx->dev, "%s task_id/%d_%d ret=%d\n",
 					__func__, task_id, task_cnt, ret);
 				return -1;
 			}
@@ -1042,20 +1042,20 @@ static int trusty_virtio_probe(struct platform_device *pdev)
 	int tee_id = -1;
 
 	if (!pnode) {
-		dev_info(&pdev->dev, "of_node required\n");
+		dev_dbg(&pdev->dev, "of_node required\n");
 		return -EINVAL;
 	}
 
 	/* For multiple TEEs */
 	ret = of_property_read_u32(pnode, "tee-id", &tee_id);
 	if (ret != 0) {
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			 "[%s] ERROR: tee_id is not set on device tree\n",
 			 __func__);
 		return -EINVAL;
 	}
 
-	dev_info(&pdev->dev, "--- init trusty-virtio for MTEE %d ---\n",
+	dev_dbg(&pdev->dev, "--- init trusty-virtio for MTEE %d ---\n",
 		 tee_id);
 
 	tctx = kzalloc(sizeof(*tctx), GFP_KERNEL);
@@ -1088,7 +1088,7 @@ static int trusty_virtio_probe(struct platform_device *pdev)
 	ret = trusty_virtio_add_devices(tctx);
 
 	if (ret) {
-		dev_info(&pdev->dev, "Failed to add virtio devices\n");
+		dev_dbg(&pdev->dev, "Failed to add virtio devices\n");
 		goto err_add_devices;
 	}
 
@@ -1099,7 +1099,7 @@ static int trusty_virtio_probe(struct platform_device *pdev)
  */
 	trusty_task_default_bind(tctx, TRUSTY_TASK_DEFAULT_BIND_CPU);
 
-	dev_info(&pdev->dev, "initializing done\n");
+	dev_dbg(&pdev->dev, "initializing done\n");
 	return 0;
 
 err_add_devices:
@@ -1114,7 +1114,7 @@ static int trusty_virtio_remove(struct platform_device *pdev)
 {
 	struct trusty_ctx *tctx = platform_get_drvdata(pdev);
 
-	dev_info(&pdev->dev, "removing\n");
+	dev_dbg(&pdev->dev, "removing\n");
 
 	/* unregister call notifier and wait until workqueue is done */
 	trusty_call_notifier_unregister(tctx->trusty_dev, &tctx->call_notifier);
@@ -1188,7 +1188,7 @@ static int __init trusty_virtio_init(void)
 
 err_nebula_virtio_driver:
 err_trusty_virtio_driver:
-	pr_info("Platform driver register failed");
+	pr_debug("Platform driver register failed");
 	return -ENODEV;
 }
 

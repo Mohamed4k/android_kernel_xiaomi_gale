@@ -355,7 +355,7 @@ static int tc574_config(struct pcmcia_device *link)
 		for (i = 0; i < 3; i++)
 			phys_addr[i] = htons(read_eeprom(ioaddr, i + 10));
 		if (phys_addr[0] == htons(0x6060)) {
-			pr_notice("IO port conflict at 0x%03lx-0x%03lx\n",
+			pr_debug("IO port conflict at 0x%03lx-0x%03lx\n",
 				  dev->base_addr, dev->base_addr+15);
 			goto failed;
 		}
@@ -370,7 +370,7 @@ static int tc574_config(struct pcmcia_device *link)
 		outw(2<<11, ioaddr + RunnerRdCtrl);
 		mcr = inb(ioaddr + 2);
 		outw(0<<11, ioaddr + RunnerRdCtrl);
-		pr_info("  ASIC rev %d,", mcr>>3);
+		pr_debug("  ASIC rev %d,", mcr>>3);
 		EL3WINDOW(3);
 		config = inl(ioaddr + Wn3_Config);
 		lp->default_media = (config & Xcvr) >> Xcvr_shift;
@@ -407,7 +407,7 @@ static int tc574_config(struct pcmcia_device *link)
 			}
 		}
 		if (phy > 32) {
-			pr_notice("  No MII transceivers found!\n");
+			pr_debug("  No MII transceivers found!\n");
 			goto failed;
 		}
 		i = mdio_read(ioaddr, lp->phys, 16) | 0x40;
@@ -423,13 +423,13 @@ static int tc574_config(struct pcmcia_device *link)
 	SET_NETDEV_DEV(dev, &link->dev);
 
 	if (register_netdev(dev) != 0) {
-		pr_notice("register_netdev() failed\n");
+		pr_debug("register_netdev() failed\n");
 		goto failed;
 	}
 
-	netdev_info(dev, "%s at io %#3lx, irq %d, hw_addr %pM\n",
+	netdev_dbg(dev, "%s at io %#3lx, irq %d, hw_addr %pM\n",
 		    cardname, dev->base_addr, dev->irq, dev->dev_addr);
-	netdev_info(dev, " %dK FIFO split %s Rx:Tx, %sMII interface.\n",
+	netdev_dbg(dev, " %dK FIFO split %s Rx:Tx, %sMII interface.\n",
 		    8 << (config & Ram_size),
 		    ram_split[(config & Ram_split) >> Ram_split_shift],
 		    config & Autoselect ? "autoselect " : "");
@@ -473,12 +473,12 @@ static void dump_status(struct net_device *dev)
 {
 	unsigned int ioaddr = dev->base_addr;
 	EL3WINDOW(1);
-	netdev_info(dev, "  irq status %04x, rx status %04x, tx status %02x, tx free %04x\n",
+	netdev_dbg(dev, "  irq status %04x, rx status %04x, tx status %02x, tx free %04x\n",
 		    inw(ioaddr+EL3_STATUS),
 		    inw(ioaddr+RxStatus), inb(ioaddr+TxStatus),
 		    inw(ioaddr+TxFree));
 	EL3WINDOW(4);
-	netdev_info(dev, "  diagnostics: fifo %04x net %04x ethernet %04x media %04x\n",
+	netdev_dbg(dev, "  diagnostics: fifo %04x net %04x ethernet %04x media %04x\n",
 		    inw(ioaddr+0x04), inw(ioaddr+0x06),
 		    inw(ioaddr+0x08), inw(ioaddr+0x0a));
 	EL3WINDOW(1);
@@ -872,7 +872,7 @@ static void media_check(struct timer_list *t)
 	   this, we can limp along even if the interrupt is blocked */
 	if ((inw(ioaddr + EL3_STATUS) & IntLatch) && (inb(ioaddr + Timer) == 0xff)) {
 		if (!lp->fast_poll)
-			netdev_info(dev, "interrupt(s) dropped!\n");
+			netdev_dbg(dev, "interrupt(s) dropped!\n");
 
 		local_irq_save(flags);
 		el3_interrupt(dev->irq, dev);
@@ -895,21 +895,21 @@ static void media_check(struct timer_list *t)
 	
 	if (media != lp->media_status) {
 		if ((media ^ lp->media_status) & 0x0004)
-			netdev_info(dev, "%s link beat\n",
+			netdev_dbg(dev, "%s link beat\n",
 				    (lp->media_status & 0x0004) ? "lost" : "found");
 		if ((media ^ lp->media_status) & 0x0020) {
 			lp->partner = 0;
 			if (lp->media_status & 0x0020) {
-				netdev_info(dev, "autonegotiation restarted\n");
+				netdev_dbg(dev, "autonegotiation restarted\n");
 			} else if (partner) {
 				partner &= lp->advertising;
 				lp->partner = partner;
-				netdev_info(dev, "autonegotiation complete: "
+				netdev_dbg(dev, "autonegotiation complete: "
 					    "%dbaseT-%cD selected\n",
 					    (partner & 0x0180) ? 100 : 10,
 					    (partner & 0x0140) ? 'F' : 'H');
 			} else {
-				netdev_info(dev, "link partner did not autonegotiate\n");
+				netdev_dbg(dev, "link partner did not autonegotiate\n");
 			}
 
 			EL3WINDOW(3);
@@ -919,9 +919,9 @@ static void media_check(struct timer_list *t)
 
 		}
 		if (media & 0x0010)
-			netdev_info(dev, "remote fault detected\n");
+			netdev_dbg(dev, "remote fault detected\n");
 		if (media & 0x0002)
-			netdev_info(dev, "jabber detected\n");
+			netdev_dbg(dev, "jabber detected\n");
 		lp->media_status = media;
 	}
 	spin_unlock_irqrestore(&lp->window_lock, flags);

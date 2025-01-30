@@ -417,7 +417,7 @@ static int stm32_usbphyc_probe(struct platform_device *pdev)
 	}
 
 	version = readl_relaxed(usbphyc->base + STM32_USBPHYC_VERSION);
-	dev_info(dev, "registered rev:%lu.%lu\n",
+	dev_dbg(dev, "registered rev:%lu.%lu\n",
 		 FIELD_GET(MAJREV, version), FIELD_GET(MINREV, version));
 
 	return 0;

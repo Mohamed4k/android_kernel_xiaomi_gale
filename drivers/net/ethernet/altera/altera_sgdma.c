@@ -266,7 +266,7 @@ u32 sgdma_rx_status(struct altera_tse_private *priv)
 
 			rxbuffer = dequeue_rx(priv);
 			if (rxbuffer == NULL)
-				netdev_info(priv->dev,
+				netdev_dbg(priv->dev,
 					    "sgdma rx and rx queue empty!\n");
 
 			/* Clear control */

@@ -461,7 +461,7 @@ int rs600_asic_reset(struct radeon_device *rdev, bool hard)
 	/* Stops all mc clients */
 	rv515_mc_stop(rdev, &save);
 	status = RREG32(R_000E40_RBBM_STATUS);
-	dev_info(rdev->dev, "(%s:%d) RBBM_STATUS=0x%08X\n", __func__, __LINE__, status);
+	dev_dbg(rdev->dev, "(%s:%d) RBBM_STATUS=0x%08X\n", __func__, __LINE__, status);
 	/* stop CP */
 	WREG32(RADEON_CP_CSQ_CNTL, 0);
 	tmp = RREG32(RADEON_CP_RB_CNTL);
@@ -481,7 +481,7 @@ int rs600_asic_reset(struct radeon_device *rdev, bool hard)
 	WREG32(R_0000F0_RBBM_SOFT_RESET, 0);
 	mdelay(1);
 	status = RREG32(R_000E40_RBBM_STATUS);
-	dev_info(rdev->dev, "(%s:%d) RBBM_STATUS=0x%08X\n", __func__, __LINE__, status);
+	dev_dbg(rdev->dev, "(%s:%d) RBBM_STATUS=0x%08X\n", __func__, __LINE__, status);
 	/* reset CP */
 	WREG32(R_0000F0_RBBM_SOFT_RESET, S_0000F0_SOFT_RESET_CP(1));
 	RREG32(R_0000F0_RBBM_SOFT_RESET);
@@ -489,7 +489,7 @@ int rs600_asic_reset(struct radeon_device *rdev, bool hard)
 	WREG32(R_0000F0_RBBM_SOFT_RESET, 0);
 	mdelay(1);
 	status = RREG32(R_000E40_RBBM_STATUS);
-	dev_info(rdev->dev, "(%s:%d) RBBM_STATUS=0x%08X\n", __func__, __LINE__, status);
+	dev_dbg(rdev->dev, "(%s:%d) RBBM_STATUS=0x%08X\n", __func__, __LINE__, status);
 	/* reset MC */
 	WREG32(R_0000F0_RBBM_SOFT_RESET, S_0000F0_SOFT_RESET_MC(1));
 	RREG32(R_0000F0_RBBM_SOFT_RESET);
@@ -497,7 +497,7 @@ int rs600_asic_reset(struct radeon_device *rdev, bool hard)
 	WREG32(R_0000F0_RBBM_SOFT_RESET, 0);
 	mdelay(1);
 	status = RREG32(R_000E40_RBBM_STATUS);
-	dev_info(rdev->dev, "(%s:%d) RBBM_STATUS=0x%08X\n", __func__, __LINE__, status);
+	dev_dbg(rdev->dev, "(%s:%d) RBBM_STATUS=0x%08X\n", __func__, __LINE__, status);
 	/* restore PCI & busmastering */
 	pci_restore_state(rdev->pdev);
 	/* Check if GPU is idle */
@@ -505,7 +505,7 @@ int rs600_asic_reset(struct radeon_device *rdev, bool hard)
 		dev_err(rdev->dev, "failed to reset GPU\n");
 		ret = -1;
 	} else
-		dev_info(rdev->dev, "GPU reset succeed\n");
+		dev_dbg(rdev->dev, "GPU reset succeed\n");
 	rv515_mc_resume(rdev, &save);
 	return ret;
 }

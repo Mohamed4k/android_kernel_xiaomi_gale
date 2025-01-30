@@ -114,7 +114,7 @@ struct vmci_ctx *vmci_ctx_create(u32 cid, u32 priv_flags,
 
 	context = kzalloc(sizeof(*context), GFP_KERNEL);
 	if (!context) {
-		pr_warn("Failed to allocate memory for VMCI context\n");
+		pr_debug("Failed to allocate memory for VMCI context\n");
 		error = -EINVAL;
 		goto err_out;
 	}
@@ -324,7 +324,7 @@ int vmci_ctx_enqueue_datagram(u32 cid, struct vmci_datagram *dg)
 	/* Allocate guest call entry and add it to the target VM's queue. */
 	dq_entry = kmalloc(sizeof(*dq_entry), GFP_KERNEL);
 	if (dq_entry == NULL) {
-		pr_warn("Failed to allocate memory for datagram\n");
+		pr_debug("Failed to allocate memory for datagram\n");
 		vmci_ctx_put(context);
 		return VMCI_ERROR_NO_MEM;
 	}
@@ -836,7 +836,7 @@ int vmci_ctx_set_chkpt_state(u32 context_id,
 		 * We would end up here if VMX with VM to VM communication
 		 * attempts to restore a checkpoint with wellknown handles.
 		 */
-		pr_warn("Attempt to restore checkpoint with obsolete wellknown handles\n");
+		pr_debug("Attempt to restore checkpoint with obsolete wellknown handles\n");
 		return VMCI_ERROR_OBSOLETE;
 	}
 
@@ -1074,7 +1074,7 @@ int vmci_ctx_notify_dbell(u32 src_cid,
 
 		result = vmci_dbell_get_priv_flags(handle, &dst_priv_flags);
 		if (result < VMCI_SUCCESS) {
-			pr_warn("Failed to get privilege flags for destination (handle=0x%x:0x%x)\n",
+			pr_debug("Failed to get privilege flags for destination (handle=0x%x:0x%x)\n",
 				handle.context, handle.resource);
 			goto out;
 		}

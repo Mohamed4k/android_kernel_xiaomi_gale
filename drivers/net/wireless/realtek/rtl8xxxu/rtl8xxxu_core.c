@@ -669,7 +669,7 @@ u8 rtl8xxxu_read8(struct rtl8xxxu_priv *priv, u16 addr)
 	mutex_unlock(&priv->usb_buf_mutex);
 
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_REG_READ)
-		dev_info(&udev->dev, "%s(%04x)   = 0x%02x, len %i\n",
+		dev_dbg(&udev->dev, "%s(%04x)   = 0x%02x, len %i\n",
 			 __func__, addr, data, len);
 	return data;
 }
@@ -689,7 +689,7 @@ u16 rtl8xxxu_read16(struct rtl8xxxu_priv *priv, u16 addr)
 	mutex_unlock(&priv->usb_buf_mutex);
 
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_REG_READ)
-		dev_info(&udev->dev, "%s(%04x)  = 0x%04x, len %i\n",
+		dev_dbg(&udev->dev, "%s(%04x)  = 0x%04x, len %i\n",
 			 __func__, addr, data, len);
 	return data;
 }
@@ -709,7 +709,7 @@ u32 rtl8xxxu_read32(struct rtl8xxxu_priv *priv, u16 addr)
 	mutex_unlock(&priv->usb_buf_mutex);
 
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_REG_READ)
-		dev_info(&udev->dev, "%s(%04x)  = 0x%08x, len %i\n",
+		dev_dbg(&udev->dev, "%s(%04x)  = 0x%08x, len %i\n",
 			 __func__, addr, data, len);
 	return data;
 }
@@ -729,7 +729,7 @@ int rtl8xxxu_write8(struct rtl8xxxu_priv *priv, u16 addr, u8 val)
 	mutex_unlock(&priv->usb_buf_mutex);
 
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_REG_WRITE)
-		dev_info(&udev->dev, "%s(%04x) = 0x%02x\n",
+		dev_dbg(&udev->dev, "%s(%04x) = 0x%02x\n",
 			 __func__, addr, val);
 	return ret;
 }
@@ -748,7 +748,7 @@ int rtl8xxxu_write16(struct rtl8xxxu_priv *priv, u16 addr, u16 val)
 	mutex_unlock(&priv->usb_buf_mutex);
 
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_REG_WRITE)
-		dev_info(&udev->dev, "%s(%04x) = 0x%04x\n",
+		dev_dbg(&udev->dev, "%s(%04x) = 0x%04x\n",
 			 __func__, addr, val);
 	return ret;
 }
@@ -767,7 +767,7 @@ int rtl8xxxu_write32(struct rtl8xxxu_priv *priv, u16 addr, u32 val)
 	mutex_unlock(&priv->usb_buf_mutex);
 
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_REG_WRITE)
-		dev_info(&udev->dev, "%s(%04x) = 0x%08x\n",
+		dev_dbg(&udev->dev, "%s(%04x) = 0x%08x\n",
 			 __func__, addr, val);
 	return ret;
 }
@@ -806,7 +806,7 @@ rtl8xxxu_writeN(struct rtl8xxxu_priv *priv, u16 addr, u8 *buf, u16 len)
 	return len;
 
 write_error:
-	dev_info(&udev->dev,
+	dev_dbg(&udev->dev,
 		 "%s: Failed to write block at addr: %04x size: %04x\n",
 		 __func__, addr, blocksize);
 	return -EAGAIN;
@@ -847,7 +847,7 @@ u32 rtl8xxxu_read_rfreg(struct rtl8xxxu_priv *priv,
 	retval &= 0xfffff;
 
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_RFREG_READ)
-		dev_info(&priv->udev->dev, "%s(%02x) = 0x%06x\n",
+		dev_dbg(&priv->udev->dev, "%s(%02x) = 0x%06x\n",
 			 __func__, reg, retval);
 	return retval;
 }
@@ -864,7 +864,7 @@ int rtl8xxxu_write_rfreg(struct rtl8xxxu_priv *priv,
 	u32 dataaddr, val32;
 
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_RFREG_WRITE)
-		dev_info(&priv->udev->dev, "%s(%02x) = 0x%06x\n",
+		dev_dbg(&priv->udev->dev, "%s(%02x) = 0x%06x\n",
 			 __func__, reg, data);
 
 	data &= FPGA0_LSSI_PARM_DATA_MASK;
@@ -919,7 +919,7 @@ rtl8xxxu_gen1_h2c_cmd(struct rtl8xxxu_priv *priv, struct h2c_cmd *h2c, int len)
 	} while (retry--);
 
 	if (!retry) {
-		dev_info(dev, "%s: Mailbox busy\n", __func__);
+		dev_dbg(dev, "%s: Mailbox busy\n", __func__);
 		retval = -EBUSY;
 		goto error;
 	}
@@ -930,12 +930,12 @@ rtl8xxxu_gen1_h2c_cmd(struct rtl8xxxu_priv *priv, struct h2c_cmd *h2c, int len)
 	if (len > sizeof(u32)) {
 		rtl8xxxu_write16(priv, mbox_ext_reg, le16_to_cpu(h2c->raw.ext));
 		if (rtl8xxxu_debug & RTL8XXXU_DEBUG_H2C)
-			dev_info(dev, "H2C_EXT %04x\n",
+			dev_dbg(dev, "H2C_EXT %04x\n",
 				 le16_to_cpu(h2c->raw.ext));
 	}
 	rtl8xxxu_write32(priv, mbox_reg, le32_to_cpu(h2c->raw.data));
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_H2C)
-		dev_info(dev, "H2C %08x\n", le32_to_cpu(h2c->raw.data));
+		dev_dbg(dev, "H2C %08x\n", le32_to_cpu(h2c->raw.data));
 
 	priv->next_mbox = (mbox_nr + 1) % H2C_MAX_MBOX;
 
@@ -969,7 +969,7 @@ rtl8xxxu_gen2_h2c_cmd(struct rtl8xxxu_priv *priv, struct h2c_cmd *h2c, int len)
 	} while (retry--);
 
 	if (!retry) {
-		dev_info(dev, "%s: Mailbox busy\n", __func__);
+		dev_dbg(dev, "%s: Mailbox busy\n", __func__);
 		retval = -EBUSY;
 		goto error;
 	}
@@ -981,12 +981,12 @@ rtl8xxxu_gen2_h2c_cmd(struct rtl8xxxu_priv *priv, struct h2c_cmd *h2c, int len)
 		rtl8xxxu_write32(priv, mbox_ext_reg,
 				 le32_to_cpu(h2c->raw_wide.ext));
 		if (rtl8xxxu_debug & RTL8XXXU_DEBUG_H2C)
-			dev_info(dev, "H2C_EXT %08x\n",
+			dev_dbg(dev, "H2C_EXT %08x\n",
 				 le32_to_cpu(h2c->raw_wide.ext));
 	}
 	rtl8xxxu_write32(priv, mbox_reg, le32_to_cpu(h2c->raw.data));
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_H2C)
-		dev_info(dev, "H2C %08x\n", le32_to_cpu(h2c->raw.data));
+		dev_dbg(dev, "H2C %08x\n", le32_to_cpu(h2c->raw.data));
 
 	priv->next_mbox = (mbox_nr + 1) % H2C_MAX_MBOX;
 
@@ -1436,7 +1436,7 @@ rtl8xxxu_gen1_set_tx_power(struct rtl8xxxu_priv *priv, int channel, bool ht40)
 	}
 
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_CHANNEL)
-		dev_info(&priv->udev->dev,
+		dev_dbg(&priv->udev->dev,
 			 "%s: Setting TX power CCK A: %02x, "
 			 "CCK B: %02x, OFDM A: %02x, OFDM B: %02x\n",
 			 __func__, cck[0], cck[1], ofdm[0], ofdm[1]);
@@ -1602,13 +1602,13 @@ static void rtl8xxxu_print_chipinfo(struct rtl8xxxu_priv *priv)
 		cut = "unknown";
 	}
 
-	dev_info(dev,
+	dev_dbg(dev,
 		 "RTL%s rev %s (%s) %iT%iR, TX queues %i, WiFi=%i, BT=%i, GPS=%i, HI PA=%i\n",
 		 priv->chip_name, cut, priv->chip_vendor, priv->tx_paths,
 		 priv->rx_paths, priv->ep_tx_count, priv->has_wifi,
 		 priv->has_bluetooth, priv->has_gps, priv->hi_pa);
 
-	dev_info(dev, "RTL%s MAC: %pM\n", priv->chip_name, priv->mac_addr);
+	dev_dbg(dev, "RTL%s MAC: %pM\n", priv->chip_name, priv->mac_addr);
 }
 
 static int rtl8xxxu_identify_chip(struct rtl8xxxu_priv *priv)
@@ -1621,7 +1621,7 @@ static int rtl8xxxu_identify_chip(struct rtl8xxxu_priv *priv)
 	priv->chip_cut = (val32 & SYS_CFG_CHIP_VERSION_MASK) >>
 		SYS_CFG_CHIP_VERSION_SHIFT;
 	if (val32 & SYS_CFG_TRP_VAUX_EN) {
-		dev_info(dev, "Unsupported test chip\n");
+		dev_dbg(dev, "Unsupported test chip\n");
 		return -ENOTSUPP;
 	}
 
@@ -1756,7 +1756,7 @@ static int rtl8xxxu_identify_chip(struct rtl8xxxu_priv *priv)
 			priv->ep_tx_count++;
 			break;
 		default:
-			dev_info(dev, "Unsupported USB TX end-points\n");
+			dev_dbg(dev, "Unsupported USB TX end-points\n");
 			return -ENOTSUPP;
 		}
 	}
@@ -2005,7 +2005,7 @@ static int rtl8xxxu_download_firmware(struct rtl8xxxu_priv *priv)
 
 	val8 = rtl8xxxu_read8(priv, REG_MCU_FW_DL);
 	if (val8 & MCU_FW_RAM_SEL) {
-		pr_info("do the RAM reset\n");
+		pr_debug("do the RAM reset\n");
 		rtl8xxxu_write8(priv, REG_MCU_FW_DL, 0x00);
 		priv->fops->reset_8051(priv);
 	}
@@ -2074,7 +2074,7 @@ int rtl8xxxu_load_firmware(struct rtl8xxxu_priv *priv, char *fw_name)
 	int ret = 0;
 	u16 signature;
 
-	dev_info(dev, "%s: Loading firmware %s\n", DRIVER_NAME, fw_name);
+	dev_dbg(dev, "%s: Loading firmware %s\n", DRIVER_NAME, fw_name);
 	if (request_firmware(&fw, fw_name, &priv->udev->dev)) {
 		dev_warn(dev, "request_firmware(%s) failed\n", fw_name);
 		ret = -EAGAIN;
@@ -2107,7 +2107,7 @@ int rtl8xxxu_load_firmware(struct rtl8xxxu_priv *priv, char *fw_name)
 			 __func__, signature);
 	}
 
-	dev_info(dev, "Firmware revision %i.%i (signature 0x%04x)\n",
+	dev_dbg(dev, "Firmware revision %i.%i (signature 0x%04x)\n",
 		 le16_to_cpu(priv->fw_data->major_version),
 		 priv->fw_data->minor_version, signature);
 
@@ -4506,16 +4506,16 @@ rtl8xxxu_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 			rcu_read_lock();
 			sta = ieee80211_find_sta(vif, bss_conf->bssid);
 			if (!sta) {
-				dev_info(dev, "%s: ASSOC no sta found\n",
+				dev_dbg(dev, "%s: ASSOC no sta found\n",
 					 __func__);
 				rcu_read_unlock();
 				goto error;
 			}
 
 			if (sta->ht_cap.ht_supported)
-				dev_info(dev, "%s: HT supported\n", __func__);
+				dev_dbg(dev, "%s: HT supported\n", __func__);
 			if (sta->vht_cap.vht_supported)
-				dev_info(dev, "%s: VHT supported\n", __func__);
+				dev_dbg(dev, "%s: VHT supported\n", __func__);
 
 			/* TODO: Set bits 28-31 for rate adaptive id */
 			ramask = (sta->supp_rates[0] & 0xfff) |
@@ -4739,7 +4739,7 @@ static void rtl8xxxu_dump_action(struct device *dev,
 	case WLAN_ACTION_ADDBA_RESP:
 		cap = le16_to_cpu(mgmt->u.action.u.addba_resp.capab);
 		timeout = le16_to_cpu(mgmt->u.action.u.addba_resp.timeout);
-		dev_info(dev, "WLAN_ACTION_ADDBA_RESP: "
+		dev_dbg(dev, "WLAN_ACTION_ADDBA_RESP: "
 			 "timeout %i, tid %02x, buf_size %02x, policy %02x, "
 			 "status %02x\n",
 			 timeout,
@@ -4751,7 +4751,7 @@ static void rtl8xxxu_dump_action(struct device *dev,
 	case WLAN_ACTION_ADDBA_REQ:
 		cap = le16_to_cpu(mgmt->u.action.u.addba_req.capab);
 		timeout = le16_to_cpu(mgmt->u.action.u.addba_req.timeout);
-		dev_info(dev, "WLAN_ACTION_ADDBA_REQ: "
+		dev_dbg(dev, "WLAN_ACTION_ADDBA_REQ: "
 			 "timeout %i, tid %02x, buf_size %02x, policy %02x\n",
 			 timeout,
 			 (cap & IEEE80211_ADDBA_PARAM_TID_MASK) >> 2,
@@ -4759,7 +4759,7 @@ static void rtl8xxxu_dump_action(struct device *dev,
 			 (cap >> 1) & 0x1);
 		break;
 	default:
-		dev_info(dev, "action frame %02x\n",
+		dev_dbg(dev, "action frame %02x\n",
 			 mgmt->u.action.u.addba_resp.action_code);
 		break;
 	}
@@ -4789,7 +4789,7 @@ rtl8xxxu_fill_txdesc_v1(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
 		rate = tx_rate->hw_value;
 
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_TX)
-		dev_info(dev, "%s: TX rate: %d, pkt size %d\n",
+		dev_dbg(dev, "%s: TX rate: %d, pkt size %d\n",
 			 __func__, rate, cpu_to_le16(tx_desc->pkt_size));
 
 	seq_number = IEEE80211_SEQ_TO_SN(le16_to_cpu(hdr->seq_ctrl));
@@ -4862,7 +4862,7 @@ rtl8xxxu_fill_txdesc_v2(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
 		rate = tx_rate->hw_value;
 
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_TX)
-		dev_info(dev, "%s: TX rate: %d, pkt size %d\n",
+		dev_dbg(dev, "%s: TX rate: %d, pkt size %d\n",
 			 __func__, rate, cpu_to_le16(tx_desc40->pkt_size));
 
 	seq_number = IEEE80211_SEQ_TO_SN(le16_to_cpu(hdr->seq_ctrl));
@@ -5149,7 +5149,7 @@ static void rtl8xxxu_rx_urb_work(struct work_struct *work)
 			rtl8xxxu_queue_rx_urb(priv, rx_urb);
 			break;
 		default:
-			pr_info("failed to requeue urb %i\n", ret);
+			pr_debug("failed to requeue urb %i\n", ret);
 			skb = (struct sk_buff *)rx_urb->urb.context;
 			dev_kfree_skb(skb);
 			usb_free_urb(&rx_urb->urb);
@@ -5194,7 +5194,7 @@ static void rtl8723bu_handle_c2h(struct rtl8xxxu_priv *priv,
 			c2h->ra_report.macid, c2h->ra_report.noisy_state);
 		break;
 	default:
-		dev_info(dev, "Unhandled C2H event %02x seq %02x\n",
+		dev_dbg(dev, "Unhandled C2H event %02x seq %02x\n",
 			 c2h->id, c2h->seq);
 		print_hex_dump(KERN_INFO, "C2H content: ", DUMP_PREFIX_NONE,
 			       16, 1, c2h->raw.payload, len, false);
@@ -5508,7 +5508,7 @@ static int rtl8xxxu_config(struct ieee80211_hw *hw, u32 changed)
 	bool ht40;
 
 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_CHANNEL)
-		dev_info(dev,
+		dev_dbg(dev,
 			 "%s: channel: %i (changed %08x chandef.width %02x)\n",
 			 __func__, hw->conf.chandef.chan->hw_value,
 			 changed, hw->conf.chandef.width);
@@ -6044,10 +6044,10 @@ static int rtl8xxxu_probe(struct usb_interface *interface,
 
 	if (untested) {
 		rtl8xxxu_debug |= RTL8XXXU_DEBUG_EFUSE;
-		dev_info(&udev->dev,
+		dev_dbg(&udev->dev,
 			 "This Realtek USB WiFi dongle (0x%04x:0x%04x) is untested!\n",
 			 id->idVendor, id->idProduct);
-		dev_info(&udev->dev,
+		dev_dbg(&udev->dev,
 			 "Please report results to Jes.Sorensen@gmail.com\n");
 	}
 
@@ -6130,7 +6130,7 @@ static int rtl8xxxu_probe(struct usb_interface *interface,
 	 * enable it if explicitly requested at module load time.
 	 */
 	if (rtl8xxxu_ht40_2g) {
-		dev_info(&udev->dev, "Enabling HT_20_40 on the 2.4GHz band\n");
+		dev_dbg(&udev->dev, "Enabling HT_20_40 on the 2.4GHz band\n");
 		sband->ht_cap.cap |= IEEE80211_HT_CAP_SUP_WIDTH_20_40;
 	}
 	hw->wiphy->bands[NL80211_BAND_2GHZ] = sband;
@@ -6188,14 +6188,14 @@ static void rtl8xxxu_disconnect(struct usb_interface *interface)
 
 	usb_set_intfdata(interface, NULL);
 
-	dev_info(&priv->udev->dev, "disconnecting\n");
+	dev_dbg(&priv->udev->dev, "disconnecting\n");
 
 	kfree(priv->fw_data);
 	mutex_destroy(&priv->usb_buf_mutex);
 	mutex_destroy(&priv->h2c_mutex);
 
 	if (priv->udev->state != USB_STATE_NOTATTACHED) {
-		dev_info(&priv->udev->dev,
+		dev_dbg(&priv->udev->dev,
 			 "Device still attached, trying to reset\n");
 		usb_reset_device(priv->udev);
 	}

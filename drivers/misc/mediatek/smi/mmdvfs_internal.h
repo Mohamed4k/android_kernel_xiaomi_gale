@@ -11,7 +11,7 @@
 #define MMDVFS_LOG_TAG	"MMDVFS"
 
 #define MMDVFSMSG(string, args...) \
-	pr_notice("[pid=%d]"string, current->tgid, ##args)
+	pr_debug("[pid=%d]"string, current->tgid, ##args)
 
 #define MMDVFSDEBUG(level, x...)            \
 	do {                        \
@@ -27,7 +27,7 @@
 
 #define MMDVFSERR(string, args...) \
 	do {\
-		pr_notice("error: "string, ##args); \
+		pr_debug("error: "string, ##args); \
 		aee_kernel_warning(MMDVFS_LOG_TAG, "error: "string, ##args); \
 	} while (0)
 

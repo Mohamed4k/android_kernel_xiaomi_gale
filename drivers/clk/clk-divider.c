@@ -463,7 +463,7 @@ static struct clk_hw *_register_divider(struct device *dev, const char *name,
 
 	if (clk_divider_flags & CLK_DIVIDER_HIWORD_MASK) {
 		if (width + shift > 16) {
-			pr_warn("divider value exceeds LOWORD field\n");
+			pr_debug("divider value exceeds LOWORD field\n");
 			return ERR_PTR(-EINVAL);
 		}
 	}

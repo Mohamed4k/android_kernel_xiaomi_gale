@@ -777,7 +777,7 @@ static void rockchip_chg_detect_work(struct work_struct *work)
 		/* put the controller in normal mode */
 		property_enable(base, &rphy->phy_cfg->chg_det.opmode, true);
 		rockchip_usb2phy_otg_sm_work(&rport->otg_sm_work.work);
-		dev_info(&rport->phy->dev, "charger = %s\n",
+		dev_dbg(&rport->phy->dev, "charger = %s\n",
 			 chg_to_string(rphy->chg_type));
 		return;
 	default:
@@ -1152,7 +1152,7 @@ static int rockchip_usb2phy_probe(struct platform_device *pdev)
 	if (!IS_ERR(rphy->clk)) {
 		clk_prepare_enable(rphy->clk);
 	} else {
-		dev_info(&pdev->dev, "no phyclk specified\n");
+		dev_dbg(&pdev->dev, "no phyclk specified\n");
 		rphy->clk = NULL;
 	}
 

@@ -606,26 +606,26 @@ static irqreturn_t fuel_gauge_thread_handler(int irq, void *dev)
 
 	switch (i) {
 	case QWBTU_IRQ:
-		dev_info(&info->pdev->dev,
+		dev_dbg(&info->pdev->dev,
 			"Quit Battery under temperature in work mode IRQ (QWBTU)\n");
 		break;
 	case WBTU_IRQ:
-		dev_info(&info->pdev->dev,
+		dev_dbg(&info->pdev->dev,
 			"Battery under temperature in work mode IRQ (WBTU)\n");
 		break;
 	case QWBTO_IRQ:
-		dev_info(&info->pdev->dev,
+		dev_dbg(&info->pdev->dev,
 			"Quit Battery over temperature in work mode IRQ (QWBTO)\n");
 		break;
 	case WBTO_IRQ:
-		dev_info(&info->pdev->dev,
+		dev_dbg(&info->pdev->dev,
 			"Battery over temperature in work mode IRQ (WBTO)\n");
 		break;
 	case WL2_IRQ:
-		dev_info(&info->pdev->dev, "Low Batt Warning(2) INTR\n");
+		dev_dbg(&info->pdev->dev, "Low Batt Warning(2) INTR\n");
 		break;
 	case WL1_IRQ:
-		dev_info(&info->pdev->dev, "Low Batt Warning(1) INTR\n");
+		dev_dbg(&info->pdev->dev, "Low Batt Warning(1) INTR\n");
 		break;
 	default:
 		dev_warn(&info->pdev->dev, "Spurious Interrupt!!!\n");
@@ -677,7 +677,7 @@ static void fuel_gauge_init_irq(struct axp288_fg_info *info)
 			info->irq[i] = -1;
 			goto intr_failed;
 		} else {
-			dev_info(&info->pdev->dev, "HW IRQ %d -> VIRQ %d\n",
+			dev_dbg(&info->pdev->dev, "HW IRQ %d -> VIRQ %d\n",
 				pirq, info->irq[i]);
 		}
 	}

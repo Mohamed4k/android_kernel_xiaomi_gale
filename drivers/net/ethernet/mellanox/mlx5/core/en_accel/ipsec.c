@@ -209,70 +209,70 @@ static inline int mlx5e_xfrm_validate_state(struct xfrm_state *x)
 	priv = netdev_priv(netdev);
 
 	if (x->props.aalgo != SADB_AALG_NONE) {
-		netdev_info(netdev, "Cannot offload authenticated xfrm states\n");
+		netdev_dbg(netdev, "Cannot offload authenticated xfrm states\n");
 		return -EINVAL;
 	}
 	if (x->props.ealgo != SADB_X_EALG_AES_GCM_ICV16) {
-		netdev_info(netdev, "Only AES-GCM-ICV16 xfrm state may be offloaded\n");
+		netdev_dbg(netdev, "Only AES-GCM-ICV16 xfrm state may be offloaded\n");
 		return -EINVAL;
 	}
 	if (x->props.calgo != SADB_X_CALG_NONE) {
-		netdev_info(netdev, "Cannot offload compressed xfrm states\n");
+		netdev_dbg(netdev, "Cannot offload compressed xfrm states\n");
 		return -EINVAL;
 	}
 	if (x->props.flags & XFRM_STATE_ESN &&
 	    !(mlx5_accel_ipsec_device_caps(priv->mdev) &
 	    MLX5_ACCEL_IPSEC_CAP_ESN)) {
-		netdev_info(netdev, "Cannot offload ESN xfrm states\n");
+		netdev_dbg(netdev, "Cannot offload ESN xfrm states\n");
 		return -EINVAL;
 	}
 	if (x->props.family != AF_INET &&
 	    x->props.family != AF_INET6) {
-		netdev_info(netdev, "Only IPv4/6 xfrm states may be offloaded\n");
+		netdev_dbg(netdev, "Only IPv4/6 xfrm states may be offloaded\n");
 		return -EINVAL;
 	}
 	if (x->props.mode != XFRM_MODE_TRANSPORT &&
 	    x->props.mode != XFRM_MODE_TUNNEL) {
-		dev_info(&netdev->dev, "Only transport and tunnel xfrm states may be offloaded\n");
+		dev_dbg(&netdev->dev, "Only transport and tunnel xfrm states may be offloaded\n");
 		return -EINVAL;
 	}
 	if (x->id.proto != IPPROTO_ESP) {
-		netdev_info(netdev, "Only ESP xfrm state may be offloaded\n");
+		netdev_dbg(netdev, "Only ESP xfrm state may be offloaded\n");
 		return -EINVAL;
 	}
 	if (x->encap) {
-		netdev_info(netdev, "Encapsulated xfrm state may not be offloaded\n");
+		netdev_dbg(netdev, "Encapsulated xfrm state may not be offloaded\n");
 		return -EINVAL;
 	}
 	if (!x->aead) {
-		netdev_info(netdev, "Cannot offload xfrm states without aead\n");
+		netdev_dbg(netdev, "Cannot offload xfrm states without aead\n");
 		return -EINVAL;
 	}
 	if (x->aead->alg_icv_len != 128) {
-		netdev_info(netdev, "Cannot offload xfrm states with AEAD ICV length other than 128bit\n");
+		netdev_dbg(netdev, "Cannot offload xfrm states with AEAD ICV length other than 128bit\n");
 		return -EINVAL;
 	}
 	if ((x->aead->alg_key_len != 128 + 32) &&
 	    (x->aead->alg_key_len != 256 + 32)) {
-		netdev_info(netdev, "Cannot offload xfrm states with AEAD key length other than 128/256 bit\n");
+		netdev_dbg(netdev, "Cannot offload xfrm states with AEAD key length other than 128/256 bit\n");
 		return -EINVAL;
 	}
 	if (x->tfcpad) {
-		netdev_info(netdev, "Cannot offload xfrm states with tfc padding\n");
+		netdev_dbg(netdev, "Cannot offload xfrm states with tfc padding\n");
 		return -EINVAL;
 	}
 	if (!x->geniv) {
-		netdev_info(netdev, "Cannot offload xfrm states without geniv\n");
+		netdev_dbg(netdev, "Cannot offload xfrm states without geniv\n");
 		return -EINVAL;
 	}
 	if (strcmp(x->geniv, "seqiv")) {
-		netdev_info(netdev, "Cannot offload xfrm states with geniv other than seqiv\n");
+		netdev_dbg(netdev, "Cannot offload xfrm states with geniv other than seqiv\n");
 		return -EINVAL;
 	}
 	if (x->props.family == AF_INET6 &&
 	    !(mlx5_accel_ipsec_device_caps(priv->mdev) &
 	     MLX5_ACCEL_IPSEC_CAP_IPV6)) {
-		netdev_info(netdev, "IPv6 xfrm state offload is not supported by this device\n");
+		netdev_dbg(netdev, "IPv6 xfrm state offload is not supported by this device\n");
 		return -EINVAL;
 	}
 	return 0;
@@ -309,7 +309,7 @@ static int mlx5e_xfrm_add_state(struct xfrm_state *x)
 	if (x->xso.flags & XFRM_OFFLOAD_INBOUND) {
 		err = mlx5e_ipsec_sadb_rx_add(sa_entry);
 		if (err) {
-			netdev_info(netdev, "Failed adding to SADB_RX: %d\n", err);
+			netdev_dbg(netdev, "Failed adding to SADB_RX: %d\n", err);
 			goto err_entry;
 		}
 	} else {

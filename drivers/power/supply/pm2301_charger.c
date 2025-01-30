@@ -1023,7 +1023,7 @@ static int pm2xxx_wall_charger_probe(struct i2c_client *i2c_client,
 			I2C_FUNC_SMBUS_BYTE_DATA |
 			I2C_FUNC_SMBUS_READ_WORD_DATA)) {
 		ret = -ENODEV;
-		dev_info(pm2->dev, "pm2301 i2c_check_functionality failed\n");
+		dev_dbg(pm2->dev, "pm2301 i2c_check_functionality failed\n");
 		goto free_device_info;
 	}
 

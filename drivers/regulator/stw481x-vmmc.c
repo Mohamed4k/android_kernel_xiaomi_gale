@@ -84,7 +84,7 @@ static int stw481x_vmmc_regulator_probe(struct platform_device *pdev)
 		return PTR_ERR(rdev);
 	}
 
-	dev_info(&pdev->dev, "initialized STw481x VMMC regulator\n");
+	dev_dbg(&pdev->dev, "initialized STw481x VMMC regulator\n");
 	return 0;
 }
 

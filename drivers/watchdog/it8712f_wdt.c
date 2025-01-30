@@ -160,10 +160,10 @@ static void it8712f_wdt_update_margin(void)
 	 */
 	if (units <= max_units) {
 		config |= WDT_UNIT_SEC; /* else UNIT is MINUTES */
-		pr_info("timer margin %d seconds\n", units);
+		pr_debug("timer margin %d seconds\n", units);
 	} else {
 		units /= 60;
-		pr_info("timer margin %d minutes\n", units);
+		pr_debug("timer margin %d minutes\n", units);
 	}
 	superio_outb(config, WDT_CONFIG);
 
@@ -333,10 +333,10 @@ static int it8712f_wdt_open(struct inode *inode, struct file *file)
 static int it8712f_wdt_release(struct inode *inode, struct file *file)
 {
 	if (expect_close != 42) {
-		pr_warn("watchdog device closed unexpectedly, will not disable the watchdog timer\n");
+		pr_debug("watchdog device closed unexpectedly, will not disable the watchdog timer\n");
 	} else if (!nowayout) {
 		if (it8712f_wdt_disable())
-			pr_warn("Watchdog disable failed\n");
+			pr_debug("Watchdog disable failed\n");
 	}
 	expect_close = 0;
 	clear_bit(0, &wdt_open);
@@ -394,7 +394,7 @@ static int __init it8712f_wdt_find(unsigned short *address)
 	if (margin > (max_units * 60))
 		margin = (max_units * 60);
 
-	pr_info("Found IT%04xF chip revision %d - using DogFood address 0x%x\n",
+	pr_debug("Found IT%04xF chip revision %d - using DogFood address 0x%x\n",
 		chip_type, revision, *address);
 
 exit:
@@ -410,7 +410,7 @@ static int __init it8712f_wdt_init(void)
 		return -ENODEV;
 
 	if (!request_region(address, 1, "IT8712F Watchdog")) {
-		pr_warn("watchdog I/O region busy\n");
+		pr_debug("watchdog I/O region busy\n");
 		return -EBUSY;
 	}
 

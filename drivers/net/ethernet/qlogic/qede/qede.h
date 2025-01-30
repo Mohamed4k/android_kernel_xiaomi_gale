@@ -187,13 +187,13 @@ struct qede_dev {
 	const struct qed_eth_ops	*ops;
 	struct qede_ptp			*ptp;
 
-	struct qed_dev_eth_info dev_info;
-#define QEDE_MAX_RSS_CNT(edev)	((edev)->dev_info.num_queues)
-#define QEDE_MAX_TSS_CNT(edev)	((edev)->dev_info.num_queues)
+	struct qed_dev_eth_info dev_dbg;
+#define QEDE_MAX_RSS_CNT(edev)	((edev)->dev_dbg.num_queues)
+#define QEDE_MAX_TSS_CNT(edev)	((edev)->dev_dbg.num_queues)
 #define QEDE_IS_BB(edev) \
-	((edev)->dev_info.common.dev_type == QED_DEV_TYPE_BB)
+	((edev)->dev_dbg.common.dev_type == QED_DEV_TYPE_BB)
 #define QEDE_IS_AH(edev) \
-	((edev)->dev_info.common.dev_type == QED_DEV_TYPE_AH)
+	((edev)->dev_dbg.common.dev_type == QED_DEV_TYPE_AH)
 
 	struct qede_fastpath		*fp_array;
 	u8				req_num_tx;
@@ -565,6 +565,6 @@ int qede_add_tc_flower_fltr(struct qede_dev *edev, __be16 proto,
 #define QEDE_MAX_JUMBO_PACKET_SIZE	9600
 #define	for_each_queue(i) for (i = 0; i < edev->num_queues; i++)
 #define for_each_cos_in_txq(edev, var) \
-	for ((var) = 0; (var) < (edev)->dev_info.num_tc; (var)++)
+	for ((var) = 0; (var) < (edev)->dev_dbg.num_tc; (var)++)
 
 #endif /* _QEDE_H_ */

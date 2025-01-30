@@ -925,7 +925,7 @@ skip_gpio:
 		goto exit_psupply;
 	}
 
-	dev_info(&client->dev,
+	dev_dbg(&client->dev,
 		"%s: battery gas gauge device registered\n", client->name);
 
 	INIT_DELAYED_WORK(&chip->work, sbs_delayed_work);

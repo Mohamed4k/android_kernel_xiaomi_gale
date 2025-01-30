@@ -95,7 +95,7 @@ static int dm816x_usb_phy_init(struct phy *x)
 				   0);
 	regmap_read(phy->syscon, phy->usb_ctrl, &val);
 	if ((val & 3) != 0)
-		dev_info(phy->dev,
+		dev_dbg(phy->dev,
 			 "Working dm816x USB_CTRL! (0x%08x)\n",
 			 val);
 

@@ -88,13 +88,13 @@ static void set_all_muxes(struct mmdvfs_drv_data *drv_data, u32 opp_level)
 		err = clk_prepare_enable(mux);
 
 		if (err) {
-			pr_notice("prepare mux(%s) fail:%d opp_level:%d\n",
+			pr_debug("prepare mux(%s) fail:%d opp_level:%d\n",
 				drv_data->muxes[i].mux_name, err, opp_level);
 			continue;
 		}
 		err = clk_set_parent(mux, clk_src);
 		if (err)
-			pr_notice("set parent(%s) fail:%d opp_level:%d\n",
+			pr_debug("set parent(%s) fail:%d opp_level:%d\n",
 				drv_data->muxes[i].mux_name, err, opp_level);
 		clk_disable_unprepare(mux);
 	}
@@ -113,14 +113,14 @@ static void set_all_hoppings(struct mmdvfs_drv_data *drv_data, u32 opp_level)
 		err = clk_prepare_enable(hopping);
 
 		if (err) {
-			pr_notice("prepare hopping(%s) fail:%d opp_level:%d\n",
+			pr_debug("prepare hopping(%s) fail:%d opp_level:%d\n",
 				drv_data->hoppings[i].hopping_name,
 				err, opp_level);
 			continue;
 		}
 		err = clk_set_rate(hopping, hopping_rate);
 		if (err)
-			pr_notice("set %s rate(%u) fail:%d opp_level:%d\n",
+			pr_debug("set %s rate(%u) fail:%d opp_level:%d\n",
 				drv_data->hoppings[i].hopping_name,
 				hopping_rate, err, opp_level);
 		clk_disable_unprepare(hopping);
@@ -140,7 +140,7 @@ static void set_all_clk(
 		}
 	}
 	if (i == MAX_OPP_NUM) {
-		pr_notice("voltage(%d) is not found\n", voltage);
+		pr_debug("voltage(%d) is not found\n", voltage);
 		return;
 	}
 
@@ -201,7 +201,7 @@ static int regulator_event_notify(struct notifier_block *nb,
 			drv_data->need_change_voltage = false;
 			drv_data->request_voltage = uV;
 		}
-		pr_info("regulator event=ABORT_VOLTAGE_CHANGE voltage=%lu\n",
+		pr_debug("regulator event=ABORT_VOLTAGE_CHANGE voltage=%lu\n",
 			uV);
 	}
 	return 0;
@@ -283,7 +283,7 @@ static int force_clk_set(void *data, u64 val)
 		ret = devm_regulator_register_notifier(
 				dbg_data->reg, &drv_data->nb);
 		if (ret)
-			pr_notice("Failed to register notifier: %d\n", ret);
+			pr_debug("Failed to register notifier: %d\n", ret);
 		regulator_set_voltage(dbg_data->reg, 0, dbg_data->max_voltage);
 	} else {
 		devm_regulator_unregister_notifier(
@@ -299,7 +299,7 @@ static int force_clk_set(void *data, u64 val)
 		}
 	}
 
-	pr_notice("%s: val=%llu\n", __func__, val);
+	pr_debug("%s: val=%llu\n", __func__, val);
 	return 0;
 }
 
@@ -333,7 +333,7 @@ static int mmdvfs_probe(struct platform_device *pdev)
 	of_property_for_each_string(
 		dev->of_node, "mediatek,support_mux", mux_prop, mux_name) {
 		if (num_mux >= MAX_MUX_NUM) {
-			pr_notice("Too many items in support_mux\n");
+			pr_debug("Too many items in support_mux\n");
 			return -EINVAL;
 		}
 		drv_data->muxes[num_mux].mux = devm_clk_get(dev, mux_name);
@@ -344,7 +344,7 @@ static int mmdvfs_probe(struct platform_device *pdev)
 		of_property_for_each_string(
 			dev->of_node, prop_name, clksrc_prop, clksrc_name) {
 			if (num_clksrc >= MAX_OPP_NUM) {
-				pr_notice("Too many items in %s\n", prop_name);
+				pr_debug("Too many items in %s\n", prop_name);
 				return -EINVAL;
 			}
 			drv_data->muxes[num_mux].clk_src[num_clksrc] =
@@ -358,7 +358,7 @@ static int mmdvfs_probe(struct platform_device *pdev)
 	of_property_for_each_string(dev->of_node, "mediatek,support_hopping",
 		hopping_prop, hopping_name) {
 		if (num_hopping >= MAX_HOPPING_CLK_NUM) {
-			pr_notice("Too many items in support_hopping\n");
+			pr_debug("Too many items in support_hopping\n");
 			return -EINVAL;
 		}
 		drv_data->hoppings[num_hopping].hopping_clk =
@@ -370,7 +370,7 @@ static int mmdvfs_probe(struct platform_device *pdev)
 		of_property_for_each_u32(dev->of_node, prop_name,
 				hopping_rate_prop, p, hopping_rate) {
 			if (num_hopping_rate >= MAX_OPP_NUM) {
-				pr_notice("Too many items in %s\n", prop_name);
+				pr_debug("Too many items in %s\n", prop_name);
 				return -EINVAL;
 			}
 			drv_data->hoppings[num_hopping].hopping_rate[
@@ -401,12 +401,12 @@ static int mmdvfs_probe(struct platform_device *pdev)
 
 	mmdvfs_debugfs_dir = debugfs_create_dir("mmdvfs", NULL);
 	if (IS_ERR(mmdvfs_debugfs_dir))
-		pr_notice("Failed to create debugfs dir mmdvfs: %ld\n",
+		pr_debug("Failed to create debugfs dir mmdvfs: %ld\n",
 			PTR_ERR(mmdvfs_debugfs_dir));
 	dentry = debugfs_create_file("setting", 0444,
 			mmdvfs_debugfs_dir, drv_data, &mmdvfs_setting_fops);
 	if (IS_ERR(dentry))
-		pr_notice("Failed to create debugfs setting: %ld\n",
+		pr_debug("Failed to create debugfs setting: %ld\n",
 			PTR_ERR(dentry));
 #ifdef MMDVFS_DBG
 	dbg_data = devm_kzalloc(dev, sizeof(*dbg_data), GFP_KERNEL);
@@ -418,14 +418,14 @@ static int mmdvfs_probe(struct platform_device *pdev)
 	dentry = debugfs_create_file("force_clk", 0200,
 			mmdvfs_debugfs_dir, dbg_data, &force_clk_ops);
 	if (IS_ERR(dentry))
-		pr_notice("Failed to create debugfs force_clk: %ld\n",
+		pr_debug("Failed to create debugfs force_clk: %ld\n",
 			PTR_ERR(dentry));
 #endif
 
 	drv_data->nb.notifier_call = regulator_event_notify;
 	ret = devm_regulator_register_notifier(reg, &drv_data->nb);
 	if (ret)
-		pr_notice("Failed to register notifier: %d\n", ret);
+		pr_debug("Failed to register notifier: %d\n", ret);
 
 	return ret;
 }
@@ -445,7 +445,7 @@ static int __init mtk_mmdvfs_init(void)
 
 	status = platform_driver_register(&mmdvfs_drv);
 	if (status) {
-		pr_notice("Failed to register MMDVFS driver(%d)\n", status);
+		pr_debug("Failed to register MMDVFS driver(%d)\n", status);
 		return -ENODEV;
 	}
 	return 0;

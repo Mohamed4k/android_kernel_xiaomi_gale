@@ -680,7 +680,7 @@ static int max8973_probe(struct i2c_client *client,
 		return ret;
 	}
 
-	dev_info(&client->dev, "CHIP-ID OTP: 0x%02x ID_M: 0x%02x\n",
+	dev_dbg(&client->dev, "CHIP-ID OTP: 0x%02x ID_M: 0x%02x\n",
 			(chip_id >> 4) & 0xF, (chip_id >> 1) & 0x7);
 
 	i2c_set_clientdata(client, max);

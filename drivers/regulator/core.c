@@ -44,9 +44,9 @@
 #define rdev_err(rdev, fmt, ...)					\
 	pr_err("%s: " fmt, rdev_get_name(rdev), ##__VA_ARGS__)
 #define rdev_warn(rdev, fmt, ...)					\
-	pr_warn("%s: " fmt, rdev_get_name(rdev), ##__VA_ARGS__)
-#define rdev_info(rdev, fmt, ...)					\
-	pr_info("%s: " fmt, rdev_get_name(rdev), ##__VA_ARGS__)
+	pr_debug("%s: " fmt, rdev_get_name(rdev), ##__VA_ARGS__)
+#define rdev_dbg(rdev, fmt, ...)					\
+	pr_debug("%s: " fmt, rdev_get_name(rdev), ##__VA_ARGS__)
 #define rdev_dbg(rdev, fmt, ...)					\
 	pr_debug("%s: " fmt, rdev_get_name(rdev), ##__VA_ARGS__)
 
@@ -982,7 +982,7 @@ static int machine_constraints_voltage(struct regulator_dev *rdev,
 
 		if (current_uV == -ENOTRECOVERABLE) {
 			/* This regulator can't be read and must be initted */
-			rdev_info(rdev, "Setting %d-%duV\n",
+			rdev_dbg(rdev, "Setting %d-%duV\n",
 				  rdev->constraints->min_uV,
 				  rdev->constraints->max_uV);
 			_regulator_do_set_voltage(rdev,
@@ -1017,7 +1017,7 @@ static int machine_constraints_voltage(struct regulator_dev *rdev,
 		}
 
 		if (target_min != current_uV || target_max != current_uV) {
-			rdev_info(rdev, "Bringing %duV into %d-%duV\n",
+			rdev_dbg(rdev, "Bringing %duV into %d-%duV\n",
 				  current_uV, target_min, target_max);
 			ret = _regulator_do_set_voltage(
 				rdev, target_min, target_max);
@@ -1269,7 +1269,7 @@ static int set_supply(struct regulator_dev *rdev,
 {
 	int err;
 
-	rdev_info(rdev, "supplied by %s\n", rdev_get_name(supply_rdev));
+	rdev_dbg(rdev, "supplied by %s\n", rdev_get_name(supply_rdev));
 
 	if (!try_module_get(supply_rdev->owner))
 		return -ENODEV;
@@ -1995,7 +1995,7 @@ int regulator_register_supply_alias(struct device *dev, const char *id,
 
 	list_add(&map->list, &regulator_supply_alias_list);
 
-	pr_info("Adding alias for supply %s,%s -> %s,%s\n",
+	pr_debug("Adding alias for supply %s,%s -> %s,%s\n",
 		id, dev_name(dev), alias_id, dev_name(alias_dev));
 
 	return 0;
@@ -4898,7 +4898,7 @@ static int __init regulator_init(void)
 
 	debugfs_root = debugfs_create_dir("regulator", NULL);
 	if (!debugfs_root)
-		pr_warn("regulator: Failed to create debugfs directory\n");
+		pr_debug("regulator: Failed to create debugfs directory\n");
 
 	debugfs_create_file("supply_map", 0444, debugfs_root, NULL,
 			    &supply_map_fops);
@@ -4944,7 +4944,7 @@ static int regulator_late_cleanup(struct device *dev, void *data)
 	if (have_full_constraints()) {
 		/* We log since this may kill the system if it goes
 		 * wrong. */
-		rdev_info(rdev, "disabling\n");
+		rdev_dbg(rdev, "disabling\n");
 		ret = _regulator_do_disable(rdev);
 		if (ret != 0)
 			rdev_err(rdev, "couldn't disable: %d\n", ret);

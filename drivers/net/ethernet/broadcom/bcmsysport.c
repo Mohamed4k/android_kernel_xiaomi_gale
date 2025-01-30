@@ -1075,12 +1075,12 @@ static void bcm_sysport_resume_from_wol(struct bcm_sysport_priv *priv)
 
 	reg = intrl2_0_readl(priv, INTRL2_CPU_STATUS);
 	if (reg & INTRL2_0_MPD)
-		netdev_info(priv->netdev, "Wake-on-LAN (MPD) interrupt!\n");
+		netdev_dbg(priv->netdev, "Wake-on-LAN (MPD) interrupt!\n");
 
 	if (reg & INTRL2_0_BRCM_MATCH_TAG) {
 		reg = rxchk_readl(priv, RXCHK_BRCM_TAG_MATCH_STATUS) &
 				  RXCHK_BRCM_TAG_MATCH_MASK;
-		netdev_info(priv->netdev,
+		netdev_dbg(priv->netdev,
 			    "Wake-on-LAN (filters 0x%02x) interrupt!\n", reg);
 	}
 
@@ -2541,7 +2541,7 @@ static int bcm_sysport_probe(struct platform_device *pdev)
 	}
 
 	priv->rev = topctrl_readl(priv, REV_CNTL) & REV_MASK;
-	dev_info(&pdev->dev,
+	dev_dbg(&pdev->dev,
 		 "Broadcom SYSTEMPORT%s" REV_FMT
 		 " at 0x%p (irqs: %d, %d, TXQs: %d, RXQs: %d)\n",
 		 priv->is_lite ? " Lite" : "",

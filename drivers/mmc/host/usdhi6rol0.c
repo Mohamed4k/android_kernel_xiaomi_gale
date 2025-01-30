@@ -1813,7 +1813,7 @@ static int usdhi6_probe(struct platform_device *pdev)
 		goto e_clk_off;
 	}
 
-	dev_info(dev, "A USDHI6ROL0 SD host detected with %d ports\n",
+	dev_dbg(dev, "A USDHI6ROL0 SD host detected with %d ports\n",
 		 usdhi6_read(host, USDHI6_SD_PORT_SEL) >> USDHI6_SD_PORT_SEL_PORTS_SHIFT);
 
 	usdhi6_mask_all(host);

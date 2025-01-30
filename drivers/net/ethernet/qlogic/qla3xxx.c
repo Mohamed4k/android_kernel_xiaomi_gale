@@ -839,7 +839,7 @@ static int ql_is_petbi_neg_pause(struct ql3_adapter *qdev)
 
 static void phyAgereSpecificInit(struct ql3_adapter *qdev, u32 miiAddr)
 {
-	netdev_info(qdev->ndev, "enabling Agere specific PHY\n");
+	netdev_dbg(qdev->ndev, "enabling Agere specific PHY\n");
 	/* power down device bit 11 = 1 */
 	ql_mii_write_reg_ex(qdev, 0x00, 0x1940, miiAddr);
 	/* enable diagnostic mode bit 2 = 1 */
@@ -894,7 +894,7 @@ static enum PHY_DEVICE_TYPE getPhyType(struct ql3_adapter *qdev,
 	for (i = 0; i < MAX_PHY_DEV_TYPES; i++) {
 		if ((oui == PHY_DEVICES[i].phyIdOUI) &&
 		    (model == PHY_DEVICES[i].phyIdModel)) {
-			netdev_info(qdev->ndev, "Phy: %s\n",
+			netdev_dbg(qdev->ndev, "Phy: %s\n",
 				    PHY_DEVICES[i].name);
 			result = PHY_DEVICES[i].phyDevice;
 			break;
@@ -2559,7 +2559,7 @@ static int ql_alloc_net_req_rsp_queues(struct ql3_adapter *qdev)
 static void ql_free_net_req_rsp_queues(struct ql3_adapter *qdev)
 {
 	if (!test_bit(QL_ALLOC_REQ_RSP_Q_DONE, &qdev->flags)) {
-		netdev_info(qdev->ndev, "Already done\n");
+		netdev_dbg(qdev->ndev, "Already done\n");
 		return;
 	}
 
@@ -2636,7 +2636,7 @@ static int ql_alloc_buffer_queues(struct ql3_adapter *qdev)
 static void ql_free_buffer_queues(struct ql3_adapter *qdev)
 {
 	if (!test_bit(QL_ALLOC_BUFQS_DONE, &qdev->flags)) {
-		netdev_info(qdev->ndev, "Already done\n");
+		netdev_dbg(qdev->ndev, "Already done\n");
 		return;
 	}
 	kfree(qdev->lrg_buf);
@@ -2699,7 +2699,7 @@ static int ql_alloc_small_buffers(struct ql3_adapter *qdev)
 static void ql_free_small_buffers(struct ql3_adapter *qdev)
 {
 	if (!test_bit(QL_ALLOC_SMALL_BUF_DONE, &qdev->flags)) {
-		netdev_info(qdev->ndev, "Already done\n");
+		netdev_dbg(qdev->ndev, "Already done\n");
 		return;
 	}
 	if (qdev->small_buf_virt_addr != NULL) {
@@ -3385,29 +3385,29 @@ static void ql_set_mac_info(struct ql3_adapter *qdev)
 	qdev->numPorts = qdev->nvram_data.version_and_numPorts >> 8;
 }
 
-static void ql_display_dev_info(struct net_device *ndev)
+static void ql_display_dev_dbg(struct net_device *ndev)
 {
 	struct ql3_adapter *qdev = netdev_priv(ndev);
 	struct pci_dev *pdev = qdev->pdev;
 
-	netdev_info(ndev,
+	netdev_dbg(ndev,
 		    "%s Adapter %d RevisionID %d found %s on PCI slot %d\n",
 		    DRV_NAME, qdev->index, qdev->chip_rev_id,
 		    qdev->device_id == QL3032_DEVICE_ID ? "QLA3032" : "QLA3022",
 		    qdev->pci_slot);
-	netdev_info(ndev, "%s Interface\n",
+	netdev_dbg(ndev, "%s Interface\n",
 		test_bit(QL_LINK_OPTICAL, &qdev->flags) ? "OPTICAL" : "COPPER");
 
 	/*
 	 * Print PCI bus width/type.
 	 */
-	netdev_info(ndev, "Bus interface is %s %s\n",
+	netdev_dbg(ndev, "Bus interface is %s %s\n",
 		    ((qdev->pci_width == 64) ? "64-bit" : "32-bit"),
 		    ((qdev->pci_x) ? "PCI-X" : "PCI"));
 
-	netdev_info(ndev, "mem  IO base address adjusted = 0x%p\n",
+	netdev_dbg(ndev, "mem  IO base address adjusted = 0x%p\n",
 		    qdev->mem_map_registers);
-	netdev_info(ndev, "Interrupt number = %d\n", pdev->irq);
+	netdev_dbg(ndev, "Interrupt number = %d\n", pdev->irq);
 
 	netif_info(qdev, probe, ndev, "MAC address %pM\n", ndev->dev_addr);
 }
@@ -3428,7 +3428,7 @@ static int ql_adapter_down(struct ql3_adapter *qdev, int do_reset)
 	free_irq(qdev->pdev->irq, ndev);
 
 	if (qdev->msi && test_bit(QL_MSI_ENABLED, &qdev->flags)) {
-		netdev_info(qdev->ndev, "calling pci_disable_msi()\n");
+		netdev_dbg(qdev->ndev, "calling pci_disable_msi()\n");
 		clear_bit(QL_MSI_ENABLED, &qdev->flags);
 		pci_disable_msi(qdev->pdev);
 	}
@@ -3479,7 +3479,7 @@ static int ql_adapter_up(struct ql3_adapter *qdev)
 				   "User requested MSI, but MSI failed to initialize.  Continuing without MSI.\n");
 			qdev->msi = 0;
 		} else {
-			netdev_info(ndev, "MSI Enabled...\n");
+			netdev_dbg(ndev, "MSI Enabled...\n");
 			set_bit(QL_MSI_ENABLED, &qdev->flags);
 			irq_flags &= ~IRQF_SHARED;
 		}
@@ -3527,7 +3527,7 @@ err_lock:
 	free_irq(qdev->pdev->irq, ndev);
 err_irq:
 	if (qdev->msi && test_bit(QL_MSI_ENABLED, &qdev->flags)) {
-		netdev_info(ndev, "calling pci_disable_msi()\n");
+		netdev_dbg(ndev, "calling pci_disable_msi()\n");
 		clear_bit(QL_MSI_ENABLED, &qdev->flags);
 		pci_disable_msi(qdev->pdev);
 	}
@@ -3899,7 +3899,7 @@ static int ql3xxx_probe(struct pci_dev *pdev,
 		pr_alert("Driver name: %s, Version: %s\n",
 			 DRV_NAME, DRV_VERSION);
 	}
-	ql_display_dev_info(ndev);
+	ql_display_dev_dbg(ndev);
 
 	cards_found++;
 	return 0;

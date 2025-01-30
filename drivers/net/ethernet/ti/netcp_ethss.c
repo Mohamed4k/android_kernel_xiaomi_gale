@@ -3601,7 +3601,7 @@ static int gbe_probe(struct netcp_device *netcp_device, struct device *dev,
 
 	if (of_find_property(node, "enable-ale", NULL)) {
 		gbe_dev->enable_ale = true;
-		dev_info(dev, "ALE enabled\n");
+		dev_dbg(dev, "ALE enabled\n");
 	} else {
 		gbe_dev->enable_ale = false;
 		dev_dbg(dev, "ALE bypass enabled*\n");

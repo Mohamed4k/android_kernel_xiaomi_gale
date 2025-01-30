@@ -379,5 +379,5 @@ extern int apk_debug_flag;
 	} while (0)
 #endif
 #define FTS_ERR(fmt, args...)                                                  \
-	pr_notice("[FTS] <-err->[%04d] [@%s]" fmt, __LINE__, __func__, ##args)
+	pr_debug("[FTS] <-err->[%04d] [@%s]" fmt, __LINE__, __func__, ##args)
 #endif

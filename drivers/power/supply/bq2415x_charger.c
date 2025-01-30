@@ -1672,10 +1672,10 @@ static int bq2415x_probe(struct i2c_client *client,
 		}
 
 		bq->automode = 1;
-		dev_info(bq->dev, "automode supported, waiting for events\n");
+		dev_dbg(bq->dev, "automode supported, waiting for events\n");
 	} else {
 		bq->automode = -1;
-		dev_info(bq->dev, "automode not supported\n");
+		dev_dbg(bq->dev, "automode not supported\n");
 	}
 
 	/* Query for initial reported_mode and set it */
@@ -1704,7 +1704,7 @@ static int bq2415x_probe(struct i2c_client *client,
 	INIT_DELAYED_WORK(&bq->work, bq2415x_timer_work);
 	bq2415x_set_autotimer(bq, 1);
 
-	dev_info(bq->dev, "driver registered\n");
+	dev_dbg(bq->dev, "driver registered\n");
 	return 0;
 
 error_4:
@@ -1742,7 +1742,7 @@ static int bq2415x_remove(struct i2c_client *client)
 	idr_remove(&bq2415x_id, bq->id);
 	mutex_unlock(&bq2415x_id_mutex);
 
-	dev_info(bq->dev, "driver unregistered\n");
+	dev_dbg(bq->dev, "driver unregistered\n");
 
 	kfree(bq->name);
 

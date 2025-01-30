@@ -759,21 +759,21 @@ static int exynos5_usbdrd_phy_clk_handle(struct exynos5_usbdrd_phy *phy_drd)
 	if (!phy_drd->drv_data->has_common_clk_gate) {
 		phy_drd->pipeclk = devm_clk_get(phy_drd->dev, "phy_pipe");
 		if (IS_ERR(phy_drd->pipeclk)) {
-			dev_info(phy_drd->dev,
+			dev_dbg(phy_drd->dev,
 				 "PIPE3 phy operational clock not specified\n");
 			phy_drd->pipeclk = NULL;
 		}
 
 		phy_drd->utmiclk = devm_clk_get(phy_drd->dev, "phy_utmi");
 		if (IS_ERR(phy_drd->utmiclk)) {
-			dev_info(phy_drd->dev,
+			dev_dbg(phy_drd->dev,
 				 "UTMI phy operational clock not specified\n");
 			phy_drd->utmiclk = NULL;
 		}
 
 		phy_drd->itpclk = devm_clk_get(phy_drd->dev, "itp");
 		if (IS_ERR(phy_drd->itpclk)) {
-			dev_info(phy_drd->dev,
+			dev_dbg(phy_drd->dev,
 				 "ITP clock from main OSC not specified\n");
 			phy_drd->itpclk = NULL;
 		}

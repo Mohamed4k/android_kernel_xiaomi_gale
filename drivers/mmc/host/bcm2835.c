@@ -1355,7 +1355,7 @@ static int bcm2835_add_host(struct bcm2835_host *host)
 	pio_limit_string[0] = '\0';
 	if (host->use_dma && (PIO_THRESHOLD > 0))
 		sprintf(pio_limit_string, " (>%d)", PIO_THRESHOLD);
-	dev_info(dev, "loaded - DMA %s%s\n",
+	dev_dbg(dev, "loaded - DMA %s%s\n",
 		 host->use_dma ? "enabled" : "disabled", pio_limit_string);
 
 	return 0;

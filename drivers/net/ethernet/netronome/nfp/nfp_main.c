@@ -436,7 +436,7 @@ nfp_fw_load(struct pci_dev *pdev, struct nfp_pf *pf, struct nfp_nsp *nsp)
 	interface = nfp_cpp_interface(pf->cpp);
 	if (NFP_CPP_INTERFACE_UNIT_of(interface) != 0) {
 		/* Only Unit 0 should reset or load firmware */
-		dev_info(&pdev->dev, "Firmware will be loaded by partner\n");
+		dev_dbg(&pdev->dev, "Firmware will be loaded by partner\n");
 		return 0;
 	}
 
@@ -444,7 +444,7 @@ nfp_fw_load(struct pci_dev *pdev, struct nfp_pf *pf, struct nfp_nsp *nsp)
 	if (!fw)
 		return 0;
 
-	dev_info(&pdev->dev, "Soft-reset, loading FW image\n");
+	dev_dbg(&pdev->dev, "Soft-reset, loading FW image\n");
 	err = nfp_nsp_device_soft_reset(nsp);
 	if (err < 0) {
 		dev_err(&pdev->dev, "Failed to soft reset the NFP: %d\n",
@@ -459,7 +459,7 @@ nfp_fw_load(struct pci_dev *pdev, struct nfp_pf *pf, struct nfp_nsp *nsp)
 		goto exit_release_fw;
 	}
 
-	dev_info(&pdev->dev, "Finished loading FW image\n");
+	dev_dbg(&pdev->dev, "Finished loading FW image\n");
 
 exit_release_fw:
 	release_firmware(fw);
@@ -517,7 +517,7 @@ static int nfp_nsp_init(struct pci_dev *pdev, struct nfp_pf *pf)
 
 	pf->nspi = __nfp_nsp_identify(nsp);
 	if (pf->nspi)
-		dev_info(&pdev->dev, "BSP: %s\n", pf->nspi->version);
+		dev_dbg(&pdev->dev, "BSP: %s\n", pf->nspi->version);
 
 	err = nfp_fw_load(pdev, pf, nsp);
 	if (err < 0) {
@@ -551,7 +551,7 @@ static void nfp_fw_unload(struct nfp_pf *pf)
 	if (err < 0)
 		dev_warn(&pf->pdev->dev, "Couldn't unload firmware: %d\n", err);
 	else
-		dev_info(&pf->pdev->dev, "Firmware safely unloaded\n");
+		dev_dbg(&pf->pdev->dev, "Firmware safely unloaded\n");
 
 	nfp_nsp_close(nsp);
 }
@@ -631,7 +631,7 @@ static int nfp_pci_probe(struct pci_dev *pdev,
 
 	pf->hwinfo = nfp_hwinfo_read(pf->cpp);
 
-	dev_info(&pdev->dev, "Assembly: %s%s%s-%s CPLD: %s\n",
+	dev_dbg(&pdev->dev, "Assembly: %s%s%s-%s CPLD: %s\n",
 		 nfp_hwinfo_lookup(pf->hwinfo, "assembly.vendor"),
 		 nfp_hwinfo_lookup(pf->hwinfo, "assembly.partno"),
 		 nfp_hwinfo_lookup(pf->hwinfo, "assembly.serial"),
@@ -750,7 +750,7 @@ static int __init nfp_main_init(void)
 {
 	int err;
 
-	pr_info("%s: NFP PCIe Driver, Copyright (C) 2014-2017 Netronome Systems\n",
+	pr_debug("%s: NFP PCIe Driver, Copyright (C) 2014-2017 Netronome Systems\n",
 		nfp_driver_name);
 
 	nfp_net_debugfs_create();

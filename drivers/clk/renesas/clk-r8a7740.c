@@ -152,7 +152,7 @@ static void __init r8a7740_cpg_clocks_init(struct device_node *np)
 	int num_clks;
 
 	if (of_property_read_u32(np, "renesas,mode", &cpg_mode))
-		pr_warn("%s: missing renesas,mode property\n", __func__);
+		pr_debug("%s: missing renesas,mode property\n", __func__);
 
 	num_clks = of_property_count_strings(np, "clock-output-names");
 	if (num_clks < 0) {

@@ -481,7 +481,7 @@ static int yellowfin_init_one(struct pci_dev *pdev,
 	if (i)
 		goto err_out_unmap_status;
 
-	netdev_info(dev, "%s type %8x at %p, %pM, IRQ %d\n",
+	netdev_dbg(dev, "%s type %8x at %p, %pM, IRQ %d\n",
 		    pci_id_tbl[chip_idx].name,
 		    ioread32(ioaddr + ChipRev), ioaddr,
 		    dev->dev_addr, irq);
@@ -493,7 +493,7 @@ static int yellowfin_init_one(struct pci_dev *pdev,
 			if (mii_status != 0xffff  &&  mii_status != 0x0000) {
 				np->phys[phy_idx++] = phy;
 				np->advertising = mdio_read(ioaddr, phy, 4);
-				netdev_info(dev, "MII PHY found at address %d, status 0x%04x advertising %04x\n",
+				netdev_dbg(dev, "MII PHY found at address %d, status 0x%04x advertising %04x\n",
 					    phy, mii_status, np->advertising);
 			}
 		}
@@ -690,11 +690,11 @@ static void yellowfin_tx_timeout(struct net_device *dev)
 	/* Note: these should be KERN_DEBUG. */
 	if (yellowfin_debug) {
 		int i;
-		pr_warn("  Rx ring %p: ", yp->rx_ring);
+		pr_debug("  Rx ring %p: ", yp->rx_ring);
 		for (i = 0; i < RX_RING_SIZE; i++)
 			pr_cont(" %08x", yp->rx_ring[i].result_status);
 		pr_cont("\n");
-		pr_warn("  Tx ring %p: ", yp->tx_ring);
+		pr_debug("  Tx ring %p: ", yp->tx_ring);
 		for (i = 0; i < TX_RING_SIZE; i++)
 			pr_cont(" %04x /%08x",
 			       yp->tx_status[i].tx_errs,

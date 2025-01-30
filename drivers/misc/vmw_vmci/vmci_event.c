@@ -62,7 +62,7 @@ void vmci_event_exit(void)
 			 * should have been unregistered before we try
 			 * to unload the driver module.
 			 */
-			pr_warn("Unexpected free events occurring\n");
+			pr_debug("Unexpected free events occurring\n");
 			list_del(&cur->node);
 			kfree(cur);
 		}

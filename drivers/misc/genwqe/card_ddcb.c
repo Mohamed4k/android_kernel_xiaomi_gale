@@ -178,7 +178,7 @@ static void print_ddcb_info(struct genwqe_dev *cd, struct ddcb_queue *queue)
 
 	spin_lock_irqsave(&cd->print_lock, flags);
 
-	dev_info(&pci_dev->dev,
+	dev_dbg(&pci_dev->dev,
 		 "DDCB list for card #%d (ddcb_act=%d / ddcb_next=%d):\n",
 		 cd->card_idx, queue->ddcb_act, queue->ddcb_next);
 

@@ -1399,7 +1399,7 @@ static int phy_init(struct net_device *dev)
 		reg = mii_rw(dev, np->phyaddr, MII_NCONFIG, MII_READ);
 		reg &= ~PHY_MARVELL_E3016_INITMASK;
 		if (mii_rw(dev, np->phyaddr, MII_NCONFIG, reg)) {
-			netdev_info(dev, "%s: phy write to errata reg failed\n",
+			netdev_dbg(dev, "%s: phy write to errata reg failed\n",
 				    pci_name(np->pci_dev));
 			return PHY_ERROR;
 		}
@@ -1408,20 +1408,20 @@ static int phy_init(struct net_device *dev)
 		if (np->phy_model == PHY_MODEL_REALTEK_8211 &&
 		    np->phy_rev == PHY_REV_REALTEK_8211B) {
 			if (init_realtek_8211b(dev, np)) {
-				netdev_info(dev, "%s: phy init failed\n",
+				netdev_dbg(dev, "%s: phy init failed\n",
 					    pci_name(np->pci_dev));
 				return PHY_ERROR;
 			}
 		} else if (np->phy_model == PHY_MODEL_REALTEK_8211 &&
 			   np->phy_rev == PHY_REV_REALTEK_8211C) {
 			if (init_realtek_8211c(dev, np)) {
-				netdev_info(dev, "%s: phy init failed\n",
+				netdev_dbg(dev, "%s: phy init failed\n",
 					    pci_name(np->pci_dev));
 				return PHY_ERROR;
 			}
 		} else if (np->phy_model == PHY_MODEL_REALTEK_8201) {
 			if (init_realtek_8201(dev, np)) {
-				netdev_info(dev, "%s: phy init failed\n",
+				netdev_dbg(dev, "%s: phy init failed\n",
 					    pci_name(np->pci_dev));
 				return PHY_ERROR;
 			}
@@ -1434,7 +1434,7 @@ static int phy_init(struct net_device *dev)
 		ADVERTISE_100HALF | ADVERTISE_100FULL |
 		ADVERTISE_PAUSE_ASYM | ADVERTISE_PAUSE_CAP);
 	if (mii_rw(dev, np->phyaddr, MII_ADVERTISE, reg)) {
-		netdev_info(dev, "%s: phy write to advertise failed\n",
+		netdev_dbg(dev, "%s: phy write to advertise failed\n",
 			    pci_name(np->pci_dev));
 		return PHY_ERROR;
 	}
@@ -1455,7 +1455,7 @@ static int phy_init(struct net_device *dev)
 			mii_control_1000 &= ~ADVERTISE_1000FULL;
 
 		if (mii_rw(dev, np->phyaddr, MII_CTRL1000, mii_control_1000)) {
-			netdev_info(dev, "%s: phy init failed\n",
+			netdev_dbg(dev, "%s: phy init failed\n",
 				    pci_name(np->pci_dev));
 			return PHY_ERROR;
 		}
@@ -1471,7 +1471,7 @@ static int phy_init(struct net_device *dev)
 		/* start autoneg since we already performed hw reset above */
 		mii_control |= BMCR_ANRESTART;
 		if (mii_rw(dev, np->phyaddr, MII_BMCR, mii_control)) {
-			netdev_info(dev, "%s: phy init failed\n",
+			netdev_dbg(dev, "%s: phy init failed\n",
 				    pci_name(np->pci_dev));
 			return PHY_ERROR;
 		}
@@ -1480,7 +1480,7 @@ static int phy_init(struct net_device *dev)
 		 * (certain phys need bmcr to be setup with reset)
 		 */
 		if (phy_reset(dev, mii_control)) {
-			netdev_info(dev, "%s: phy reset failed\n",
+			netdev_dbg(dev, "%s: phy reset failed\n",
 				    pci_name(np->pci_dev));
 			return PHY_ERROR;
 		}
@@ -1489,13 +1489,13 @@ static int phy_init(struct net_device *dev)
 	/* phy vendor specific configuration */
 	if (np->phy_oui == PHY_OUI_CICADA) {
 		if (init_cicada(dev, np, phyinterface)) {
-			netdev_info(dev, "%s: phy init failed\n",
+			netdev_dbg(dev, "%s: phy init failed\n",
 				    pci_name(np->pci_dev));
 			return PHY_ERROR;
 		}
 	} else if (np->phy_oui == PHY_OUI_VITESSE) {
 		if (init_vitesse(dev, np)) {
-			netdev_info(dev, "%s: phy init failed\n",
+			netdev_dbg(dev, "%s: phy init failed\n",
 				    pci_name(np->pci_dev));
 			return PHY_ERROR;
 		}
@@ -1504,14 +1504,14 @@ static int phy_init(struct net_device *dev)
 		    np->phy_rev == PHY_REV_REALTEK_8211B) {
 			/* reset could have cleared these out, set them back */
 			if (init_realtek_8211b(dev, np)) {
-				netdev_info(dev, "%s: phy init failed\n",
+				netdev_dbg(dev, "%s: phy init failed\n",
 					    pci_name(np->pci_dev));
 				return PHY_ERROR;
 			}
 		} else if (np->phy_model == PHY_MODEL_REALTEK_8201) {
 			if (init_realtek_8201(dev, np) ||
 			    init_realtek_8201_cross(dev, np)) {
-				netdev_info(dev, "%s: phy init failed\n",
+				netdev_dbg(dev, "%s: phy init failed\n",
 					    pci_name(np->pci_dev));
 				return PHY_ERROR;
 			}
@@ -1566,7 +1566,7 @@ static void nv_stop_rx(struct net_device *dev)
 	writel(rx_ctrl, base + NvRegReceiverControl);
 	if (reg_delay(dev, NvRegReceiverStatus, NVREG_RCVSTAT_BUSY, 0,
 		      NV_RXSTOP_DELAY1, NV_RXSTOP_DELAY1MAX))
-		netdev_info(dev, "%s: ReceiverStatus remained busy\n",
+		netdev_dbg(dev, "%s: ReceiverStatus remained busy\n",
 			    __func__);
 
 	udelay(NV_RXSTOP_DELAY2);
@@ -1600,7 +1600,7 @@ static void nv_stop_tx(struct net_device *dev)
 	writel(tx_ctrl, base + NvRegTransmitterControl);
 	if (reg_delay(dev, NvRegTransmitterStatus, NVREG_XMITSTAT_BUSY, 0,
 		      NV_TXSTOP_DELAY1, NV_TXSTOP_DELAY1MAX))
-		netdev_info(dev, "%s: TransmitterStatus remained busy\n",
+		netdev_dbg(dev, "%s: TransmitterStatus remained busy\n",
 			    __func__);
 
 	udelay(NV_TXSTOP_DELAY2);
@@ -2691,10 +2691,10 @@ static void nv_tx_timeout(struct net_device *dev)
 	if (unlikely(debug_tx_timeout)) {
 		int i;
 
-		netdev_info(dev, "Ring at %lx\n", (unsigned long)np->ring_addr);
-		netdev_info(dev, "Dumping tx registers\n");
+		netdev_dbg(dev, "Ring at %lx\n", (unsigned long)np->ring_addr);
+		netdev_dbg(dev, "Dumping tx registers\n");
 		for (i = 0; i <= np->register_size; i += 32) {
-			netdev_info(dev,
+			netdev_dbg(dev,
 				    "%3x: %08x %08x %08x %08x "
 				    "%08x %08x %08x %08x\n",
 				    i,
@@ -2703,10 +2703,10 @@ static void nv_tx_timeout(struct net_device *dev)
 				    readl(base + i + 16), readl(base + i + 20),
 				    readl(base + i + 24), readl(base + i + 28));
 		}
-		netdev_info(dev, "Dumping tx ring\n");
+		netdev_dbg(dev, "Dumping tx ring\n");
 		for (i = 0; i < np->tx_ring_size; i += 4) {
 			if (!nv_optimized(np)) {
-				netdev_info(dev,
+				netdev_dbg(dev,
 					    "%03x: %08x %08x // %08x %08x "
 					    "// %08x %08x // %08x %08x\n",
 					    i,
@@ -2719,7 +2719,7 @@ static void nv_tx_timeout(struct net_device *dev)
 					    le32_to_cpu(np->tx_ring.orig[i+3].buf),
 					    le32_to_cpu(np->tx_ring.orig[i+3].flaglen));
 			} else {
-				netdev_info(dev,
+				netdev_dbg(dev,
 					    "%03x: %08x %08x %08x "
 					    "// %08x %08x %08x "
 					    "// %08x %08x %08x "
@@ -3537,14 +3537,14 @@ static void nv_linkchange(struct net_device *dev)
 	if (nv_update_linkspeed(dev)) {
 		if (!netif_carrier_ok(dev)) {
 			netif_carrier_on(dev);
-			netdev_info(dev, "link up\n");
+			netdev_dbg(dev, "link up\n");
 			nv_txrx_gate(dev, false);
 			nv_start_rx(dev);
 		}
 	} else {
 		if (netif_carrier_ok(dev)) {
 			netif_carrier_off(dev);
-			netdev_info(dev, "link down\n");
+			netdev_dbg(dev, "link down\n");
 			nv_txrx_gate(dev, true);
 			nv_stop_rx(dev);
 		}
@@ -3974,7 +3974,7 @@ static int nv_request_irq(struct net_device *dev, int intr_test)
 				ret = request_irq(np->msi_x_entry[NV_MSI_X_VECTOR_RX].vector,
 						  nv_nic_irq_rx, IRQF_SHARED, np->name_rx, dev);
 				if (ret) {
-					netdev_info(dev,
+					netdev_dbg(dev,
 						    "request_irq failed for rx %d\n",
 						    ret);
 					pci_disable_msix(np->pci_dev);
@@ -3986,7 +3986,7 @@ static int nv_request_irq(struct net_device *dev, int intr_test)
 				ret = request_irq(np->msi_x_entry[NV_MSI_X_VECTOR_TX].vector,
 						  nv_nic_irq_tx, IRQF_SHARED, np->name_tx, dev);
 				if (ret) {
-					netdev_info(dev,
+					netdev_dbg(dev,
 						    "request_irq failed for tx %d\n",
 						    ret);
 					pci_disable_msix(np->pci_dev);
@@ -3998,7 +3998,7 @@ static int nv_request_irq(struct net_device *dev, int intr_test)
 				ret = request_irq(np->msi_x_entry[NV_MSI_X_VECTOR_OTHER].vector,
 						  nv_nic_irq_other, IRQF_SHARED, np->name_other, dev);
 				if (ret) {
-					netdev_info(dev,
+					netdev_dbg(dev,
 						    "request_irq failed for link %d\n",
 						    ret);
 					pci_disable_msix(np->pci_dev);
@@ -4016,7 +4016,7 @@ static int nv_request_irq(struct net_device *dev, int intr_test)
 				ret = request_irq(np->msi_x_entry[NV_MSI_X_VECTOR_ALL].vector,
 						  handler, IRQF_SHARED, dev->name, dev);
 				if (ret) {
-					netdev_info(dev,
+					netdev_dbg(dev,
 						    "request_irq failed %d\n",
 						    ret);
 					pci_disable_msix(np->pci_dev);
@@ -4028,7 +4028,7 @@ static int nv_request_irq(struct net_device *dev, int intr_test)
 				writel(0, base + NvRegMSIXMap0);
 				writel(0, base + NvRegMSIXMap1);
 			}
-			netdev_info(dev, "MSI-X enabled\n");
+			netdev_dbg(dev, "MSI-X enabled\n");
 			return 0;
 		}
 	}
@@ -4038,7 +4038,7 @@ static int nv_request_irq(struct net_device *dev, int intr_test)
 			np->msi_flags |= NV_MSI_ENABLED;
 			ret = request_irq(np->pci_dev->irq, handler, IRQF_SHARED, dev->name, dev);
 			if (ret) {
-				netdev_info(dev, "request_irq failed %d\n",
+				netdev_dbg(dev, "request_irq failed %d\n",
 					    ret);
 				pci_disable_msi(np->pci_dev);
 				np->msi_flags &= ~NV_MSI_ENABLED;
@@ -4050,7 +4050,7 @@ static int nv_request_irq(struct net_device *dev, int intr_test)
 			writel(0, base + NvRegMSIMap1);
 			/* enable msi vector 0 */
 			writel(NVREG_MSI_VECTOR_0_ENABLED, base + NvRegMSIIrqMask);
-			netdev_info(dev, "MSI enabled\n");
+			netdev_dbg(dev, "MSI enabled\n");
 			return 0;
 		}
 	}
@@ -4127,7 +4127,7 @@ static void nv_do_nic_poll(struct timer_list *t)
 
 	if (np->recover_error) {
 		np->recover_error = 0;
-		netdev_info(dev, "MAC in recoverable error state\n");
+		netdev_dbg(dev, "MAC in recoverable error state\n");
 		if (netif_running(dev)) {
 			netif_tx_lock_bh(dev);
 			netif_addr_lock(dev);
@@ -4439,14 +4439,14 @@ static int nv_set_link_ksettings(struct net_device *dev,
 		}
 
 		if (netif_running(dev))
-			netdev_info(dev, "link down\n");
+			netdev_dbg(dev, "link down\n");
 		bmcr = mii_rw(dev, np->phyaddr, MII_BMCR, MII_READ);
 		if (np->phy_model == PHY_MODEL_MARVELL_E3016) {
 			bmcr |= BMCR_ANENABLE;
 			/* reset the phy in order for settings to stick,
 			 * and cause autoneg to start */
 			if (phy_reset(dev, bmcr)) {
-				netdev_info(dev, "phy reset failed\n");
+				netdev_dbg(dev, "phy reset failed\n");
 				return -EINVAL;
 			}
 		} else {
@@ -4495,7 +4495,7 @@ static int nv_set_link_ksettings(struct net_device *dev,
 		if (np->phy_oui == PHY_OUI_MARVELL) {
 			/* reset the phy in order for forced mode settings to stick */
 			if (phy_reset(dev, bmcr)) {
-				netdev_info(dev, "phy reset failed\n");
+				netdev_dbg(dev, "phy reset failed\n");
 				return -EINVAL;
 			}
 		} else {
@@ -4557,7 +4557,7 @@ static int nv_nway_reset(struct net_device *dev)
 			spin_unlock(&np->lock);
 			netif_addr_unlock(dev);
 			netif_tx_unlock_bh(dev);
-			netdev_info(dev, "link down\n");
+			netdev_dbg(dev, "link down\n");
 		}
 
 		bmcr = mii_rw(dev, np->phyaddr, MII_BMCR, MII_READ);
@@ -4565,7 +4565,7 @@ static int nv_nway_reset(struct net_device *dev)
 			bmcr |= BMCR_ANENABLE;
 			/* reset the phy in order for settings to stick*/
 			if (phy_reset(dev, bmcr)) {
-				netdev_info(dev, "phy reset failed\n");
+				netdev_dbg(dev, "phy reset failed\n");
 				return -EINVAL;
 			}
 		} else {
@@ -4736,11 +4736,11 @@ static int nv_set_pauseparam(struct net_device *dev, struct ethtool_pauseparam* 
 
 	if ((!np->autoneg && np->duplex == 0) ||
 	    (np->autoneg && !pause->autoneg && np->duplex == 0)) {
-		netdev_info(dev, "can not set pause settings when forced link is in half duplex\n");
+		netdev_dbg(dev, "can not set pause settings when forced link is in half duplex\n");
 		return -EINVAL;
 	}
 	if (pause->tx_pause && !(np->pause_flags & NV_PAUSEFRAME_TX_CAPABLE)) {
-		netdev_info(dev, "hardware does not support tx pause frames\n");
+		netdev_dbg(dev, "hardware does not support tx pause frames\n");
 		return -EINVAL;
 	}
 
@@ -4775,7 +4775,7 @@ static int nv_set_pauseparam(struct net_device *dev, struct ethtool_pauseparam* 
 		mii_rw(dev, np->phyaddr, MII_ADVERTISE, adv);
 
 		if (netif_running(dev))
-			netdev_info(dev, "link down\n");
+			netdev_dbg(dev, "link down\n");
 		bmcr = mii_rw(dev, np->phyaddr, MII_BMCR, MII_READ);
 		bmcr |= (BMCR_ANENABLE | BMCR_ANRESTART);
 		mii_rw(dev, np->phyaddr, MII_BMCR, bmcr);
@@ -4811,7 +4811,7 @@ static int nv_set_loopback(struct net_device *dev, netdev_features_t features)
 	if (features & NETIF_F_LOOPBACK) {
 		if (miicontrol & BMCR_LOOPBACK) {
 			spin_unlock_irqrestore(&np->lock, flags);
-			netdev_info(dev, "Loopback already enabled\n");
+			netdev_dbg(dev, "Loopback already enabled\n");
 			return 0;
 		}
 		nv_disable_irq(dev);
@@ -4831,19 +4831,19 @@ static int nv_set_loopback(struct net_device *dev, netdev_features_t features)
 				netif_carrier_on(dev);
 			}
 			spin_unlock_irqrestore(&np->lock, flags);
-			netdev_info(dev,
+			netdev_dbg(dev,
 				"Internal PHY loopback mode enabled.\n");
 		}
 	} else {
 		if (!(miicontrol & BMCR_LOOPBACK)) {
 			spin_unlock_irqrestore(&np->lock, flags);
-			netdev_info(dev, "Loopback already disabled\n");
+			netdev_dbg(dev, "Loopback already disabled\n");
 			return 0;
 		}
 		nv_disable_irq(dev);
 		/* Turn off loopback */
 		spin_unlock_irqrestore(&np->lock, flags);
-		netdev_info(dev, "Internal PHY loopback mode disabled.\n");
+		netdev_dbg(dev, "Internal PHY loopback mode disabled.\n");
 		phy_init(dev);
 	}
 	msleep(500);
@@ -5440,7 +5440,7 @@ static int nv_open(struct net_device *dev)
 	if (reg_delay(dev, NvRegUnknownSetupReg5,
 		      NVREG_UNKSETUP5_BIT31, NVREG_UNKSETUP5_BIT31,
 		      NV_SETUP5_DELAY, NV_SETUP5_DELAYMAX))
-		netdev_info(dev,
+		netdev_dbg(dev,
 			    "%s: SetupReg5, Bit 31 remained off\n", __func__);
 
 	writel(0, base + NvRegMIIMask);
@@ -5527,7 +5527,7 @@ static int nv_open(struct net_device *dev)
 	if (ret) {
 		netif_carrier_on(dev);
 	} else {
-		netdev_info(dev, "no link during initialization\n");
+		netdev_dbg(dev, "no link during initialization\n");
 		netif_carrier_off(dev);
 	}
 	if (oom)
@@ -5647,7 +5647,7 @@ static int nv_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
 	static int printed_version;
 
 	if (!printed_version++)
-		pr_info("Reverse Engineered nForce ethernet driver. Version %s.\n",
+		pr_debug("Reverse Engineered nForce ethernet driver. Version %s.\n",
 			FORCEDETH_VERSION);
 
 	dev = alloc_etherdev(sizeof(struct fe_priv));
@@ -5695,7 +5695,7 @@ static int nv_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
 		}
 	}
 	if (i == DEVICE_COUNT_RESOURCE) {
-		dev_info(&pci_dev->dev, "Couldn't find register window\n");
+		dev_dbg(&pci_dev->dev, "Couldn't find register window\n");
 		goto out_relreg;
 	}
 
@@ -5711,12 +5711,12 @@ static int nv_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
 		np->txrxctl_bits = NVREG_TXRXCTL_DESC_3;
 		if (dma_64bit) {
 			if (pci_set_dma_mask(pci_dev, DMA_BIT_MASK(39)))
-				dev_info(&pci_dev->dev,
+				dev_dbg(&pci_dev->dev,
 					 "64-bit DMA failed, using 32-bit addressing\n");
 			else
 				dev->features |= NETIF_F_HIGHDMA;
 			if (pci_set_consistent_dma_mask(pci_dev, DMA_BIT_MASK(39))) {
-				dev_info(&pci_dev->dev,
+				dev_dbg(&pci_dev->dev,
 					 "64-bit DMA (consistent) failed, using 32-bit ring buffers\n");
 			}
 		}
@@ -5999,7 +5999,7 @@ static int nv_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
 		break;
 	}
 	if (i == 33) {
-		dev_info(&pci_dev->dev, "open: Could not find a valid PHY\n");
+		dev_dbg(&pci_dev->dev, "open: Could not find a valid PHY\n");
 		goto out_error;
 	}
 
@@ -6020,7 +6020,7 @@ static int nv_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
 
 	err = register_netdev(dev);
 	if (err) {
-		dev_info(&pci_dev->dev, "unable to register netdev: %d\n", err);
+		dev_dbg(&pci_dev->dev, "unable to register netdev: %d\n", err);
 		goto out_error;
 	}
 
@@ -6037,10 +6037,10 @@ static int nv_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
 	if (id->driver_data & DEV_HAS_VLAN)
 		nv_vlan_mode(dev, dev->features);
 
-	dev_info(&pci_dev->dev, "ifname %s, PHY OUI 0x%x @ %d, addr %pM\n",
+	dev_dbg(&pci_dev->dev, "ifname %s, PHY OUI 0x%x @ %d, addr %pM\n",
 		 dev->name, np->phy_oui, np->phyaddr, dev->dev_addr);
 
-	dev_info(&pci_dev->dev, "%s%s%s%s%s%s%s%s%s%s%sdesc-v%u\n",
+	dev_dbg(&pci_dev->dev, "%s%s%s%s%s%s%s%s%s%s%sdesc-v%u\n",
 		 dev->features & NETIF_F_HIGHDMA ? "highdma " : "",
 		 dev->features & (NETIF_F_IP_CSUM | NETIF_F_SG) ?
 			"csum " : "",

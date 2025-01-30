@@ -154,17 +154,17 @@ static void hw_bc11_init(struct mtk_charger_type *info)
 #if IS_ENABLED(CONFIG_USB_MTK_HDRC)
 		/* add make sure USB Ready */
 		if (is_usb_rdy() == false) {
-			pr_info("CDP, block\n");
+			pr_debug("CDP, block\n");
 			while (is_usb_rdy() == false && timeout > 0) {
 				msleep(100);
 				timeout--;
 			}
 			if (timeout == 0)
-				pr_info("CDP, timeout\n");
+				pr_debug("CDP, timeout\n");
 			else
-				pr_info("CDP, free\n");
+				pr_debug("CDP, free\n");
 		} else
-			pr_info("CDP, PASS\n");
+			pr_debug("CDP, PASS\n");
 #endif
 		info->first_connect = false;
 	}
@@ -402,7 +402,7 @@ static unsigned int hw_bc11_stepB2(struct mtk_charger_type *info)
 			PMIC_RG_BC11_VSRC_EN_MASK,
 			PMIC_RG_BC11_VSRC_EN_SHIFT,
 			0x2);
-		pr_info("charger type: DCP, keep DM voltage source in stepB2\n");
+		pr_debug("charger type: DCP, keep DM voltage source in stepB2\n");
 	}
 	return wChargerAvail;
 
@@ -456,24 +456,24 @@ static void dump_charger_name(int type)
 {
 	switch (type) {
 	case POWER_SUPPLY_TYPE_UNKNOWN:
-		pr_info("charger type: %d, CHARGER_UNKNOWN\n", type);
+		pr_debug("charger type: %d, CHARGER_UNKNOWN\n", type);
 		break;
 	case POWER_SUPPLY_TYPE_USB:
-		pr_info("charger type: %d, Standard USB Host\n", type);
+		pr_debug("charger type: %d, Standard USB Host\n", type);
 		break;
 	case POWER_SUPPLY_TYPE_USB_CDP:
-		pr_info("charger type: %d, Charging USB Host\n", type);
+		pr_debug("charger type: %d, Charging USB Host\n", type);
 		break;
 #ifdef FIXME
 	case POWER_SUPPLY_TYPE_USB_FLOAT:
-		pr_info("charger type: %d, Non-standard Charger\n", type);
+		pr_debug("charger type: %d, Non-standard Charger\n", type);
 		break;
 #endif
 	case POWER_SUPPLY_TYPE_USB_DCP:
-		pr_info("charger type: %d, Standard Charger\n", type);
+		pr_debug("charger type: %d, Standard Charger\n", type);
 		break;
 	default:
-		pr_info("charger type: %d, Not Defined!!!\n", type);
+		pr_debug("charger type: %d, Not Defined!!!\n", type);
 		break;
 	}
 }
@@ -504,7 +504,7 @@ static int get_charger_type(struct mtk_charger_type *info)
 	if (type != POWER_SUPPLY_USB_TYPE_DCP)
 		hw_bc11_done(info);
 	else
-		pr_info("charger type: skip bc11 release for BC12 DCP SPEC\n");
+		pr_debug("charger type: skip bc11 release for BC12 DCP SPEC\n");
 
 	dump_charger_name(info->psy_desc.type);
 
@@ -519,9 +519,9 @@ static int get_vbus_voltage(struct mtk_charger_type *info,
 	if (!IS_ERR(info->chan_vbus)) {
 		ret = iio_read_channel_processed(info->chan_vbus, val);
 		if (ret < 0)
-			pr_notice("[%s]read fail,ret=%d\n", __func__, ret);
+			pr_debug("[%s]read fail,ret=%d\n", __func__, ret);
 	} else {
-		pr_notice("[%s]chan error %d\n", __func__, info->chan_vbus);
+		pr_debug("[%s]chan error %d\n", __func__, info->chan_vbus);
 		ret = -ENOTSUPP;
 	}
 
@@ -542,7 +542,7 @@ void do_charger_detect(struct mtk_charger_type *info, bool en)
 
 #ifndef CONFIG_TCPC_CLASS
 	if (!mt_usb_is_device()) {
-		pr_info("charger type: UNKNOWN, Now is usb host mode. Skip detection\n");
+		pr_debug("charger type: UNKNOWN, Now is usb host mode. Skip detection\n");
 		return;
 	}
 #endif
@@ -555,11 +555,11 @@ void do_charger_detect(struct mtk_charger_type *info, bool en)
 				POWER_SUPPLY_PROP_TYPE, &prop_type);
 		ret = power_supply_get_property(info->psy,
 				POWER_SUPPLY_PROP_USB_TYPE, &prop_usb_type);
-		pr_notice("type:%d usb_type:%d\n", prop_type.intval, prop_usb_type.intval);
+		pr_debug("type:%d usb_type:%d\n", prop_type.intval, prop_usb_type.intval);
 	} else {
 		info->psy_desc.type = POWER_SUPPLY_TYPE_UNKNOWN;
 		info->type = POWER_SUPPLY_USB_TYPE_UNKNOWN;
-		pr_notice("%s type:0 usb_type:0\n", __func__);
+		pr_debug("%s type:0 usb_type:0\n", __func__);
 	}
 
 	power_supply_changed(info->psy);
@@ -576,7 +576,7 @@ static void do_charger_detection_work(struct work_struct *data)
 		PMIC_RGS_CHRDET_MASK,
 		PMIC_RGS_CHRDET_SHIFT);
 
-	pr_notice("%s: chrdet:%d\n", __func__, chrdet);
+	pr_debug("%s: chrdet:%d\n", __func__, chrdet);
 	if (chrdet)
 		do_charger_detect(info, chrdet);
 	else {
@@ -584,10 +584,10 @@ static void do_charger_detection_work(struct work_struct *data)
 		/* 8 = KERNEL_POWER_OFF_CHARGING_BOOT */
 		/* 9 = LOW_POWER_OFF_CHARGING_BOOT */
 		if (info->bootmode == 8 || info->bootmode == 9) {
-			pr_info("%s: Unplug Charger/USB\n", __func__);
+			pr_debug("%s: Unplug Charger/USB\n", __func__);
 
 #ifndef CONFIG_TCPC_CLASS
-			pr_info("%s: system_state=%d\n", __func__,
+			pr_debug("%s: system_state=%d\n", __func__,
 				system_state);
 			if (system_state != SYSTEM_POWER_OFF)
 				kernel_power_off();
@@ -611,17 +611,17 @@ irqreturn_t chrdet_int_handler(int irq, void *data)
 		/* 8 = KERNEL_POWER_OFF_CHARGING_BOOT */
 		/* 9 = LOW_POWER_OFF_CHARGING_BOOT */
 		if (info->bootmode == 8 || info->bootmode == 9) {
-			pr_info("%s: Unplug Charger/USB\n", __func__);
+			pr_debug("%s: Unplug Charger/USB\n", __func__);
 
 #ifndef CONFIG_TCPC_CLASS
-			pr_info("%s: system_state=%d\n", __func__,
+			pr_debug("%s: system_state=%d\n", __func__,
 				system_state);
 			if (system_state != SYSTEM_POWER_OFF)
 				kernel_power_off();
 #endif
 		}
 	}
-	pr_notice("%s: chrdet:%d\n", __func__, chrdet);
+	pr_debug("%s: chrdet:%d\n", __func__, chrdet);
 	do_charger_detect(info, chrdet);
 
 	return IRQ_HANDLED;
@@ -634,7 +634,7 @@ static int psy_chr_type_get_property(struct power_supply *psy,
 	struct mtk_charger_type *info;
 	int vbus = 0;
 
-	pr_notice("%s: prop:%d\n", __func__, psp);
+	pr_debug("%s: prop:%d\n", __func__, psp);
 	info = (struct mtk_charger_type *)power_supply_get_drvdata(psy);
 
 	switch (psp) {
@@ -667,7 +667,7 @@ int psy_chr_type_set_property(struct power_supply *psy,
 {
 	struct mtk_charger_type *info;
 
-	pr_notice("%s: prop:%d %d\n", __func__, psp, val->intval);
+	pr_debug("%s: prop:%d %d\n", __func__, psp, val->intval);
 
 	info = (struct mtk_charger_type *)power_supply_get_drvdata(psy);
 	switch (psp) {
@@ -763,14 +763,14 @@ static int check_boot_mode(struct mtk_charger_type *info, struct device *dev)
 
 	boot_node = of_parse_phandle(dev->of_node, "bootmode", 0);
 	if (!boot_node)
-		pr_notice("%s: failed to get boot mode phandle\n", __func__);
+		pr_debug("%s: failed to get boot mode phandle\n", __func__);
 	else {
 		tag = (struct tag_bootmode *)of_get_property(boot_node,
 							"atag,boot", NULL);
 		if (!tag)
-			pr_notice("%s: failed to get atag,boot\n", __func__);
+			pr_debug("%s: failed to get atag,boot\n", __func__);
 		else {
-			pr_notice("%s: size:0x%x tag:0x%x bootmode:0x%x boottype:0x%x\n",
+			pr_debug("%s: size:0x%x tag:0x%x bootmode:0x%x boottype:0x%x\n",
 				__func__, tag->size, tag->tag,
 				tag->bootmode, tag->boottype);
 			info->bootmode = tag->bootmode;
@@ -788,12 +788,12 @@ static int mt6357_charger_type_probe(struct platform_device *pdev)
 	struct device_node *np = dev->of_node;
 	int ret = 0;
 
-	pr_notice("%s: starts\n", __func__);
+	pr_debug("%s: starts\n", __func__);
 
 	chan_vbus = devm_iio_channel_get(
 		&pdev->dev, "pmic_vbus");
 	if (IS_ERR(chan_vbus)) {
-		pr_notice("mt6357 charger type requests probe deferral ret:%d\n",
+		pr_debug("mt6357 charger type requests probe deferral ret:%d\n",
 			chan_vbus);
 		return -EPROBE_DEFER;
 	}
@@ -847,30 +847,30 @@ static int mt6357_charger_type_probe(struct platform_device *pdev)
 			&info->psy_cfg);
 
 	if (IS_ERR(info->psy)) {
-		pr_notice("%s Failed to register power supply: %ld\n",
+		pr_debug("%s Failed to register power supply: %ld\n",
 			__func__, PTR_ERR(info->psy));
 		return PTR_ERR(info->psy);
 	}
-	pr_notice("%s register psy success\n", __func__);
+	pr_debug("%s register psy success\n", __func__);
 
 	info->chan_vbus = devm_iio_channel_get(
 		&pdev->dev, "pmic_vbus");
 	if (IS_ERR(info->chan_vbus)) {
-		pr_notice("chan_vbus auxadc get fail, ret=%d\n",
+		pr_debug("chan_vbus auxadc get fail, ret=%d\n",
 			PTR_ERR(info->chan_vbus));
 	}
 
 	if (of_property_read_u32(np, "bc12_active", &info->bc12_active) < 0)
-		pr_notice("%s: no bc12_active\n", __func__);
+		pr_debug("%s: no bc12_active\n", __func__);
 
-	pr_notice("%s: bc12_active:%d\n", __func__, info->bc12_active);
+	pr_debug("%s: bc12_active:%d\n", __func__, info->bc12_active);
 
 	if (info->bc12_active) {
 		info->ac_psy = power_supply_register(&pdev->dev,
 				&info->ac_desc, &info->ac_cfg);
 
 		if (IS_ERR(info->ac_psy)) {
-			pr_notice("%s Failed to register power supply: %ld\n",
+			pr_debug("%s Failed to register power supply: %ld\n",
 				__func__, PTR_ERR(info->ac_psy));
 			return PTR_ERR(info->ac_psy);
 		}
@@ -879,7 +879,7 @@ static int mt6357_charger_type_probe(struct platform_device *pdev)
 				&info->usb_desc, &info->usb_cfg);
 
 		if (IS_ERR(info->usb_psy)) {
-			pr_notice("%s Failed to register power supply: %ld\n",
+			pr_debug("%s Failed to register power supply: %ld\n",
 				__func__, PTR_ERR(info->usb_psy));
 			return PTR_ERR(info->usb_psy);
 		}
@@ -891,12 +891,12 @@ static int mt6357_charger_type_probe(struct platform_device *pdev)
 			platform_get_irq_byname(pdev, "chrdet"), NULL,
 			chrdet_int_handler, IRQF_TRIGGER_HIGH, "chrdet", info);
 		if (ret < 0)
-			pr_notice("%s request chrdet irq fail\n", __func__);
+			pr_debug("%s request chrdet irq fail\n", __func__);
 	}
 
 	info->first_connect = true;
 
-	pr_notice("%s: done\n", __func__);
+	pr_debug("%s: done\n", __func__);
 
 	return 0;
 }

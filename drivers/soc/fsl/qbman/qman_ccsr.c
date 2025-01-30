@@ -784,7 +784,7 @@ static int fsl_qman_probe(struct platform_device *pdev)
 
 	err_irq = platform_get_irq(pdev, 0);
 	if (err_irq <= 0) {
-		dev_info(dev, "Can't get %pOF property 'interrupts'\n",
+		dev_dbg(dev, "Can't get %pOF property 'interrupts'\n",
 			 node);
 		return -ENODEV;
 	}

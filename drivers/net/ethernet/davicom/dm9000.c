@@ -768,12 +768,12 @@ static void dm9000_show_carrier(struct board_info *db,
 
 	if (carrier) {
 		lpa = mii->mdio_read(mii->dev, mii->phy_id, MII_LPA);
-		dev_info(db->dev,
+		dev_dbg(db->dev,
 			 "%s: link up, %dMbps, %s-duplex, lpa 0x%04X\n",
 			 ndev->name, (nsr & NSR_SPEED) ? 10 : 100,
 			 (ncr & NCR_FDX) ? "full" : "half", lpa);
 	} else {
-		dev_info(db->dev, "%s: link down\n", ndev->name);
+		dev_dbg(db->dev, "%s: link down\n", ndev->name);
 	}
 }
 
@@ -1268,11 +1268,11 @@ static irqreturn_t dm9000_wol_interrupt(int irq, void *dev_id)
 		iow(db, DM9000_NSR, NSR_WAKEST);
 
 		if (wcr & WCR_LINKST)
-			dev_info(db->dev, "wake by link status change\n");
+			dev_dbg(db->dev, "wake by link status change\n");
 		if (wcr & WCR_SAMPLEST)
-			dev_info(db->dev, "wake by sample packet\n");
+			dev_dbg(db->dev, "wake by sample packet\n");
 		if (wcr & WCR_MAGICST)
-			dev_info(db->dev, "wake by magic packet\n");
+			dev_dbg(db->dev, "wake by magic packet\n");
 		if (!(wcr & (WCR_LINKST | WCR_SAMPLEST | WCR_MAGICST)))
 			dev_err(db->dev, "wake signalled with no reason? "
 				"NSR=0x%02x, WSR=0x%02x\n", nsr, wcr);

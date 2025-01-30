@@ -172,7 +172,7 @@ static int hydra_init(struct zorro_dev *z)
 
     zorro_set_drvdata(z, dev);
 
-    pr_info("%s: Hydra at %pR, address %pM (hydra.c " HYDRA_VERSION ")\n",
+    pr_debug("%s: Hydra at %pR, address %pM (hydra.c " HYDRA_VERSION ")\n",
 	    dev->name, &z->resource, dev->dev_addr);
 
     return 0;
@@ -195,7 +195,7 @@ static int hydra_close(struct net_device *dev)
 
 static void hydra_reset_8390(struct net_device *dev)
 {
-    netdev_info(dev, "Hydra hw reset not there\n");
+    netdev_dbg(dev, "Hydra hw reset not there\n");
 }
 
 static void hydra_get_8390_hdr(struct net_device *dev,

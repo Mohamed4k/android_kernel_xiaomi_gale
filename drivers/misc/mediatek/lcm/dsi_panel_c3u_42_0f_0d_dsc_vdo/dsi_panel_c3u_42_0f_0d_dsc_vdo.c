@@ -132,9 +132,9 @@ static struct platform_driver lcm_driver = {
 
 static int __init lcm_drv_init(void)
 {
-	pr_notice("[Kernel/LCM] %s enter\n", __func__);
+	pr_debug("[Kernel/LCM] %s enter\n", __func__);
 	if (platform_driver_register(&lcm_driver)) {
-		pr_notice("LCM: failed to register disp driver\n");
+		pr_debug("LCM: failed to register disp driver\n");
 		return -ENODEV;
 	}
 
@@ -144,7 +144,7 @@ static int __init lcm_drv_init(void)
 static void __exit lcm_drv_exit(void)
 {
 	platform_driver_unregister(&lcm_driver);
-	pr_notice("LCM: Unregister lcm driver done\n");
+	pr_debug("LCM: Unregister lcm driver done\n");
 }
 
 late_initcall(lcm_drv_init);
@@ -374,7 +374,7 @@ static void lcm_init_power(void)
 static void lcm_suspend_power(void)
 {
 	if (lcd_reset_keep_high || cts_gesture_flag) {
-		pr_info("[LCM]%s:bias_keep_on\n",__func__);
+		pr_debug("[LCM]%s:bias_keep_on\n",__func__);
 		return;
 	}
 	lcm_bias_disable();

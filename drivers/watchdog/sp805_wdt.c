@@ -299,7 +299,7 @@ sp805_wdt_probe(struct amba_device *adev, const struct amba_id *id)
 	}
 	amba_set_drvdata(adev, wdt);
 
-	dev_info(&adev->dev, "registration successful\n");
+	dev_dbg(&adev->dev, "registration successful\n");
 	return 0;
 
 err:

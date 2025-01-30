@@ -375,7 +375,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
 	irq = pdev->irq;
 
 	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) {
-		pr_warn("Device %s disabled due to DMA limitations\n",
+		pr_debug("Device %s disabled due to DMA limitations\n",
 			pci_name(pdev));
 		return -EIO;
 	}
@@ -418,7 +418,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
 		if (option & 0x200)
 			np->mii_if.full_duplex = 1;
 		if (option & 15)
-			dev_info(&dev->dev,
+			dev_dbg(&dev->dev,
 				 "ignoring user supplied media type %d",
 				 option & 15);
 	}
@@ -437,7 +437,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (i)
 		goto err_out_cleardev;
 
-	dev_info(&dev->dev, "%s at %p, %pM, IRQ %d\n",
+	dev_dbg(&dev->dev, "%s at %p, %pM, IRQ %d\n",
 		 pci_id_tbl[chip_idx].name, ioaddr, dev->dev_addr, irq);
 
 	if (np->drv_flags & CanHaveMII) {
@@ -449,7 +449,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
 				np->mii_if.advertising = mdio_read(dev, phy, MII_ADVERTISE);
 				np->mii = (mdio_read(dev, phy, MII_PHYSID1) << 16)+
 						mdio_read(dev, phy, MII_PHYSID2);
-				dev_info(&dev->dev,
+				dev_dbg(&dev->dev,
 					 "MII PHY %08xh found at address %d, status 0x%04x advertising %04x\n",
 					 np->mii, phy, mii_status,
 					 np->mii_if.advertising);
@@ -681,7 +681,7 @@ static int update_link(struct net_device *dev)
 	if (!(mii_reg & 0x4)) {
 		if (netif_carrier_ok(dev)) {
 			if (debug)
-				dev_info(&dev->dev,
+				dev_dbg(&dev->dev,
 					 "MII #%d reports no link. Disabling watchdog\n",
 					 np->phys[0]);
 			netif_carrier_off(dev);
@@ -690,7 +690,7 @@ static int update_link(struct net_device *dev)
 	}
 	if (!netif_carrier_ok(dev)) {
 		if (debug)
-			dev_info(&dev->dev,
+			dev_dbg(&dev->dev,
 				 "MII #%d link is back. Enabling watchdog\n",
 				 np->phys[0]);
 		netif_carrier_on(dev);
@@ -724,7 +724,7 @@ static int update_link(struct net_device *dev)
 	if (fasteth)
 		result |= 0x20000000;
 	if (result != np->csr6 && debug)
-		dev_info(&dev->dev,
+		dev_dbg(&dev->dev,
 			 "Setting %dMBit-%s-duplex based on MII#%d\n",
 			 fasteth ? 100 : 10, duplex ? "full" : "half",
 			 np->phys[0]);
@@ -759,7 +759,7 @@ static inline void update_csr6(struct net_device *dev, int new)
 
 		limit--;
 		if(!limit) {
-			dev_info(&dev->dev,
+			dev_dbg(&dev->dev,
 				 "couldn't stop rxtx, IntrStatus %xh\n", csr5);
 			break;
 		}
@@ -894,7 +894,7 @@ static void init_registers(struct net_device *dev)
 	/* When not a module we can work around broken '486 PCI boards. */
 	if (boot_cpu_data.x86 <= 4) {
 		i |= 0x4800;
-		dev_info(&dev->dev,
+		dev_dbg(&dev->dev,
 			 "This is a 386/486 PCI system, setting cache alignment to 8 longwords\n");
 	} else {
 		i |= 0xE000;

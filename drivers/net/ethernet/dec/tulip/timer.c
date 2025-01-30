@@ -145,7 +145,7 @@ void mxic_timer(struct timer_list *t)
 	int next_tick = 60*HZ;
 
 	if (tulip_debug > 3) {
-		dev_info(&dev->dev, "MXIC negotiation status %08x\n",
+		dev_dbg(&dev->dev, "MXIC negotiation status %08x\n",
 			 ioread32(ioaddr + CSR12));
 	}
 	if (next_tick) {

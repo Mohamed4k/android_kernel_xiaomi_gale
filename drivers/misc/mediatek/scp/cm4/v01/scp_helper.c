@@ -401,7 +401,7 @@ static void scp_timeout_ws(struct work_struct *ws)
 #endif
 
 	scp_timeout_times++;
-	pr_notice("[SCP] scp_timeout_times=%x\n", scp_timeout_times);
+	pr_debug("[SCP] scp_timeout_times=%x\n", scp_timeout_times);
 }
 
 
@@ -474,7 +474,7 @@ static void scp_wait_ready_timeout(struct timer_list *t)
 	struct scp_timer *timer = from_timer(timer, t, tl);
 
 	/*id = 0: SCP A, id=1: SCP B*/
-	pr_notice("%s(),timer %d timeout\n", __func__, timer->tid);
+	pr_debug("%s(),timer %d timeout\n", __func__, timer->tid);
 	scp_timeout_work.flags = 0;
 	scp_timeout_work.id = SCP_A_ID;
 	scp_schedule_work(&scp_timeout_work);
@@ -511,7 +511,7 @@ static void scp_A_ready_ipi_handler(int id, void *data, unsigned int len)
 __attribute__((weak)) void report_hub_dmd(uint32_t case_id,
 				uint32_t sensor_id, char *context)
 {
-	pr_notice("[SCP] weak function to do nothing for cid(%d), sid(%d)\n",
+	pr_debug("[SCP] weak function to do nothing for cid(%d), sid(%d)\n",
 			case_id, sensor_id);
 }
 
@@ -528,7 +528,7 @@ static void scp_err_info_handler(int id, void *data, unsigned int len)
 	struct error_info *info = (struct error_info *)data;
 
 	if (sizeof(*info) != len) {
-		pr_notice("[SCP] error: incorrect size %d of error_info\n",
+		pr_debug("[SCP] error: incorrect size %d of error_info\n",
 				len);
 		WARN_ON(1);
 		return;
@@ -536,9 +536,9 @@ static void scp_err_info_handler(int id, void *data, unsigned int len)
 
 	/* Ensure the context[] is terminated by the NULL character. */
 	info->context[ERR_MAX_CONTEXT_LEN - 1] = '\0';
-	pr_notice("[SCP] Error_info: case id: %u\n", info->case_id);
-	pr_notice("[SCP] Error_info: sensor id: %u\n", info->sensor_id);
-	pr_notice("[SCP] Error_info: context: %s\n", info->context);
+	pr_debug("[SCP] Error_info: case id: %u\n", info->case_id);
+	pr_debug("[SCP] Error_info: sensor id: %u\n", info->sensor_id);
+	pr_debug("[SCP] Error_info: context: %s\n", info->context);
 
 	report_hub_dmd(info->case_id, info->sensor_id, info->context);
 }
@@ -897,16 +897,16 @@ static ssize_t log_filter_store(struct device *dev,
 	ret = scp_ipi_send(IPI_SCP_LOG_FILTER, &filter, len, 0, SCP_A_ID);
 	switch (ret) {
 	case SCP_IPI_DONE:
-		pr_notice("[SCP] Set log filter to 0x%08x\n", filter);
+		pr_debug("[SCP] Set log filter to 0x%08x\n", filter);
 		return count;
 
 	case SCP_IPI_BUSY:
-		pr_notice("[SCP] IPI busy. Set log filter failed!\n");
+		pr_debug("[SCP] IPI busy. Set log filter failed!\n");
 		return -EBUSY;
 
 	case SCP_IPI_ERROR:
 	default:
-		pr_notice("[SCP] IPI error. Set log filter failed!\n");
+		pr_debug("[SCP] IPI error. Set log filter failed!\n");
 		return -EIO;
 	}
 }
@@ -1091,27 +1091,27 @@ static int scp_reserve_memory_ioremap(struct platform_device *pdev)
 	ret = of_property_read_string(pdev->dev.of_node, "scp_mem_key",
 					&mem_key);
 	if (ret) {
-		pr_info("[SCP] cannot find property\n");
+		pr_debug("[SCP] cannot find property\n");
 		return -EINVAL;
 	}
 
 	rmem_node = of_find_compatible_node(NULL, NULL, mem_key);
 
 	if (!rmem_node) {
-		pr_info("[SCP] no node for reserved memory\n");
+		pr_debug("[SCP] no node for reserved memory\n");
 		return -EINVAL;
 	}
 
 	rmem = of_reserved_mem_lookup(rmem_node);
 	if (!rmem) {
-		pr_info("[SCP] cannot lookup reserved memory\n");
+		pr_debug("[SCP] cannot lookup reserved memory\n");
 		return -EINVAL;
 	}
 
 	scp_mem_base_phys = (phys_addr_t) rmem->base;
 	scp_mem_size = (phys_addr_t) rmem->size;
 
-	pr_notice("[SCP] %s is called, 0x%x, 0x%x",
+	pr_debug("[SCP] %s is called, 0x%x, 0x%x",
 		__func__,
 		(unsigned int)scp_mem_base_phys,
 		(unsigned int)scp_mem_size);
@@ -1157,7 +1157,7 @@ static int scp_reserve_memory_ioremap(struct platform_device *pdev)
 		}
 
 		if (m_idx >= NUMS_MEM_ID) {
-			pr_notice("[SCP] skip unexpected index, %d\n", m_idx);
+			pr_debug("[SCP] skip unexpected index, %d\n", m_idx);
 			continue;
 		}
 
@@ -1192,9 +1192,9 @@ static int scp_reserve_memory_ioremap(struct platform_device *pdev)
 		uint64_t start_virt = (uint64_t)scp_get_reserve_mem_virt(id);
 		uint64_t len = (uint64_t)scp_get_reserve_mem_size(id);
 
-		pr_notice("[SCP][rsrv_mem-%d] phy:0x%llx - 0x%llx, len:0x%llx\n",
+		pr_debug("[SCP][rsrv_mem-%d] phy:0x%llx - 0x%llx, len:0x%llx\n",
 			id, start_phys, start_phys + len - 1, len);
-		pr_notice("[SCP][rsrv_mem-%d] vir:0x%llx - 0x%llx, len:0x%llx\n",
+		pr_debug("[SCP][rsrv_mem-%d] vir:0x%llx - 0x%llx, len:0x%llx\n",
 			id, start_virt, start_virt + len - 1, len);
 	}
 #endif  // DEBUG
@@ -1218,7 +1218,7 @@ void set_scp_mpu(void)
 			FORBIDDEN, FORBIDDEN, FORBIDDEN, FORBIDDEN,
 			NO_PROTECTION, FORBIDDEN, FORBIDDEN, NO_PROTECTION);
 
-	pr_notice("[SCP] MPU protect SCP Share region<%d:%08llx:%08llx> %x, %x\n",
+	pr_debug("[SCP] MPU protect SCP Share region<%d:%08llx:%08llx> %x, %x\n",
 			region_info.region,
 			(uint64_t)region_info.start,
 			(uint64_t)region_info.end,
@@ -1239,9 +1239,9 @@ void set_scp_mpu(void)
 	mtk_emimpu_set_apc(&md_region, MPU_DOMAIN_D3,
 		MTK_EMIMPU_NO_PROTECTION);
 	if (mtk_emimpu_set_protection(&md_region))
-		pr_notice("[SCP]mtk_emimpu_set_protection fail\n");
+		pr_debug("[SCP]mtk_emimpu_set_protection fail\n");
 	mtk_emimpu_free_region(&md_region);
-	pr_notice("[SCP] MPU protect SCP Share region<%d:%08llx:%08llx>\n",
+	pr_debug("[SCP] MPU protect SCP Share region<%d:%08llx:%08llx>\n",
 			md_region.rg_num,
 			(uint64_t)md_region.start,
 			(uint64_t)md_region.end);
@@ -1484,19 +1484,19 @@ void print_clk_registers(void)
 	if (loader_base) {
 		for (offset = 0; offset < 16; offset += 4) {
 			value = (unsigned int)readl(loader_base + offset);
-			pr_notice("[SCP] loader[%u]: 0x%08x\n", offset, value);
+			pr_debug("[SCP] loader[%u]: 0x%08x\n", offset, value);
 		}
 	}
 
 	// 0x0000 ~ 0x01CC (inclusive)
 	for (offset = 0x0000; offset <= 0x01CC; offset += 4) {
 		value = (unsigned int)readl(cfg + offset);
-		pr_notice("[SCP] cfg[0x%04x]: 0x%08x\n", offset, value);
+		pr_debug("[SCP] cfg[0x%04x]: 0x%08x\n", offset, value);
 	}
 	// 0x4000 ~ 0x40A4 (inclusive)
 	for (offset = 0x0000; offset < CLK_BANK_LEN; offset += 4) {
 		value = (unsigned int)readl(clkctrl + offset);
-		pr_notice("[SCP] clk[0x%04x]: 0x%08x\n", offset, value);
+		pr_debug("[SCP] clk[0x%04x]: 0x%08x\n", offset, value);
 	}
 }
 
@@ -1570,7 +1570,7 @@ void scp_sys_reset_ws(struct work_struct *ws)
 	/* scp reset by CMD, WDT or awake fail */
 	if (scp_reset_type == RESET_TYPE_WDT) {
 		/* reset type scp WDT */
-		pr_notice("[SCP] %s(): scp wdt reset\n", __func__);
+		pr_debug("[SCP] %s(): scp wdt reset\n", __func__);
 		/* make sure scp is in idle state */
 		while (timeout--) {
 			if (readl(SCP_GPR_CM4_A_REBOOT) == 0x34) {
@@ -1586,7 +1586,7 @@ void scp_sys_reset_ws(struct work_struct *ws)
 		}
 
 		if (timeout == 0)
-			pr_notice("[SCP]wdt reset timeout, still reset scp\n");
+			pr_debug("[SCP]wdt reset timeout, still reset scp\n");
 
 		writel(0, scp_reset_reg);
 		writel(1, SCP_GPR_CM4_A_REBOOT);
@@ -1616,16 +1616,16 @@ void scp_sys_reset_ws(struct work_struct *ws)
 	dsb(SY);
 
 	while ((readl(scp_reset_reg) == 0) && (timeout > 0)) {
-		pr_notice("[SCP]reset countdown, %d\n", timeout);
+		pr_debug("[SCP]reset countdown, %d\n", timeout);
 		writel(1, scp_reset_reg);
 		mdelay(20);
 		timeout--;
 	};
 
 	if (readl(scp_reset_reg))
-		pr_notice("[SCP]start scp\n");
+		pr_debug("[SCP]start scp\n");
 	else
-		pr_notice("[SCP]start scp failed\n");
+		pr_debug("[SCP]start scp failed\n");
 
 #if SCP_BOOT_TIME_OUT_MONITOR
 	mod_timer(&(scp_ready_timer[SCP_A_ID].tl), jiffies + SCP_READY_TIMEOUT);
@@ -1800,7 +1800,7 @@ static int scp_device_probe(struct platform_device *pdev)
 		pr_err("[SCP] mpu_region_id not found\n");
 		return -1;
 	}
-	pr_notice("[SCP] mpu_region_id=%d\n", mpu_region_id);
+	pr_debug("[SCP] mpu_region_id=%d\n", mpu_region_id);
 
 	/* get number of feature settings in dts */
 	scp_feature_num = of_property_count_u32_elems(
@@ -1833,7 +1833,7 @@ static int scp_device_probe(struct platform_device *pdev)
 		}
 
 		if (f_idx >= NUM_FEATURE_ID) {
-			pr_notice("[SCP] skip unexpected index, %d\n", f_idx);
+			pr_debug("[SCP] skip unexpected index, %d\n", f_idx);
 			continue;
 		}
 
@@ -2136,7 +2136,7 @@ static void __exit scp_exit(void)
 #ifndef CONFIG_MTK_EMI_LEGACY
 static int __init scp_late_init(void)
 {
-	pr_notice("[SCP] %s\n", __func__);
+	pr_debug("[SCP] %s\n", __func__);
 	set_scp_mpu();
 	return 0;
 }

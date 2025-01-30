@@ -518,7 +518,7 @@ xpnet_init(void)
 	if (!is_shub() && !is_uv())
 		return -ENODEV;
 
-	dev_info(xpnet, "registering network device %s\n", XPNET_DEVICE_NAME);
+	dev_dbg(xpnet, "registering network device %s\n", XPNET_DEVICE_NAME);
 
 	xpnet_broadcast_partitions = kcalloc(BITS_TO_LONGS(xp_max_npartitions),
 					     sizeof(long),
@@ -581,7 +581,7 @@ module_init(xpnet_init);
 static void __exit
 xpnet_exit(void)
 {
-	dev_info(xpnet, "unregistering network device %s\n",
+	dev_dbg(xpnet, "unregistering network device %s\n",
 		 xpnet_device[0].name);
 
 	unregister_netdev(xpnet_device);

@@ -931,7 +931,7 @@ int octeon_unregister_droq_ops(struct octeon_device *oct, u32 q_no)
 	droq = oct->droq[q_no];
 
 	if (!droq) {
-		dev_info(&oct->pci_dev->dev,
+		dev_dbg(&oct->pci_dev->dev,
 			 "Droq id (%d) not available.\n", q_no);
 		return 0;
 	}

@@ -763,9 +763,9 @@ static void ram_console_update(void)
 		log_timeout = true;
 
 	if ((log_over_cnt && !log_dump) || (log_over_cnt && log_timeout)) {
-		pr_notice("%s: upd(%llu ns), ori(%llu ns)\n", __func__,
+		pr_debug("%s: upd(%llu ns), ori(%llu ns)\n", __func__,
 				upd_block_time, block_time);
-		pr_notice("%s: over_cnt: %d, time_out: %d, log_dump: %d\n",
+		pr_debug("%s: over_cnt: %d, time_out: %d, log_dump: %d\n",
 				__func__, log_over_cnt, log_timeout, log_dump);
 
 		log_dump = true;
@@ -773,7 +773,7 @@ static void ram_console_update(void)
 		dump_enabled_clks_once();
 
 		for (i = 0; i < ARRAY_SIZE(data); i++)
-			pr_notice("%s: data[%i]=%08x\n", __func__, i, data[i]);
+			pr_debug("%s: data[%i]=%08x\n", __func__, i, data[i]);
 
 		/* The code based on  clkdbg/clkdbg-mt6873. */
 		/* When power on/off fails, dump the related registers. */
@@ -860,13 +860,13 @@ static void ram_console_update(void)
 		}
 
 		if (DBG_ID >= (DBG_ID_NUM / 2))
-			pr_notice("%s %s MTCMOS PWR hang at %s flow step %d\n",
+			pr_debug("%s %s MTCMOS PWR hang at %s flow step %d\n",
 				"[clkmgr]",
 				syss[(DBG_ID - (DBG_ID_NUM / 2))].name,
 				DBG_STA ? "pwron":"pdn",
 				DBG_STEP);
 		else
-			pr_notice("%s %s MTCMOS BUS hang at %s flow step %d\n",
+			pr_debug("%s %s MTCMOS BUS hang at %s flow step %d\n",
 				"[clkmgr]",
 				syss[DBG_ID].name,
 				DBG_STA ? "pwron":"pdn",
@@ -912,14 +912,14 @@ static void iomap_apu(void)
 {
 	apu_vcore_base = find_and_iomap("mediatek,apu_vcore");
 	if (!apu_vcore_base) {
-		pr_notice("cannot get apu vcore base\n");
+		pr_debug("cannot get apu vcore base\n");
 
 		return;
 	}
 
 	apu_conn_base = find_and_iomap("mediatek,apu_conn");
 	if (!apu_conn_base) {
-		pr_notice("cannot get apu conn base\n");
+		pr_debug("cannot get apu conn base\n");
 
 		return;
 	}
@@ -4307,7 +4307,7 @@ static int isNeedMfgFakePowerOn(enum subsys_id id)
 		// if gpu dfd is triggered, the power control will be locked
 		// so we need to do fake power on
 		if (gpu_dfd_status & MFG_DFD_TRIGGER) {
-			pr_info("%s:power on, MFG_MISC_CON(0x%x)\n",
+			pr_debug("%s:power on, MFG_MISC_CON(0x%x)\n",
 				__func__, gpu_dfd_status);
 			isGpuDfdTriggered = 1;
 		}
@@ -4331,7 +4331,7 @@ static int enable_subsys(enum subsys_id id, enum mtcmos_op action)
 
 #if CONTROL_LIMIT
 	#if MT_CCF_DEBUG
-	pr_notice("[CCF] %s: sys=%s, id=%d, action = %s\n",
+	pr_debug("[CCF] %s: sys=%s, id=%d, action = %s\n",
 		__func__, sys->name, id, action?"PWN":"BUS_PROT");
 	#endif
 	if (allow[id] == 0) {
@@ -4380,7 +4380,7 @@ static int disable_subsys(enum subsys_id id, enum mtcmos_op action)
 
 #if CONTROL_LIMIT
 	#if MT_CCF_DEBUG
-	pr_notice("[CCF] %s: sys=%s, id=%d, action = %s\n",
+	pr_debug("[CCF] %s: sys=%s, id=%d, action = %s\n",
 		__func__, sys->name, id, action?"PWN":"BUS_PROT");
 	#endif
 	if (allow[id] == 0) {
@@ -4460,7 +4460,7 @@ static int pg_pre_clk_ctrl(struct cg_list *list,
 
 		if (!clk) {
 			if (list->cg[i] && !lp)
-				pr_notice("[CCF] cannot find pre_clk(%s)\n",
+				pr_debug("[CCF] cannot find pre_clk(%s)\n",
 						list->cg[i]);
 			break;
 		}
@@ -4473,7 +4473,7 @@ static int pg_pre_clk_ctrl(struct cg_list *list,
 			clk_disable_unprepare(clk);
 
 #if MT_CCF_DEBUG
-		pr_notice("[CCF] %s: sys=%s, pre_clk=%s\n",
+		pr_debug("[CCF] %s: sys=%s, pre_clk=%s\n",
 				__func__,
 				name ? name : NULL,
 				lp ? (list->lp_cg[i] ? list->lp_cg[i] : NULL) :
@@ -4761,7 +4761,7 @@ static void init_clk_scpsys(struct clk_onecell_data *clk_data)
 		struct mtk_power_gate *pg = &scp_clks[i];
 
 #if MT_CCF_BRINGUP
-		pr_notice("[CCF] %s: pgate %3d: %s begin\n", __func__,
+		pr_debug("[CCF] %s: pgate %3d: %s begin\n", __func__,
 				i, pg->name);
 #endif
 
@@ -4784,7 +4784,7 @@ static void init_clk_scpsys(struct clk_onecell_data *clk_data)
 			clk_data->clks[pg->id] = clk;
 
 #if MT_CCF_BRINGUP
-		pr_notice("[CCF] %s: pgate %3d: %s end\n", __func__,
+		pr_debug("[CCF] %s: pgate %3d: %s end\n", __func__,
 				i, pg->name);
 #endif				/* MT_CCF_DEBUG */
 	}
@@ -4835,7 +4835,7 @@ static int clk_mt6853_scpsys_probe(struct platform_device *pdev)
 	int r;
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init begin\n", __func__);
+	pr_debug("%s init begin\n", __func__);
 #endif
 	infracfg_base = get_reg(node, 0);
 	spm_base = get_reg(node, 1);
@@ -4859,7 +4859,7 @@ static int clk_mt6853_scpsys_probe(struct platform_device *pdev)
 
 	spin_lock_init(&pgcb_lock);
 #if MT_CCF_BRINGUP
-	pr_notice("%s init end\n", __func__);
+	pr_debug("%s init end\n", __func__);
 #endif
 	return r;
 }
@@ -4885,10 +4885,10 @@ arch_initcall_sync(clk_mt6853_scpsys_init);
 /* for suspend LDVT only */
 void mtcmos_force_off(void)
 {
-	pr_notice("suspend test: vpu\n");
+	pr_debug("suspend test: vpu\n");
 	spm_mtcmos_ctrl_vpu_pwr(STA_POWER_DOWN);
 
-	pr_notice("suspend test: cam\n");
+	pr_debug("suspend test: cam\n");
 	spm_mtcmos_ctrl_cam_rawa_bus_prot(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_cam_rawa_pwr(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_cam_rawb_bus_prot(STA_POWER_DOWN);
@@ -4896,25 +4896,25 @@ void mtcmos_force_off(void)
 	spm_mtcmos_ctrl_cam_bus_prot(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_cam_pwr(STA_POWER_DOWN);
 
-	pr_notice("suspend test: ven\n");
+	pr_debug("suspend test: ven\n");
 	spm_mtcmos_ctrl_ven_bus_prot(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_ven_pwr(STA_POWER_DOWN);
 
-	pr_notice("suspend test: vde\n");
+	pr_debug("suspend test: vde\n");
 	spm_mtcmos_ctrl_vde_bus_prot(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_vde_pwr(STA_POWER_DOWN);
 
-	pr_notice("suspend test: ipe\n");
+	pr_debug("suspend test: ipe\n");
 	spm_mtcmos_ctrl_ipe_bus_prot(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_ipe_pwr(STA_POWER_DOWN);
 
-	pr_notice("suspend test: isp\n");
+	pr_debug("suspend test: isp\n");
 	spm_mtcmos_ctrl_isp2_bus_prot(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_isp2_pwr(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_isp_bus_prot(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_isp_pwr(STA_POWER_DOWN);
 
-	pr_notice("suspend test: mfg\n");
+	pr_debug("suspend test: mfg\n");
 	spm_mtcmos_ctrl_mfg5_bus_prot(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_mfg5_pwr(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_mfg3_bus_prot(STA_POWER_DOWN);
@@ -4926,24 +4926,24 @@ void mtcmos_force_off(void)
 	spm_mtcmos_ctrl_mfg0_bus_prot(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_mfg0_pwr(STA_POWER_DOWN);
 
-	pr_notice("suspend test: audio\n");
+	pr_debug("suspend test: audio\n");
 	spm_mtcmos_ctrl_audio_bus_prot(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_audio_pwr(STA_POWER_DOWN);
 
-	pr_notice("suspend test: adsp\n");
+	pr_debug("suspend test: adsp\n");
 	/* spm_mtcmos_ctrl_adsp_shut_down(STA_POWER_DOWN); */
 	spm_mtcmos_ctrl_adsp_dormant_bus_prot(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_adsp_dormant_pwr(STA_POWER_DOWN);
 
-	pr_notice("suspend test: dis\n");
+	pr_debug("suspend test: dis\n");
 	spm_mtcmos_ctrl_dis_bus_prot(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_dis_pwr(STA_POWER_DOWN);
 
-	pr_notice("suspend test: md1\n");
+	pr_debug("suspend test: md1\n");
 	spm_mtcmos_ctrl_md1_bus_prot(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_md1_bus_prot(STA_POWER_DOWN);
 
-	pr_notice("suspend test: conn\n");
+	pr_debug("suspend test: conn\n");
 	spm_mtcmos_ctrl_conn_bus_prot(STA_POWER_DOWN);
 	spm_mtcmos_ctrl_conn_pwr(STA_POWER_DOWN);
 }

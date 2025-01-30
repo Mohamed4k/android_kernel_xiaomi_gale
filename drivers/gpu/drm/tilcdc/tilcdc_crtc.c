@@ -560,7 +560,7 @@ static void tilcdc_crtc_recover_work(struct work_struct *work)
 		container_of(work, struct tilcdc_crtc, recover_work);
 	struct drm_crtc *crtc = &tilcdc_crtc->base;
 
-	dev_info(crtc->dev->dev, "%s: Reset CRTC", __func__);
+	dev_dbg(crtc->dev->dev, "%s: Reset CRTC", __func__);
 
 	drm_modeset_lock(&crtc->mutex, NULL);
 

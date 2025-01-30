@@ -481,11 +481,11 @@ au1000_adjust_link(struct net_device *dev)
 
 	if (status_change) {
 		if (phydev->link)
-			netdev_info(dev, "link up (%d/%s)\n",
+			netdev_dbg(dev, "link up (%d/%s)\n",
 			       phydev->speed,
 			       DUPLEX_FULL == phydev->duplex ? "Full" : "Half");
 		else
-			netdev_info(dev, "link down\n");
+			netdev_dbg(dev, "link down\n");
 	}
 }
 
@@ -501,7 +501,7 @@ static int au1000_mii_probe(struct net_device *dev)
 		if (aup->phy_addr)
 			phydev = mdiobus_get_phy(aup->mii_bus, aup->phy_addr);
 		else
-			netdev_info(dev, "using PHY-less setup\n");
+			netdev_dbg(dev, "using PHY-less setup\n");
 		return 0;
 	}
 
@@ -520,7 +520,7 @@ static int au1000_mii_probe(struct net_device *dev)
 		/* try harder to find a PHY */
 		if (!phydev && (aup->mac_id == 1)) {
 			/* no PHY found, maybe we have a dual PHY? */
-			dev_info(&dev->dev, ": no PHY found on MAC1, "
+			dev_dbg(&dev->dev, ": no PHY found on MAC1, "
 				"let's see if it's attached to MAC0...\n");
 
 			/* find the first (lowest address) non-attached
@@ -1066,7 +1066,7 @@ static void au1000_multicast_list(struct net_device *dev)
 			   netdev_mc_count(dev) > MULTICAST_FILTER_LIMIT) {
 		reg |= MAC_PASS_ALL_MULTI;
 		reg &= ~MAC_PROMISCUOUS;
-		netdev_info(dev, "Pass all multicast\n");
+		netdev_dbg(dev, "Pass all multicast\n");
 	} else {
 		struct netdev_hw_addr *ha;
 		u32 mc_filter[2];	/* Multicast hash filter */
@@ -1223,7 +1223,7 @@ static int au1000_probe(struct platform_device *pdev)
 
 	pd = dev_get_platdata(&pdev->dev);
 	if (!pd) {
-		dev_info(&pdev->dev, "no platform_data passed,"
+		dev_dbg(&pdev->dev, "no platform_data passed,"
 					" PHY search on MAC0\n");
 		aup->phy1_search_mac0 = 1;
 	} else {
@@ -1329,7 +1329,7 @@ static int au1000_probe(struct platform_device *pdev)
 		goto err_out;
 	}
 
-	netdev_info(dev, "Au1xx0 Ethernet found at 0x%lx, irq %d\n",
+	netdev_dbg(dev, "Au1xx0 Ethernet found at 0x%lx, irq %d\n",
 			(unsigned long)base->start, irq);
 
 	pr_info_once("%s version %s %s\n", DRV_NAME, DRV_VERSION, DRV_AUTHOR);

@@ -754,7 +754,7 @@ static int ep93xx_spi_probe(struct platform_device *pdev)
 		goto fail_free_dma;
 	}
 
-	dev_info(&pdev->dev, "EP93xx SPI Controller at 0x%08lx irq %d\n",
+	dev_dbg(&pdev->dev, "EP93xx SPI Controller at 0x%08lx irq %d\n",
 		 (unsigned long)res->start, irq);
 
 	return 0;

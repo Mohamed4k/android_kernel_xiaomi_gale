@@ -120,8 +120,8 @@ MODULE_PARM_DESC(debug, "Debug level (0=none,...,16=all)");
 static int __init
 ixgb_init_module(void)
 {
-	pr_info("%s - version %s\n", ixgb_driver_string, ixgb_driver_version);
-	pr_info("%s\n", ixgb_copyright);
+	pr_debug("%s - version %s\n", ixgb_driver_string, ixgb_driver_version);
+	pr_debug("%s\n", ixgb_copyright);
 
 	return pci_register_driver(&ixgb_driver);
 }
@@ -1132,7 +1132,7 @@ ixgb_watchdog(struct timer_list *t)
 
 	if (adapter->hw.link_up) {
 		if (!netif_carrier_ok(netdev)) {
-			netdev_info(netdev,
+			netdev_dbg(netdev,
 				    "NIC Link is Up 10 Gbps Full Duplex, Flow Control: %s\n",
 				    (adapter->hw.fc.type == ixgb_fc_full) ?
 				    "RX/TX" :
@@ -1148,7 +1148,7 @@ ixgb_watchdog(struct timer_list *t)
 		if (netif_carrier_ok(netdev)) {
 			adapter->link_speed = 0;
 			adapter->link_duplex = 0;
-			netdev_info(netdev, "NIC Link is Down\n");
+			netdev_dbg(netdev, "NIC Link is Down\n");
 			netif_carrier_off(netdev);
 		}
 	}

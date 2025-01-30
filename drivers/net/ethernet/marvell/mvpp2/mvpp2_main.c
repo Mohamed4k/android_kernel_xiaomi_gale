@@ -3202,13 +3202,13 @@ static int mvpp2_check_ringparam_valid(struct net_device *dev,
 		new_tx_pending = ALIGN(MVPP2_MAX_SKB_DESCS, 32);
 
 	if (ring->rx_pending != new_rx_pending) {
-		netdev_info(dev, "illegal Rx ring size value %d, round to %d\n",
+		netdev_dbg(dev, "illegal Rx ring size value %d, round to %d\n",
 			    ring->rx_pending, new_rx_pending);
 		ring->rx_pending = new_rx_pending;
 	}
 
 	if (ring->tx_pending != new_tx_pending) {
-		netdev_info(dev, "illegal Tx ring size value %d, round to %d\n",
+		netdev_dbg(dev, "illegal Tx ring size value %d, round to %d\n",
 			    ring->tx_pending, new_tx_pending);
 		ring->tx_pending = new_tx_pending;
 	}
@@ -3507,7 +3507,7 @@ static int mvpp2_change_mtu(struct net_device *dev, int mtu)
 	int err;
 
 	if (!IS_ALIGNED(MVPP2_RX_PKT_SIZE(mtu), 8)) {
-		netdev_info(dev, "illegal MTU value %d, round to %d\n", mtu,
+		netdev_dbg(dev, "illegal MTU value %d, round to %d\n", mtu,
 			    ALIGN(MVPP2_RX_PKT_SIZE(mtu), 8));
 		mtu = ALIGN(MVPP2_RX_PKT_SIZE(mtu), 8);
 	}
@@ -4839,7 +4839,7 @@ static int mvpp2_port_probe(struct platform_device *pdev,
 		dev_err(&pdev->dev, "failed to register netdev\n");
 		goto err_phylink;
 	}
-	netdev_info(dev, "Using %s mac address %pM\n", mac_from, dev->dev_addr);
+	netdev_dbg(dev, "Using %s mac address %pM\n", mac_from, dev->dev_addr);
 
 	priv->port_list[priv->port_count++] = port;
 

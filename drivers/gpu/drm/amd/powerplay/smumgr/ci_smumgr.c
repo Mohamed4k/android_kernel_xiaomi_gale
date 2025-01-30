@@ -216,7 +216,7 @@ static int ci_send_msg_to_smc(struct pp_hwmgr *hwmgr, uint16_t msg)
 	ret = PHM_READ_FIELD(hwmgr->device, SMC_RESP_0, SMC_RESP);
 
 	if (ret != 1)
-		pr_info("\n failed to send message %x ret is %d\n",  msg, ret);
+		pr_debug("\n failed to send message %x ret is %d\n",  msg, ret);
 
 	return 0;
 }
@@ -390,7 +390,7 @@ static uint8_t ci_get_sleep_divider_id_from_clock(uint32_t clock,
 	uint32_t min = min_t(uint32_t, clock_insr, CISLAND_MINIMUM_ENGINE_CLOCK);
 
 	if (clock < min) {
-		pr_info("Engine clock can't satisfy stutter requirement!\n");
+		pr_debug("Engine clock can't satisfy stutter requirement!\n");
 		return 0;
 	}
 	for (i = CISLAND_MAX_DEEPSLEEP_DIVIDER_ID;  ; i--) {
@@ -772,7 +772,7 @@ static int ci_get_std_voltage_value_sidd(struct pp_hwmgr *hwmgr,
 			return -EINVAL);
 
 	if (NULL == hwmgr->dyn_state.cac_leakage_table) {
-		pr_warn("CAC Leakage Table does not exist, using vddc.\n");
+		pr_debug("CAC Leakage Table does not exist, using vddc.\n");
 		return 0;
 	}
 
@@ -783,7 +783,7 @@ static int ci_get_std_voltage_value_sidd(struct pp_hwmgr *hwmgr,
 				*lo = hwmgr->dyn_state.cac_leakage_table->entries[v_index].Vddc * VOLTAGE_SCALE;
 				*hi = (uint16_t)(hwmgr->dyn_state.cac_leakage_table->entries[v_index].Leakage * VOLTAGE_SCALE);
 			} else {
-				pr_warn("Index from SCLK/VDDC Dependency Table exceeds the CAC Leakage Table index, using maximum index from CAC table.\n");
+				pr_debug("Index from SCLK/VDDC Dependency Table exceeds the CAC Leakage Table index, using maximum index from CAC table.\n");
 				*lo = hwmgr->dyn_state.cac_leakage_table->entries[hwmgr->dyn_state.cac_leakage_table->count - 1].Vddc * VOLTAGE_SCALE;
 				*hi = (uint16_t)(hwmgr->dyn_state.cac_leakage_table->entries[hwmgr->dyn_state.cac_leakage_table->count - 1].Leakage * VOLTAGE_SCALE);
 			}
@@ -799,7 +799,7 @@ static int ci_get_std_voltage_value_sidd(struct pp_hwmgr *hwmgr,
 					*lo = hwmgr->dyn_state.cac_leakage_table->entries[v_index].Vddc * VOLTAGE_SCALE;
 					*hi = (uint16_t)(hwmgr->dyn_state.cac_leakage_table->entries[v_index].Leakage) * VOLTAGE_SCALE;
 				} else {
-					pr_warn("Index from SCLK/VDDC Dependency Table exceeds the CAC Leakage Table index in second look up, using maximum index from CAC table.");
+					pr_debug("Index from SCLK/VDDC Dependency Table exceeds the CAC Leakage Table index in second look up, using maximum index from CAC table.");
 					*lo = hwmgr->dyn_state.cac_leakage_table->entries[hwmgr->dyn_state.cac_leakage_table->count - 1].Vddc * VOLTAGE_SCALE;
 					*hi = (uint16_t)(hwmgr->dyn_state.cac_leakage_table->entries[hwmgr->dyn_state.cac_leakage_table->count - 1].Leakage * VOLTAGE_SCALE);
 				}
@@ -808,7 +808,7 @@ static int ci_get_std_voltage_value_sidd(struct pp_hwmgr *hwmgr,
 		}
 
 		if (!vol_found)
-			pr_warn("Unable to get std_vddc from SCLK/VDDC Dependency Table, using vddc.\n");
+			pr_debug("Unable to get std_vddc from SCLK/VDDC Dependency Table, using vddc.\n");
 	}
 
 	return 0;
@@ -1916,7 +1916,7 @@ static int ci_populate_vr_config(struct pp_hwmgr *hwmgr, SMU7_Discrete_DpmTable 
 		config = VR_SVI2_PLANE_2;
 		table->VRConfig |= config;
 	} else {
-		pr_info("VDDCshould be on SVI2 controller!");
+		pr_debug("VDDCshould be on SVI2 controller!");
 	}
 
 	if (SMU7_VOLTAGE_CONTROL_BY_SVID2 == data->vddci_control) {
@@ -2345,7 +2345,7 @@ static int ci_load_smc_ucode(struct pp_hwmgr *hwmgr)
 static int ci_upload_firmware(struct pp_hwmgr *hwmgr)
 {
 	if (ci_is_smc_ram_running(hwmgr)) {
-		pr_info("smc is running, no need to load smc firmware\n");
+		pr_debug("smc is running, no need to load smc firmware\n");
 		return 0;
 	}
 	PHM_WAIT_INDIRECT_FIELD(hwmgr, SMC_IND, RCU_UC_EVENTS,

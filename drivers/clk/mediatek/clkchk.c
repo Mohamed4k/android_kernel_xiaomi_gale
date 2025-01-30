@@ -120,7 +120,7 @@ static void warn_vcore(int opp, const char *clk_name, int rate, int id)
 	vf_opp = clkchk_cfg->get_vf_opp(id, opp);
 	if ((opp >= 0) && (id >= 0) && (vf_opp > 0) &&
 			((rate/1000) > vf_opp)) {
-		pr_notice("%s Choose %d FAIL!!!![MAX(%d/%d): %d]\r\n",
+		pr_debug("%s Choose %d FAIL!!!![MAX(%d/%d): %d]\r\n",
 				clk_name, rate/1000, id, opp,
 				vf_opp);
 
@@ -153,7 +153,7 @@ static int mtk_clk_rate_change(struct notifier_block *nb,
 	const char *clk_name = __clk_get_name(hw->clk);
 	int vcore_opp = get_vcore_opp();
 	if (!hw) {
-		pr_notice("%s: hw is NULL", __func__);
+		pr_debug("%s: hw is NULL", __func__);
 		return NOTIFY_BAD;
 	}
 
@@ -183,7 +183,7 @@ static void mtk_clk_check_muxes(void)
 		if (!name)
 			continue;
 
-		pr_notice("name: %s\n", name);
+		pr_debug("name: %s\n", name);
 		clk = __clk_lookup(name);
 		clk_notifier_register(clk, &mtk_clk_notifier);
 	}
@@ -198,7 +198,7 @@ void __init clkchk_swcg_init(struct pg_check_swcg *swcg)
 		struct clk *c = __clk_lookup(swcg->name);
 
 		if (IS_ERR_OR_NULL(c))
-			pr_notice("[%17s: NULL]\n", swcg->name);
+			pr_debug("[%17s: NULL]\n", swcg->name);
 		else
 			swcg->c = c;
 		swcg++;
@@ -224,7 +224,7 @@ static void print_enabled_clks(void)
     if (!clkchk_cfg)
         return;
 
-	pr_warn("enabled clks:\n");
+	pr_debug("enabled clks:\n");
 	off_pn = clkchk_cfg->off_pll_names;
 
 	for (; *cn != NULL; cn++) {
@@ -266,7 +266,7 @@ static void print_enabled_clks(void)
 			continue;
 
 		p_hw = clk_hw_get_parent(c_hw);
-		pr_warn("[%-17s: %8s, %3d, %3d, %10ld, %17s]\n",
+		pr_debug("[%-17s: %8s, %3d, %3d, %10ld, %17s]\n",
 			clk_hw_get_name(c_hw),
 			ccf_state(c_hw),
 			clk_hw_is_prepared(c_hw),
@@ -324,7 +324,7 @@ static void __clkchk_clk_internal(struct clk **clks, unsigned int mode,
 		if (!clk_hw_is_prepared(c_hw) && !clk_hw_is_enabled(c_hw))
 			continue;
 
-		pr_notice("suspend warning[0m: %s is on\n",
+		pr_debug("suspend warning[0m: %s is on\n",
 				clk_hw_get_name(c_hw));
 
 		invalid++;
@@ -406,7 +406,7 @@ int clkchk_init(struct clkchk_cfg_t *cfg)
 
 	if (cfg == NULL || cfg->compatible == NULL
 		|| cfg->all_clk_names == NULL || cfg->off_pll_names == NULL) {
-		pr_notice("Invalid clkchk_cfg.\n");
+		pr_debug("Invalid clkchk_cfg.\n");
 		return -EINVAL;
 	}
 
@@ -437,7 +437,7 @@ int clkchk_init(struct clkchk_cfg_t *cfg)
 	if (!ret1 && !ret2 && !ret3 && !ret4)
 		register_syscore_ops(&clkchk_syscore_ops);
 	else
-		pr_notice("clk register_syscore_ops fail\n");
+		pr_debug("clk register_syscore_ops fail\n");
 
 #if IS_ENABLED(CONFIG_MTK_DEVAPC) && !IS_ENABLED(CONFIG_DEVAPC_LEGACY)
 	register_devapc_vio_callback(&devapc_vio_handle);

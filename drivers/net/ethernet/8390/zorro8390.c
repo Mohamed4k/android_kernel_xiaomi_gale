@@ -391,7 +391,7 @@ static int zorro8390_init(struct net_device *dev, unsigned long board,
 		return err;
 	}
 
-	netdev_info(dev, "%s at 0x%08lx, Ethernet Address %pM\n",
+	netdev_dbg(dev, "%s at 0x%08lx, Ethernet Address %pM\n",
 		    name, board, dev->dev_addr);
 
 	return 0;

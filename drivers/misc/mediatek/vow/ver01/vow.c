@@ -3264,11 +3264,11 @@ static int VowDrv_probe(struct platform_device *dev)
 	VOWDRV_DEBUG("%s()\n", __func__);
 	vow_suspend_lock = wakeup_source_register(NULL, "vow wakelock");
 	if (!vow_suspend_lock)
-		pr_warn("wakeup source init failed.\n");
+		pr_debug("wakeup source init failed.\n");
 #ifdef CONFIG_MTK_TINYSYS_SCP_SUPPORT
 	pcm_dump_wake_lock = wakeup_source_register(NULL, "vow pcm dump wakelock");
 		if (!vow_suspend_lock)
-			pr_warn("pcm dump wakelock source init failed.\n");
+			pr_debug("pcm dump wakelock source init failed.\n");
 #endif
 	VowDrv_setup_smartdev_eint(dev);
 	return 0;

@@ -135,7 +135,7 @@ static int xgbe_config_multi_msi(struct xgbe_prv_data *pdata)
 	ret = pci_alloc_irq_vectors(pdata->pcidev, XGBE_MSI_MIN_COUNT,
 				    vector_count, PCI_IRQ_MSI | PCI_IRQ_MSIX);
 	if (ret < 0) {
-		dev_info(pdata->dev, "multi MSI/MSI-X enablement failed\n");
+		dev_dbg(pdata->dev, "multi MSI/MSI-X enablement failed\n");
 		return ret;
 	}
 
@@ -172,7 +172,7 @@ static int xgbe_config_irqs(struct xgbe_prv_data *pdata)
 	ret = pci_alloc_irq_vectors(pdata->pcidev, 1, 1,
 				    PCI_IRQ_LEGACY | PCI_IRQ_MSI);
 	if (ret < 0) {
-		dev_info(pdata->dev, "single IRQ enablement failed\n");
+		dev_dbg(pdata->dev, "single IRQ enablement failed\n");
 		return ret;
 	}
 

@@ -952,7 +952,7 @@ bnad_cb_ethport_link_status(struct bnad *bnad,
 	if (link_up) {
 		if (!netif_carrier_ok(bnad->netdev)) {
 			uint tx_id, tcb_id;
-			netdev_info(bnad->netdev, "link up\n");
+			netdev_dbg(bnad->netdev, "link up\n");
 			netif_carrier_on(bnad->netdev);
 			BNAD_UPDATE_CTR(bnad, link_toggle);
 			for (tx_id = 0; tx_id < bnad->num_tx; tx_id++) {
@@ -988,7 +988,7 @@ bnad_cb_ethport_link_status(struct bnad *bnad,
 		}
 	} else {
 		if (netif_carrier_ok(bnad->netdev)) {
-			netdev_info(bnad->netdev, "link down\n");
+			netdev_dbg(bnad->netdev, "link down\n");
 			netif_carrier_off(bnad->netdev);
 			BNAD_UPDATE_CTR(bnad, link_toggle);
 		}
@@ -3490,7 +3490,7 @@ bnad_init(struct bnad *bnad,
 		dev_err(&pdev->dev, "ioremap for bar0 failed\n");
 		return -ENOMEM;
 	}
-	dev_info(&pdev->dev, "bar0 mapped to %p, len %llu\n", bnad->bar0,
+	dev_dbg(&pdev->dev, "bar0 mapped to %p, len %llu\n", bnad->bar0,
 		 (unsigned long long) bnad->mmio_len);
 
 	spin_lock_irqsave(&bnad->bna_lock, flags);
@@ -3607,7 +3607,7 @@ bnad_pci_probe(struct pci_dev *pdev,
 	struct bnad *bnad;
 	struct bna *bna;
 	struct net_device *netdev;
-	struct bfa_pcidev pcidev_info;
+	struct bfa_pcidev pcidev_dbg;
 	unsigned long flags;
 
 	mutex_lock(&bnad_fwimg_mutex);
@@ -3672,14 +3672,14 @@ bnad_pci_probe(struct pci_dev *pdev,
 
 	bna = &bnad->bna;
 
-	/* Setup pcidev_info for bna_init() */
-	pcidev_info.pci_slot = PCI_SLOT(bnad->pcidev->devfn);
-	pcidev_info.pci_func = PCI_FUNC(bnad->pcidev->devfn);
-	pcidev_info.device_id = bnad->pcidev->device;
-	pcidev_info.pci_bar_kva = bnad->bar0;
+	/* Setup pcidev_dbg for bna_init() */
+	pcidev_dbg.pci_slot = PCI_SLOT(bnad->pcidev->devfn);
+	pcidev_dbg.pci_func = PCI_FUNC(bnad->pcidev->devfn);
+	pcidev_dbg.device_id = bnad->pcidev->device;
+	pcidev_dbg.pci_bar_kva = bnad->bar0;
 
 	spin_lock_irqsave(&bnad->bna_lock, flags);
-	bna_init(bna, bnad, &pcidev_info, &bnad->res_info[0]);
+	bna_init(bna, bnad, &pcidev_dbg, &bnad->res_info[0]);
 	spin_unlock_irqrestore(&bnad->bna_lock, flags);
 
 	bnad->stats.bna_stats = &bna->stats;
@@ -3855,7 +3855,7 @@ bnad_module_init(void)
 {
 	int err;
 
-	pr_info("bna: QLogic BR-series 10G Ethernet driver - version: %s\n",
+	pr_debug("bna: QLogic BR-series 10G Ethernet driver - version: %s\n",
 		BNAD_VERSION);
 
 	bfa_nw_ioc_auto_recover(bnad_ioc_auto_recover);

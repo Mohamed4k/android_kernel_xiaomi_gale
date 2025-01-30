@@ -709,7 +709,7 @@ static int orion_spi_probe(struct platform_device *pdev)
 			int cs_flags;
 
 			if (spi->unused_hw_gpio == -1) {
-				dev_info(&pdev->dev,
+				dev_dbg(&pdev->dev,
 					"Selected unused HW CS#%d for any GPIO CSes\n",
 					cs);
 				spi->unused_hw_gpio = cs;
@@ -759,7 +759,7 @@ static int orion_spi_probe(struct platform_device *pdev)
 		}
 		spi->child[cs].direct_access.size = PAGE_SIZE;
 
-		dev_info(&pdev->dev, "CS%d configured for direct access\n", cs);
+		dev_dbg(&pdev->dev, "CS%d configured for direct access\n", cs);
 	}
 
 	pm_runtime_set_active(&pdev->dev);

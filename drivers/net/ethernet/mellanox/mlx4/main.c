@@ -3708,7 +3708,7 @@ static int __mlx4_init_one(struct pci_dev *pdev, int pci_dev_data,
 	unsigned total_vfs = 0;
 	unsigned int i;
 
-	pr_info(DRV_NAME ": Initializing %s\n", pci_name(pdev));
+	pr_debug(DRV_NAME ": Initializing %s\n", pci_name(pdev));
 
 	err = mlx4_pci_enable_device(&priv->dev);
 	if (err) {
@@ -4105,8 +4105,8 @@ static void mlx4_remove_one(struct pci_dev *pdev)
 	if (mlx4_is_master(dev) && dev->flags & MLX4_FLAG_SRIOV) {
 		active_vfs = mlx4_how_many_lives_vf(dev);
 		if (active_vfs) {
-			pr_warn("Removing PF when there are active VF's !!\n");
-			pr_warn("Will not disable SR-IOV.\n");
+			pr_debug("Removing PF when there are active VF's !!\n");
+			pr_debug("Will not disable SR-IOV.\n");
 		}
 	}
 
@@ -4385,31 +4385,31 @@ static struct pci_driver mlx4_driver = {
 static int __init mlx4_verify_params(void)
 {
 	if (msi_x < 0) {
-		pr_warn("mlx4_core: bad msi_x: %d\n", msi_x);
+		pr_debug("mlx4_core: bad msi_x: %d\n", msi_x);
 		return -1;
 	}
 
 	if ((log_num_mac < 0) || (log_num_mac > 7)) {
-		pr_warn("mlx4_core: bad num_mac: %d\n", log_num_mac);
+		pr_debug("mlx4_core: bad num_mac: %d\n", log_num_mac);
 		return -1;
 	}
 
 	if (log_num_vlan != 0)
-		pr_warn("mlx4_core: log_num_vlan - obsolete module param, using %d\n",
+		pr_debug("mlx4_core: log_num_vlan - obsolete module param, using %d\n",
 			MLX4_LOG_NUM_VLANS);
 
 	if (use_prio != 0)
-		pr_warn("mlx4_core: use_prio - obsolete module param, ignored\n");
+		pr_debug("mlx4_core: use_prio - obsolete module param, ignored\n");
 
 	if ((log_mtts_per_seg < 0) || (log_mtts_per_seg > 7)) {
-		pr_warn("mlx4_core: bad log_mtts_per_seg: %d\n",
+		pr_debug("mlx4_core: bad log_mtts_per_seg: %d\n",
 			log_mtts_per_seg);
 		return -1;
 	}
 
 	/* Check if module param for ports type has legal combination */
 	if (port_type_array[0] == false && port_type_array[1] == true) {
-		pr_warn("Module parameter configuration ETH/IB is not supported. Switching to default configuration IB/IB\n");
+		pr_debug("Module parameter configuration ETH/IB is not supported. Switching to default configuration IB/IB\n");
 		port_type_array[0] = true;
 	}
 
@@ -4417,7 +4417,7 @@ static int __init mlx4_verify_params(void)
 	    (mlx4_log_num_mgm_entry_size > 0 &&
 	     (mlx4_log_num_mgm_entry_size < MLX4_MIN_MGM_LOG_ENTRY_SIZE ||
 	      mlx4_log_num_mgm_entry_size > MLX4_MAX_MGM_LOG_ENTRY_SIZE))) {
-		pr_warn("mlx4_core: mlx4_log_num_mgm_entry_size (%d) not in legal range (-7..0 or %d..%d)\n",
+		pr_debug("mlx4_core: mlx4_log_num_mgm_entry_size (%d) not in legal range (-7..0 or %d..%d)\n",
 			mlx4_log_num_mgm_entry_size,
 			MLX4_MIN_MGM_LOG_ENTRY_SIZE,
 			MLX4_MAX_MGM_LOG_ENTRY_SIZE);

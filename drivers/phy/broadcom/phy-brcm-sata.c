@@ -237,7 +237,7 @@ static void brcm_stb_sata_ssc_init(struct brcm_sata_port *port)
 
 	/* set fixed max freq depending on SSC config */
 	if (port->ssc_en) {
-		dev_info(priv->dev, "enabling SSC on port%d\n", port->portnum);
+		dev_dbg(priv->dev, "enabling SSC on port%d\n", port->portnum);
 		tmp = STB_FMAX_VAL_SSC;
 	} else {
 		tmp = STB_FMAX_VAL_DEFAULT;
@@ -645,7 +645,7 @@ static int brcm_sata_phy_probe(struct platform_device *pdev)
 		return PTR_ERR(provider);
 	}
 
-	dev_info(dev, "registered %d port(s)\n", count);
+	dev_dbg(dev, "registered %d port(s)\n", count);
 
 	return 0;
 put_child:

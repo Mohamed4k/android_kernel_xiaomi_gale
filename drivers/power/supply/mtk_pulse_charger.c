@@ -275,7 +275,7 @@ static int mtk_linear_chr_cc(struct mtk_charger *info)
 	struct pcharger_data *algo_data;
 
 	algo_data = info->algo.algo_data;
-	pr_notice("%s time:%d %d %d %d\n", __func__,
+	pr_debug("%s time:%d %d %d %d\n", __func__,
 		algo_data->total_charging_time,
 		algo_data->cc_charging_time,
 		algo_data->topoff_charging_time,
@@ -296,7 +296,7 @@ static int mtk_linear_chr_cc(struct mtk_charger *info)
 	if (vbat > algo_data->topoff_voltage) {
 		algo_data->state = CHR_TOPOFF;
 		get_monotonic_boottime(&algo_data->topoff_begin_time);
-		pr_notice("%s: enter TOPOFF mode on vbat = %d uV\n",
+		pr_debug("%s: enter TOPOFF mode on vbat = %d uV\n",
 			__func__, vbat);
 	}
 
@@ -331,7 +331,7 @@ static int mtk_linear_chr_topoff(struct mtk_charger *info)
 	struct timespec time_now, charging_time, topoff_time;
 
 
-	pr_notice("%s time:%d %d %d %d\n", __func__,
+	pr_debug("%s time:%d %d %d %d\n", __func__,
 		algo_data->total_charging_time,
 		algo_data->cc_charging_time,
 		algo_data->topoff_charging_time,
@@ -352,7 +352,7 @@ static int mtk_linear_chr_topoff(struct mtk_charger *info)
 
 		/* Disable charging */
 		charger_dev_enable(info->chg1_dev, false);
-		pr_notice("%s: disable charging\n", __func__);
+		pr_debug("%s: disable charging\n", __func__);
 	}
 
 	return 0;
@@ -368,7 +368,7 @@ static int mtk_linear_chr_full(struct mtk_charger *info)
 	algo_data->cc_charging_time = 0;
 	algo_data->topoff_charging_time = 0;
 
-	pr_notice("%s time:%d %d %d %d\n", __func__,
+	pr_debug("%s time:%d %d %d %d\n", __func__,
 		algo_data->total_charging_time,
 		algo_data->cc_charging_time,
 		algo_data->topoff_charging_time,
@@ -393,7 +393,7 @@ static int mtk_linear_chr_full(struct mtk_charger *info)
 	if (is_recharging) {
 		algo_data->state = CHR_CC;
 		get_monotonic_boottime(&algo_data->charging_begin_time);
-		pr_notice("battery recharging on vbat = %d uV\n", vbat);
+		pr_debug("battery recharging on vbat = %d uV\n", vbat);
 		info->polling_interval = CHARGING_INTERVAL;
 	}
 
@@ -410,7 +410,7 @@ static int mtk_linear_chr_err(struct mtk_charger *info)
 {
 	struct pcharger_data *algo_data = info->algo.algo_data;
 
-	pr_notice("%s time:%d %d %d %d\n", __func__,
+	pr_debug("%s time:%d %d %d %d\n", __func__,
 		algo_data->total_charging_time,
 		algo_data->cc_charging_time,
 		algo_data->topoff_charging_time,
@@ -519,7 +519,7 @@ static int mtk_linear_charging_do_charging(struct mtk_charger *info,
 {
 	struct pcharger_data *algo_data = info->algo.algo_data;
 
-	pr_info("%s en:%d %s\n", __func__, en, info->algorithm_name);
+	pr_debug("%s en:%d %s\n", __func__, en, info->algorithm_name);
 	if (en) {
 		algo_data->disable_charging = false;
 		algo_data->state = CHR_CC;
@@ -539,13 +539,13 @@ int mtk_pulse_charger_init(struct mtk_charger *info)
 {
 	static struct pcharger_data pdata;
 
-	pr_notice("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 	info->algo.do_algorithm = pchr_do_algorithm;
 	info->algo.enable_charging = mtk_linear_charging_do_charging;
 	//info->algo.do_event = charger_dev_event;
 	info->algo.algo_data = &pdata;
 	mtk_pulse_charger_parse_dt(info, &info->pdev->dev);
-	pr_notice("%s end\n", __func__);
+	pr_debug("%s end\n", __func__);
 
 	return 0;
 }

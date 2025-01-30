@@ -1952,7 +1952,7 @@ static int byt_gpio_resume(struct device *dev)
 			value &= ~BYT_CONF0_RESTORE_MASK;
 			value |= vg->saved_context[i].conf0;
 			writel(value, reg);
-			dev_info(dev, "restored pin %d conf0 %#08x", i, value);
+			dev_dbg(dev, "restored pin %d conf0 %#08x", i, value);
 		}
 
 		reg = byt_gpio_reg(vg, pin, BYT_VAL_REG);

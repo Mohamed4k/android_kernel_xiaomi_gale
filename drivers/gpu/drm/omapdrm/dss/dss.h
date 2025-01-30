@@ -56,18 +56,18 @@ struct seq_file;
 
 #ifdef DSS_SUBSYS_NAME
 #define DSSINFO(format, ...) \
-	pr_info("omapdss " DSS_SUBSYS_NAME ": " format, ##__VA_ARGS__)
+	pr_debug("omapdss " DSS_SUBSYS_NAME ": " format, ##__VA_ARGS__)
 #else
 #define DSSINFO(format, ...) \
-	pr_info("omapdss: " format, ## __VA_ARGS__)
+	pr_debug("omapdss: " format, ## __VA_ARGS__)
 #endif
 
 #ifdef DSS_SUBSYS_NAME
 #define DSSWARN(format, ...) \
-	pr_warn("omapdss " DSS_SUBSYS_NAME ": " format, ##__VA_ARGS__)
+	pr_debug("omapdss " DSS_SUBSYS_NAME ": " format, ##__VA_ARGS__)
 #else
 #define DSSWARN(format, ...) \
-	pr_warn("omapdss: " format, ##__VA_ARGS__)
+	pr_debug("omapdss: " format, ##__VA_ARGS__)
 #endif
 
 /* OMAP TRM gives bitfields as start:end, where start is the higher bit

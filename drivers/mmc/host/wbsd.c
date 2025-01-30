@@ -794,7 +794,7 @@ static void wbsd_request(struct mmc_host *mmc, struct mmc_request *mrq)
 			break;
 
 		default:
-			pr_warn("%s: Data command %d is not supported by this controller\n",
+			pr_debug("%s: Data command %d is not supported by this controller\n",
 				mmc_hostname(host->mmc), cmd->opcode);
 			cmd->error = -EINVAL;
 
@@ -1419,7 +1419,7 @@ free:
 	free_dma(dma);
 
 err:
-	pr_warn(DRIVER_NAME ": Unable to allocate DMA %d - falling back on FIFO\n",
+	pr_debug(DRIVER_NAME ": Unable to allocate DMA %d - falling back on FIFO\n",
 		dma);
 }
 
@@ -1657,7 +1657,7 @@ static int wbsd_init(struct device *dev, int base, int irq, int dma,
 	ret = wbsd_scan(host);
 	if (ret) {
 		if (pnp && (ret == -ENODEV)) {
-			pr_warn(DRIVER_NAME ": Unable to confirm device presence - you may experience lock-ups\n");
+			pr_debug(DRIVER_NAME ": Unable to confirm device presence - you may experience lock-ups\n");
 		} else {
 			wbsd_free_mmc(dev);
 			return ret;
@@ -1679,7 +1679,7 @@ static int wbsd_init(struct device *dev, int base, int irq, int dma,
 	 */
 	if (pnp) {
 		if ((host->config != 0) && !wbsd_chip_validate(host)) {
-			pr_warn(DRIVER_NAME ": PnP active but chip not configured! You probably have a buggy BIOS. Configuring chip manually.\n");
+			pr_debug(DRIVER_NAME ": PnP active but chip not configured! You probably have a buggy BIOS. Configuring chip manually.\n");
 			wbsd_chip_config(host);
 		}
 	} else
@@ -1708,7 +1708,7 @@ static int wbsd_init(struct device *dev, int base, int irq, int dma,
 
 	mmc_add_host(mmc);
 
-	pr_info("%s: W83L51xD", mmc_hostname(mmc));
+	pr_debug("%s: W83L51xD", mmc_hostname(mmc));
 	if (host->chip_id != 0)
 		printk(" id %x", (int)host->chip_id);
 	printk(" at 0x%x irq %d", (int)host->base, (int)host->irq);
@@ -1872,7 +1872,7 @@ static int wbsd_pnp_resume(struct pnp_dev *pnp_dev)
 	 */
 	if (host->config != 0) {
 		if (!wbsd_chip_validate(host)) {
-			pr_warn(DRIVER_NAME ": PnP active but chip not configured! You probably have a buggy BIOS. Configuring chip manually.\n");
+			pr_debug(DRIVER_NAME ": PnP active but chip not configured! You probably have a buggy BIOS. Configuring chip manually.\n");
 			wbsd_chip_config(host);
 		}
 	}
@@ -1933,9 +1933,9 @@ static int __init wbsd_drv_init(void)
 {
 	int result;
 
-	pr_info(DRIVER_NAME
+	pr_debug(DRIVER_NAME
 		": Winbond W83L51xD SD/MMC card interface driver\n");
-	pr_info(DRIVER_NAME ": Copyright(c) Pierre Ossman\n");
+	pr_debug(DRIVER_NAME ": Copyright(c) Pierre Ossman\n");
 
 #ifdef CONFIG_PNP
 

@@ -75,7 +75,7 @@ static int bcm47xx_wdt_hard_set_timeout(struct watchdog_device *wdd,
 	u32 max_timer = wdt->max_timer_ms;
 
 	if (new_time < 1 || new_time > max_timer / 1000) {
-		pr_warn("timeout value must be 1<=x<=%d, using %d\n",
+		pr_debug("timeout value must be 1<=x<=%d, using %d\n",
 			max_timer / 1000, new_time);
 		return -EINVAL;
 	}
@@ -149,7 +149,7 @@ static int bcm47xx_wdt_soft_set_timeout(struct watchdog_device *wdd,
 					unsigned int new_time)
 {
 	if (new_time < 1 || new_time > WDT_SOFTTIMER_MAX) {
-		pr_warn("timeout value must be 1<=x<=%d, using %d\n",
+		pr_debug("timeout value must be 1<=x<=%d, using %d\n",
 			WDT_SOFTTIMER_MAX, new_time);
 		return -EINVAL;
 	}
@@ -206,7 +206,7 @@ static int bcm47xx_wdt_probe(struct platform_device *pdev)
 	if (ret)
 		goto err_timer;
 
-	dev_info(&pdev->dev, "BCM47xx Watchdog Timer enabled (%d seconds%s%s)\n",
+	dev_dbg(&pdev->dev, "BCM47xx Watchdog Timer enabled (%d seconds%s%s)\n",
 		timeout, nowayout ? ", nowayout" : "",
 		soft ? ", Software Timer" : "");
 	return 0;

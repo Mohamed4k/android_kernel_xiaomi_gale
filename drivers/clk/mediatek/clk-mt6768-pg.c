@@ -609,71 +609,71 @@ static void vdec_dump_regs(void)
 	HEVC_VLD = ioremap(0x16028000, PAGE_SIZE);
 	UFO = ioremap(0x16000800, PAGE_SIZE);
 
-	pr_notice("===GCON===\n");
+	pr_debug("===GCON===\n");
 	for (i = 0; i < 64; i += 4)
-		pr_notice("GCON[%d]:0x%x 0x%x 0x%x 0x%x\n", i,
+		pr_debug("GCON[%d]:0x%x 0x%x 0x%x 0x%x\n", i,
 			clk_readl(GCON+i*4), clk_readl(GCON+(i+1)*4),
 			clk_readl(GCON+(i+2)*4), clk_readl(GCON+(i+3)*4));
 
-	pr_notice("===VLD===\n");
-	pr_notice("VLD[34]:0x%x\n", clk_readl(VLD+34*4));
-	pr_notice("VLD[35]:0x%x\n", clk_readl(VLD+35*4));
+	pr_debug("===VLD===\n");
+	pr_debug("VLD[34]:0x%x\n", clk_readl(VLD+34*4));
+	pr_debug("VLD[35]:0x%x\n", clk_readl(VLD+35*4));
 	for (i = 36; i < 256; i += 4)
-		pr_notice("VLD[%d]:0x%x 0x%x 0x%x 0x%x\n", i,
+		pr_debug("VLD[%d]:0x%x 0x%x 0x%x 0x%x\n", i,
 			clk_readl(VLD+i*4), clk_readl(VLD+(i+1)*4),
 			clk_readl(VLD+(i+2)*4), clk_readl(VLD+(i+3)*4));
 
-	pr_notice("===VLD_TOP===\n");
-	pr_notice("VLD_T[34]:0x%x\n", clk_readl(VLD_TOP+34*4));
-	pr_notice("VLD_T[35]:0x%x\n", clk_readl(VLD_TOP+35*4));
+	pr_debug("===VLD_TOP===\n");
+	pr_debug("VLD_T[34]:0x%x\n", clk_readl(VLD_TOP+34*4));
+	pr_debug("VLD_T[35]:0x%x\n", clk_readl(VLD_TOP+35*4));
 	for (i = 36; i < 230; i += 4)
-		pr_notice("VLD_T[%d]:0x%x 0x%x 0x%x 0x%x\n", i,
+		pr_debug("VLD_T[%d]:0x%x 0x%x 0x%x 0x%x\n", i,
 			clk_readl(VLD_TOP+i*4), clk_readl(VLD_TOP+(i+1)*4),
 			clk_readl(VLD_TOP+(i+2)*4),
 			clk_readl(VLD_TOP+(i+3)*4));
 
-	pr_notice("===MC===\n");
+	pr_debug("===MC===\n");
 	for (i = 0; i < 880; i += 4)
-		pr_notice("MC[%d]:0x%x 0x%x 0x%x 0x%x\n", i, clk_readl(MC+i*4),
+		pr_debug("MC[%d]:0x%x 0x%x 0x%x 0x%x\n", i, clk_readl(MC+i*4),
 			clk_readl(MC+(i+1)*4), clk_readl(MC+(i+2)*4),
 			clk_readl(MC+(i+3)*4));
 
-	pr_notice("===HEVC_MV===\n");
+	pr_debug("===HEVC_MV===\n");
 	for (i = 0; i < 256; i += 4)
-		pr_notice("HEVC_MV[%d]:0x%x 0x%x 0x%x 0x%x\n", i,
+		pr_debug("HEVC_MV[%d]:0x%x 0x%x 0x%x 0x%x\n", i,
 			clk_readl(HEVC_MV+i*4), clk_readl(HEVC_MV+(i+1)*4),
 			clk_readl(HEVC_MV+(i+2)*4),
 			clk_readl(HEVC_MV+(i+3)*4));
 
-	pr_notice("===PP===\n");
+	pr_debug("===PP===\n");
 	for (i = 0; i < 1024; i += 4)
-		pr_notice("PP[%d]:0x%x 0x%x 0x%x 0x%x\n", i, clk_readl(PP+i*4),
+		pr_debug("PP[%d]:0x%x 0x%x 0x%x 0x%x\n", i, clk_readl(PP+i*4),
 			clk_readl(PP+(i+1)*4), clk_readl(PP+(i+2)*4),
 			clk_readl(PP+(i+3)*4));
 
-	pr_notice("===MISC===\n");
+	pr_debug("===MISC===\n");
 	for (i = 0; i < 104; i += 4)
-		pr_notice("MISC[%d]:0x%x 0x%x 0x%x 0x%x\n", i,
+		pr_debug("MISC[%d]:0x%x 0x%x 0x%x 0x%x\n", i,
 			clk_readl(MISC+i*4), clk_readl(MISC+(i+1)*4),
 			clk_readl(MISC+(i+2)*4), clk_readl(MISC+(i+3)*4));
 
-	pr_notice("===HEVC_VLD===\n");
-	pr_notice("HEVC_VLD[0]:0x%x\n", clk_readl(HEVC_VLD+0*4));
-	pr_notice("HEVC_VLD[33]:0x%x\n", clk_readl(HEVC_VLD+33*4));
-	pr_notice("HEVC_VLD[34]:0x%x\n", clk_readl(HEVC_VLD+34*4));
-	pr_notice("HEVC_VLD[35]:0x%x\n", clk_readl(HEVC_VLD+35*4));
-	pr_notice("HEVC_VLD[36]:0x%x\n", clk_readl(HEVC_VLD+36*4));
-	pr_notice("HEVC_VLD[37]:0x%x\n", clk_readl(HEVC_VLD+37*4));
+	pr_debug("===HEVC_VLD===\n");
+	pr_debug("HEVC_VLD[0]:0x%x\n", clk_readl(HEVC_VLD+0*4));
+	pr_debug("HEVC_VLD[33]:0x%x\n", clk_readl(HEVC_VLD+33*4));
+	pr_debug("HEVC_VLD[34]:0x%x\n", clk_readl(HEVC_VLD+34*4));
+	pr_debug("HEVC_VLD[35]:0x%x\n", clk_readl(HEVC_VLD+35*4));
+	pr_debug("HEVC_VLD[36]:0x%x\n", clk_readl(HEVC_VLD+36*4));
+	pr_debug("HEVC_VLD[37]:0x%x\n", clk_readl(HEVC_VLD+37*4));
 
 	for (i = 40; i < 256; i += 4)
-		pr_notice("HEVC_VLD[%d]:0x%x 0x%x 0x%x 0x%x\n", i,
+		pr_debug("HEVC_VLD[%d]:0x%x 0x%x 0x%x 0x%x\n", i,
 			clk_readl(HEVC_VLD+i*4), clk_readl(HEVC_VLD+(i+1)*4),
 			clk_readl(HEVC_VLD+(i+2)*4),
 			clk_readl(HEVC_VLD+(i+3)*4));
 
-	pr_notice("===UFO===\n");
+	pr_debug("===UFO===\n");
 	for (i = 0; i < 64; i += 4)
-		pr_notice("UFO[%d]:0x%x 0x%x 0x%x 0x%x\n", i,
+		pr_debug("UFO[%d]:0x%x 0x%x 0x%x 0x%x\n", i,
 		clk_readl(UFO+i*4), clk_readl(UFO+(i+1)*4),
 		clk_readl(UFO+(i+2)*4), clk_readl(UFO+(i+3)*4));
 }
@@ -816,59 +816,59 @@ static void ram_console_update(void)
 		}
 
 		if (DBG_ID >= (DBG_ID_NUM / 2))
-			pr_notice("%s %s MTCMOS PWR hang at %s flow step %d\n",
+			pr_debug("%s %s MTCMOS PWR hang at %s flow step %d\n",
 				"[clkmgr]",
 				syss[(DBG_ID - (DBG_ID_NUM / 2))].name,
 				DBG_STA ? "pwron":"pdn",
 				DBG_STEP);
 		else
-			pr_notice("%s %s MTCMOS BUS hang at %s flow step %d\n",
+			pr_debug("%s %s MTCMOS BUS hang at %s flow step %d\n",
 				"[clkmgr]",
 				syss[DBG_ID].name,
 				DBG_STA ? "pwron":"pdn",
 				DBG_STEP);
 
 		for (j = 1; j <= i; j++)
-			pr_notice("%s: clk[%d] = 0x%x\n", __func__, j, data[j]);
+			pr_debug("%s: clk[%d] = 0x%x\n", __func__, j, data[j]);
 
-		pr_notice("INFRA_TOPAXI_SI0_STA =0x%x\n",
+		pr_debug("INFRA_TOPAXI_SI0_STA =0x%x\n",
 			spm_read(INFRA_TOPAXI_SI0_STA));
-		pr_notice("INFRA_TOPAXI_SI1_STA =0x%x\n",
+		pr_debug("INFRA_TOPAXI_SI1_STA =0x%x\n",
 			spm_read(INFRA_TOPAXI_SI1_STA));
-		pr_notice("INFRA_TOPAXI_SI2_STA =0x%x\n",
+		pr_debug("INFRA_TOPAXI_SI2_STA =0x%x\n",
 			spm_read(INFRA_TOPAXI_SI2_STA));
-		pr_notice("INFRA_TOPAXI_SI3_STA =0x%x\n",
+		pr_debug("INFRA_TOPAXI_SI3_STA =0x%x\n",
 			spm_read(INFRA_TOPAXI_SI3_STA));
-		pr_notice("INFRA_TOPAXI_SI4_STA =0x%x\n",
+		pr_debug("INFRA_TOPAXI_SI4_STA =0x%x\n",
 			spm_read(INFRA_TOPAXI_SI4_STA));
-		pr_notice("INFRA_TOPAXI_MI_STA =0x%x\n",
+		pr_debug("INFRA_TOPAXI_MI_STA =0x%x\n",
 			spm_read(INFRA_TOPAXI_MI_STA));
-		pr_notice("INFRA_MCI_SI0_STA =0x%x\n",
+		pr_debug("INFRA_MCI_SI0_STA =0x%x\n",
 			spm_read(INFRA_MCI_SI0_STA));
-		pr_notice("INFRA_MCI_SI2_STA =0x%x\n",
+		pr_debug("INFRA_MCI_SI2_STA =0x%x\n",
 			spm_read(INFRA_MCI_SI2_STA));
 
 		for (j = 0; j < sizeof(data_latched)/sizeof(u32); j++)
-			pr_notice("datalatch[%d]=0x%x\n", j, data_latched[j]);
+			pr_debug("datalatch[%d]=0x%x\n", j, data_latched[j]);
 
 		if (DBG_ID == DBG_ID_VDEC_BUS) {
-			pr_notice("CK_REG_0=0x%x\n", spm_read(CK_REG_0));
-			pr_notice("CK_REG_7=0x%x\n", spm_read(CK_REG_7));
-			pr_notice("VDEC_CG_CON=0x%x\n", spm_read(VDEC_CG_CON));
-			pr_notice("VDEC_LARB1_CG_CON=0x%x\n",
+			pr_debug("CK_REG_0=0x%x\n", spm_read(CK_REG_0));
+			pr_debug("CK_REG_7=0x%x\n", spm_read(CK_REG_7));
+			pr_debug("VDEC_CG_CON=0x%x\n", spm_read(VDEC_CG_CON));
+			pr_debug("VDEC_LARB1_CG_CON=0x%x\n",
 						spm_read(VDEC_LARB1_CG_CON));
-			pr_notice("VENC_110=0x%x\n", spm_read(VDEC_REG0));
-			pr_notice("VENC_114=0x%x\n", spm_read(VDEC_REG1));
-			pr_notice("VENC_118=0x%x\n", spm_read(VDEC_REG2));
-			pr_notice("VENC_11C=0x%x\n", spm_read(VDEC_REG3));
-			pr_notice("VENC_120=0x%x\n", spm_read(VDEC_REG4));
-			pr_notice("VENC_124=0x%x\n", spm_read(VDEC_REG5));
-			pr_notice("VENC_128=0x%x\n", spm_read(VDEC_REG6));
-			pr_notice("VENC_12C=0x%x\n", spm_read(VDEC_REG7));
-			pr_notice("VENC_130=0x%x\n", spm_read(VDEC_REG8));
-			pr_notice("VENC_134=0x%x\n", spm_read(VDEC_REG9));
-			pr_notice("VENC_138=0x%x\n", spm_read(VDEC_REG10));
-			pr_notice("VENC_13C=0x%x\n", spm_read(VDEC_REG11));
+			pr_debug("VENC_110=0x%x\n", spm_read(VDEC_REG0));
+			pr_debug("VENC_114=0x%x\n", spm_read(VDEC_REG1));
+			pr_debug("VENC_118=0x%x\n", spm_read(VDEC_REG2));
+			pr_debug("VENC_11C=0x%x\n", spm_read(VDEC_REG3));
+			pr_debug("VENC_120=0x%x\n", spm_read(VDEC_REG4));
+			pr_debug("VENC_124=0x%x\n", spm_read(VDEC_REG5));
+			pr_debug("VENC_128=0x%x\n", spm_read(VDEC_REG6));
+			pr_debug("VENC_12C=0x%x\n", spm_read(VDEC_REG7));
+			pr_debug("VENC_130=0x%x\n", spm_read(VDEC_REG8));
+			pr_debug("VENC_134=0x%x\n", spm_read(VDEC_REG9));
+			pr_debug("VENC_138=0x%x\n", spm_read(VDEC_REG10));
+			pr_debug("VENC_13C=0x%x\n", spm_read(VDEC_REG11));
 			vdec_dump_regs();
 		}
 	}
@@ -3051,7 +3051,7 @@ static int enable_subsys(enum subsys_id id, enum mtcmos_op action)
 
 	if (!mtk_is_mtcmos_enable()) {
 #if MT_CCF_DEBUG
-		pr_notice("[CCF] skip %s: sys=%s, id=%d\n",
+		pr_debug("[CCF] skip %s: sys=%s, id=%d\n",
 			__func__, sys->name, id);
 #endif
 		switch (id) {
@@ -3071,7 +3071,7 @@ static int enable_subsys(enum subsys_id id, enum mtcmos_op action)
 
 #if CONTROL_LIMIT
 	#if MT_CCF_DEBUG
-	pr_notice("[CCF] %s: sys=%s, id=%d, action = %s\n",
+	pr_debug("[CCF] %s: sys=%s, id=%d, action = %s\n",
 		__func__, sys->name, id, action?"PWN":"BUS_PROT");
 	#endif
 	if (allow[id] == 0) {
@@ -3117,7 +3117,7 @@ static int disable_subsys(enum subsys_id id, enum mtcmos_op action)
 
 	if (!mtk_is_mtcmos_enable()) {
 #if MT_CCF_DEBUG
-		pr_notice("[CCF] skip %s: sys=%s, id=%d\n",
+		pr_debug("[CCF] skip %s: sys=%s, id=%d\n",
 			__func__, sys->name, id);
 #endif
 		switch (id) {
@@ -3137,7 +3137,7 @@ static int disable_subsys(enum subsys_id id, enum mtcmos_op action)
 
 #if CONTROL_LIMIT
 	#if MT_CCF_DEBUG
-	pr_notice("[CCF] %s: sys=%s, id=%d, action = %s\n",
+	pr_debug("[CCF] %s: sys=%s, id=%d, action = %s\n",
 		__func__, sys->name, id, action?"PWN":"BUS_PROT");
 	#endif
 	if (allow[id] == 0) {
@@ -3230,7 +3230,7 @@ int pg_prepare(struct clk_hw *hw)
 			break;
 
 #if MT_CCF_DEBUG
-		pr_notice("[CCF] %s 1: sys=%s, pre_clk=%s\n", __func__,
+		pr_debug("[CCF] %s 1: sys=%s, pre_clk=%s\n", __func__,
 			__clk_get_name(hw->clk),
 			pg->pre_clk1_list->cg[i] ?
 			pg->pre_clk1_list->cg[i]:NULL);
@@ -3257,7 +3257,7 @@ int pg_prepare(struct clk_hw *hw)
 			break;
 
 #if MT_CCF_DEBUG
-		pr_notice("[CCF] %s 2: sys=%s, pre_clk=%s\n", __func__,
+		pr_debug("[CCF] %s 2: sys=%s, pre_clk=%s\n", __func__,
 			__clk_get_name(hw->clk),
 			pg->pre_clk2_list->cg[i] ?
 			pg->pre_clk2_list->cg[i]:NULL);
@@ -3307,7 +3307,7 @@ void pg_unprepare(struct clk_hw *hw)
 			break;
 
 #if MT_CCF_DEBUG
-		pr_notice("[CCF] %s: sys=%s, pre_clk=%s\n", __func__,
+		pr_debug("[CCF] %s: sys=%s, pre_clk=%s\n", __func__,
 			__clk_get_name(hw->clk),
 			pg->pre_clk2_list->cg[i] ?
 			pg->pre_clk2_list->cg[i]:NULL);
@@ -3331,7 +3331,7 @@ void pg_unprepare(struct clk_hw *hw)
 		else
 			break;
 #if MT_CCF_DEBUG
-		pr_notice("[CCF] %s: sys=%s, pre_clk=%s\n", __func__,
+		pr_debug("[CCF] %s: sys=%s, pre_clk=%s\n", __func__,
 			__clk_get_name(hw->clk),
 			pg->pre_clk1_list->cg[i] ?
 			pg->pre_clk1_list->cg[i]:NULL);
@@ -3529,7 +3529,7 @@ static int  init_clk_scpsys(struct platform_device *pdev, struct clk_onecell_dat
 			clk_data->clks[pg->id] = clk;
 
 #if MT_CCF_DEBUG
-		pr_notice("[CCF] %s: pgate %3d: %s\n", __func__, i, pg->name);
+		pr_debug("[CCF] %s: pgate %3d: %s\n", __func__, i, pg->name);
 #endif				/* MT_CCF_DEBUG */
 	}
 	return 0;
@@ -3609,7 +3609,7 @@ static int  clk_mt6768_scpsys_probe(struct platform_device *pdev)
 
 	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
 	if (r) {
-		pr_notice("%s(): could not register clock provider: %d\n",
+		pr_debug("%s(): could not register clock provider: %d\n",
 			__func__, r);
 		kfree(clk_data);
 	}
@@ -3624,7 +3624,7 @@ static int  clk_mt6768_scpsys_probe(struct platform_device *pdev)
 	} else {	/*power on all subsys for bring up */
 
 #ifndef CONFIG_FPGA_EARLY_PORTING
-		pr_notice("[CCF] %s: MT6768: S/B bringup mtcmos start\n",
+		pr_debug("[CCF] %s: MT6768: S/B bringup mtcmos start\n",
 			__func__);
 
 		/* md1 and conn power down first */
@@ -3652,7 +3652,7 @@ static int  clk_mt6768_scpsys_probe(struct platform_device *pdev)
 		spm_mtcmos_ctrl_vde_pwr(STA_POWER_ON);
 		spm_mtcmos_ctrl_vde_bus_prot(STA_POWER_ON);
 
-		pr_notice("[CCF] %s: MT6768: S/B bringup done\n",
+		pr_debug("[CCF] %s: MT6768: S/B bringup done\n",
 			__func__);
 #endif
 	}
@@ -3673,7 +3673,7 @@ void subsys_if_on(void)
 		pr_debug("suspend warning: SYS_MD1 is on!!!\n");
 
 	if ((sta & (1U << 1)) && (sta_s & (1U << 1))) {
-		pr_notice("suspend warning: SYS_CONN is on!!!\n");
+		pr_debug("suspend warning: SYS_CONN is on!!!\n");
 		ret++;
 	}
 #if 0
@@ -3685,43 +3685,43 @@ void subsys_if_on(void)
 
 #endif
 	if ((sta & (1U << 5)) && (sta_s & (1U << 5))) {
-		pr_notice("suspend warning: SYS_DIS is on!!!\n");
+		pr_debug("suspend warning: SYS_DIS is on!!!\n");
 		ret++;
 	}
 	if ((sta & (1U << 6)) && (sta_s & (1U << 6))) {
-		pr_notice("suspend warning: SYS_ISP is on!!!\n");
+		pr_debug("suspend warning: SYS_ISP is on!!!\n");
 		ret++;
 	}
 
 	if ((sta & (1U << 7)) && (sta_s & (1U << 7))) {
-		pr_notice("suspend warning: SYS_CAM is on!!!\n");
+		pr_debug("suspend warning: SYS_CAM is on!!!\n");
 		ret++;
 	}
 	if ((sta & (1U << 8)) && (sta_s & (1U << 8))) {
-		pr_notice("suspend warning: SYS_VDEC is on!!!\n");
+		pr_debug("suspend warning: SYS_VDEC is on!!!\n");
 		ret++;
 	}
 
 	if ((sta & (1U << 9)) && (sta_s & (1U << 9))) {
-		pr_notice("suspend warning: SYS_VENC is on!!!\n");
+		pr_debug("suspend warning: SYS_VENC is on!!!\n");
 		ret++;
 	}
 
 	if ((sta & (1U << 11)) && (sta_s & (1U << 11))) {
-		pr_notice("suspend warning: SYS_MFG is on!!!\n");
+		pr_debug("suspend warning: SYS_MFG is on!!!\n");
 		ret++;
 	}
 
 	if ((sta & (1U << 12)) && (sta_s & (1U << 12))) {
-		pr_notice("suspend warning: SYS_MFG_CORE0 is on!!!\n");
+		pr_debug("suspend warning: SYS_MFG_CORE0 is on!!!\n");
 		ret++;
 	}
 	if ((sta & (1U << 13)) && (sta_s & (1U << 13))) {
-		pr_notice("suspend warning: SYS_MFG_CORE1 is on!!!\n");
+		pr_debug("suspend warning: SYS_MFG_CORE1 is on!!!\n");
 		ret++;
 	}
 	if ((sta & (1U << 14)) && (sta_s & (1U << 14))) {
-		pr_notice("suspend warning: SYS_MFG_ASYNC is on!!!\n");
+		pr_debug("suspend warning: SYS_MFG_ASYNC is on!!!\n");
 		ret++;
 	}
 
@@ -4017,7 +4017,7 @@ static int __init clk_mt6768_scpsys_init(void)
 
 static void __exit clk_mt6768_scpsys_exit(void)
 {
-	pr_notice("%s: clk_mt6768_scpsys exit!\n", __func__);
+	pr_debug("%s: clk_mt6768_scpsys exit!\n", __func__);
 }
 
 

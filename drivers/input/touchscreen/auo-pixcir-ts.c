@@ -628,7 +628,7 @@ static int auo_pixcir_probe(struct i2c_client *client,
 		return error;
 	}
 
-	dev_info(&client->dev, "firmware version 0x%X\n", version);
+	dev_dbg(&client->dev, "firmware version 0x%X\n", version);
 
 	error = auo_pixcir_int_config(ts, pdata->int_setting);
 	if (error)

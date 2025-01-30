@@ -974,7 +974,7 @@ netxen_check_flash_fw_compatibility(struct netxen_adapter *adapter)
 	if (flash_fw_ver >= min_fw_ver)
 		return 0;
 
-	dev_info(&adapter->pdev->dev, "Flash fw[%d.%d.%d] is < min fw supported"
+	dev_dbg(&adapter->pdev->dev, "Flash fw[%d.%d.%d] is < min fw supported"
 		"[4.0.505]. Please update firmware on flash\n",
 		_major(flash_fw_ver), _minor(flash_fw_ver),
 		_build(flash_fw_ver));
@@ -997,7 +997,7 @@ netxen_load_firmware(struct netxen_adapter *adapter)
 	const struct firmware *fw = adapter->fw;
 	struct pci_dev *pdev = adapter->pdev;
 
-	dev_info(&pdev->dev, "loading firmware from %s\n",
+	dev_dbg(&pdev->dev, "loading firmware from %s\n",
 			fw_name[adapter->fw_type]);
 
 	if (NX_IS_REVISION_P2(adapter->ahw.revision_id))
@@ -1155,7 +1155,7 @@ netxen_validate_firmware(struct netxen_adapter *adapter)
 	if (!netxen_p3_has_mn(adapter) ||
 	    NX_IS_REVISION_P2(adapter->ahw.revision_id)) {
 		if (flash_fw_ver > file_fw_ver) {
-			dev_info(&pdev->dev, "%s: firmware is older than flash\n",
+			dev_dbg(&pdev->dev, "%s: firmware is older than flash\n",
 				fw_name[fw_type]);
 			return -EINVAL;
 		}

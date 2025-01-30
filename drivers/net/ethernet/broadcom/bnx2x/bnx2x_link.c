@@ -2887,7 +2887,7 @@ static u32 bnx2x_eee_calc_timer(struct link_params *params)
 	} else {
 		/* hsi values in nvram --> time*/
 		eee_mode = ((REG_RD(bp, params->shmem_base +
-				    offsetof(struct shmem_region, dev_info.
+				    offsetof(struct shmem_region, dev_dbg.
 				    port_feature_config[params->port].
 				    eee_power_mode)) &
 			     PORT_FEAT_CFG_EEE_POWER_MODE_MASK) >>
@@ -3065,7 +3065,7 @@ static void bnx2x_bsc_module_sel(struct link_params *params)
 	/* Read I2C output PINs */
 	board_cfg = REG_RD(bp, params->shmem_base +
 			   offsetof(struct shmem_region,
-				    dev_info.shared_hw_config.board));
+				    dev_dbg.shared_hw_config.board));
 	i2c_pins[I2C_BSC0] = board_cfg & SHARED_HW_CFG_E3_I2C_MUX0_MASK;
 	i2c_pins[I2C_BSC1] = (board_cfg & SHARED_HW_CFG_E3_I2C_MUX1_MASK) >>
 			SHARED_HW_CFG_E3_I2C_MUX1_SHIFT;
@@ -3073,7 +3073,7 @@ static void bnx2x_bsc_module_sel(struct link_params *params)
 	/* Read I2C output value */
 	sfp_ctrl = REG_RD(bp, params->shmem_base +
 			  offsetof(struct shmem_region,
-				 dev_info.port_hw_config[port].e3_cmn_pin_cfg));
+				 dev_dbg.port_hw_config[port].e3_cmn_pin_cfg));
 	i2c_val[I2C_BSC0] = (sfp_ctrl & PORT_HW_CFG_E3_I2C_MUX0_MASK) > 0;
 	i2c_val[I2C_BSC1] = (sfp_ctrl & PORT_HW_CFG_E3_I2C_MUX1_MASK) > 0;
 	DP(NETIF_MSG_LINK, "Setting BSC switch\n");
@@ -3810,7 +3810,7 @@ static void bnx2x_warpcore_enable_AN_KR(struct bnx2x_phy *phy,
 
 	/* Enable CL37 BAM */
 	if (REG_RD(bp, params->shmem_base +
-		   offsetof(struct shmem_region, dev_info.
+		   offsetof(struct shmem_region, dev_dbg.
 			    port_hw_config[params->port].default_cfg)) &
 	    PORT_HW_CFG_ENABLE_BAM_ON_KR_ENABLED) {
 		bnx2x_cl45_read_or_write(bp, phy, MDIO_WC_DEVAD,
@@ -3850,7 +3850,7 @@ static void bnx2x_warpcore_enable_AN_KR(struct bnx2x_phy *phy,
 		bnx2x_cl45_write(bp, phy, MDIO_WC_DEVAD,
 				 MDIO_WC_REG_SERDESDIGITAL_CONTROL1000X1, 0x10);
 		wc_lane_config = REG_RD(bp, params->shmem_base +
-					offsetof(struct shmem_region, dev_info.
+					offsetof(struct shmem_region, dev_dbg.
 					shared_hw_config.wc_lane_config));
 		bnx2x_cl45_read(bp, phy, MDIO_WC_DEVAD,
 				MDIO_WC_REG_RX0_PCI_CTRL + (lane << 4), &val);
@@ -4002,7 +4002,7 @@ static void bnx2x_warpcore_set_10G_XFI(struct bnx2x_phy *phy,
 		tx_driver_val = WC_TX_DRIVER(0x00, 0x02, 0x03, 0);
 	} else {
 		cfg_tap_val = REG_RD(bp, params->shmem_base +
-				     offsetof(struct shmem_region, dev_info.
+				     offsetof(struct shmem_region, dev_dbg.
 					      port_hw_config[params->port].
 					      sfi_tap_values));
 
@@ -4336,7 +4336,7 @@ static int bnx2x_get_mod_abs_int_cfg(struct bnx2x *bp,
 	if (CHIP_IS_E3(bp)) {
 		cfg_pin = (REG_RD(bp, shmem_base +
 				offsetof(struct shmem_region,
-				dev_info.port_hw_config[port].e3_sfp_ctrl)) &
+				dev_dbg.port_hw_config[port].e3_sfp_ctrl)) &
 				PORT_HW_CFG_E3_MOD_ABS_MASK) >>
 				PORT_HW_CFG_E3_MOD_ABS_SHIFT;
 
@@ -4412,7 +4412,7 @@ static void bnx2x_warpcore_config_runtime(struct bnx2x_phy *phy,
 	if (vars->rx_tx_asic_rst) {
 		u16 lane = bnx2x_get_warpcore_lane(phy, params);
 		serdes_net_if = (REG_RD(bp, params->shmem_base +
-				offsetof(struct shmem_region, dev_info.
+				offsetof(struct shmem_region, dev_dbg.
 				port_hw_config[params->port].default_cfg)) &
 				PORT_HW_CFG_NET_SERDES_IF_MASK);
 
@@ -4476,7 +4476,7 @@ static void bnx2x_sfp_e3_set_transmitter(struct link_params *params,
 
 	cfg_pin = REG_RD(bp, params->shmem_base +
 			 offsetof(struct shmem_region,
-				  dev_info.port_hw_config[port].e3_sfp_ctrl)) &
+				  dev_dbg.port_hw_config[port].e3_sfp_ctrl)) &
 		PORT_HW_CFG_E3_TX_LASER_MASK;
 	/* Set the !tx_en since this pin is DISABLE_TX_LASER */
 	DP(NETIF_MSG_LINK, "Setting WC TX to %d\n", tx_en);
@@ -4496,7 +4496,7 @@ static void bnx2x_warpcore_config_init(struct bnx2x_phy *phy,
 	u8 fiber_mode;
 	u16 lane = bnx2x_get_warpcore_lane(phy, params);
 	serdes_net_if = (REG_RD(bp, params->shmem_base +
-			 offsetof(struct shmem_region, dev_info.
+			 offsetof(struct shmem_region, dev_dbg.
 				  port_hw_config[params->port].default_cfg)) &
 			 PORT_HW_CFG_NET_SERDES_IF_MASK);
 	DP(NETIF_MSG_LINK, "Begin Warpcore init, link_speed %d, "
@@ -4829,7 +4829,7 @@ void bnx2x_link_status_update(struct link_params *params,
 	/* Sync media type */
 	sync_offset = params->shmem_base +
 			offsetof(struct shmem_region,
-				 dev_info.port_hw_config[port].media_type);
+				 dev_dbg.port_hw_config[port].media_type);
 	media_types = REG_RD(bp, sync_offset);
 
 	params->phy[INT_PHY].media_type =
@@ -4846,7 +4846,7 @@ void bnx2x_link_status_update(struct link_params *params,
 	/* Sync AEU offset */
 	sync_offset = params->shmem_base +
 			offsetof(struct shmem_region,
-				 dev_info.port_hw_config[port].aeu_int_mask);
+				 dev_dbg.port_hw_config[port].aeu_int_mask);
 
 	vars->aeu_int_mask = REG_RD(bp, sync_offset);
 
@@ -7416,7 +7416,7 @@ static int bnx2x_8073_config_init(struct bnx2x_phy *phy,
 
 	/* Enable CL37 BAM */
 	if (REG_RD(bp, params->shmem_base +
-			 offsetof(struct shmem_region, dev_info.
+			 offsetof(struct shmem_region, dev_dbg.
 				  port_hw_config[params->port].default_cfg)) &
 	    PORT_HW_CFG_ENABLE_BAM_ON_KR_ENABLED) {
 
@@ -7792,7 +7792,7 @@ static void bnx2x_sfp_e1e2_set_transmitter(struct link_params *params,
 	/* Disable/Enable transmitter ( TX laser of the SFP+ module.)*/
 	tx_en_mode = REG_RD(bp, params->shmem_base +
 			    offsetof(struct shmem_region,
-				     dev_info.port_hw_config[port].sfp_ctrl)) &
+				     dev_dbg.port_hw_config[port].sfp_ctrl)) &
 		PORT_HW_CFG_TX_LASER_MASK;
 	DP(NETIF_MSG_LINK, "Setting transmitter tx_en=%x for port %x "
 			   "mode = %x\n", tx_en, port, tx_en_mode);
@@ -7924,7 +7924,7 @@ static void bnx2x_warpcore_power_module(struct link_params *params,
 
 	pin_cfg = (REG_RD(bp, params->shmem_base +
 			  offsetof(struct shmem_region,
-			dev_info.port_hw_config[params->port].e3_sfp_ctrl)) &
+			dev_dbg.port_hw_config[params->port].e3_sfp_ctrl)) &
 			PORT_HW_CFG_E3_PWR_DIS_MASK) >>
 			PORT_HW_CFG_E3_PWR_DIS_SHIFT;
 
@@ -8220,7 +8220,7 @@ static int bnx2x_get_edc_mode(struct bnx2x_phy *phy,
 	}
 	sync_offset = params->shmem_base +
 		offsetof(struct shmem_region,
-			 dev_info.port_hw_config[params->port].media_type);
+			 dev_dbg.port_hw_config[params->port].media_type);
 	media_types = REG_RD(bp, sync_offset);
 	/* Update media type for non-PMF sync */
 	for (phy_idx = INT_PHY; phy_idx < MAX_PHYS; phy_idx++) {
@@ -8267,7 +8267,7 @@ static int bnx2x_verify_sfp_module(struct bnx2x_phy *phy,
 	char vendor_pn[SFP_EEPROM_PART_NO_SIZE+1];
 	phy->flags &= ~FLAGS_SFP_NOT_APPROVED;
 	val = REG_RD(bp, params->shmem_base +
-			 offsetof(struct shmem_region, dev_info.
+			 offsetof(struct shmem_region, dev_dbg.
 				  port_feature_config[params->port].config));
 	if ((val & PORT_FEAT_CFG_OPT_MDL_ENFRCMNT_MASK) ==
 	    PORT_FEAT_CFG_OPT_MDL_ENFRCMNT_NO_ENFORCEMENT) {
@@ -8533,7 +8533,7 @@ static void bnx2x_set_e1e2_module_fault_led(struct link_params *params,
 
 	u32 fault_led_gpio = REG_RD(bp, params->shmem_base +
 			    offsetof(struct shmem_region,
-			dev_info.port_hw_config[params->port].sfp_ctrl)) &
+			dev_dbg.port_hw_config[params->port].sfp_ctrl)) &
 		PORT_HW_CFG_FAULT_MODULE_LED_MASK;
 	switch (fault_led_gpio) {
 	case PORT_HW_CFG_FAULT_MODULE_LED_DISABLED:
@@ -8566,7 +8566,7 @@ static void bnx2x_set_e3_module_fault_led(struct link_params *params,
 	struct bnx2x *bp = params->bp;
 	pin_cfg = (REG_RD(bp, params->shmem_base +
 			 offsetof(struct shmem_region,
-				  dev_info.port_hw_config[port].e3_sfp_ctrl)) &
+				  dev_dbg.port_hw_config[port].e3_sfp_ctrl)) &
 		PORT_HW_CFG_E3_FAULT_MDL_LED_MASK) >>
 		PORT_HW_CFG_E3_FAULT_MDL_LED_SHIFT;
 	DP(NETIF_MSG_LINK, "Setting Fault LED to %d using pin cfg %d\n",
@@ -8687,7 +8687,7 @@ static int bnx2x_sfp_module_detection(struct bnx2x_phy *phy,
 	int rc = 0;
 
 	u32 val = REG_RD(bp, params->shmem_base +
-			     offsetof(struct shmem_region, dev_info.
+			     offsetof(struct shmem_region, dev_dbg.
 				     port_feature_config[params->port].config));
 	/* Enabled transmitter by default */
 	bnx2x_sfp_set_transmitter(params, phy, 1);
@@ -8982,7 +8982,7 @@ static u8 bnx2x_8706_config_init(struct bnx2x_phy *phy,
 
 	tx_en_mode = REG_RD(bp, params->shmem_base +
 			    offsetof(struct shmem_region,
-				dev_info.port_hw_config[params->port].sfp_ctrl))
+				dev_dbg.port_hw_config[params->port].sfp_ctrl))
 			& PORT_HW_CFG_TX_LASER_MASK;
 
 	if (tx_en_mode == PORT_HW_CFG_TX_LASER_GPIO0) {
@@ -9355,7 +9355,7 @@ static int bnx2x_8727_config_init(struct bnx2x_phy *phy,
 	 */
 	tx_en_mode = REG_RD(bp, params->shmem_base +
 			    offsetof(struct shmem_region,
-				dev_info.port_hw_config[params->port].sfp_ctrl))
+				dev_dbg.port_hw_config[params->port].sfp_ctrl))
 			& PORT_HW_CFG_TX_LASER_MASK;
 
 	if (tx_en_mode == PORT_HW_CFG_TX_LASER_GPIO0) {
@@ -9384,7 +9384,7 @@ static void bnx2x_8727_handle_mod_abs(struct bnx2x_phy *phy,
 	struct bnx2x *bp = params->bp;
 	u16 mod_abs, rx_alarm_status;
 	u32 val = REG_RD(bp, params->shmem_base +
-			     offsetof(struct shmem_region, dev_info.
+			     offsetof(struct shmem_region, dev_dbg.
 				      port_feature_config[params->port].
 				      config));
 	bnx2x_cl45_read(bp, phy,
@@ -10158,7 +10158,7 @@ static int bnx2x_848xx_pair_swap_cfg(struct bnx2x_phy *phy,
 	/* Check for configuration. */
 	pair_swap = REG_RD(bp, params->shmem_base +
 			   offsetof(struct shmem_region,
-			dev_info.port_hw_config[params->port].xgbt_phy_cfg)) &
+			dev_dbg.port_hw_config[params->port].xgbt_phy_cfg)) &
 		PORT_HW_CFG_RJ45_PAIR_SWAP_MASK;
 
 	if (pair_swap == 0)
@@ -10189,7 +10189,7 @@ static u8 bnx2x_84833_get_reset_gpios(struct bnx2x *bp,
 			/* Map config param to register bit. */
 			reset_pin[idx] = REG_RD(bp, shmem_base_path[idx] +
 				offsetof(struct shmem_region,
-				dev_info.port_hw_config[0].e3_cmn_pin_cfg));
+				dev_dbg.port_hw_config[0].e3_cmn_pin_cfg));
 			reset_pin[idx] = (reset_pin[idx] &
 				PORT_HW_CFG_E3_PHY_RESET_MASK) >>
 				PORT_HW_CFG_E3_PHY_RESET_SHIFT;
@@ -10202,7 +10202,7 @@ static u8 bnx2x_84833_get_reset_gpios(struct bnx2x *bp,
 		for (idx = 0; idx < 2; idx++) {
 			reset_pin[idx] = REG_RD(bp, shmem_base_path[idx] +
 				offsetof(struct shmem_region,
-				dev_info.port_hw_config[0].default_cfg));
+				dev_dbg.port_hw_config[0].default_cfg));
 			reset_pin[idx] &= PORT_HW_CFG_EXT_PHY_GPIO_RST_MASK;
 			reset_pin[idx] -= PORT_HW_CFG_EXT_PHY_GPIO_RST_GPIO0_P0;
 			reset_pin[idx] >>= PORT_HW_CFG_EXT_PHY_GPIO_RST_SHIFT;
@@ -10410,7 +10410,7 @@ static int bnx2x_848x3_config_init(struct bnx2x_phy *phy,
 	if (phy->type == PORT_HW_CFG_XGXS_EXT_PHY_TYPE_BCM84823) {
 		u32 cms_enable = REG_RD(bp, params->shmem_base +
 			offsetof(struct shmem_region,
-			dev_info.port_hw_config[params->port].default_cfg)) &
+			dev_dbg.port_hw_config[params->port].default_cfg)) &
 			PORT_HW_CFG_ENABLE_CMS_MASK;
 
 		bnx2x_cl45_read(bp, phy, MDIO_CTL_DEVAD,
@@ -11061,7 +11061,7 @@ static int bnx2x_54618se_config_init(struct bnx2x_phy *phy,
 
 	cfg_pin = (REG_RD(bp, params->shmem_base +
 			offsetof(struct shmem_region,
-			dev_info.port_hw_config[port].e3_cmn_pin_cfg)) &
+			dev_dbg.port_hw_config[port].e3_cmn_pin_cfg)) &
 			PORT_HW_CFG_E3_PHY_RESET_MASK) >>
 			PORT_HW_CFG_E3_PHY_RESET_SHIFT;
 
@@ -11302,7 +11302,7 @@ static void bnx2x_54618se_link_reset(struct bnx2x_phy *phy,
 	port = params->port;
 	cfg_pin = (REG_RD(bp, params->shmem_base +
 			offsetof(struct shmem_region,
-			dev_info.port_hw_config[port].e3_cmn_pin_cfg)) &
+			dev_dbg.port_hw_config[port].e3_cmn_pin_cfg)) &
 			PORT_HW_CFG_E3_PHY_RESET_MASK) >>
 			PORT_HW_CFG_E3_PHY_RESET_SHIFT;
 
@@ -12169,19 +12169,19 @@ static void bnx2x_populate_preemphasis(struct bnx2x *bp, u32 shmem_base,
 		if (phy_index == INT_PHY || phy_index == EXT_PHY1) {
 			rx = REG_RD(bp, shmem_base +
 				    offsetof(struct shmem_region,
-			  dev_info.port_hw_config[port].xgxs_config_rx[i<<1]));
+			  dev_dbg.port_hw_config[port].xgxs_config_rx[i<<1]));
 
 			tx = REG_RD(bp, shmem_base +
 				    offsetof(struct shmem_region,
-			  dev_info.port_hw_config[port].xgxs_config_tx[i<<1]));
+			  dev_dbg.port_hw_config[port].xgxs_config_tx[i<<1]));
 		} else {
 			rx = REG_RD(bp, shmem_base +
 				    offsetof(struct shmem_region,
-			 dev_info.port_hw_config[port].xgxs_config2_rx[i<<1]));
+			 dev_dbg.port_hw_config[port].xgxs_config2_rx[i<<1]));
 
 			tx = REG_RD(bp, shmem_base +
 				    offsetof(struct shmem_region,
-			 dev_info.port_hw_config[port].xgxs_config2_rx[i<<1]));
+			 dev_dbg.port_hw_config[port].xgxs_config2_rx[i<<1]));
 		}
 
 		phy->rx_preemphasis[i << 1] = ((rx>>16) & 0xffff);
@@ -12200,12 +12200,12 @@ static u32 bnx2x_get_ext_phy_config(struct bnx2x *bp, u32 shmem_base,
 	case EXT_PHY1:
 		ext_phy_config = REG_RD(bp, shmem_base +
 					      offsetof(struct shmem_region,
-			dev_info.port_hw_config[port].external_phy_config));
+			dev_dbg.port_hw_config[port].external_phy_config));
 		break;
 	case EXT_PHY2:
 		ext_phy_config = REG_RD(bp, shmem_base +
 					      offsetof(struct shmem_region,
-			dev_info.port_hw_config[port].external_phy_config2));
+			dev_dbg.port_hw_config[port].external_phy_config2));
 		break;
 	default:
 		DP(NETIF_MSG_LINK, "Invalid phy_index %d\n", phy_index);
@@ -12221,7 +12221,7 @@ static int bnx2x_populate_int_phy(struct bnx2x *bp, u32 shmem_base, u8 port,
 	u32 chip_id;
 	u32 switch_cfg = (REG_RD(bp, shmem_base +
 				       offsetof(struct shmem_region,
-			dev_info.port_feature_config[port].link_config)) &
+			dev_dbg.port_feature_config[port].link_config)) &
 			  PORT_FEATURE_CONNECTED_SWITCH_MASK);
 	chip_id = (REG_RD(bp, MISC_REG_CHIP_NUM) << 16) |
 		((REG_RD(bp, MISC_REG_CHIP_REV) & 0xf) << 12);
@@ -12238,7 +12238,7 @@ static int bnx2x_populate_int_phy(struct bnx2x *bp, u32 shmem_base, u8 port,
 			phy->flags &= ~FLAGS_4_PORT_MODE;
 			/* Check Dual mode */
 		serdes_net_if = (REG_RD(bp, shmem_base +
-					offsetof(struct shmem_region, dev_info.
+					offsetof(struct shmem_region, dev_dbg.
 					port_hw_config[port].default_cfg)) &
 				 PORT_HW_CFG_NET_SERDES_IF_MASK);
 		/* Set the appropriate supported and flags indications per
@@ -12434,7 +12434,7 @@ static int bnx2x_populate_ext_phy(struct bnx2x *bp,
 	 * the address
 	 */
 	config2 = REG_RD(bp, shmem_base + offsetof(struct shmem_region,
-					dev_info.shared_hw_config.config2));
+					dev_dbg.shared_hw_config.config2));
 	if (phy_index == EXT_PHY1) {
 		phy->ver_addr = shmem_base + offsetof(struct shmem_region,
 				port_mb[port].ext_phy_fw_version);
@@ -12499,19 +12499,19 @@ static void bnx2x_phy_def_cfg(struct link_params *params,
 	/* Populate the default phy configuration for MF mode */
 	if (phy_index == EXT_PHY2) {
 		link_config = REG_RD(bp, params->shmem_base +
-				     offsetof(struct shmem_region, dev_info.
+				     offsetof(struct shmem_region, dev_dbg.
 			port_feature_config[params->port].link_config2));
 		phy->speed_cap_mask = REG_RD(bp, params->shmem_base +
 					     offsetof(struct shmem_region,
-						      dev_info.
+						      dev_dbg.
 			port_hw_config[params->port].speed_capability_mask2));
 	} else {
 		link_config = REG_RD(bp, params->shmem_base +
-				     offsetof(struct shmem_region, dev_info.
+				     offsetof(struct shmem_region, dev_dbg.
 				port_feature_config[params->port].link_config));
 		phy->speed_cap_mask = REG_RD(bp, params->shmem_base +
 					     offsetof(struct shmem_region,
-						      dev_info.
+						      dev_dbg.
 			port_hw_config[params->port].speed_capability_mask));
 	}
 	DP(NETIF_MSG_LINK,
@@ -12646,7 +12646,7 @@ int bnx2x_phy_probe(struct link_params *params)
 
 		sync_offset = params->shmem_base +
 			offsetof(struct shmem_region,
-			dev_info.port_hw_config[params->port].media_type);
+			dev_dbg.port_hw_config[params->port].media_type);
 		media_types = REG_RD(bp, sync_offset);
 
 		/* Update media type for non-PMF sync only for the first time
@@ -13372,7 +13372,7 @@ static void bnx2x_get_ext_phy_reset_gpio(struct bnx2x *bp, u32 shmem_base,
 
 	u32 phy_gpio_reset = REG_RD(bp, shmem_base +
 					  offsetof(struct shmem_region,
-				dev_info.port_hw_config[PORT_0].default_cfg));
+				dev_dbg.port_hw_config[PORT_0].default_cfg));
 	switch (phy_gpio_reset) {
 	case PORT_HW_CFG_EXT_PHY_GPIO_RST_GPIO0_P0:
 		*io_gpio = 0;
@@ -13633,7 +13633,7 @@ static void bnx2x_check_over_curr(struct link_params *params,
 
 	cfg_pin = (REG_RD(bp, params->shmem_base +
 			  offsetof(struct shmem_region,
-			       dev_info.port_hw_config[port].e3_cmn_pin_cfg1)) &
+			       dev_dbg.port_hw_config[port].e3_cmn_pin_cfg1)) &
 		   PORT_HW_CFG_E3_OVER_CURRENT_MASK) >>
 		PORT_HW_CFG_E3_OVER_CURRENT_SHIFT;
 
@@ -13803,7 +13803,7 @@ static void bnx2x_sfp_tx_fault_detection(struct bnx2x_phy *phy,
 
 	/* Get The SFP+ TX_Fault controlling pin ([eg]pio) */
 	cfg_pin = (REG_RD(bp, params->shmem_base + offsetof(struct shmem_region,
-			  dev_info.port_hw_config[port].e3_cmn_pin_cfg)) &
+			  dev_dbg.port_hw_config[port].e3_cmn_pin_cfg)) &
 		   PORT_HW_CFG_E3_TX_FAULT_MASK) >>
 		  PORT_HW_CFG_E3_TX_FAULT_SHIFT;
 
@@ -13946,7 +13946,7 @@ void bnx2x_period_func(struct link_params *params, struct link_vars *vars)
 			bnx2x_warpcore_config_runtime(phy, params, vars);
 
 		if ((REG_RD(bp, params->shmem_base +
-			    offsetof(struct shmem_region, dev_info.
+			    offsetof(struct shmem_region, dev_dbg.
 				port_hw_config[params->port].default_cfg))
 		    & PORT_HW_CFG_NET_SERDES_IF_MASK) ==
 		    PORT_HW_CFG_NET_SERDES_IF_SFI) {
@@ -14054,7 +14054,7 @@ void bnx2x_init_mod_abs_int(struct bnx2x *bp, struct link_vars *vars,
 
 	sync_offset = shmem_base +
 		offsetof(struct shmem_region,
-			 dev_info.port_hw_config[port].aeu_int_mask);
+			 dev_dbg.port_hw_config[port].aeu_int_mask);
 	REG_WR(bp, sync_offset, vars->aeu_int_mask);
 
 	DP(NETIF_MSG_LINK, "Setting MOD_ABS (GPIO%d_P%d) AEU to 0x%x\n",

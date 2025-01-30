@@ -2411,7 +2411,7 @@ static int atmci_configure_dma(struct atmel_mci *host)
 	if (IS_ERR(host->dma.chan))
 		return PTR_ERR(host->dma.chan);
 
-	dev_info(&host->pdev->dev, "using %s for DMA transfers\n",
+	dev_dbg(&host->pdev->dev, "using %s for DMA transfers\n",
 		 dma_chan_name(host->dma.chan));
 
 	host->dma_conf.src_addr = host->mapbase + ATMCI_RDR;
@@ -2435,7 +2435,7 @@ static void atmci_get_cap(struct atmel_mci *host)
 	unsigned int version;
 
 	version = atmci_get_version(host);
-	dev_info(&host->pdev->dev,
+	dev_dbg(&host->pdev->dev,
 			"version: 0x%x\n", version);
 
 	host->caps.has_dma_conf_reg = 0;
@@ -2547,12 +2547,12 @@ static int atmci_probe(struct platform_device *pdev)
 		host->submit_data = &atmci_submit_data_dma;
 		host->stop_transfer = &atmci_stop_transfer_dma;
 	} else if (host->caps.has_pdc) {
-		dev_info(&pdev->dev, "using PDC\n");
+		dev_dbg(&pdev->dev, "using PDC\n");
 		host->prepare_data = &atmci_prepare_data_pdc;
 		host->submit_data = &atmci_submit_data_pdc;
 		host->stop_transfer = &atmci_stop_transfer_pdc;
 	} else {
-		dev_info(&pdev->dev, "using PIO\n");
+		dev_dbg(&pdev->dev, "using PIO\n");
 		host->prepare_data = &atmci_prepare_data;
 		host->submit_data = &atmci_submit_data;
 		host->stop_transfer = &atmci_stop_transfer;
@@ -2606,7 +2606,7 @@ static int atmci_probe(struct platform_device *pdev)
 		}
 	}
 
-	dev_info(&pdev->dev,
+	dev_dbg(&pdev->dev,
 			"Atmel MCI controller at 0x%08lx irq %d, %u slots\n",
 			host->mapbase, irq, nr_slots);
 

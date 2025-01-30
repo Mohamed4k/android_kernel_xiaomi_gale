@@ -45,12 +45,12 @@ extern struct device tui_dev;
 	dev_err(&tui_dev, "ERROR %d %s: " fmt "\n", \
 		__ret__, __func__, ##__VA_ARGS__)
 
-#define tui_dev_info(fmt, ...) \
-	dev_info(&tui_dev, "%s: " fmt "\n", __func__, ##__VA_ARGS__)
+#define tui_dev_dbg(fmt, ...) \
+	dev_dbg(&tui_dev, "%s: " fmt "\n", __func__, ##__VA_ARGS__)
 
 #ifdef DEBUG
 #define tui_dev_devel(fmt, ...) \
-	dev_info(&tui_dev, "%s: " fmt "\n", __func__, ##__VA_ARGS__)
+	dev_dbg(&tui_dev, "%s: " fmt "\n", __func__, ##__VA_ARGS__)
 #else /* DEBUG */
 #define tui_dev_devel(...)		do {} while (0)
 #endif /* !DEBUG */

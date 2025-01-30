@@ -44,21 +44,21 @@ extern int pe2_get_debug_level(void);
 #define pe2_err(fmt, args...)					\
 do {								\
 	if (pe2_get_debug_level() >= PE2_ERROR_LEVEL) {	\
-		pr_notice(fmt, ##args);				\
+		pr_debug(fmt, ##args);				\
 	}							\
 } while (0)
 
 #define pe2_info(fmt, args...)					\
 do {								\
 	if (pe2_get_debug_level() >= PE2_INFO_LEVEL) { \
-		pr_notice(fmt, ##args);			\
+		pr_debug(fmt, ##args);			\
 	}							\
 } while (0)
 
 #define pe2_dbg(fmt, args...)					\
 do {								\
 	if (pe2_get_debug_level() >= PE2_DEBUG_LEVEL) {	\
-		pr_notice(fmt, ##args);				\
+		pr_debug(fmt, ##args);				\
 	}							\
 } while (0)
 

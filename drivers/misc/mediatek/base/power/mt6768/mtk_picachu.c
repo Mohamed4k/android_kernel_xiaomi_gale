@@ -58,7 +58,7 @@
 #undef TAG
 #define TAG     "[Picachu] "
 
-#define picachu_pr_notice(fmt, args...)	pr_notice(TAG fmt, ##args)
+#define picachu_pr_notice(fmt, args...)	pr_debug(TAG fmt, ##args)
 
 #define picachu_read(addr)		__raw_readl((void __iomem *)(addr))
 #define picachu_write(addr, val)	mt_reg_sync_writel(val, addr)

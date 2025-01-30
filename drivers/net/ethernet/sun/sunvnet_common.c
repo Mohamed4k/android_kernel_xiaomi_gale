@@ -496,7 +496,7 @@ static int vnet_send_ack(struct vnet_port *port, struct vio_dring_state *dr,
 		if ((delay <<= 1) > 128)
 			delay = 128;
 		if (retries++ > VNET_MAX_RETRIES) {
-			pr_info("ECONNRESET %x:%x:%x:%x:%x:%x\n",
+			pr_debug("ECONNRESET %x:%x:%x:%x:%x:%x\n",
 				port->raddr[0], port->raddr[1],
 				port->raddr[2], port->raddr[3],
 				port->raddr[4], port->raddr[5]);
@@ -1010,7 +1010,7 @@ static struct sk_buff *vnet_clean_tx_ring(struct vnet_port *port,
 		}
 		if (port->tx_bufs[txi].skb) {
 			if (d->hdr.state != VIO_DESC_DONE)
-				pr_notice("invalid ring buffer state %d\n",
+				pr_debug("invalid ring buffer state %d\n",
 					  d->hdr.state);
 			BUG_ON(port->tx_bufs[txi].skb->next);
 
@@ -1407,7 +1407,7 @@ sunvnet_start_xmit_common(struct sk_buff *skb, struct net_device *dev,
 	err = vnet_skb_map(port->vio.lp, skb, port->tx_bufs[txi].cookies, 2,
 			   (LDC_MAP_SHADOW | LDC_MAP_DIRECT | LDC_MAP_RW));
 	if (err < 0) {
-		netdev_info(dev, "tx buffer map error %d\n", err);
+		netdev_dbg(dev, "tx buffer map error %d\n", err);
 		goto out_dropped;
 	}
 
@@ -1479,7 +1479,7 @@ sunvnet_start_xmit_common(struct sk_buff *skb, struct net_device *dev,
 
 	err = __vnet_tx_trigger(port, dr->cons);
 	if (unlikely(err < 0)) {
-		netdev_info(dev, "TX trigger error %d\n", err);
+		netdev_dbg(dev, "TX trigger error %d\n", err);
 		d->hdr.state = VIO_DESC_FREE;
 		skb = port->tx_bufs[txi].skb;
 		port->tx_bufs[txi].skb = NULL;

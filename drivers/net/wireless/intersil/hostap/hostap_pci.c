@@ -20,7 +20,7 @@
 #include "hostap_wlan.h"
 
 
-static char *dev_info = "hostap_pci";
+static char *dev_dbg = "hostap_pci";
 
 
 MODULE_AUTHOR("Jouni Malinen");
@@ -344,7 +344,7 @@ static int prism2_pci_probe(struct pci_dev *pdev,
 
 	if (!local->pri_only && prism2_hw_config(dev, 1)) {
 		printk(KERN_DEBUG "%s: hardware initialization failed\n",
-		       dev_info);
+		       dev_dbg);
 		goto fail;
 	}
 

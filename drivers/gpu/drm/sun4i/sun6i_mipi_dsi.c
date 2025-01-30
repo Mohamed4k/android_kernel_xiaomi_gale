@@ -841,7 +841,7 @@ static int sun6i_dsi_attach(struct mipi_dsi_host *host,
 	if (IS_ERR(dsi->panel))
 		return PTR_ERR(dsi->panel);
 
-	dev_info(host->dev, "Attached device %s\n", device->name);
+	dev_dbg(host->dev, "Attached device %s\n", device->name);
 
 	return 0;
 }

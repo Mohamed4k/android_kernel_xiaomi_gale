@@ -748,7 +748,7 @@ static int hns3_set_ringparam(struct net_device *ndev,
 	if (old_desc_num == new_desc_num)
 		return 0;
 
-	netdev_info(ndev,
+	netdev_dbg(ndev,
 		    "Changing descriptor count from %d to %d.\n",
 		    old_desc_num, new_desc_num);
 
@@ -875,14 +875,14 @@ static int hns3_check_gl_coalesce_para(struct net_device *netdev,
 
 	rx_gl = hns3_gl_round_down(cmd->rx_coalesce_usecs);
 	if (rx_gl != cmd->rx_coalesce_usecs) {
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "rx_usecs(%d) rounded down to %d, because it must be multiple of 2.\n",
 			    cmd->rx_coalesce_usecs, rx_gl);
 	}
 
 	tx_gl = hns3_gl_round_down(cmd->tx_coalesce_usecs);
 	if (tx_gl != cmd->tx_coalesce_usecs) {
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "tx_usecs(%d) rounded down to %d, because it must be multiple of 2.\n",
 			    cmd->tx_coalesce_usecs, tx_gl);
 	}
@@ -910,7 +910,7 @@ static int hns3_check_rl_coalesce_para(struct net_device *netdev,
 
 	rl = hns3_rl_round_down(cmd->rx_coalesce_usecs_high);
 	if (rl != cmd->rx_coalesce_usecs_high) {
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "usecs_high(%d) rounded down to %d, because it must be multiple of 4.\n",
 			    cmd->rx_coalesce_usecs_high, rl);
 	}
@@ -939,7 +939,7 @@ static int hns3_check_coalesce_para(struct net_device *netdev,
 
 	if (cmd->use_adaptive_tx_coalesce == 1 ||
 	    cmd->use_adaptive_rx_coalesce == 1) {
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "adaptive-tx=%d and adaptive-rx=%d, tx_usecs or rx_usecs will changed dynamically.\n",
 			    cmd->use_adaptive_tx_coalesce,
 			    cmd->use_adaptive_rx_coalesce);

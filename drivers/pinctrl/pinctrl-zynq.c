@@ -1202,7 +1202,7 @@ static int zynq_pinctrl_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, pctrl);
 
-	dev_info(&pdev->dev, "zynq pinctrl initialized\n");
+	dev_dbg(&pdev->dev, "zynq pinctrl initialized\n");
 
 	return 0;
 }

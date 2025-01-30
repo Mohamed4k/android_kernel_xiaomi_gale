@@ -132,9 +132,9 @@ static struct platform_driver lcm_driver = {
 
 static int __init lcm_drv_init(void)
 {
-	pr_notice("[Kernel/LCM] %s enter\n", __func__);
+	pr_debug("[Kernel/LCM] %s enter\n", __func__);
 	if (platform_driver_register(&lcm_driver)) {
-		pr_notice("LCM: failed to register disp driver\n");
+		pr_debug("LCM: failed to register disp driver\n");
 		return -ENODEV;
 	}
 
@@ -144,7 +144,7 @@ static int __init lcm_drv_init(void)
 static void __exit lcm_drv_exit(void)
 {
 	platform_driver_unregister(&lcm_driver);
-	pr_notice("LCM: Unregister lcm driver done\n");
+	pr_debug("LCM: Unregister lcm driver done\n");
 }
 
 late_initcall(lcm_drv_init);
@@ -281,7 +281,7 @@ static void lcm_get_params(struct LCM_PARAMS *params)
 	params->dsi.mode = BURST_VDO_MODE;
 	params->dsi.switch_mode = CMD_MODE;
 	lcm_dsi_mode = BURST_VDO_MODE;
-	pr_info("%s: lcm_dsi_mode %d\n", __func__, lcm_dsi_mode);
+	pr_debug("%s: lcm_dsi_mode %d\n", __func__, lcm_dsi_mode);
 	params->dsi.switch_mode_enable = 0;
 
 	/* DSI */
@@ -372,7 +372,7 @@ static void lcm_init_power(void)
 static void lcm_suspend_power(void)
 {
 	if (lcd_reset_keep_high || ovt_gesture_flag) {
-		pr_info("[LCM]%s:bias_keep_on\n",__func__);
+		pr_debug("[LCM]%s:bias_keep_on\n",__func__);
 		return;
 	}
 
@@ -397,7 +397,7 @@ static void lcm_init(void)
 	push_table(NULL,
 		init_setting_vdo, ARRAY_SIZE(init_setting_vdo), 1);
 
-	pr_info("%s:omnivision-lcm mode=vdo mode:%d\n", __func__, lcm_dsi_mode);
+	pr_debug("%s:omnivision-lcm mode=vdo mode:%d\n", __func__, lcm_dsi_mode);
 }
 
 static void lcm_suspend(void)
@@ -405,18 +405,18 @@ static void lcm_suspend(void)
 	if (lcd_reset_keep_high) {
     push_table(NULL, lcm_suspend_proximity_no_off_setting,
         ARRAY_SIZE(lcm_suspend_proximity_no_off_setting), 1);
-		pr_info("%s,td4160 panel no off end!\n", __func__);
+		pr_debug("%s,td4160 panel no off end!\n", __func__);
 	}
     else {
     push_table(NULL, lcm_suspend_setting,
         ARRAY_SIZE(lcm_suspend_setting), 1);
-        pr_info("%s,omnivision panel end!\n", __func__);
+        pr_debug("%s,omnivision panel end!\n", __func__);
     }
 }
 
 static void lcm_resume(void)
 {
-	pr_info("%s,omnivision panel start!\n", __func__);
+	pr_debug("%s,omnivision panel start!\n", __func__);
 	lcm_init();
 }
 
@@ -451,7 +451,7 @@ static unsigned int lcm_ata_check(unsigned char *buffer)
 
 static void lcm_setbacklight_cmdq(void *handle, unsigned int level)
 {
-	pr_info("[LCM]%s,omnivision backlight: level = %d", __func__, level);
+	pr_debug("[LCM]%s,omnivision backlight: level = %d", __func__, level);
 
 	level = level * 78 /100;
 	if((0 != level) && (level <= 8)){
@@ -462,7 +462,7 @@ static void lcm_setbacklight_cmdq(void *handle, unsigned int level)
 	bl_level[0].para_list[0] = (level >> 8) & 0x07; //high bit
 	bl_level[0].para_list[1] = level & 0xFF;
 
-	//pr_info("[LCM]%s, para0 = 0x%2x, para1 =0x%2x", __func__, bl_level[0].para_list[0], bl_level[0].para_list[1]);
+	//pr_debug("[LCM]%s, para0 = 0x%2x, para1 =0x%2x", __func__, bl_level[0].para_list[0], bl_level[0].para_list[1]);
 
 	push_table(handle, bl_level, ARRAY_SIZE(bl_level), 1);
 

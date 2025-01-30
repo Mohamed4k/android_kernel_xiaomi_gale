@@ -1273,7 +1273,7 @@ int bcm_qspi_probe(struct platform_device *pdev,
 		qspi->bspi_mode = false;
 	}
 
-	dev_info(dev, "using %smspi mode\n", qspi->bspi_mode ? "bspi-" : "");
+	dev_dbg(dev, "using %smspi mode\n", qspi->bspi_mode ? "bspi-" : "");
 
 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cs_reg");
 	if (res) {

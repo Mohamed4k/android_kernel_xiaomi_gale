@@ -198,7 +198,7 @@ static int max8649_regulator_probe(struct i2c_client *client,
 			ret);
 		return ret;
 	}
-	dev_info(info->dev, "Detected MAX8649 (ID:%x)\n", val);
+	dev_dbg(info->dev, "Detected MAX8649 (ID:%x)\n", val);
 
 	/* enable VID0 & VID1 */
 	regmap_update_bits(info->regmap, MAX8649_CONTROL, MAX8649_VID_MASK, 0);

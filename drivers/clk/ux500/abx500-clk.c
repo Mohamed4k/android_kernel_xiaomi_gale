@@ -83,7 +83,7 @@ static int ab8500_reg_clks(struct device *dev)
 	ab8500_clk_data.clk_num = ARRAY_SIZE(ab8500_clks);
 	of_clk_add_provider(np, of_clk_src_onecell_get, &ab8500_clk_data);
 
-	dev_info(dev, "registered clocks for ab850x\n");
+	dev_dbg(dev, "registered clocks for ab850x\n");
 
 	return 0;
 }

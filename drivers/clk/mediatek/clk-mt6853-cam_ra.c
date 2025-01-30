@@ -54,7 +54,7 @@ static int clk_mt6853_cam_ra_probe(struct platform_device *pdev)
 	struct device_node *node = pdev->dev.of_node;
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init begin\n", __func__);
+	pr_debug("%s init begin\n", __func__);
 #endif
 
 	clk_data = mtk_alloc_clk_data(CLK_CAM_RA_NR_CLK);
@@ -69,7 +69,7 @@ static int clk_mt6853_cam_ra_probe(struct platform_device *pdev)
 			__func__, r);
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init end\n", __func__);
+	pr_debug("%s init end\n", __func__);
 #endif
 
 	return r;

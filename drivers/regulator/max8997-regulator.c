@@ -965,7 +965,7 @@ static int max8997_pmic_dt_parse_pdata(struct platform_device *pdev,
 		} else {
 			if (pdata->buck125_default_idx >= 8) {
 				pdata->buck125_default_idx = 0;
-				dev_info(&pdev->dev, "invalid value for default dvs index, using 0 instead\n");
+				dev_dbg(&pdev->dev, "invalid value for default dvs index, using 0 instead\n");
 			}
 		}
 

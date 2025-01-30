@@ -101,7 +101,7 @@ static void lcm_dcs_write(struct lcm *ctx, const void *data, size_t len)
 	else
 		ret = mipi_dsi_generic_write(dsi, data, len);
 	if (ret < 0) {
-		dev_info(ctx->dev, "error %zd writing seq: %ph\n", ret, data);
+		dev_dbg(ctx->dev, "error %zd writing seq: %ph\n", ret, data);
 		ctx->error = ret;
 	}
 }
@@ -117,7 +117,7 @@ static int lcm_dcs_read(struct lcm *ctx, u8 cmd, void *data, size_t len)
 
 	ret = mipi_dsi_dcs_read(dsi, cmd, data, len);
 	if (ret < 0) {
-		dev_info(ctx->dev, "error %d reading dcs seq:(%#x)\n", ret, cmd);
+		dev_dbg(ctx->dev, "error %d reading dcs seq:(%#x)\n", ret, cmd);
 		ctx->error = ret;
 	}
 
@@ -131,7 +131,7 @@ static void lcm_panel_get_data(struct lcm *ctx)
 
 	if (ret == 0) {
 		ret = lcm_dcs_read(ctx,  0x0A, buffer, 1);
-		dev_info(ctx->dev, "return %d data(0x%08x) to dsi engine\n",
+		dev_dbg(ctx->dev, "return %d data(0x%08x) to dsi engine\n",
 			 ret, buffer[0] | (buffer[1] << 8));
 	}
 }
@@ -154,14 +154,14 @@ static int lcm_panel_bias_regulator_init(void)
 	disp_bias_pos = regulator_get(NULL, "dsv_pos");
 	if (IS_ERR(disp_bias_pos)) { /* handle return value */
 		ret = PTR_ERR(disp_bias_pos);
-		pr_info("get dsv_pos fail, error: %d\n", ret);
+		pr_debug("get dsv_pos fail, error: %d\n", ret);
 		return ret;
 	}
 
 	disp_bias_neg = regulator_get(NULL, "dsv_neg");
 	if (IS_ERR(disp_bias_neg)) { /* handle return value */
 		ret = PTR_ERR(disp_bias_neg);
-		pr_info("get dsv_neg fail, error: %d\n", ret);
+		pr_debug("get dsv_neg fail, error: %d\n", ret);
 		return ret;
 	}
 
@@ -180,23 +180,23 @@ static int lcm_panel_bias_enable(void)
 	/* set voltage with min & max*/
 	ret = regulator_set_voltage(disp_bias_pos, 5400000, 5400000);
 	if (ret < 0)
-		pr_info("set voltage disp_bias_pos fail, ret = %d\n", ret);
+		pr_debug("set voltage disp_bias_pos fail, ret = %d\n", ret);
 	retval |= ret;
 
 	ret = regulator_set_voltage(disp_bias_neg, 5400000, 5400000);
 	if (ret < 0)
-		pr_info("set voltage disp_bias_neg fail, ret = %d\n", ret);
+		pr_debug("set voltage disp_bias_neg fail, ret = %d\n", ret);
 	retval |= ret;
 
 	/* enable regulator */
 	ret = regulator_enable(disp_bias_pos);
 	if (ret < 0)
-		pr_info("enable regulator disp_bias_pos fail, ret = %d\n", ret);
+		pr_debug("enable regulator disp_bias_pos fail, ret = %d\n", ret);
 	retval |= ret;
 
 	ret = regulator_enable(disp_bias_neg);
 	if (ret < 0)
-		pr_info("enable regulator disp_bias_neg fail, ret = %d\n", ret);
+		pr_debug("enable regulator disp_bias_neg fail, ret = %d\n", ret);
 	retval |= ret;
 
 	return retval;
@@ -211,12 +211,12 @@ static int lcm_panel_bias_disable(void)
 
 	ret = regulator_disable(disp_bias_neg);
 	if (ret < 0)
-		pr_info("disable regulator disp_bias_neg fail, ret = %d\n", ret);
+		pr_debug("disable regulator disp_bias_neg fail, ret = %d\n", ret);
 	retval |= ret;
 
 	ret = regulator_disable(disp_bias_pos);
 	if (ret < 0)
-		pr_info("disable regulator disp_bias_pos fail, ret = %d\n", ret);
+		pr_debug("disable regulator disp_bias_pos fail, ret = %d\n", ret);
 	retval |= ret;
 
 	return retval;
@@ -424,7 +424,7 @@ static int panel_ata_check(struct drm_panel *panel)
 
 	ret = mipi_dsi_dcs_read(dsi, 0x4, data, 3);
 	if (ret < 0)
-		pr_info("%s error\n", __func__);
+		pr_debug("%s error\n", __func__);
 
 	DDPINFO("ATA read data %x %x %x\n", data[0], data[1], data[2]);
 
@@ -769,7 +769,7 @@ static int panel_doze_post_disp_on(struct drm_panel *panel,
 
 #ifdef VENDOR_EDIT
 /* Hujie@PSW.MM.DisplayDriver.AOD, 2019/12/10, add for keylog*/
-	pr_info("debug for lcm %s\n", __func__);
+	pr_debug("debug for lcm %s\n", __func__);
 #endif
 
 	cmd = 0x29;
@@ -784,7 +784,7 @@ static int panel_set_aod_light_mode(void *dsi,
 {
 	int i = 0;
 
-	pr_info("debug for lcm %s\n", __func__);
+	pr_debug("debug for lcm %s\n", __func__);
 
 	if (mode >= 1) {
 		for (i = 0; i < sizeof(lcm_aod_high_mode)/sizeof(struct LCM_setting_table); i++)
@@ -793,7 +793,7 @@ static int panel_set_aod_light_mode(void *dsi,
 		for (i = 0; i < sizeof(lcm_aod_low_mode)/sizeof(struct LCM_setting_table); i++)
 			cb(dsi, handle, lcm_aod_low_mode[i].para_list, lcm_aod_low_mode[i].count);
 	}
-	pr_info("%s : %d !\n", __func__, mode);
+	pr_debug("%s : %d !\n", __func__, mode);
 
 	//memset(send_cmd, 0, RAMLESS_AOD_PAYLOAD_SIZE);
 	return 0;
@@ -844,7 +844,7 @@ static int lcm_get_modes(struct drm_panel *panel)
 
 	mode = drm_mode_duplicate(panel->drm, &default_mode);
 	if (!mode) {
-		dev_info(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
+		dev_dbg(panel->drm->dev, "failed to add mode %ux%ux@%u\n",
 			default_mode.hdisplay, default_mode.vdisplay,
 			default_mode.vrefresh);
 		return -ENOMEM;
@@ -874,7 +874,7 @@ static ssize_t get_aod_area(struct device *dev,
 	int i;
 
 	for (i = 0; i < sizeof(doze_area_cmd) / sizeof(char); i++)
-		pr_info("%s cmd = %d", __func__, doze_area_cmd[i]);
+		pr_debug("%s cmd = %d", __func__, doze_area_cmd[i]);
 	return 0;
 }
 
@@ -886,7 +886,7 @@ static ssize_t set_aod_area(struct device *dev,
 
 	for (i = 0; i < count; i++) {
 		ret = sscanf(&buf[i], "%c", &doze_area_cmd[i]);
-		pr_info("%s ret = %d, buf[%d]=%d", __func__, ret, i, buf[i]);
+		pr_debug("%s ret = %d, buf[%d]=%d", __func__, ret, i, buf[i]);
 	}
 
 	return ret;
@@ -918,14 +918,14 @@ static int lcm_probe(struct mipi_dsi_device *dsi)
 		if (endpoint) {
 			remote_node = of_graph_get_remote_port_parent(endpoint);
 			if (!remote_node) {
-				pr_info("No panel connected,skip probe lcm\n");
+				pr_debug("No panel connected,skip probe lcm\n");
 				return -ENODEV;
 			}
-			pr_info("device node name:%s\n", remote_node->name);
+			pr_debug("device node name:%s\n", remote_node->name);
 		}
 	}
 	if (remote_node != dev->of_node) {
-		pr_info("%s+ skip probe due to not current lcm\n", __func__);
+		pr_debug("%s+ skip probe due to not current lcm\n", __func__);
 		return -ENODEV;
 	}
 
@@ -954,7 +954,7 @@ static int lcm_probe(struct mipi_dsi_device *dsi)
 
 	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
 	if (IS_ERR(ctx->reset_gpio)) {
-		dev_info(dev, "cannot get reset-gpios %ld\n",
+		dev_dbg(dev, "cannot get reset-gpios %ld\n",
 			PTR_ERR(ctx->reset_gpio));
 		return PTR_ERR(ctx->reset_gpio);
 	}
@@ -965,7 +965,7 @@ static int lcm_probe(struct mipi_dsi_device *dsi)
 #ifndef CONFIG_RT4831A_I2C
 	ctx->bias_gpio = devm_gpiod_get(dev, "bias", GPIOD_OUT_HIGH);
 	if (IS_ERR(ctx->bias_gpio)) {
-		dev_info(dev, "cannot get bias-gpios 0 %ld\n",
+		dev_dbg(dev, "cannot get bias-gpios 0 %ld\n",
 			PTR_ERR(ctx->bias_gpio));
 		return PTR_ERR(ctx->bias_gpio);
 	}
@@ -997,7 +997,7 @@ static int lcm_probe(struct mipi_dsi_device *dsi)
 	ret = sysfs_create_group(&dev->kobj, &aod_area_sysfs_attr_group);
 	if (ret)
 		return ret;
-	pr_info("%s-\n", __func__);
+	pr_debug("%s-\n", __func__);
 
 	return ret;
 }

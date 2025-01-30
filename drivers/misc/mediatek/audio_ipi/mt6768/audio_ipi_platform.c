@@ -64,7 +64,7 @@ bool is_audio_dsp_support(const uint32_t dsp_id)
 #endif
 		break;
 	default:
-		pr_info("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
+		pr_debug("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
 	}
 	return is_opendsp_support;
 }
@@ -96,7 +96,7 @@ int get_reserve_mem_size(const uint32_t dsp_id,
 		*size = (uint32_t)scp_get_reserve_mem_size(*mem_id);
 		break;
 	default:
-		pr_notice("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
+		pr_debug("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
 		*mem_id = 0xFFFFFFFF;
 		*size = 0;
 		ret = -1;
@@ -109,7 +109,7 @@ void *get_reserve_mem_virt(const uint32_t dsp_id,
 			   const uint32_t mem_id)
 {
 	if (dsp_id != AUDIO_OPENDSP_USE_CM4_A) {
-		pr_notice("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
+		pr_debug("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
 		return NULL;
 	}
 	return (void *)scp_get_reserve_mem_virt(mem_id);
@@ -120,7 +120,7 @@ phys_addr_t get_reserve_mem_phys(const uint32_t dsp_id,
 				 const uint32_t mem_id)
 {
 	if (dsp_id != AUDIO_OPENDSP_USE_CM4_A) {
-		pr_notice("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
+		pr_debug("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
 		return 0;
 	}
 	return scp_get_reserve_mem_phys(mem_id);
@@ -130,7 +130,7 @@ phys_addr_t get_reserve_mem_phys(const uint32_t dsp_id,
 uint8_t get_cache_aligned_order(const uint32_t dsp_id)
 {
 	if (dsp_id != AUDIO_OPENDSP_USE_CM4_A) {
-		pr_notice("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
+		pr_debug("%s(), dsp_id %u not support!!\n", __func__, dsp_id);
 		return 0;
 	}
 	return 5;

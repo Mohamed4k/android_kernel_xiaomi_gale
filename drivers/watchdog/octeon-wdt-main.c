@@ -561,7 +561,7 @@ static int __init octeon_wdt_init(void)
 
 	octeon_wdt_calc_parameters(heartbeat);
 
-	pr_info("Initial granularity %d Sec\n", timeout_sec);
+	pr_debug("Initial granularity %d Sec\n", timeout_sec);
 
 	octeon_wdt.timeout	= timeout_sec;
 	octeon_wdt.max_timeout	= UINT_MAX;
@@ -575,7 +575,7 @@ static int __init octeon_wdt_init(void)
 	}
 
 	if (disable) {
-		pr_notice("disabled\n");
+		pr_debug("disabled\n");
 		return 0;
 	}
 

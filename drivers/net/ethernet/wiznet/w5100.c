@@ -279,7 +279,7 @@ static int w5100_mmio_init(struct net_device *ndev)
 	if (IS_ERR(mmio_priv->base))
 		return PTR_ERR(mmio_priv->base);
 
-	netdev_info(ndev, "at 0x%llx irq %d\n", (u64)mem->start, priv->irq);
+	netdev_dbg(ndev, "at 0x%llx irq %d\n", (u64)mem->start, priv->irq);
 
 	return 0;
 }

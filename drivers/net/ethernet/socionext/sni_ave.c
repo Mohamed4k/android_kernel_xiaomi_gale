@@ -1720,7 +1720,7 @@ static int ave_probe(struct platform_device *pdev)
 	ave_id = readl(priv->base + AVE_IDR);
 	ave_hw_read_version(ndev, buf, sizeof(buf));
 
-	dev_info(dev, "Socionext %c%c%c%c Ethernet IP %s (irq=%d, phy=%s)\n",
+	dev_dbg(dev, "Socionext %c%c%c%c Ethernet IP %s (irq=%d, phy=%s)\n",
 		 (ave_id >> 24) & 0xff, (ave_id >> 16) & 0xff,
 		 (ave_id >> 8) & 0xff, (ave_id >> 0) & 0xff,
 		 buf, priv->irq, phy_modes(phy_mode));

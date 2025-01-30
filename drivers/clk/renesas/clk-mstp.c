@@ -332,7 +332,7 @@ void __init cpg_mstp_add_clk_domain(struct device_node *np)
 	u32 ncells;
 
 	if (of_property_read_u32(np, "#power-domain-cells", &ncells)) {
-		pr_warn("%pOF lacks #power-domain-cells\n", np);
+		pr_debug("%pOF lacks #power-domain-cells\n", np);
 		return;
 	}
 

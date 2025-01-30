@@ -42,7 +42,7 @@
 #else
 #include <linux/printk.h>  /* for kernel log reduction */
 #define LOG_INF(format, args...) pr_debug(PFX "[%s] " format, __func__, ##args)
-#define LOG_PR_WARN(format, args...) pr_warn(PFX "[%s] " format, __func__, ##args)
+#define LOG_PR_WARN(format, args...) pr_debug(PFX "[%s] " format, __func__, ##args)
 #define LOG_PR_ERR(format, args...) pr_err(PFX "[%s] " format, __func__, ##args)
 #endif
 /******************************************************************************/

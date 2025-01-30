@@ -176,7 +176,7 @@ static int tangox_wdt_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, dev);
 
-	dev_info(&pdev->dev, "SMP86xx/SMP87xx watchdog registered\n");
+	dev_dbg(&pdev->dev, "SMP86xx/SMP87xx watchdog registered\n");
 
 	return 0;
 

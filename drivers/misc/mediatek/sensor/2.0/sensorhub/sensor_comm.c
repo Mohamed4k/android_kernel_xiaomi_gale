@@ -102,7 +102,7 @@ int sensor_comm_ctrl_send(struct sensor_comm_ctrl *ctrl, unsigned int size)
 
 	duration = ktime_get_boottime_ns() - start_time;
 	if (duration > timeout)
-		pr_notice("running time %lld, type %u, cmd %u, retries %d\n",
+		pr_debug("running time %lld, type %u, cmd %u, retries %d\n",
 			duration, ctrl->sensor_type, ctrl->command, retry);
 	return ret;
 }

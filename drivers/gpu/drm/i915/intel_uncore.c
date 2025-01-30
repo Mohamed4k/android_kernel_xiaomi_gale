@@ -673,7 +673,7 @@ void intel_uncore_forcewake_user_put(struct drm_i915_private *dev_priv)
 	spin_lock_irq(&dev_priv->uncore.lock);
 	if (!--dev_priv->uncore.user_forcewake.count) {
 		if (intel_uncore_unclaimed_mmio(dev_priv))
-			dev_info(dev_priv->drm.dev,
+			dev_dbg(dev_priv->drm.dev,
 				 "Invalid mmio detected during user access\n");
 
 		dev_priv->uncore.unclaimed_mmio_check =

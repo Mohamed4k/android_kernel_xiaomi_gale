@@ -1429,7 +1429,7 @@ static int knav_queue_init_qmgrs(struct knav_device *kdev,
 			continue;
 		}
 
-		dev_info(dev, "qmgr start queue %d, number of queues %d\n",
+		dev_dbg(dev, "qmgr start queue %d, number of queues %d\n",
 			 qmgr->start_queue, qmgr->num_queues);
 
 		qmgr->reg_peek =
@@ -1494,7 +1494,7 @@ static int knav_queue_init_qmgrs(struct knav_device *kdev,
 			qmgr->reg_pop = qmgr->reg_push;
 
 		list_add_tail(&qmgr->list, &kdev->qmgrs);
-		dev_info(dev, "added qmgr start queue %d, num of queues %d, reg_peek %p, reg_status %p, reg_config %p, reg_region %p, reg_push %p, reg_pop %p\n",
+		dev_dbg(dev, "added qmgr start queue %d, num of queues %d, reg_peek %p, reg_status %p, reg_config %p, reg_region %p, reg_push %p, reg_pop %p\n",
 			 qmgr->start_queue, qmgr->num_queues,
 			 qmgr->reg_peek, qmgr->reg_status,
 			 qmgr->reg_config, qmgr->reg_region,
@@ -1598,7 +1598,7 @@ static int knav_queue_load_pdsp(struct knav_device *kdev,
 		return -ENODEV;
 	}
 
-	dev_info(kdev->dev, "firmware file %s downloaded for PDSP\n",
+	dev_dbg(kdev->dev, "firmware file %s downloaded for PDSP\n",
 		 knav_acc_firmwares[i]);
 
 	writel_relaxed(pdsp->id + 1, pdsp->command + 0x18);

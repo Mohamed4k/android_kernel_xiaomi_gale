@@ -359,7 +359,7 @@ static int bcm_ns_usb3_probe(struct platform_device *pdev)
 
 	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
 	if (!IS_ERR(phy_provider))
-		dev_info(dev, "Registered Broadcom Northstar USB 3.0 PHY driver\n");
+		dev_dbg(dev, "Registered Broadcom Northstar USB 3.0 PHY driver\n");
 
 	return PTR_ERR_OR_ZERO(phy_provider);
 }

@@ -136,7 +136,7 @@ static void __init s3c64xx_clk_sleep_init(void)
 err_soc:
 	kfree(s3c64xx_save_common);
 err_warn:
-	pr_warn("%s: failed to allocate sleep save data, no sleep support!\n",
+	pr_debug("%s: failed to allocate sleep save data, no sleep support!\n",
 		__func__);
 }
 #else
@@ -512,7 +512,7 @@ void __init s3c64xx_clk_init(struct device_node *np, unsigned long xtal_f,
 
 	samsung_clk_of_add_provider(np, ctx);
 
-	pr_info("%s clocks: apll = %lu, mpll = %lu\n"
+	pr_debug("%s clocks: apll = %lu, mpll = %lu\n"
 		"\tepll = %lu, arm_clk = %lu\n",
 		is_s3c6400 ? "S3C6400" : "S3C6410",
 		_get_rate("fout_apll"),	_get_rate("fout_mpll"),

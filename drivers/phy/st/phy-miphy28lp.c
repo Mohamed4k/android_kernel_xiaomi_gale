@@ -929,7 +929,7 @@ static int miphy28lp_init_sata(struct miphy28lp_phy *miphy_phy)
 			(!miphy_phy->base))
 		return -EINVAL;
 
-	dev_info(miphy_dev->dev, "sata-up mode, addr 0x%p\n", miphy_phy->base);
+	dev_dbg(miphy_dev->dev, "sata-up mode, addr 0x%p\n", miphy_phy->base);
 
 	/* Configure the glue-logic */
 	sata_conf |= ((miphy_phy->sata_gen - SATA_GEN1) << SATA_SPDMODE);
@@ -965,7 +965,7 @@ static int miphy28lp_init_pcie(struct miphy28lp_phy *miphy_phy)
 		|| (!miphy_phy->base) || (!miphy_phy->pipebase))
 		return -EINVAL;
 
-	dev_info(miphy_dev->dev, "pcie-up mode, addr 0x%p\n", miphy_phy->base);
+	dev_dbg(miphy_dev->dev, "pcie-up mode, addr 0x%p\n", miphy_phy->base);
 
 	/* Configure the glue-logic */
 	regmap_update_bits(miphy_dev->regmap,
@@ -1008,7 +1008,7 @@ static int miphy28lp_init_usb3(struct miphy28lp_phy *miphy_phy)
 	if ((!miphy_phy->base) || (!miphy_phy->pipebase))
 		return -EINVAL;
 
-	dev_info(miphy_dev->dev, "usb3-up mode, addr 0x%p\n", miphy_phy->base);
+	dev_dbg(miphy_dev->dev, "usb3-up mode, addr 0x%p\n", miphy_phy->base);
 
 	/* MiPHY path and clocking init */
 	err = miphy28lp_setup(miphy_phy, MIPHY_CTRL_SYNC_D_EN);

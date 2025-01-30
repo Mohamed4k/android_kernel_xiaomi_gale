@@ -335,11 +335,11 @@ static int spi_loopback_test_probe(struct spi_device *spi)
 		}
 	}
 
-	dev_info(&spi->dev, "Executing spi-loopback-tests\n");
+	dev_dbg(&spi->dev, "Executing spi-loopback-tests\n");
 
 	ret = spi_test_run_tests(spi, spi_tests);
 
-	dev_info(&spi->dev, "Finished spi-loopback-tests with return: %i\n",
+	dev_dbg(&spi->dev, "Finished spi-loopback-tests with return: %i\n",
 		 ret);
 
 	return ret;
@@ -397,7 +397,7 @@ static void spi_test_print_hex_dump(char *pre, const void *ptr, size_t len)
 		       DUMP_PREFIX_OFFSET, 16, 1,
 		       ptr, 512, 0);
 	/* print tail */
-	pr_info("%s truncated - continuing at offset %04zx\n",
+	pr_debug("%s truncated - continuing at offset %04zx\n",
 		pre, len - 512);
 	print_hex_dump(KERN_INFO, pre,
 		       DUMP_PREFIX_OFFSET, 16, 1,
@@ -412,25 +412,25 @@ static void spi_test_dump_message(struct spi_device *spi,
 	int i;
 	u8 b;
 
-	dev_info(&spi->dev, "  spi_msg@%pK\n", msg);
+	dev_dbg(&spi->dev, "  spi_msg@%pK\n", msg);
 	if (msg->status)
-		dev_info(&spi->dev, "    status:        %i\n",
+		dev_dbg(&spi->dev, "    status:        %i\n",
 			 msg->status);
-	dev_info(&spi->dev, "    frame_length:  %i\n",
+	dev_dbg(&spi->dev, "    frame_length:  %i\n",
 		 msg->frame_length);
-	dev_info(&spi->dev, "    actual_length: %i\n",
+	dev_dbg(&spi->dev, "    actual_length: %i\n",
 		 msg->actual_length);
 
 	list_for_each_entry(xfer, &msg->transfers, transfer_list) {
-		dev_info(&spi->dev, "    spi_transfer@%pK\n", xfer);
-		dev_info(&spi->dev, "      len:    %i\n", xfer->len);
-		dev_info(&spi->dev, "      tx_buf: %pK\n", xfer->tx_buf);
+		dev_dbg(&spi->dev, "    spi_transfer@%pK\n", xfer);
+		dev_dbg(&spi->dev, "      len:    %i\n", xfer->len);
+		dev_dbg(&spi->dev, "      tx_buf: %pK\n", xfer->tx_buf);
 		if (dump_data && xfer->tx_buf)
 			spi_test_print_hex_dump("          TX: ",
 						xfer->tx_buf,
 						xfer->len);
 
-		dev_info(&spi->dev, "      rx_buf: %pK\n", xfer->rx_buf);
+		dev_dbg(&spi->dev, "      rx_buf: %pK\n", xfer->rx_buf);
 		if (dump_data && xfer->rx_buf)
 			spi_test_print_hex_dump("          RX: ",
 						xfer->rx_buf,
@@ -443,7 +443,7 @@ static void spi_test_dump_message(struct spi_device *spi,
 					break;
 			}
 			if (i)
-				dev_info(&spi->dev,
+				dev_dbg(&spi->dev,
 					 "      rx_buf filled with %02x starts at offset: %i\n",
 					 SPI_TEST_PATTERN_UNWRITTEN,
 					 xfer->len - i);
@@ -862,9 +862,9 @@ static int spi_test_run_iter(struct spi_device *spi,
 
 	/* write out info */
 	if (!(len || tx_off || rx_off)) {
-		dev_info(&spi->dev, "Running test %s\n", test.description);
+		dev_dbg(&spi->dev, "Running test %s\n", test.description);
 	} else {
-		dev_info(&spi->dev,
+		dev_dbg(&spi->dev,
 			 "  with iteration values: len = %zu, tx_off = %zu, rx_off = %zu\n",
 			 len, tx_off, rx_off);
 	}
@@ -915,7 +915,7 @@ int spi_test_execute_msg(struct spi_device *spi, struct spi_test *test,
 		ret = spi_sync(spi, msg);
 		test->elapsed_time = ktime_to_ns(ktime_sub(ktime_get(), start));
 		if (ret == -ETIMEDOUT) {
-			dev_info(&spi->dev,
+			dev_dbg(&spi->dev,
 				 "spi-message timed out - rerunning...\n");
 			/* rerun after a few explicit schedules */
 			for (i = 0; i < 16; i++)

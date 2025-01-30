@@ -1342,38 +1342,38 @@ static void qlcnic_create_diag_entries(struct qlcnic_adapter *adapter)
 	struct device *dev = &adapter->pdev->dev;
 
 	if (device_create_bin_file(dev, &bin_attr_port_stats))
-		dev_info(dev, "failed to create port stats sysfs entry");
+		dev_dbg(dev, "failed to create port stats sysfs entry");
 
 	if (adapter->ahw->op_mode == QLCNIC_NON_PRIV_FUNC)
 		return;
 	if (device_create_file(dev, &dev_attr_diag_mode))
-		dev_info(dev, "failed to create diag_mode sysfs entry\n");
+		dev_dbg(dev, "failed to create diag_mode sysfs entry\n");
 	if (device_create_bin_file(dev, &bin_attr_crb))
-		dev_info(dev, "failed to create crb sysfs entry\n");
+		dev_dbg(dev, "failed to create crb sysfs entry\n");
 	if (device_create_bin_file(dev, &bin_attr_mem))
-		dev_info(dev, "failed to create mem sysfs entry\n");
+		dev_dbg(dev, "failed to create mem sysfs entry\n");
 
 	if (test_bit(__QLCNIC_MAINTENANCE_MODE, &adapter->state))
 		return;
 
 	if (device_create_bin_file(dev, &bin_attr_pci_config))
-		dev_info(dev, "failed to create pci config sysfs entry");
+		dev_dbg(dev, "failed to create pci config sysfs entry");
 
 	if (device_create_file(dev, &dev_attr_beacon))
-		dev_info(dev, "failed to create beacon sysfs entry");
+		dev_dbg(dev, "failed to create beacon sysfs entry");
 
 	if (!(adapter->flags & QLCNIC_ESWITCH_ENABLED))
 		return;
 	if (device_create_bin_file(dev, &bin_attr_esw_config))
-		dev_info(dev, "failed to create esw config sysfs entry");
+		dev_dbg(dev, "failed to create esw config sysfs entry");
 	if (adapter->ahw->op_mode != QLCNIC_MGMT_FUNC)
 		return;
 	if (device_create_bin_file(dev, &bin_attr_npar_config))
-		dev_info(dev, "failed to create npar config sysfs entry");
+		dev_dbg(dev, "failed to create npar config sysfs entry");
 	if (device_create_bin_file(dev, &bin_attr_pm_config))
-		dev_info(dev, "failed to create pm config sysfs entry");
+		dev_dbg(dev, "failed to create pm config sysfs entry");
 	if (device_create_bin_file(dev, &bin_attr_esw_stats))
-		dev_info(dev, "failed to create eswitch stats sysfs entry");
+		dev_dbg(dev, "failed to create eswitch stats sysfs entry");
 }
 
 static void qlcnic_remove_diag_entries(struct qlcnic_adapter *adapter)
@@ -1420,7 +1420,7 @@ void qlcnic_83xx_add_sysfs(struct qlcnic_adapter *adapter)
 	qlcnic_create_diag_entries(adapter);
 
 	if (sysfs_create_bin_file(&dev->kobj, &bin_attr_flash))
-		dev_info(dev, "failed to create flash sysfs entry\n");
+		dev_dbg(dev, "failed to create flash sysfs entry\n");
 }
 
 void qlcnic_83xx_remove_sysfs(struct qlcnic_adapter *adapter)

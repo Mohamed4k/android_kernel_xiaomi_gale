@@ -201,7 +201,7 @@ static int ep93xx_mdio_read(struct net_device *dev, int phy_id, int reg)
 	}
 
 	if (i == 10) {
-		pr_info("mdio read timed out\n");
+		pr_debug("mdio read timed out\n");
 		data = 0xffff;
 	} else {
 		data = rdl(ep, REG_MIIDATA);
@@ -225,7 +225,7 @@ static void ep93xx_mdio_write(struct net_device *dev, int phy_id, int reg, int d
 	}
 
 	if (i == 10)
-		pr_info("mdio write timed out\n");
+		pr_debug("mdio write timed out\n");
 }
 
 static int ep93xx_rx(struct net_device *dev, int budget)
@@ -274,7 +274,7 @@ static int ep93xx_rx(struct net_device *dev, int budget)
 
 		length = rstat1 & RSTAT1_FRAME_LENGTH;
 		if (length > MAX_PKT_SIZE) {
-			pr_notice("invalid length %.8x %.8x\n", rstat0, rstat1);
+			pr_debug("invalid length %.8x %.8x\n", rstat0, rstat1);
 			goto err;
 		}
 

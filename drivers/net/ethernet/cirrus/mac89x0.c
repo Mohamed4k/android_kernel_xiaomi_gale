@@ -232,14 +232,14 @@ static int mac89x0_device_probe(struct platform_device *pdev)
 
 	netif_dbg(lp, drv, dev, "%s", version);
 
-	pr_info("cs89%c0%s rev %c found at %#8lx\n",
+	pr_debug("cs89%c0%s rev %c found at %#8lx\n",
 		lp->chip_type == CS8900 ? '0' : '2',
 		lp->chip_type == CS8920M ? "M" : "",
 		lp->chip_revision, dev->base_addr);
 
 	/* Try to read the MAC address */
 	if ((readreg(dev, PP_SelfST) & (EEPROM_PRESENT | EEPROM_OK)) == 0) {
-		pr_info("No EEPROM, giving up now.\n");
+		pr_debug("No EEPROM, giving up now.\n");
 		goto out1;
         } else {
                 for (i = 0; i < ETH_ALEN; i += 2) {
@@ -254,7 +254,7 @@ static int mac89x0_device_probe(struct platform_device *pdev)
 
 	/* print the IRQ and ethernet address. */
 
-	pr_info("MAC %pM, IRQ %d\n", dev->dev_addr, dev->irq);
+	pr_debug("MAC %pM, IRQ %d\n", dev->dev_addr, dev->irq);
 
 	dev->netdev_ops		= &mac89x0_netdev_ops;
 
@@ -542,7 +542,7 @@ static int set_mac_address(struct net_device *dev, void *addr)
 		return -EADDRNOTAVAIL;
 
 	memcpy(dev->dev_addr, saddr->sa_data, ETH_ALEN);
-	netdev_info(dev, "Setting MAC address to %pM\n", dev->dev_addr);
+	netdev_dbg(dev, "Setting MAC address to %pM\n", dev->dev_addr);
 
 	/* set the Ethernet address */
 	for (i=0; i < ETH_ALEN/2; i++)

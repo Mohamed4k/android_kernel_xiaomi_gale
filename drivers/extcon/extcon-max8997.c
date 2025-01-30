@@ -232,7 +232,7 @@ static int max8997_muic_set_path(struct max8997_muic_info *info,
 		return ret;
 	}
 
-	dev_info(info->dev,
+	dev_dbg(info->dev,
 		"CONTROL1 : 0x%02x, CONTROL2 : 0x%02x, state : %s\n",
 		ctrl1, ctrl2, attached ? "attached" : "detached");
 
@@ -451,7 +451,7 @@ static int max8997_muic_adc_handler(struct max8997_muic_info *info)
 		 * needed to detect additional cable, should implement
 		 * proper operation when this cable is attached/detached.
 		 */
-		dev_info(info->dev,
+		dev_dbg(info->dev,
 			"cable is %s but it isn't used (type:0x%x)\n",
 			attached ? "attached" : "detached", cable_type);
 		return -EAGAIN;
@@ -554,7 +554,7 @@ static void max8997_muic_irq_work(struct work_struct *work)
 	case MAX8997_MUICIRQ_OVP:
 		break;
 	default:
-		dev_info(info->dev, "misc interrupt: irq %d occurred\n",
+		dev_dbg(info->dev, "misc interrupt: irq %d occurred\n",
 				irq_type);
 		mutex_unlock(&info->mutex);
 		return;

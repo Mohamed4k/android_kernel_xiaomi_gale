@@ -438,7 +438,7 @@ static int epic_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 			int mii_status = mdio_read(dev, phy, MII_BMSR);
 			if (mii_status != 0xffff  &&  mii_status != 0x0000) {
 				ep->phys[phy_idx++] = phy;
-				dev_info(&pdev->dev,
+				dev_dbg(&pdev->dev,
 					"MII transceiver #%d control "
 					"%4.4x status %4.4x.\n",
 					phy, mdio_read(dev, phy, 0), mii_status);
@@ -448,7 +448,7 @@ static int epic_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		if (phy_idx != 0) {
 			phy = ep->phys[0];
 			ep->mii.advertising = mdio_read(dev, phy, MII_ADVERTISE);
-			dev_info(&pdev->dev,
+			dev_dbg(&pdev->dev,
 				"Autonegotiation advertising %4.4x link "
 				   "partner %4.4x.\n",
 				   ep->mii.advertising, mdio_read(dev, phy, 5));
@@ -469,7 +469,7 @@ static int epic_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	/* The lower four bits are the media type. */
 	if (duplex) {
 		ep->mii.force_media = ep->mii.full_duplex = 1;
-		dev_info(&pdev->dev, "Forced full duplex requested.\n");
+		dev_dbg(&pdev->dev, "Forced full duplex requested.\n");
 	}
 	dev->if_port = ep->default_port = option;
 
@@ -483,7 +483,7 @@ static int epic_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (ret < 0)
 		goto err_out_unmap_rx;
 
-	netdev_info(dev, "%s at %lx, IRQ %d, %pM\n",
+	netdev_dbg(dev, "%s at %lx, IRQ %d, %pM\n",
 		    pci_id_tbl[chip_idx].name,
 		    (long)pci_resource_start(pdev, EPIC_BAR), pdev->irq,
 		    dev->dev_addr);
@@ -696,7 +696,7 @@ static int epic_open(struct net_device *dev)
 			mdio_write(dev, ep->phys[0], MII_BMCR, media2miictl[dev->if_port&15]);
 		if (dev->if_port == 1) {
 			if (debug > 1)
-				netdev_info(dev, "Using the 10base2 transceiver, MII status %4.4x.\n",
+				netdev_dbg(dev, "Using the 10base2 transceiver, MII status %4.4x.\n",
 					    mdio_read(dev, ep->phys[0], MII_BMSR));
 		}
 	} else {
@@ -707,7 +707,7 @@ static int epic_open(struct net_device *dev)
 			else if (! (mii_lpa & LPA_LPACK))
 				mdio_write(dev, ep->phys[0], MII_BMCR, BMCR_ANENABLE|BMCR_ANRESTART);
 			if (debug > 1)
-				netdev_info(dev, "Setting %s-duplex based on MII xcvr %d register read of %4.4x.\n",
+				netdev_dbg(dev, "Setting %s-duplex based on MII xcvr %d register read of %4.4x.\n",
 					    ep->mii.full_duplex ? "full"
 								: "half",
 					    ep->phys[0], mii_lpa);
@@ -834,7 +834,7 @@ static void check_media(struct net_device *dev)
 		return;
 	if (ep->mii.full_duplex != duplex) {
 		ep->mii.full_duplex = duplex;
-		netdev_info(dev, "Setting %s-duplex based on MII #%d link partner capability of %4.4x.\n",
+		netdev_dbg(dev, "Setting %s-duplex based on MII #%d link partner capability of %4.4x.\n",
 			    ep->mii.full_duplex ? "full" : "half",
 			    ep->phys[0], mii_lpa);
 		ew32(TxCtrl, ep->mii.full_duplex ? 0x7F : 0x79);
@@ -1558,7 +1558,7 @@ static int __init epic_init (void)
 {
 /* when a module, this is printed whether or not devices are found in probe */
 #ifdef MODULE
-	pr_info("%s%s\n", version, version2);
+	pr_debug("%s%s\n", version, version2);
 #endif
 
 	return pci_register_driver(&epic_driver);

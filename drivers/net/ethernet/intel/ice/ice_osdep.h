@@ -39,7 +39,7 @@ struct ice_dma_mem {
 #define ice_debug(hw, type, fmt, args...)			\
 do {								\
 	if ((type) & (hw)->debug_mask)				\
-		dev_info(ice_hw_to_dev(hw), fmt, ##args);	\
+		dev_dbg(ice_hw_to_dev(hw), fmt, ##args);	\
 } while (0)
 
 #ifdef DEBUG

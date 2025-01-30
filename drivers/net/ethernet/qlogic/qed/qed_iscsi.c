@@ -1079,7 +1079,7 @@ struct qed_hash_iscsi_con {
 	struct qed_iscsi_conn *con;
 };
 
-static int qed_fill_iscsi_dev_info(struct qed_dev *cdev,
+static int qed_fill_iscsi_dev_dbg(struct qed_dev *cdev,
 				   struct qed_dev_iscsi_info *info)
 {
 	struct qed_hwfn *hwfn = QED_LEADING_HWFN(cdev);
@@ -1087,7 +1087,7 @@ static int qed_fill_iscsi_dev_info(struct qed_dev *cdev,
 	int rc;
 
 	memset(info, 0, sizeof(*info));
-	rc = qed_fill_dev_info(cdev, &info->common);
+	rc = qed_fill_dev_dbg(cdev, &info->common);
 
 	info->primary_dbq_rq_addr =
 	    qed_iscsi_get_primary_bdq_prod(hwfn, BDQ_ID_RQ);
@@ -1435,7 +1435,7 @@ void qed_get_protocol_stats_iscsi(struct qed_dev *cdev,
 static const struct qed_iscsi_ops qed_iscsi_ops_pass = {
 	.common = &qed_common_ops_pass,
 	.ll2 = &qed_ll2_ops_pass,
-	.fill_dev_info = &qed_fill_iscsi_dev_info,
+	.fill_dev_dbg = &qed_fill_iscsi_dev_dbg,
 	.register_ops = &qed_register_iscsi_ops,
 	.start = &qed_iscsi_start,
 	.stop = &qed_iscsi_stop,

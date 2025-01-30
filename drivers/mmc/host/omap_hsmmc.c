@@ -1256,14 +1256,14 @@ static void omap_hsmmc_protect_card(struct omap_hsmmc_host *host)
 	host->reqs_blocked = 0;
 	if (host->get_cover_state(host->dev)) {
 		if (host->protect_card) {
-			dev_info(host->dev, "%s: cover is closed, "
+			dev_dbg(host->dev, "%s: cover is closed, "
 					 "card is now accessible\n",
 					 mmc_hostname(host->mmc));
 			host->protect_card = 0;
 		}
 	} else {
 		if (!host->protect_card) {
-			dev_info(host->dev, "%s: cover is open, "
+			dev_dbg(host->dev, "%s: cover is open, "
 					 "card is now inaccessible\n",
 					 mmc_hostname(host->mmc));
 			host->protect_card = 1;
@@ -1680,7 +1680,7 @@ static void omap_hsmmc_init_card(struct mmc_host *mmc, struct mmc_card *card)
 			 * probed by normal methods.
 			 */
 
-			dev_info(host->dev, "found wl1251\n");
+			dev_dbg(host->dev, "found wl1251\n");
 			card->quirks |= MMC_QUIRK_NONSTD_SDIO;
 			card->cccr.wide_bus = 1;
 			card->cis.vendor = 0x104c;
@@ -1758,14 +1758,14 @@ static int omap_hsmmc_configure_wake_irq(struct omap_hsmmc_host *host)
 			goto err_free_irq;
 		}
 		if (IS_ERR(pinctrl_lookup_state(p, PINCTRL_STATE_DEFAULT))) {
-			dev_info(host->dev, "missing default pinctrl state\n");
+			dev_dbg(host->dev, "missing default pinctrl state\n");
 			devm_pinctrl_put(p);
 			ret = -EINVAL;
 			goto err_free_irq;
 		}
 
 		if (IS_ERR(pinctrl_lookup_state(p, PINCTRL_STATE_IDLE))) {
-			dev_info(host->dev, "missing idle pinctrl state\n");
+			dev_dbg(host->dev, "missing idle pinctrl state\n");
 			devm_pinctrl_put(p);
 			ret = -EINVAL;
 			goto err_free_irq;
@@ -2066,7 +2066,7 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
 	}
 
 	if (host->pdata->controller_flags & OMAP_HSMMC_BROKEN_MULTIBLOCK_READ) {
-		dev_info(&pdev->dev, "multiblock reads disabled due to 35xx erratum 2.1.1.128; MMC read performance may suffer\n");
+		dev_dbg(&pdev->dev, "multiblock reads disabled due to 35xx erratum 2.1.1.128; MMC read performance may suffer\n");
 		omap_hsmmc_ops.multi_io_quirk = omap_hsmmc_multi_io_quirk;
 	}
 

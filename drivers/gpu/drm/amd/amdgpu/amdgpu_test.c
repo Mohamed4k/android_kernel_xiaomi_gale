@@ -243,7 +243,7 @@ out_unref:
 out_cleanup:
 	kfree(gtt_obj);
 	if (r) {
-		pr_warn("Error while testing BO move\n");
+		pr_debug("Error while testing BO move\n");
 	}
 }
 

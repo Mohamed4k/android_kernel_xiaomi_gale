@@ -814,7 +814,7 @@ no_dma:
 	if (!qspi->rx_chan && res_mmap) {
 		qspi->mmap_base = devm_ioremap_resource(&pdev->dev, res_mmap);
 		if (IS_ERR(qspi->mmap_base)) {
-			dev_info(&pdev->dev,
+			dev_dbg(&pdev->dev,
 				 "mmap failed with error %ld using PIO mode\n",
 				 PTR_ERR(qspi->mmap_base));
 			qspi->mmap_base = NULL;

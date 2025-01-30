@@ -733,7 +733,7 @@ static int myri10ge_load_firmware(struct myri10ge_priv *mgp, int adopt)
 				"failed to adopt running firmware\n");
 			return status;
 		}
-		dev_info(&mgp->pdev->dev,
+		dev_dbg(&mgp->pdev->dev,
 			 "Successfully adopted running firmware\n");
 		if (mgp->tx_boundary == 4096) {
 			dev_warn(&mgp->pdev->dev,
@@ -1890,7 +1890,7 @@ static int myri10ge_led(struct myri10ge_priv *mgp, int on)
 			       offsetof(struct mcp_gen_header, header_length)));
 	pattern_off = hdr_off + offsetof(struct mcp_gen_header, led_pattern);
 	if (pattern_off >= (hdr_len + hdr_off)) {
-		dev_info(dev, "Firmware does not support LED identification\n");
+		dev_dbg(dev, "Firmware does not support LED identification\n");
 		return -EINVAL;
 	}
 	if (!on)
@@ -3042,7 +3042,7 @@ static int myri10ge_change_mtu(struct net_device *dev, int new_mtu)
 	struct myri10ge_priv *mgp = netdev_priv(dev);
 	int error = 0;
 
-	netdev_info(dev, "changing mtu from %d to %d\n", dev->mtu, new_mtu);
+	netdev_dbg(dev, "changing mtu from %d to %d\n", dev->mtu, new_mtu);
 	if (mgp->running) {
 		/* if we change the mtu on an active device, we must
 		 * reset the device so the firmware sees the change */
@@ -3091,7 +3091,7 @@ static void myri10ge_enable_ecrc(struct myri10ge_priv *mgp)
 			} while (pci_pcie_type(bridge) !=
 				 PCI_EXP_TYPE_ROOT_PORT);
 
-			dev_info(dev,
+			dev_dbg(dev,
 				 "Forcing ECRC on non-root port %s"
 				 " (enabling on root port %s)\n",
 				 pci_name(old_bridge), pci_name(bridge));
@@ -3120,7 +3120,7 @@ static void myri10ge_enable_ecrc(struct myri10ge_priv *mgp)
 
 	err_cap |= PCI_ERR_CAP_ECRC_GENE;
 	pci_write_config_dword(bridge, cap + PCI_ERR_CAP, err_cap);
-	dev_info(dev, "Enabled ECRC on upstream bridge %s\n", pci_name(bridge));
+	dev_dbg(dev, "Enabled ECRC on upstream bridge %s\n", pci_name(bridge));
 }
 
 /*
@@ -3212,7 +3212,7 @@ static void myri10ge_select_firmware(struct myri10ge_priv *mgp)
 		 * upstream bridge is known to provide aligned
 		 * completions */
 		if (link_width < 8) {
-			dev_info(&mgp->pdev->dev, "PCIE x%d Link\n",
+			dev_dbg(&mgp->pdev->dev, "PCIE x%d Link\n",
 				 link_width);
 			mgp->tx_boundary = 4096;
 			set_fw_name(mgp, myri10ge_fw_aligned, false);
@@ -3221,12 +3221,12 @@ static void myri10ge_select_firmware(struct myri10ge_priv *mgp)
 		}
 	} else {
 		if (myri10ge_force_firmware == 1) {
-			dev_info(&mgp->pdev->dev,
+			dev_dbg(&mgp->pdev->dev,
 				 "Assuming aligned completions (forced)\n");
 			mgp->tx_boundary = 4096;
 			set_fw_name(mgp, myri10ge_fw_aligned, false);
 		} else {
-			dev_info(&mgp->pdev->dev,
+			dev_dbg(&mgp->pdev->dev,
 				 "Assuming unaligned completions (forced)\n");
 			mgp->tx_boundary = 2048;
 			set_fw_name(mgp, myri10ge_fw_unaligned, false);
@@ -3250,7 +3250,7 @@ static void myri10ge_select_firmware(struct myri10ge_priv *mgp)
 		overridden = 1;
 	}
 	if (overridden)
-		dev_info(&mgp->pdev->dev, "overriding firmware to %s\n",
+		dev_dbg(&mgp->pdev->dev, "overriding firmware to %s\n",
 			 mgp->fw_name);
 }
 
@@ -3287,7 +3287,7 @@ static int myri10ge_suspend(struct pci_dev *pdev, pm_message_t state)
 
 	netif_device_detach(netdev);
 	if (netif_running(netdev)) {
-		netdev_info(netdev, "closing\n");
+		netdev_dbg(netdev, "closing\n");
 		rtnl_lock();
 		myri10ge_close(netdev);
 		rtnl_unlock();
@@ -3655,7 +3655,7 @@ static void myri10ge_probe_slices(struct myri10ge_priv *mgp)
 	mgp->fw_name_allocated = false;
 
 	if (myri10ge_fw_name != NULL) {
-		dev_info(&mgp->pdev->dev, "overriding rss firmware to %s\n",
+		dev_dbg(&mgp->pdev->dev, "overriding rss firmware to %s\n",
 			 myri10ge_fw_name);
 		set_fw_name(mgp, myri10ge_fw_name, false);
 	} else if (old_fw == myri10ge_fw_aligned)
@@ -3664,7 +3664,7 @@ static void myri10ge_probe_slices(struct myri10ge_priv *mgp)
 		set_fw_name(mgp, myri10ge_fw_rss_unaligned, false);
 	status = myri10ge_load_firmware(mgp, 0);
 	if (status != 0) {
-		dev_info(&pdev->dev, "Rss firmware not found\n");
+		dev_dbg(&pdev->dev, "Rss firmware not found\n");
 		if (old_allocated)
 			kfree(old_fw);
 		return;
@@ -3940,11 +3940,11 @@ static int myri10ge_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		goto abort_with_state;
 	}
 	if (mgp->msix_enabled)
-		dev_info(dev, "%d MSI-X IRQs, tx bndry %d, fw %s, MTRR %s, WC Enabled\n",
+		dev_dbg(dev, "%d MSI-X IRQs, tx bndry %d, fw %s, MTRR %s, WC Enabled\n",
 			 mgp->num_slices, mgp->tx_boundary, mgp->fw_name,
 			 (mgp->wc_cookie > 0 ? "Enabled" : "Disabled"));
 	else
-		dev_info(dev, "%s IRQ %d, tx bndry %d, fw %s, MTRR %s, WC Enabled\n",
+		dev_dbg(dev, "%s IRQ %d, tx bndry %d, fw %s, MTRR %s, WC Enabled\n",
 			 mgp->msi_enabled ? "MSI" : "xPIC",
 			 pdev->irq, mgp->tx_boundary, mgp->fw_name,
 			 (mgp->wc_cookie > 0 ? "Enabled" : "Disabled"));
@@ -4067,7 +4067,7 @@ static struct notifier_block myri10ge_dca_notifier = {
 
 static __init int myri10ge_init_module(void)
 {
-	pr_info("Version %s\n", MYRI10GE_VERSION_STR);
+	pr_debug("Version %s\n", MYRI10GE_VERSION_STR);
 
 	if (myri10ge_rss_hash > MXGEFW_RSS_HASH_TYPE_MAX) {
 		pr_err("Illegal rssh hash type %d, defaulting to source port\n",

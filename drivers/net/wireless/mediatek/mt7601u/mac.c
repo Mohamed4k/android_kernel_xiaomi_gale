@@ -22,7 +22,7 @@ void mt7601u_set_macaddr(struct mt7601u_dev *dev, const u8 *addr)
 
 	if (!is_valid_ether_addr(dev->macaddr)) {
 		eth_random_addr(dev->macaddr);
-		dev_info(dev->dev,
+		dev_dbg(dev->dev,
 			 "Invalid MAC address, using random address %pM\n",
 			 dev->macaddr);
 	}

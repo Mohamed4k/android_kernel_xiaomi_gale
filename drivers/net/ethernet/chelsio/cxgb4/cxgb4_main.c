@@ -188,7 +188,7 @@ DEFINE_MUTEX(uld_mutex);
 static void link_report(struct net_device *dev)
 {
 	if (!netif_carrier_ok(dev))
-		netdev_info(dev, "link down\n");
+		netdev_dbg(dev, "link down\n");
 	else {
 		static const char *fc[] = { "no", "Rx", "Tx", "Tx/Rx" };
 
@@ -218,12 +218,12 @@ static void link_report(struct net_device *dev)
 			s = "100Gbps";
 			break;
 		default:
-			pr_info("%s: unsupported speed: %d\n",
+			pr_debug("%s: unsupported speed: %d\n",
 				dev->name, p->link_cfg.speed);
 			return;
 		}
 
-		netdev_info(dev, "link up, %s, full-duplex, %s PAUSE\n", s,
+		netdev_dbg(dev, "link up, %s, full-duplex, %s PAUSE\n", s,
 			    fc[p->link_cfg.fc]);
 	}
 }
@@ -311,19 +311,19 @@ void t4_os_portmod_changed(struct adapter *adap, int port_id)
 	struct port_info *pi = netdev_priv(dev);
 
 	if (pi->mod_type == FW_PORT_MOD_TYPE_NONE)
-		netdev_info(dev, "port module unplugged\n");
+		netdev_dbg(dev, "port module unplugged\n");
 	else if (pi->mod_type < ARRAY_SIZE(mod_str))
-		netdev_info(dev, "%s module inserted\n", mod_str[pi->mod_type]);
+		netdev_dbg(dev, "%s module inserted\n", mod_str[pi->mod_type]);
 	else if (pi->mod_type == FW_PORT_MOD_TYPE_NOTSUPPORTED)
-		netdev_info(dev, "%s: unsupported port module inserted\n",
+		netdev_dbg(dev, "%s: unsupported port module inserted\n",
 			    dev->name);
 	else if (pi->mod_type == FW_PORT_MOD_TYPE_UNKNOWN)
-		netdev_info(dev, "%s: unknown port module inserted\n",
+		netdev_dbg(dev, "%s: unknown port module inserted\n",
 			    dev->name);
 	else if (pi->mod_type == FW_PORT_MOD_TYPE_ERROR)
-		netdev_info(dev, "%s: transceiver module error\n", dev->name);
+		netdev_dbg(dev, "%s: transceiver module error\n", dev->name);
 	else
-		netdev_info(dev, "%s: unknown module type %d inserted\n",
+		netdev_dbg(dev, "%s: unknown module type %d inserted\n",
 			    dev->name, pi->mod_type);
 
 	/* If the interface is running, then we'll need any "sticky" Link
@@ -2688,7 +2688,7 @@ static int cxgb4_mgmt_set_vf_mac(struct net_device *dev, int vf, u8 *mac)
 		return -EINVAL;
 	}
 
-	dev_info(pi->adapter->pdev_dev,
+	dev_dbg(pi->adapter->pdev_dev,
 		 "Setting MAC %pM on VF %d\n", mac, vf);
 	ret = t4_set_vf_mac_acl(adap, vf + 1, 1, mac);
 	if (!ret)
@@ -2785,7 +2785,7 @@ static int cxgb4_mgmt_set_vf_rate(struct net_device *dev, int vf,
 			ret);
 		return -EINVAL;
 	}
-	dev_info(adap->pdev_dev,
+	dev_dbg(adap->pdev_dev,
 		 "Class %d with MSS %u configured with rate %u\n",
 		 class_id, pktsize, max_tx_rate);
 
@@ -2801,7 +2801,7 @@ static int cxgb4_mgmt_set_vf_rate(struct net_device *dev, int vf,
 			ret, vf, class_id);
 		return -EINVAL;
 	}
-	dev_info(adap->pdev_dev, "PF %d VF %d is bound to Class %d\n",
+	dev_dbg(adap->pdev_dev, "PF %d VF %d is bound to Class %d\n",
 		 adap->pf, vf, class_id);
 	adap->vfinfo[vf].tx_rate = max_tx_rate;
 	return 0;
@@ -3090,7 +3090,7 @@ static void cxgb_del_udp_tunnel(struct net_device *netdev,
 					    pi->port_id,
 					   1, pi->port_id, false);
 		if (ret < 0) {
-			netdev_info(netdev, "Failed to free mac filter entry, for port %d\n",
+			netdev_dbg(netdev, "Failed to free mac filter entry, for port %d\n",
 				    i);
 			return;
 		}
@@ -3126,7 +3126,7 @@ static void cxgb_add_udp_tunnel(struct net_device *netdev,
 
 		/* We will support only one VxLAN port */
 		if (adapter->vxlan_port_cnt) {
-			netdev_info(netdev, "UDP port %d already offloaded, not adding port %d\n",
+			netdev_dbg(netdev, "UDP port %d already offloaded, not adding port %d\n",
 				    be16_to_cpu(adapter->vxlan_port),
 				    be16_to_cpu(ti->port));
 			return;
@@ -3147,7 +3147,7 @@ static void cxgb_add_udp_tunnel(struct net_device *netdev,
 
 		/* We will support only one GENEVE port */
 		if (adapter->geneve_port_cnt) {
-			netdev_info(netdev, "UDP port %d already offloaded, not adding port %d\n",
+			netdev_dbg(netdev, "UDP port %d already offloaded, not adding port %d\n",
 				    be16_to_cpu(adapter->geneve_port),
 				    be16_to_cpu(ti->port));
 			return;
@@ -3179,7 +3179,7 @@ static void cxgb_add_udp_tunnel(struct net_device *netdev,
 					    pi->port_id,
 					    1, pi->port_id, false);
 		if (ret < 0) {
-			netdev_info(netdev, "Failed to allocate a mac filter entry, not adding port %d\n",
+			netdev_dbg(netdev, "Failed to allocate a mac filter entry, not adding port %d\n",
 				    be16_to_cpu(ti->port));
 			cxgb_del_udp_tunnel(netdev, ti);
 			return;
@@ -3524,7 +3524,7 @@ static int adap_config_hma(struct adapter *adapter)
 	}
 
 	if (!ret)
-		dev_info(adapter->pdev_dev,
+		dev_dbg(adapter->pdev_dev,
 			 "Reserved %uMB host memory for HMA\n", hma_size);
 	return ret;
 
@@ -3796,7 +3796,7 @@ static int adap_init0_phy(struct adapter *adap)
 		if (phy_info->phy_fw_version)
 			new_phy_fw_ver = phy_info->phy_fw_version(phyf->data,
 								  phyf->size);
-		dev_info(adap->pdev_dev, "Successfully transferred PHY "
+		dev_dbg(adap->pdev_dev, "Successfully transferred PHY "
 			 "Firmware /lib/firmware/%s, version %#x\n",
 			 phy_info->phy_fw_file, new_phy_fw_ver);
 	}
@@ -4013,7 +4013,7 @@ static int adap_init0_config(struct adapter *adapter, int reset)
 	/* Emit Firmware Configuration File information and return
 	 * successfully.
 	 */
-	dev_info(adapter->pdev_dev, "Successfully configured using Firmware "\
+	dev_dbg(adapter->pdev_dev, "Successfully configured using Firmware "\
 		 "Configuration File \"%s\", version %#x, computed checksum %#x\n",
 		 config_name, finiver, cfcsum);
 	return 0;
@@ -4191,11 +4191,11 @@ static int adap_init0(struct adapter *adap)
 			dev_err(adap->pdev_dev,
 				"HMA configuration failed with error %d\n",
 				ret);
-		dev_info(adap->pdev_dev, "Coming up as %s: "\
+		dev_dbg(adap->pdev_dev, "Coming up as %s: "\
 			 "Adapter already initialized\n",
 			 adap->flags & MASTER_PF ? "MASTER" : "SLAVE");
 	} else {
-		dev_info(adap->pdev_dev, "Coming up as MASTER: "\
+		dev_dbg(adap->pdev_dev, "Coming up as MASTER: "\
 			 "Initializing adapter\n");
 
 		/* Find out whether we're dealing with a version of the
@@ -4567,7 +4567,7 @@ static int adap_init0(struct adapter *adap)
 			adap->params.max_ordird_qp = val[0];
 			adap->params.max_ird_adapter = val[1];
 		}
-		dev_info(adap->pdev_dev,
+		dev_dbg(adap->pdev_dev,
 			 "max_ordird_qp %d max_ird_adapter %d\n",
 			 adap->params.max_ordird_qp,
 			 adap->params.max_ird_adapter);
@@ -5064,7 +5064,7 @@ static int enable_msix(struct adapter *adap)
 #endif
 	allocated = pci_enable_msix_range(adap->pdev, entries, need, want);
 	if (allocated < 0) {
-		dev_info(adap->pdev_dev, "not enough MSI-X vectors left,"
+		dev_dbg(adap->pdev_dev, "not enough MSI-X vectors left,"
 			 " not using MSI-X\n");
 		kfree(entries);
 		return allocated;
@@ -5096,7 +5096,7 @@ static int enable_msix(struct adapter *adap)
 		}
 		adap->msix_bmap_ulds.mapsize = j;
 	}
-	dev_info(adap->pdev_dev, "%d MSI-X vectors allocated, "
+	dev_dbg(adap->pdev_dev, "%d MSI-X vectors allocated, "
 		 "nic %d per uld %d\n",
 		 allocated, s->max_ethqsets, s->nqs_per_uld);
 
@@ -5132,7 +5132,7 @@ static void print_adapter_info(struct adapter *adapter)
 	t4_dump_version_info(adapter);
 
 	/* Software/Hardware configuration */
-	dev_info(adapter->pdev_dev, "Configuration: %sNIC %s, %s capable\n",
+	dev_dbg(adapter->pdev_dev, "Configuration: %sNIC %s, %s capable\n",
 		 is_offload(adapter) ? "R" : "",
 		 ((adapter->flags & USING_MSIX) ? "MSI-X" :
 		  (adapter->flags & USING_MSI) ? "MSI" : ""),
@@ -5168,7 +5168,7 @@ static void print_port_info(const struct net_device *dev)
 		--bufp;
 	sprintf(bufp, "BASE-%s", t4_get_port_type_description(pi->port_type));
 
-	netdev_info(dev, "%s: Chelsio %s (%s) %s\n",
+	netdev_dbg(dev, "%s: Chelsio %s (%s) %s\n",
 		    dev->name, adap->params.vpd.id, adap->name, buf);
 }
 
@@ -5364,7 +5364,7 @@ static int cxgb4_iov_configure(struct pci_dev *pdev, int num_vfs)
 
 		err = register_netdev(adap->port[0]);
 		if (err) {
-			pr_info("Unable to register VF mgmt netdev %s\n", name);
+			pr_debug("Unable to register VF mgmt netdev %s\n", name);
 			free_netdev(adap->port[0]);
 			adap->port[0] = NULL;
 			return err;
@@ -5383,7 +5383,7 @@ static int cxgb4_iov_configure(struct pci_dev *pdev, int num_vfs)
 	/* Instantiate the requested number of VFs. */
 	err = pci_enable_sriov(pdev, num_vfs);
 	if (err) {
-		pr_info("Unable to instantiate %d VFs\n", num_vfs);
+		pr_debug("Unable to instantiate %d VFs\n", num_vfs);
 		if (!current_vfs) {
 			unregister_netdev(adap->port[0]);
 			free_netdev(adap->port[0]);
@@ -5419,7 +5419,7 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	err = pci_request_regions(pdev, KBUILD_MODNAME);
 	if (err) {
 		/* Just info, some other driver may have claimed the device. */
-		dev_info(&pdev->dev, "cannot obtain PCI resources\n");
+		dev_dbg(&pdev->dev, "cannot obtain PCI resources\n");
 		return err;
 	}
 
@@ -6015,7 +6015,7 @@ static int __init cxgb4_init_module(void)
 	/* Debugfs support is optional, just warn if this fails */
 	cxgb4_debugfs_root = debugfs_create_dir(KBUILD_MODNAME, NULL);
 	if (!cxgb4_debugfs_root)
-		pr_warn("could not create debugfs entry, continuing\n");
+		pr_debug("could not create debugfs entry, continuing\n");
 
 	ret = pci_register_driver(&cxgb4_driver);
 	if (ret < 0)

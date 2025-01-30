@@ -1256,7 +1256,7 @@ static int ab8500_charger_set_vbus_in_curr(struct ab8500_charger *di,
 		break;
 	}
 
-	dev_info(di->dev, "VBUS input current limit set to %d mA\n", min_value);
+	dev_dbg(di->dev, "VBUS input current limit set to %d mA\n", min_value);
 
 	mutex_lock(&di->usb_ipt_crnt_lock);
 	ret = ab8500_charger_set_current(di, min_value,
@@ -1724,7 +1724,7 @@ static int ab8500_charger_usb_check_enable(struct ux500_charger *charger,
 	dev_dbg(di->dev, "USB charger ctrl: 0x%02x\n", usbch_ctrl1);
 
 	if (!(usbch_ctrl1 & USB_CH_ENA)) {
-		dev_info(di->dev, "Charging has been disabled abnormally and will be re-enabled\n");
+		dev_dbg(di->dev, "Charging has been disabled abnormally and will be re-enabled\n");
 
 		ret = abx500_mask_and_set_register_interruptible(di->dev,
 					AB8500_CHARGER, AB8500_CHARGER_CTRL,
@@ -1773,7 +1773,7 @@ static int ab8500_charger_ac_check_enable(struct ux500_charger *charger,
 	dev_dbg(di->dev, "AC charger ctrl: 0x%02x\n", mainch_ctrl1);
 
 	if (!(mainch_ctrl1 & MAIN_CH_ENA)) {
-		dev_info(di->dev, "Charging has been disabled abnormally and will be re-enabled\n");
+		dev_dbg(di->dev, "Charging has been disabled abnormally and will be re-enabled\n");
 
 		ret = abx500_mask_and_set_register_interruptible(di->dev,
 					AB8500_CHARGER, AB8500_CHARGER_CTRL,

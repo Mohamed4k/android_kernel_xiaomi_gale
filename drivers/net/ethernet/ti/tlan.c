@@ -399,7 +399,7 @@ static int __init tlan_probe(void)
 {
 	int rc = -ENODEV;
 
-	pr_info("%s", tlan_banner);
+	pr_debug("%s", tlan_banner);
 
 	TLAN_DBG(TLAN_DEBUG_PROBE, "Starting PCI Probe....\n");
 
@@ -415,7 +415,7 @@ static int __init tlan_probe(void)
 	TLAN_DBG(TLAN_DEBUG_PROBE, "Starting EISA Probe....\n");
 	tlan_eisa_probe();
 
-	pr_info("%d device%s installed, PCI: %d  EISA: %d\n",
+	pr_debug("%d device%s installed, PCI: %d  EISA: %d\n",
 		tlan_devices_installed, tlan_devices_installed == 1 ? "" : "s",
 		tlan_have_pci, tlan_have_eisa);
 
@@ -593,7 +593,7 @@ static int tlan_probe1(struct pci_dev *pdev, long ioaddr, int irq, int rev,
 		tlan_have_eisa++;
 	}
 
-	netdev_info(dev, "irq=%2d, io=%04x, %s, Rev. %d\n",
+	netdev_dbg(dev, "irq=%2d, io=%04x, %s, Rev. %d\n",
 		    (int)dev->irq,
 		    (int)dev->base_addr,
 		    priv->adapter->device_label,
@@ -713,7 +713,7 @@ static void  __init tlan_eisa_probe(void)
 		}
 
 		if (debug == 0x10)
-			pr_info("Found one\n");
+			pr_debug("Found one\n");
 
 
 		/* Get irq from board */
@@ -742,12 +742,12 @@ static void  __init tlan_eisa_probe(void)
 
 out:
 		if (debug == 0x10)
-			pr_info("None found\n");
+			pr_debug("None found\n");
 		continue;
 
 out2:
 		if (debug == 0x10)
-			pr_info("Card found but it is not enabled, skipping\n");
+			pr_debug("Card found but it is not enabled, skipping\n");
 		continue;
 
 	}
@@ -1403,7 +1403,7 @@ static u32 tlan_handle_tx_eof(struct net_device *dev, u16 host_int)
 	}
 
 	if (!ack)
-		netdev_info(dev,
+		netdev_dbg(dev,
 			    "Received interrupt for uncompleted TX frame\n");
 
 	if (eoc) {
@@ -1557,7 +1557,7 @@ drop_and_reuse:
 	}
 
 	if (!ack)
-		netdev_info(dev,
+		netdev_dbg(dev,
 			    "Received interrupt for uncompleted RX frame\n");
 
 
@@ -1613,7 +1613,7 @@ drop_and_reuse:
 
 static u32 tlan_handle_dummy(struct net_device *dev, u16 host_int)
 {
-	netdev_info(dev, "Test interrupt\n");
+	netdev_dbg(dev, "Test interrupt\n");
 	return 1;
 
 }
@@ -1706,7 +1706,7 @@ static u32 tlan_handle_status_check(struct net_device *dev, u16 host_int)
 	if (host_int & TLAN_HI_IV_MASK) {
 		netif_stop_queue(dev);
 		error = inl(dev->base_addr + TLAN_CH_PARM);
-		netdev_info(dev, "Adaptor Error = 0x%x\n", error);
+		netdev_dbg(dev, "Adaptor Error = 0x%x\n", error);
 		tlan_read_and_clear_stats(dev, TLAN_RECORD);
 		outl(TLAN_HC_AD_RST, dev->base_addr + TLAN_HOST_CMD);
 
@@ -2021,13 +2021,13 @@ static void tlan_print_dio(u16 io_base)
 	u32 data0, data1;
 	int	i;
 
-	pr_info("Contents of internal registers for io base 0x%04hx\n",
+	pr_debug("Contents of internal registers for io base 0x%04hx\n",
 		io_base);
-	pr_info("Off.  +0        +4\n");
+	pr_debug("Off.  +0        +4\n");
 	for (i = 0; i < 0x4C; i += 8) {
 		data0 = tlan_dio_read32(io_base, i);
 		data1 = tlan_dio_read32(io_base, i + 0x4);
-		pr_info("0x%02x  0x%08x 0x%08x\n", i, data0, data1);
+		pr_debug("0x%02x  0x%08x 0x%08x\n", i, data0, data1);
 	}
 
 }
@@ -2056,13 +2056,13 @@ static void tlan_print_list(struct tlan_list *list, char *type, int num)
 {
 	int i;
 
-	pr_info("%s List %d at %p\n", type, num, list);
-	pr_info("   Forward    = 0x%08x\n",  list->forward);
-	pr_info("   CSTAT      = 0x%04hx\n", list->c_stat);
-	pr_info("   Frame Size = 0x%04hx\n", list->frame_size);
+	pr_debug("%s List %d at %p\n", type, num, list);
+	pr_debug("   Forward    = 0x%08x\n",  list->forward);
+	pr_debug("   CSTAT      = 0x%04hx\n", list->c_stat);
+	pr_debug("   Frame Size = 0x%04hx\n", list->frame_size);
 	/* for (i = 0; i < 10; i++) { */
 	for (i = 0; i < 2; i++) {
-		pr_info("   Buffer[%d].count, addr = 0x%08x, 0x%08x\n",
+		pr_debug("   Buffer[%d].count, addr = 0x%08x, 0x%08x\n",
 			i, list->buffer[i].count, list->buffer[i].address);
 	}
 
@@ -2280,7 +2280,7 @@ tlan_finish_reset(struct net_device *dev)
 	if ((priv->adapter->flags & TLAN_ADAPTER_UNMANAGED_PHY) ||
 	    (priv->aui)) {
 		status = MII_GS_LINK;
-		netdev_info(dev, "Link forced\n");
+		netdev_dbg(dev, "Link forced\n");
 	} else {
 		tlan_mii_read_reg(dev, phy, MII_GEN_STS, &status);
 		udelay(1000);
@@ -2294,7 +2294,7 @@ tlan_finish_reset(struct net_device *dev)
 				tlan_mii_read_reg(dev, phy, TLAN_TLPHY_PAR,
 					&tlphy_par);
 
-				netdev_info(dev,
+				netdev_dbg(dev,
 					"Link active, %s %uMbps %s-Duplex\n",
 					!(tlphy_par & TLAN_PHY_AN_EN_STAT)
 					? "forced" : "Autonegotiation enabled,",
@@ -2304,7 +2304,7 @@ tlan_finish_reset(struct net_device *dev)
 					? "Full" : "Half");
 
 				if (tlphy_par & TLAN_PHY_AN_EN_STAT) {
-					netdev_info(dev, "Partner capability:");
+					netdev_dbg(dev, "Partner capability:");
 					for (i = 5; i < 10; i++)
 						if (partner & (1 << i))
 							pr_cont(" %s",
@@ -2312,7 +2312,7 @@ tlan_finish_reset(struct net_device *dev)
 					pr_cont("\n");
 				}
 			} else
-				netdev_info(dev, "Link active\n");
+				netdev_dbg(dev, "Link active\n");
 			/* Enabling link beat monitoring */
 			priv->media_timer.expires = jiffies + HZ;
 			add_timer(&priv->media_timer);
@@ -2340,7 +2340,7 @@ tlan_finish_reset(struct net_device *dev)
 		tlan_dio_write8(dev->base_addr, TLAN_LED_REG, TLAN_LED_LINK);
 		netif_carrier_on(dev);
 	} else {
-		netdev_info(dev, "Link inactive, will retry in 10 secs...\n");
+		netdev_dbg(dev, "Link inactive, will retry in 10 secs...\n");
 		tlan_set_timer(dev, (10*HZ), TLAN_TIMER_FINISH_RESET);
 		return;
 	}
@@ -2424,20 +2424,20 @@ static void tlan_phy_print(struct net_device *dev)
 	phy = priv->phy[priv->phy_num];
 
 	if (priv->adapter->flags & TLAN_ADAPTER_UNMANAGED_PHY) {
-		netdev_info(dev, "Unmanaged PHY\n");
+		netdev_dbg(dev, "Unmanaged PHY\n");
 	} else if (phy <= TLAN_PHY_MAX_ADDR) {
-		netdev_info(dev, "PHY 0x%02x\n", phy);
-		pr_info("   Off.  +0     +1     +2     +3\n");
+		netdev_dbg(dev, "PHY 0x%02x\n", phy);
+		pr_debug("   Off.  +0     +1     +2     +3\n");
 		for (i = 0; i < 0x20; i += 4) {
 			tlan_mii_read_reg(dev, phy, i, &data0);
 			tlan_mii_read_reg(dev, phy, i + 1, &data1);
 			tlan_mii_read_reg(dev, phy, i + 2, &data2);
 			tlan_mii_read_reg(dev, phy, i + 3, &data3);
-			pr_info("   0x%02x 0x%04hx 0x%04hx 0x%04hx 0x%04hx\n",
+			pr_debug("   0x%02x 0x%04hx 0x%04hx 0x%04hx 0x%04hx\n",
 				i, data0, data1, data2, data3);
 		}
 	} else {
-		netdev_info(dev, "Invalid PHY\n");
+		netdev_dbg(dev, "Invalid PHY\n");
 	}
 
 }
@@ -2504,7 +2504,7 @@ static void tlan_phy_detect(struct net_device *dev)
 	else if (priv->phy[0] != TLAN_PHY_NONE)
 		priv->phy_num = 0;
 	else
-		netdev_info(dev, "Cannot initialize device, no PHY was found!\n");
+		netdev_dbg(dev, "Cannot initialize device, no PHY was found!\n");
 
 }
 
@@ -2638,7 +2638,7 @@ static void tlan_phy_start_link(struct net_device *dev)
 			 * but the card need additional time to start AN.
 			 * .5 sec should be plenty extra.
 			 */
-			netdev_info(dev, "Starting autonegotiation\n");
+			netdev_dbg(dev, "Starting autonegotiation\n");
 			tlan_set_timer(dev, (2*HZ), TLAN_TIMER_PHY_FINISH_AN);
 			return;
 		}
@@ -2703,7 +2703,7 @@ static void tlan_phy_finish_auto_neg(struct net_device *dev)
 		return;
 	}
 
-	netdev_info(dev, "Autonegotiation complete\n");
+	netdev_dbg(dev, "Autonegotiation complete\n");
 	tlan_mii_read_reg(dev, phy, MII_AN_ADV, &an_adv);
 	tlan_mii_read_reg(dev, phy, MII_AN_LPA, &an_lpa);
 	mode = an_adv & an_lpa & 0x03E0;
@@ -2726,11 +2726,11 @@ static void tlan_phy_finish_auto_neg(struct net_device *dev)
 		    (an_adv & an_lpa & 0x0040)) {
 			tlan_mii_write_reg(dev, phy, MII_GEN_CTL,
 					   MII_GC_AUTOENB | MII_GC_DUPLEX);
-			netdev_info(dev, "Starting internal PHY with FULL-DUPLEX\n");
+			netdev_dbg(dev, "Starting internal PHY with FULL-DUPLEX\n");
 		} else {
 			tlan_mii_write_reg(dev, phy, MII_GEN_CTL,
 					   MII_GC_AUTOENB);
-			netdev_info(dev, "Starting internal PHY with HALF-DUPLEX\n");
+			netdev_dbg(dev, "Starting internal PHY with HALF-DUPLEX\n");
 		}
 	}
 

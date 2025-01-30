@@ -424,7 +424,7 @@ static void __init imx6sl_clocks_init(struct device_node *ccm_node)
 	/* Ensure the AHB clk is at 132MHz. */
 	ret = clk_set_rate(clks[IMX6SL_CLK_AHB], 132000000);
 	if (ret)
-		pr_warn("%s: failed to set AHB clock rate %d!\n",
+		pr_debug("%s: failed to set AHB clock rate %d!\n",
 			__func__, ret);
 
 	if (IS_ENABLED(CONFIG_USB_MXS_PHY)) {

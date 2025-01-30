@@ -1377,7 +1377,7 @@ static void ab8500_fg_check_capacity_limits(struct ab8500_fg *di, bool init)
 			di->bat_cap.cap_scale.scaled_cap =
 				ab8500_fg_calculate_scaled_capacity(di);
 
-			dev_info(di->dev, "capacity=%d (%d)\n",
+			dev_dbg(di->dev, "capacity=%d (%d)\n",
 				di->bat_cap.prev_percent,
 				di->bat_cap.cap_scale.scaled_cap);
 		}

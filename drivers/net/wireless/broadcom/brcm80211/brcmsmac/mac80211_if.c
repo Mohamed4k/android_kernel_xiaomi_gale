@@ -1224,7 +1224,7 @@ static int brcms_bcma_probe(struct bcma_device *pdev)
 	struct brcms_info *wl;
 	struct ieee80211_hw *hw;
 
-	dev_info(&pdev->dev, "mfg %x core %x rev %d class %d irq %d\n",
+	dev_dbg(&pdev->dev, "mfg %x core %x rev %d class %d irq %d\n",
 		 pdev->id.manuf, pdev->id.id, pdev->id.rev, pdev->id.class,
 		 pdev->irq);
 

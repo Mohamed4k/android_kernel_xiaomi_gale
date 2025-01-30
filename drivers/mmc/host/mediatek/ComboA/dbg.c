@@ -147,7 +147,7 @@ static struct dma_addr *msdc_get_dma_address(int host_id)
 	void __iomem *base;
 
 	if (host_id < 0 || host_id >= HOST_MAX_NUM || !mtk_msdc_host[host_id]) {
-		pr_notice("[%s] invalid host_id %d\n", __func__, host_id);
+		pr_debug("[%s] invalid host_id %d\n", __func__, host_id);
 		return NULL;
 	}
 
@@ -156,7 +156,7 @@ static struct dma_addr *msdc_get_dma_address(int host_id)
 	/* spin_lock(&host->lock); */
 	MSDC_GET_FIELD(MSDC_DMA_CTRL, MSDC_DMA_CTRL_MODE, mode);
 	if (mode == 1) {
-		pr_info("Desc.DMA\n");
+		pr_debug("Desc.DMA\n");
 		bd = host->dma.bd;
 		i = 0;
 		while (i < MAX_BD_PER_GPD) {
@@ -173,7 +173,7 @@ static struct dma_addr *msdc_get_dma_address(int host_id)
 			i++;
 		}
 	} else if (mode == 0) {
-		pr_info("Basic DMA\n");
+		pr_debug("Basic DMA\n");
 		msdc_latest_dma_address[0].start_address =
 			MSDC_READ32(MSDC_DMA_SA);
 		msdc_latest_dma_address[0].size = MSDC_READ32(MSDC_DMA_LEN);
@@ -639,7 +639,7 @@ static void msdc_proc_dump(struct seq_file *m, u32 id)
 	struct msdc_host *host = mtk_msdc_host[id];
 
 	if (host == NULL) {
-		pr_info("====== Null msdc%d, dump skipped ======\n", id);
+		pr_debug("====== Null msdc%d, dump skipped ======\n", id);
 		return;
 	}
 
@@ -655,7 +655,7 @@ void get_msdc_aee_buffer(unsigned long *vaddr, unsigned long *size)
 	char *buff;
 
 	if (host == NULL) {
-		pr_info("====== Null msdc, dump skipped ======\n");
+		pr_debug("====== Null msdc, dump skipped ======\n");
 		return;
 	}
 
@@ -671,25 +671,25 @@ EXPORT_SYMBOL(get_msdc_aee_buffer);
 #else
 inline void dbg_add_host_log(struct mmc_host *mmc, int type, int cmd, int arg)
 {
-	//pr_info("config MTK_MMC_DEBUG is not set: %s!\n",__func__);
+	//pr_debug("config MTK_MMC_DEBUG is not set: %s!\n",__func__);
 }
 void mmc_cmd_dump(char **buff, unsigned long *size, struct seq_file *m,
 	struct mmc_host *mmc, u32 latest_cnt)
 {
-	//pr_info("config MTK_MMC_DEBUG is not set: %s!\n",__func__);
+	//pr_debug("config MTK_MMC_DEBUG is not set: %s!\n",__func__);
 }
 void msdc_dump_host_state(char **buff, unsigned long *size,
 		struct seq_file *m, struct msdc_host *host)
 {
-	//pr_info("config MTK_MMC_DEBUG is not set: %s!\n",__func__);
+	//pr_debug("config MTK_MMC_DEBUG is not set: %s!\n",__func__);
 }
 static void msdc_proc_dump(struct seq_file *m, u32 id)
 {
-	//pr_info("config MTK_MMC_DEBUG is not set : %s!\n",__func__);
+	//pr_debug("config MTK_MMC_DEBUG is not set : %s!\n",__func__);
 }
 void get_msdc_aee_buffer(unsigned long *vaddr, unsigned long *size)
 {
-	//pr_info("config MTK_MMC_DEBUG is not set : %s!\n",__func__);
+	//pr_debug("config MTK_MMC_DEBUG is not set : %s!\n",__func__);
 }
 #endif
 
@@ -1112,7 +1112,7 @@ void msdc_performance(u32 opcode, u32 sizes, u32 bRx, u32 ticks)
 		} else {
 			block = sizes / 512;
 			if (block >= 99) {
-				pr_notice("cmd53 error blocks\n");
+				pr_debug("cmd53 error blocks\n");
 				while (1)
 					;
 			}
@@ -1170,7 +1170,7 @@ void sdio_calc_time(struct mmc_request *mrq, struct timespec *time_start)
 				* 1000000000UL
 				+ time_end.tv_nsec - time_start->tv_nsec;
 		} else {
-			pr_notice("Shall not happen\n");
+			pr_debug("Shall not happen\n");
 			return;
 		}
 
@@ -1266,14 +1266,14 @@ static int multi_rw_compare_core(int host_num, int read, uint address,
 	u8 *wData;
 
 	if (host_num >= HOST_MAX_NUM || host_num < 0) {
-		pr_notice("[%s]invalid host id: %d\n", __func__, host_num);
+		pr_debug("[%s]invalid host id: %d\n", __func__, host_num);
 		return -1;
 	}
 
 	host_ctl = mtk_msdc_host[host_num];
 
 	if (!host_ctl || !host_ctl->mmc || !host_ctl->mmc->card) {
-		pr_notice(" No card initialized in host[%d]\n", host_num);
+		pr_debug(" No card initialized in host[%d]\n", host_num);
 		result = -1;
 		goto free;
 	}
@@ -1296,7 +1296,7 @@ static int multi_rw_compare_core(int host_num, int read, uint address,
 	rPtr = wPtr = (u8 *)multi_rwbuf;
 
 	if (!is_card_present(host_ctl)) {
-		pr_info("  [%s]: card is removed!\n", __func__);
+		pr_debug("  [%s]: card is removed!\n", __func__);
 		result = -1;
 		goto free;
 	}
@@ -1312,7 +1312,7 @@ static int multi_rw_compare_core(int host_num, int read, uint address,
 		pr_debug("[MSDC_DBG] cmdq enabled, turn it off\n");
 		ret = mmc_cmdq_disable(host_ctl->mmc->card);
 		if (ret) {
-			pr_notice("[MSDC_DBG] turn off cmdq en failed\n");
+			pr_debug("[MSDC_DBG] turn off cmdq en failed\n");
 			mmc_put_card(host_ctl->mmc->card, NULL);
 			result = -1;
 			goto free;
@@ -1363,7 +1363,7 @@ static int multi_rw_compare_core(int host_num, int read, uint address,
 	msdc_data.stop = &msdc_stop;
 
 	if (!mmc_card_blockaddr(host_ctl->mmc->card)) {
-		/* pr_info("this device use byte address!!\n"); */
+		/* pr_debug("this device use byte address!!\n"); */
 		msdc_cmd.arg <<= 9;
 	}
 	msdc_cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC;
@@ -1383,7 +1383,7 @@ static int multi_rw_compare_core(int host_num, int read, uint address,
 	/* compare */
 	for (forIndex = 0; forIndex < MSDC_MULTI_BUF_LEN; forIndex++) {
 		if (rPtr[forIndex] != wData[forIndex % wData_len]) {
-			pr_info("index[%d]\tW_buffer[0x%x]\tR_buffer[0x%x]\tfailed\n",
+			pr_debug("index[%d]\tW_buffer[0x%x]\tR_buffer[0x%x]\tfailed\n",
 				forIndex, wData[forIndex % wData_len],
 				rPtr[forIndex]);
 			result = -1;
@@ -1396,7 +1396,7 @@ skip_check:
 		pr_debug("[MSDC_DBG] turn on cmdq\n");
 		ret = mmc_cmdq_enable(host_ctl->mmc->card);
 		if (ret)
-			pr_notice("[MSDC_DBG] turn on cmdq en failed\n");
+			pr_debug("[MSDC_DBG] turn on cmdq en failed\n");
 	}
 #endif
 
@@ -1437,7 +1437,7 @@ int multi_rw_compare(struct seq_file *m, int host_num,
 				seq_printf(m, "[%s]: failed to write data, error=%d\n",
 					__func__, error);
 			else
-				pr_info("[%s]: failed to write data, error=%d\n",
+				pr_debug("[%s]: failed to write data, error=%d\n",
 				__func__, error);
 			goto skip_read;
 		}
@@ -1450,7 +1450,7 @@ int multi_rw_compare(struct seq_file *m, int host_num,
 				seq_printf(m, "[%s]: failed to read data, error=%d\n",
 				__func__, error);
 			else
-				pr_notice("[%s]: failed to read data, error=%d\n",
+				pr_debug("[%s]: failed to read data, error=%d\n",
 				__func__, error);
 		}
 
@@ -1460,7 +1460,7 @@ skip_read:
 				task_cpu(current), current->pid,
 				(error ? "FAILED" : "FINISH"), i);
 		else
-			pr_info("== cpu[%d] pid[%d]: %s %d time compare ==\n",
+			pr_debug("== cpu[%d] pid[%d]: %s %d time compare ==\n",
 				task_cpu(current), current->pid,
 				(error ? "FAILED" : "FINISH"), i);
 
@@ -1474,7 +1474,7 @@ skip_read:
 			seq_printf(m, "pid[%d]: success to compare data for %d times\n",
 				current->pid, count);
 		else
-			pr_info("pid[%d]: success to compare data for %d times\n",
+			pr_debug("pid[%d]: success to compare data for %d times\n",
 				current->pid, count);
 	}
 
@@ -1554,15 +1554,15 @@ static int write_read_thread(void *ptr)
 	struct seq_file *m = data->m;
 
 	if (data->host_id == 1) {
-		pr_info("sd thread start\n");
+		pr_debug("sd thread start\n");
 		multi_rw_compare(m, data->host_id, data->start_address,
 			data->count, MMC_TYPE_SD, 1);
-		pr_info("sd thread %d end\n", current->pid);
+		pr_debug("sd thread %d end\n", current->pid);
 	} else if (data->host_id == 0) {
-		pr_info("emmc thread %d start\n", current->pid);
+		pr_debug("emmc thread %d start\n", current->pid);
 		multi_rw_compare(m, data->host_id, data->start_address,
 			data->count, MMC_TYPE_MMC, 1);
-		pr_info("emmc thread %d end\n", current->pid);
+		pr_debug("emmc thread %d end\n", current->pid);
 	}
 	return 0;
 }
@@ -1815,7 +1815,7 @@ static int rwThread(void *data)
 	int read;
 	uint type = 0, address = 0;
 
-	pr_info("[****SD_rwThread****]id=%d, mode=%d\n", id, mode);
+	pr_debug("[****SD_rwThread****]id=%d, mode=%d\n", id, mode);
 
 	if (mode == 1)
 		read = 1;
@@ -1840,19 +1840,19 @@ static int rwThread(void *data)
 
 		error = multi_rw_compare_core(id, read, address, type, 0);
 		if (error) {
-			pr_notice("[%s]: failed data id0, error=%d\n",
+			pr_debug("[%s]: failed data id0, error=%d\n",
 				__func__, error);
 				break;
 		}
 
 		i++;
 		if (i == 10000) {
-			pr_info("[***%s: %s***]", __func__,
+			pr_debug("[***%s: %s***]", __func__,
 				read_write_state == 1 ? "read" : "write");
 			i = 0;
 		}
 	}
-	pr_info("[SD_Debug]%s exit\n", __func__);
+	pr_debug("[SD_Debug]%s exit\n", __func__);
 	return 0;
 }
 
@@ -1865,35 +1865,35 @@ void msdc_dump_gpd_bd(int id)
 	struct bd_t *bd;
 
 	if (id < 0 || id >= HOST_MAX_NUM) {
-		pr_notice("[%s]: invalid host id: %d\n", __func__, id);
+		pr_debug("[%s]: invalid host id: %d\n", __func__, id);
 		return;
 	}
 
 	host = mtk_msdc_host[id];
 	if (host == NULL) {
-		pr_notice("[%s]: host0 or host0->dma is NULL\n", __func__);
+		pr_debug("[%s]: host0 or host0->dma is NULL\n", __func__);
 		return;
 	}
 	gpd = host->dma.gpd;
 	bd  = host->dma.bd;
 
-	pr_notice("================MSDC GPD INFO ==================\n");
+	pr_debug("================MSDC GPD INFO ==================\n");
 	if (gpd == NULL) {
-		pr_notice("GPD is NULL\n");
+		pr_debug("GPD is NULL\n");
 	} else {
 #ifdef CONFIG_ARM64
-		pr_notice("    GPD ADDR     HO BD RS CS INT RS NH4 PH4   NEXT     PTR    BUFLEN EXTL\n");
-		pr_notice("================ == == == == === == === === ======== ======== ====== ====\n");
-		pr_notice("%16llx %2x %2x %2x %2x %3x %2x %3x %3x %8x %8x %6x %4x\n",
+		pr_debug("    GPD ADDR     HO BD RS CS INT RS NH4 PH4   NEXT     PTR    BUFLEN EXTL\n");
+		pr_debug("================ == == == == === == === === ======== ======== ====== ====\n");
+		pr_debug("%16llx %2x %2x %2x %2x %3x %2x %3x %3x %8x %8x %6x %4x\n",
 			host->dma.gpd_addr,
 			gpd->hwo, gpd->bdp, gpd->rsv0, gpd->chksum, gpd->intr,
 			gpd->rsv1, (unsigned int)gpd->nexth4,
 			(unsigned int)gpd->ptrh4, (unsigned int)gpd->next,
 			(unsigned int)gpd->ptr, gpd->buflen, gpd->extlen);
 #else
-		pr_notice("  ADDR   HO BD RS CS INT RS NH4 PH4   NEXT     PTR    BUFLEN EXTL\n");
-		pr_notice("======== == == == == === == === === ======== ======== ====== ====\n");
-		pr_notice("%8x %2x %2x %2x %2x %3x %2x %3x %3x %8x %8x %6x %4x\n",
+		pr_debug("  ADDR   HO BD RS CS INT RS NH4 PH4   NEXT     PTR    BUFLEN EXTL\n");
+		pr_debug("======== == == == == === == === === ======== ======== ====== ====\n");
+		pr_debug("%8x %2x %2x %2x %2x %3x %2x %3x %3x %8x %8x %6x %4x\n",
 			(unsigned int)host->dma.gpd_addr,
 			gpd->hwo, gpd->bdp, gpd->rsv0, gpd->chksum, gpd->intr,
 			gpd->rsv1, (unsigned int)gpd->nexth4,
@@ -1901,16 +1901,16 @@ void msdc_dump_gpd_bd(int id)
 			(unsigned int)gpd->ptr, gpd->buflen, gpd->extlen);
 #endif
 	}
-	pr_notice("================MSDC BD INFO ===================\n");
+	pr_debug("================MSDC BD INFO ===================\n");
 	if (bd == NULL) {
-		pr_notice("BD is NULL\n");
+		pr_debug("BD is NULL\n");
 	} else {
 #ifdef CONFIG_ARM64
-		pr_notice("BD#      BD ADDR      EL RS CS RS PAD RS NH4 PH4   NEXT     PTR    BUFLEN RS\n");
-		pr_notice("==== ================ == == == == === == === === ======== ======== ====== ==\n");
+		pr_debug("BD#      BD ADDR      EL RS CS RS PAD RS NH4 PH4   NEXT     PTR    BUFLEN RS\n");
+		pr_debug("==== ================ == == == == === == === === ======== ======== ====== ==\n");
 #else
-		pr_notice("BD#  BD ADDR  EL RS CS RS PAD RS NH4 PH4   NEXT     PTR    BUFLEN RS\n");
-		pr_notice("==== ======== == == == == === == === === ======== ======== ====== ==\n");
+		pr_debug("BD#  BD ADDR  EL RS CS RS PAD RS NH4 PH4   NEXT     PTR    BUFLEN RS\n");
+		pr_debug("==== ======== == == == == === == === === ======== ======== ====== ==\n");
 #endif
 		for (i = 0; i < host->dma.sglen; i++) {
 			cptr = (u8 *)bd;
@@ -1924,7 +1924,7 @@ void msdc_dump_gpd_bd(int id)
 			if (k == bd->chksum)
 				continue;
 #ifdef CONFIG_ARM64
-			pr_notice("%4d %16llx %2x %2x %2x %2x %x,%x %2x %3x %3x %8x %8x %6x %2x -> cs error: %2x\n",
+			pr_debug("%4d %16llx %2x %2x %2x %2x %x,%x %2x %3x %3x %8x %8x %6x %2x -> cs error: %2x\n",
 				i, host->dma.bd_addr,
 				bd->eol, bd->rsv0, bd->chksum, bd->rsv1,
 				bd->blkpad, bd->dwpad, bd->rsv2,
@@ -1933,7 +1933,7 @@ void msdc_dump_gpd_bd(int id)
 				(unsigned int)bd->ptr, bd->buflen, bd->rsv3,
 				k);
 #else
-			pr_notice("%4d %8x %2x %2x %2x %2x %x,%x %2x %3x %3x %8x %8x %6x %2x -> cs error: %2x\n",
+			pr_debug("%4d %8x %2x %2x %2x %2x %x,%x %2x %3x %3x %8x %8x %6x %2x -> cs error: %2x\n",
 				i, (unsigned int)host->dma.bd_addr,
 				bd->eol, bd->rsv0, bd->chksum, bd->rsv1,
 				bd->blkpad, bd->dwpad, bd->rsv2,
@@ -2076,7 +2076,7 @@ void msdc_error_tune_debug1(struct msdc_host *host, struct mmc_command *cmd,
 			*intsts = MSDC_INT_RSPCRCERR;
 			g_err_tune_dbg_count--;
 		}
-		pr_notice("[%s]: got the error cmd:%d, arg=%d, dbg error=%d, cmd->error=%d, count=%d\n",
+		pr_debug("[%s]: got the error cmd:%d, arg=%d, dbg error=%d, cmd->error=%d, count=%d\n",
 			__func__, g_err_tune_dbg_cmd, g_err_tune_dbg_arg,
 			g_err_tune_dbg_error, cmd->error, g_err_tune_dbg_count);
 	}
@@ -2092,7 +2092,7 @@ check_sbc:
 			*intsts = MSDC_INT_ACMDCRCERR;
 		else
 			return;
-		pr_notice("[%s]: got the error cmd:%d, dbg error=%d, sbc->error=%d, count=%d\n",
+		pr_debug("[%s]: got the error cmd:%d, dbg error=%d, sbc->error=%d, count=%d\n",
 			__func__, g_err_tune_dbg_cmd, g_err_tune_dbg_error,
 			sbc->error, g_err_tune_dbg_count);
 	}
@@ -2118,7 +2118,7 @@ void msdc_error_tune_debug2(struct msdc_host *host, struct mmc_command *stop,
 			*intsts = MSDC_INT_DATCRCERR;
 			g_err_tune_dbg_count--;
 		}
-		pr_notice("[%s]: got the error cmd:%d, dbg error 0x%x, data->error=%d, count=%d\n",
+		pr_debug("[%s]: got the error cmd:%d, dbg error 0x%x, data->error=%d, count=%d\n",
 			__func__, g_err_tune_dbg_cmd, g_err_tune_dbg_error,
 			host->data->error, g_err_tune_dbg_count);
 	}
@@ -2132,7 +2132,7 @@ void msdc_error_tune_debug2(struct msdc_host *host, struct mmc_command *stop,
 			*intsts = MSDC_INT_ACMDCRCERR;
 			g_err_tune_dbg_count--;
 		}
-		pr_notice("[%s]: got the error cmd:%d, dbg error 0x%x, stop->error=%d, host->error=%d, count=%d\n",
+		pr_debug("[%s]: got the error cmd:%d, dbg error 0x%x, stop->error=%d, host->error=%d, count=%d\n",
 			__func__, g_err_tune_dbg_cmd, g_err_tune_dbg_error,
 			stop->error, host->error, g_err_tune_dbg_count);
 	}
@@ -2667,7 +2667,7 @@ static int msdc_debug_proc_show(struct seq_file *m, void *v)
 			MSDC_SET_FIELD(MSDC_IOCON, MSDC_IOCON_RSPL, 1);
 			MSDC_SET_FIELD(MSDC_PAD_TUNE0,
 				MSDC_PAD_TUNE0_CMDRDLY, p2);
-			pr_notice("[****MMC_CRC_STRESS****] CMDRDLY<%d>\n", p2);
+			pr_debug("[****MMC_CRC_STRESS****] CMDRDLY<%d>\n", p2);
 		}
 	}
 #ifdef MTK_MMC_SDIO_DEBUG
@@ -2676,7 +2676,7 @@ static int msdc_debug_proc_show(struct seq_file *m, void *v)
 		vcore = p2;
 		mode = p3;
 		host = mtk_msdc_host[id];
-		/* pr_info("[****AutoK test****]msdc host_id<%d>
+		/* pr_debug("[****AutoK test****]msdc host_id<%d>
 		 * vcore<%d> mode<%d>\n", id, vcore, mode);
 		 */
 
@@ -2686,7 +2686,7 @@ static int msdc_debug_proc_show(struct seq_file *m, void *v)
 
 		if (mode == 0) {
 			if (sdio_autok_res_apply(host, vcore) != 0)
-				pr_notice("sdio autok result not exist!\n");
+				pr_debug("sdio autok result not exist!\n");
 		} else if (mode == 1) {
 			sdio_autok_res_save(host, vcore, res);
 		} else if (mode == 2) {
@@ -2859,7 +2859,7 @@ static int msdc_ext_csd_show(struct seq_file *m, void *v)
 		pr_debug("[%s] cmdq enabled, turn it off\n", __func__);
 		ret = mmc_cmdq_disable(card);
 		if (ret) {
-			pr_notice("[%s] turn off cmdq en failed\n", __func__);
+			pr_debug("[%s] turn off cmdq en failed\n", __func__);
 			mmc_put_card(card, NULL);
 			return 0;
 		}
@@ -2873,13 +2873,13 @@ static int msdc_ext_csd_show(struct seq_file *m, void *v)
 		pr_debug("[%s] turn on cmdq\n", __func__);
 		ret = mmc_cmdq_enable(card);
 		if (ret)
-			pr_notice("[%s] turn on cmdq en failed\n", __func__);
+			pr_debug("[%s] turn on cmdq en failed\n", __func__);
 	}
 #endif
 
 	mmc_put_card(card, NULL);
 	if (err) {
-		pr_notice("[%s ]mmc_get_ext_csd failed!\n", __func__);
+		pr_debug("[%s ]mmc_get_ext_csd failed!\n", __func__);
 		kfree(ext_csd);
 		return 0;
 	}
@@ -2970,7 +2970,7 @@ int msdc_debug_proc_init_bootdevice(void)
 	bootdevice_dir = proc_mkdir("bootdevice", NULL);
 
 	if (!bootdevice_dir) {
-		pr_notice("[%s]: failed to create /proc/bootdevice\n",
+		pr_debug("[%s]: failed to create /proc/bootdevice\n",
 			__func__);
 		return -1;
 	}
@@ -2981,7 +2981,7 @@ int msdc_debug_proc_init_bootdevice(void)
 			bootdevice_dir, proc_fops_list[i]);
 		if (prEntry)
 			continue;
-		pr_notice(
+		pr_debug(
 			"[%s]: failed to create /proc/bootdevice/%s\n",
 			__func__, msdc_proc_list[i]);
 	}
@@ -3003,19 +3003,19 @@ int msdc_debug_proc_init(void)
 	if (prEntry)
 		proc_set_user(prEntry, uid, gid);
 	else
-		pr_notice("[%s]: failed to create /proc/msdc_debug\n",
+		pr_debug("[%s]: failed to create /proc/msdc_debug\n",
 			__func__);
 
 	prEntry = proc_create("msdc_help", PROC_PERM, NULL, &msdc_help_fops);
 
 	if (!prEntry)
-		pr_notice("[%s]: failed to create /proc/msdc_help\n", __func__);
+		pr_debug("[%s]: failed to create /proc/msdc_help\n", __func__);
 
 	prEntry = proc_create("sdcard_intr_gpio_value", 0440, NULL,
 				&sdcard_intr_gpio_value_fops);
 
 	if (!prEntry)
-		pr_notice("[%s]: failed to create /proc/sdcard_intr_gpio_value\n",
+		pr_debug("[%s]: failed to create /proc/sdcard_intr_gpio_value\n",
 			__func__);
 
 #ifdef MSDC_DMA_ADDR_DEBUG
@@ -3026,12 +3026,12 @@ int msdc_debug_proc_init(void)
 #else
 int msdc_debug_proc_init_bootdevice(void)
 {
-	pr_notice("[%s]: CONFIG_MTK_MMC_DEBUG is not set\n", __func__);
+	pr_debug("[%s]: CONFIG_MTK_MMC_DEBUG is not set\n", __func__);
 	return 0;
 }
 int msdc_debug_proc_init(void)
 {
-	pr_notice("[%s]: CONFIG_MTK_MMC_DEBUG is not set\n", __func__);
+	pr_debug("[%s]: CONFIG_MTK_MMC_DEBUG is not set\n", __func__);
 	return 0;
 }
 #endif

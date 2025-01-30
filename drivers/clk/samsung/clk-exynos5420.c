@@ -327,7 +327,7 @@ static void __init exynos5420_clk_sleep_init(void)
 	exynos5x_save = samsung_clk_alloc_reg_dump(exynos5x_clk_regs,
 					ARRAY_SIZE(exynos5x_clk_regs));
 	if (!exynos5x_save) {
-		pr_warn("%s: failed to allocate sleep save data, no sleep support!\n",
+		pr_debug("%s: failed to allocate sleep save data, no sleep support!\n",
 			__func__);
 		return;
 	}
@@ -344,7 +344,7 @@ static void __init exynos5420_clk_sleep_init(void)
 	return;
 err_soc:
 	kfree(exynos5x_save);
-	pr_warn("%s: failed to allocate sleep save data, no sleep support!\n",
+	pr_debug("%s: failed to allocate sleep save data, no sleep support!\n",
 		__func__);
 	return;
 }

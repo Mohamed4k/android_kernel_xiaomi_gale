@@ -1828,7 +1828,7 @@ static int vpu_probe(struct platform_device *pdev)
 		/* Get IRQ Flag from device node */
 		if (of_property_read_u32_array(pdev->dev.of_node,
 				"interrupts", irq_info, ARRAY_SIZE(irq_info))) {
-			dev_info(&pdev->dev, "get irq flags from DTS fail!!\n");
+			dev_dbg(&pdev->dev, "get irq flags from DTS fail!!\n");
 			return -ENODEV;
 		}
 		vpu_device->irq_trig_level = irq_info[2];
@@ -1856,7 +1856,7 @@ static int vpu_probe(struct platform_device *pdev)
 		/* Register char driver */
 		ret = vpu_reg_chardev();
 		if (ret) {
-			dev_info(&pdev->dev, "register char failed");
+			dev_dbg(&pdev->dev, "register char failed");
 			return ret;
 		}
 		/* Create class register */
@@ -1871,7 +1871,7 @@ static int vpu_probe(struct platform_device *pdev)
 					NULL, VPU_DEV_NAME);
 		if (IS_ERR(dev)) {
 			ret = PTR_ERR(dev);
-			dev_info(&pdev->dev, "Failed to create device: /dev/%s, err = %d",
+			dev_dbg(&pdev->dev, "Failed to create device: /dev/%s, err = %d",
 				VPU_DEV_NAME, ret);
 			goto out;
 		}

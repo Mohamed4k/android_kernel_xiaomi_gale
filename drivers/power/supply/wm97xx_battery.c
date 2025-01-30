@@ -224,7 +224,7 @@ static int wm97xx_bat_probe(struct platform_device *dev)
 	INIT_WORK(&bat_work, wm97xx_bat_work);
 
 	if (!pdata->batt_name) {
-		dev_info(&dev->dev, "Please consider setting proper battery "
+		dev_dbg(&dev->dev, "Please consider setting proper battery "
 				"name in platform definition file, falling "
 				"back to name \"wm97xx-batt\"\n");
 		bat_psy_desc.name = "wm97xx-batt";

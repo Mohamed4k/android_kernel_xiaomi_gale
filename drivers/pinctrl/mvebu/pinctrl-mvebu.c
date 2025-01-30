@@ -743,7 +743,7 @@ int mvebu_pinctrl_probe(struct platform_device *pdev)
 		return PTR_ERR(pctl->pctldev);
 	}
 
-	dev_info(&pdev->dev, "registered pinctrl driver\n");
+	dev_dbg(&pdev->dev, "registered pinctrl driver\n");
 
 	/* register gpio ranges */
 	for (n = 0; n < soc->ngpioranges; n++)

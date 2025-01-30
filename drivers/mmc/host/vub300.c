@@ -511,7 +511,7 @@ static void new_system_port_status(struct vub300_mmc_host *vub300)
 	vub300->read_only =
 		(0x0010 & vub300->system_port_status.port_flags) ? 1 : 0;
 	if (new_card_present && !old_card_present) {
-		dev_info(&vub300->udev->dev, "card just inserted\n");
+		dev_dbg(&vub300->udev->dev, "card just inserted\n");
 		vub300->card_present = 1;
 		vub300->bus_width = 0;
 		if (disable_offload_processing)
@@ -521,7 +521,7 @@ static void new_system_port_status(struct vub300_mmc_host *vub300)
 			vub300->vub_name[0] = 0;
 		mmc_detect_change(vub300->mmc, 1);
 	} else if (!new_card_present && old_card_present) {
-		dev_info(&vub300->udev->dev, "card just ejected\n");
+		dev_dbg(&vub300->udev->dev, "card just ejected\n");
 		vub300->card_present = 0;
 		mmc_detect_change(vub300->mmc, 0);
 	} else {
@@ -1208,12 +1208,12 @@ static void __download_offload_pseudocode(struct vub300_mmc_host *vub300,
 	const u8 *data = fw->data;
 	int size = fw->size;
 	u8 c;
-	dev_info(&vub300->udev->dev, "using %s for SDIO offload processing\n",
+	dev_dbg(&vub300->udev->dev, "using %s for SDIO offload processing\n",
 		 vub300->vub_name);
 	do {
 		c = *data++;
 	} while (size-- && c); /* skip comment */
-	dev_info(&vub300->udev->dev, "using offload firmware %s %s\n", fw->data,
+	dev_dbg(&vub300->udev->dev, "using offload firmware %s %s\n", fw->data,
 		 vub300->vub_name);
 	if (size < 4) {
 		dev_err(&vub300->udev->dev,
@@ -1331,7 +1331,7 @@ static void __download_offload_pseudocode(struct vub300_mmc_host *vub300,
 			vub300->sdio_register[i].prepared = 0;
 			i += 1;
 		}
-		dev_info(&vub300->udev->dev,
+		dev_dbg(&vub300->udev->dev,
 			 "initialized %d dynamic pseudocode registers\n",
 			 vub300->dynamic_register_count);
 		return;
@@ -1371,7 +1371,7 @@ static void download_offload_pseudocode(struct vub300_mmc_host *vub300)
 			      sf->vendor, sf->device);
 	}
 	snprintf(vub300->vub_name + l, sizeof(vub300->vub_name) - l, ".bin");
-	dev_info(&vub300->udev->dev, "requesting offload firmware %s\n",
+	dev_dbg(&vub300->udev->dev, "requesting offload firmware %s\n",
 		 vub300->vub_name);
 	retval = request_firmware(&fw, vub300->vub_name, &card->dev);
 	if (retval < 0) {
@@ -2076,7 +2076,7 @@ static void vub300_enable_sdio_irq(struct mmc_host *mmc, int enable)
 static void vub300_init_card(struct mmc_host *mmc, struct mmc_card *card)
 {				/* NOT irq */
 	struct vub300_mmc_host *vub300 = mmc_priv(mmc);
-	dev_info(&vub300->udev->dev, "NO host QUIRKS for this card\n");
+	dev_dbg(&vub300->udev->dev, "NO host QUIRKS for this card\n");
 }
 
 static const struct mmc_host_ops vub300_mmc_ops = {
@@ -2106,7 +2106,7 @@ static int vub300_probe(struct usb_interface *interface,
 	usb_string(udev, udev->descriptor.iProduct, product, sizeof(product));
 	usb_string(udev, udev->descriptor.iSerialNumber, serial_number,
 		   sizeof(serial_number));
-	dev_info(&udev->dev, "probing VID:PID(%04X:%04X) %s %s %s\n",
+	dev_dbg(&udev->dev, "probing VID:PID(%04X:%04X) %s %s %s\n",
 		 le16_to_cpu(udev->descriptor.idVendor),
 		 le16_to_cpu(udev->descriptor.idProduct),
 		 manufacturer, product, serial_number);
@@ -2143,7 +2143,7 @@ static int vub300_probe(struct usb_interface *interface,
 		mmc->caps |= MMC_CAP_MMC_HIGHSPEED;
 		mmc->caps |= MMC_CAP_SD_HIGHSPEED;
 		mmc->f_max = 24000000;
-		dev_info(&udev->dev, "limiting SDIO speed to 24_MHz\n");
+		dev_dbg(&udev->dev, "limiting SDIO speed to 24_MHz\n");
 	} else {
 		mmc->caps |= MMC_CAP_MMC_HIGHSPEED;
 		mmc->caps |= MMC_CAP_SD_HIGHSPEED;
@@ -2228,7 +2228,7 @@ static int vub300_probe(struct usb_interface *interface,
 	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
 		struct usb_endpoint_descriptor *endpoint =
 			&iface_desc->endpoint[i].desc;
-		dev_info(&vub300->udev->dev,
+		dev_dbg(&vub300->udev->dev,
 			 "vub300 testing %s EndPoint(%d) %02X\n",
 			 usb_endpoint_is_bulk_in(endpoint) ? "BULK IN" :
 			 usb_endpoint_is_bulk_out(endpoint) ? "BULK OUT" :
@@ -2267,7 +2267,7 @@ static int vub300_probe(struct usb_interface *interface,
 	}
 	if (vub300->cmnd_res_ep && vub300->cmnd_out_ep &&
 	    vub300->data_inp_ep && vub300->data_out_ep) {
-		dev_info(&vub300->udev->dev,
+		dev_dbg(&vub300->udev->dev,
 			 "vub300 %s packets"
 			 " using EndPoints %02X %02X %02X %02X\n",
 			 vub300->large_usb_packets ? "LARGE" : "SMALL",
@@ -2295,7 +2295,7 @@ static int vub300_probe(struct usb_interface *interface,
 				firmware_rom_wait_states, 0x0000, NULL, 0, HZ);
 	if (retval < 0)
 		goto error5;
-	dev_info(&vub300->udev->dev,
+	dev_dbg(&vub300->udev->dev,
 		 "operating_mode = %s %s %d MHz %s %d byte USB packets\n",
 		 (mmc->caps & MMC_CAP_SDIO_IRQ) ? "IRQs" : "POLL",
 		 (mmc->caps & MMC_CAP_4_BIT_DATA) ? "4-bit" : "1-bit",
@@ -2330,12 +2330,12 @@ static int vub300_probe(struct usb_interface *interface,
 	vub300->inactivity_timer.expires = jiffies + HZ;
 	add_timer(&vub300->inactivity_timer);
 	if (vub300->card_present)
-		dev_info(&vub300->udev->dev,
+		dev_dbg(&vub300->udev->dev,
 			 "USB vub300 remote SDIO host controller[%d]"
 			 "connected with SD/SDIO card inserted\n",
 			 interface_to_InterfaceNumber(interface));
 	else
-		dev_info(&vub300->udev->dev,
+		dev_dbg(&vub300->udev->dev,
 			 "USB vub300 remote SDIO host controller[%d]"
 			 "connected with no SD/SDIO card inserted\n",
 			 interface_to_InterfaceNumber(interface));
@@ -2372,7 +2372,7 @@ static void vub300_disconnect(struct usb_interface *interface)
 			vub300->interface = NULL;
 			kref_put(&vub300->kref, vub300_delete);
 			mmc_remove_host(mmc);
-			pr_info("USB vub300 remote SDIO host controller[%d]"
+			pr_debug("USB vub300 remote SDIO host controller[%d]"
 				" now disconnected", ifnum);
 			return;
 		}
@@ -2425,7 +2425,7 @@ static int __init vub300_init(void)
 {				/* NOT irq */
 	int result;
 
-	pr_info("VUB300 Driver rom wait states = %02X irqpoll timeout = %04X",
+	pr_debug("VUB300 Driver rom wait states = %02X irqpoll timeout = %04X",
 		firmware_rom_wait_states, 0x0FFFF & firmware_irqpoll_timeout);
 	cmndworkqueue = create_singlethread_workqueue("kvub300c");
 	if (!cmndworkqueue) {

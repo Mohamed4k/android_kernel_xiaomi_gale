@@ -876,7 +876,7 @@ static void bq24257_pg_gpio_probe(struct bq24257_device *bq)
 	bq->pg = devm_gpiod_get_optional(bq->dev, BQ24257_PG_GPIO, GPIOD_IN);
 
 	if (PTR_ERR(bq->pg) == -EPROBE_DEFER) {
-		dev_info(bq->dev, "probe retry requested for PG pin\n");
+		dev_dbg(bq->dev, "probe retry requested for PG pin\n");
 		return;
 	} else if (IS_ERR(bq->pg)) {
 		dev_err(bq->dev, "error probing PG pin\n");
@@ -1046,7 +1046,7 @@ static int bq24257_probe(struct i2c_client *client,
 	if (PTR_ERR(bq->pg) == -EPROBE_DEFER)
 		return PTR_ERR(bq->pg);
 	else if (!bq->pg)
-		dev_info(bq->dev, "using SW-based power-good detection\n");
+		dev_dbg(bq->dev, "using SW-based power-good detection\n");
 
 	/* reset all registers to defaults */
 	ret = bq24257_field_write(bq, F_RESET, 1);

@@ -1786,7 +1786,7 @@ static int xgene_enet_get_resources(struct xgene_enet_pdata *pdata)
 			if (PTR_ERR(pdata->clk) != -ENOENT || dev->of_node)
 				return PTR_ERR(pdata->clk);
 			/* Firmware may have set up the clock already. */
-			dev_info(dev, "clocks have been setup already\n");
+			dev_dbg(dev, "clocks have been setup already\n");
 		}
 	}
 

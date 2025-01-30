@@ -27,21 +27,21 @@ static int read_timeout_handler(unsigned long addr,
 	/* avoid nested hit */
 	if (readl(IOMEM(BUS_DBG_CON)) &
 		(BUS_DBG_CON_IRQ_WP_STA | BUS_DBG_CON_IRQ_WP_RD_STA)) {
-		pr_notice("%s:%d: WP_TRACKER hit\n", __func__, __LINE__);
+		pr_debug("%s:%d: WP_TRACKER hit\n", __func__, __LINE__);
 		systracker_watchpoint_disable();
 	} else
-		pr_notice("%s:%d: read timeout\n", __func__, __LINE__);
+		pr_debug("%s:%d: read timeout\n", __func__, __LINE__);
 
 	aee_dump_backtrace(regs, NULL);
 
 	if (readl(IOMEM(BUS_DBG_CON)) &
 		(BUS_DBG_CON_IRQ_AR_STA0|BUS_DBG_CON_IRQ_AR_STA1)) {
 		for (i = 0; i < 32; i++) {
-			pr_notice("AR_TRACKER Timeout Entry[%d]: ReadAddr:0x%x,",
+			pr_debug("AR_TRACKER Timeout Entry[%d]: ReadAddr:0x%x,",
 			       i,
 			       readl(IOMEM(BUS_DBG_AR_TRACK_L(i))));
 
-			pr_notice("Length:0x%x, TransactionID:0x%x!\n",
+			pr_debug("Length:0x%x, TransactionID:0x%x!\n",
 			       readl(IOMEM(BUS_DBG_AR_TRACK_H(i))),
 			       readl(IOMEM(BUS_DBG_AR_TRANS_TID(i))));
 		}
@@ -61,7 +61,7 @@ static void write_timeout_handler(struct pt_regs *regs, void *priv)
 	/* avoid nested hit */
 	if (readl(IOMEM(BUS_DBG_CON)) &
 		(BUS_DBG_CON_IRQ_WP_STA | BUS_DBG_CON_IRQ_WP_RD_STA)) {
-		pr_notice("%s:%d: WP_TRACKER hit\n", __func__, __LINE__);
+		pr_debug("%s:%d: WP_TRACKER hit\n", __func__, __LINE__);
 		systracker_watchpoint_disable();
 	} else
 		pr_debug("%s:%d: write timeout\n", __func__, __LINE__);
@@ -71,15 +71,15 @@ static void write_timeout_handler(struct pt_regs *regs, void *priv)
 	if (readl(IOMEM(BUS_DBG_CON)) &
 		((BUS_DBG_CON_IRQ_AW_STA0|BUS_DBG_CON_IRQ_AW_STA1))) {
 		for (i = 0; i < 32; i++) {
-			pr_notice("AW_TRACKER Timeout Entry[%d]: WriteAddr:0x%x, ",
+			pr_debug("AW_TRACKER Timeout Entry[%d]: WriteAddr:0x%x, ",
 			       i,
 			       readl(IOMEM(BUS_DBG_AW_TRACK_L(i))));
-			pr_notice("Length:0x%x, TransactionID:0x%x!\n",
+			pr_debug("Length:0x%x, TransactionID:0x%x!\n",
 			       readl(IOMEM(BUS_DBG_AW_TRACK_H(i))),
 			       readl(IOMEM(BUS_DBG_AW_TRANS_TID(i))));
 		}
 
-		pr_notice("W_TRACK_DATA6:0x%x, W_TRACK_DATA7:0x%x, W_TRACK_DATA_VALID:0x%x!\n",
+		pr_debug("W_TRACK_DATA6:0x%x, W_TRACK_DATA7:0x%x, W_TRACK_DATA_VALID:0x%x!\n",
 			       readl(IOMEM(BUS_DBG_W_TRACK_DATA6)),
 			       readl(IOMEM(BUS_DBG_W_TRACK_DATA7)),
 			       readl(IOMEM(BUS_DBG_W_TRACK_DATA_VALID)));
@@ -100,7 +100,7 @@ static int systracker_platform_hook_fault(void)
 	/* for 64bit, we should register async abort handler */
 	ret = register_async_abort_handler(write_timeout_handler, NULL);
 	if (ret) {
-		pr_notice("%s:%d: register_async_abort_handler failed\n",
+		pr_debug("%s:%d: register_async_abort_handler failed\n",
 			__func__,
 			__LINE__);
 		return -1;
@@ -121,7 +121,7 @@ int systracker_handler(unsigned long addr,
 
 	/* avoid nested hit */
 	if (readl(IOMEM(BUS_DBG_CON)) & BUS_DBG_CON_IRQ_WP_STA) {
-		pr_notice("%s:%d: WP_TRACKER hit\n", __func__, __LINE__);
+		pr_debug("%s:%d: WP_TRACKER hit\n", __func__, __LINE__);
 		systracker_watchpoint_disable();
 	}
 
@@ -129,10 +129,10 @@ int systracker_handler(unsigned long addr,
 	if (readl(IOMEM(BUS_DBG_CON)) &
 		(BUS_DBG_CON_IRQ_AR_STA0|BUS_DBG_CON_IRQ_AR_STA1)) {
 		for (i = 0; i < BUS_DBG_NUM_TRACKER; i++) {
-			pr_notice("AR_TRACKER Timeout Entry[%d]: ReadAddr:0x%x, ",
+			pr_debug("AR_TRACKER Timeout Entry[%d]: ReadAddr:0x%x, ",
 			       i,
 			       readl(IOMEM(BUS_DBG_AR_TRACK_L(i))));
-			pr_notice("Length:0x%x, TransactionID:0x%x!\n",
+			pr_debug("Length:0x%x, TransactionID:0x%x!\n",
 			       readl(IOMEM(BUS_DBG_AR_TRACK_H(i))),
 			       readl(IOMEM(BUS_DBG_AR_TRANS_TID(i))));
 		}
@@ -141,15 +141,15 @@ int systracker_handler(unsigned long addr,
 	if (readl(IOMEM(BUS_DBG_CON)) &
 		(BUS_DBG_CON_IRQ_AW_STA0|BUS_DBG_CON_IRQ_AW_STA1)) {
 		for (i = 0; i < BUS_DBG_NUM_TRACKER; i++) {
-			pr_notice("AW_TRACKER Timeout Entry[%d]: WriteAddr:0x%x, ",
+			pr_debug("AW_TRACKER Timeout Entry[%d]: WriteAddr:0x%x, ",
 			       i,
 			       readl(IOMEM(BUS_DBG_AW_TRACK_L(i))));
-			pr_notice("Length:0x%x, TransactionID:0x%x!\n",
+			pr_debug("Length:0x%x, TransactionID:0x%x!\n",
 			       readl(IOMEM(BUS_DBG_AW_TRACK_H(i))),
 			       readl(IOMEM(BUS_DBG_AW_TRANS_TID(i))));
 		}
 
-		pr_notice("W_TRACK_DATA6:0x%x, W_TRACK_DATA7:0x%x, W_TRACK_DATA_VALID:0x%x!\n",
+		pr_debug("W_TRACK_DATA6:0x%x, W_TRACK_DATA7:0x%x, W_TRACK_DATA_VALID:0x%x!\n",
 			       readl(IOMEM(BUS_DBG_W_TRACK_DATA6)),
 			       readl(IOMEM(BUS_DBG_W_TRACK_DATA7)),
 			       readl(IOMEM(BUS_DBG_W_TRACK_DATA_VALID)));
@@ -218,7 +218,7 @@ static void systracker_platform_wp_test(void)
 {
 	unsigned int val;
 
-	pr_info("%s:%d: we use ptr = 0x%p\n", __func__, __LINE__, wp_ptr);
+	pr_debug("%s:%d: we use ptr = 0x%p\n", __func__, __LINE__, wp_ptr);
 
 	systracker_set_watchpoint_addr(0x10219000);
 	systracker_set_watchpoint_mask(0x7fff);
@@ -227,7 +227,7 @@ static void systracker_platform_wp_test(void)
 	/* touch it */
 	val = readl(wp_ptr);
 
-	pr_info("after we touched watchpoint %x\n", val);
+	pr_debug("after we touched watchpoint %x\n", val);
 }
 
 static void systracker_platform_read_timeout_test(void)
@@ -238,7 +238,7 @@ static void systracker_platform_read_timeout_test(void)
 	 */
 	void __iomem *tmp = ioremap(0x13000000, 0x4);
 
-	pr_info("0x13000000=0x%x\n", readl(tmp));
+	pr_debug("0x13000000=0x%x\n", readl(tmp));
 }
 
 static void systracker_platform_write_timeout_test(void)
@@ -266,7 +266,7 @@ static void systracker_platform_notimeout_test(void)
 	/* read it, should cause bus hang */
 	readl(mm_area1);
 	/* never come back */
-	pr_notice("failed??\n");
+	pr_debug("failed??\n");
 }
 #endif
 /* end of SYSTRACKER_TEST_SUIT */

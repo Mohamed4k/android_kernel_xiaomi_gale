@@ -155,13 +155,13 @@ void mm_qos_update_larb_bwl(u32 larb_update, bool bw_change)
 		if (force_comm_bwl[comm][comm_port] != 0) {
 			larb_bw = force_comm_bwl[comm][comm_port];
 			if (log_level & 1 << log_bw)
-				pr_notice("force comm:%d port:%d bwl:%#x\n",
+				pr_debug("force comm:%d port:%d bwl:%#x\n",
 				comm, comm_port, larb_bw);
 		} else if (comm_port_limit[comm][comm_port]) {
 			larb_bw = (comm_port_limit[comm][comm_port] << 8)
 					/ freq[comm];
 			if (log_level & 1 << log_bw)
-				pr_notice("comm:%d port:%d bwl:%#x bw:%u\n",
+				pr_debug("comm:%d port:%d bwl:%#x bw:%u\n",
 				comm, comm_port, larb_bw,
 				comm_port_limit[comm][comm_port]);
 		}
@@ -361,7 +361,7 @@ static void simulate_dvfsrc(s32 next_hrt_bw)
 		(!is_up && next_opp > current_opp)) {
 		mtk_pm_qos_update_request(&ddr_request, next_opp);
 		if (log_level & 1 << log_bw)
-			pr_notice("up=%d copp=%d nopp=%d cbw=%d nbw=%d\n",
+			pr_debug("up=%d copp=%d nopp=%d cbw=%d nbw=%d\n",
 				is_up, current_opp, next_opp,
 				current_hrt_bw, next_hrt_bw);
 	}
@@ -394,7 +394,7 @@ static void log_hrt_bw_info(u32 master_id)
 #endif
 
 	if (log_level & 1 << log_bw)
-		pr_notice("%s larb=%d p1=%d ccu=%d disp=%d ddr_opp=%d\n",
+		pr_debug("%s larb=%d p1=%d ccu=%d disp=%d ddr_opp=%d\n",
 			__func__, SMI_PMQOS_LARB_DEC(master_id), p1_hrt_bw,
 			ccu_hrt_bw, disp_hrt_bw, ddr_opp);
 }
@@ -410,7 +410,7 @@ static void update_hrt_bw_to_dvfsrc(s32 next_hrt_bw)
 
 	mtk_pm_qos_update_request(&dvfsrc_isp_hrt_req, mm_used_hrt_bw);
 	if (log_level & 1 << log_bw)
-		pr_notice("%s report dvfsrc mm_hrt_bw=%d\n",
+		pr_debug("%s report dvfsrc mm_hrt_bw=%d\n",
 			__func__, mm_used_hrt_bw);
 #endif
 }
@@ -427,11 +427,11 @@ static void blocking_camera(void)
 {
 	u32 wait_result;
 
-	pr_notice("begin to blocking for camera_max_bw=%d\n", camera_max_bw);
+	pr_debug("begin to blocking for camera_max_bw=%d\n", camera_max_bw);
 	wait_result = wait_event_timeout(
 		hrt_wait, atomic_read(&lock_cam_count) == 0,
 		msecs_to_jiffies(WAIT_TIMEOUT_MS));
-	pr_notice("blocking wait_result=%d\n", wait_result);
+	pr_debug("blocking wait_result=%d\n", wait_result);
 }
 #endif
 
@@ -480,15 +480,15 @@ s32 mm_qos_add_request(struct plist_head *owner_list,
 	larb_id = SMI_PMQOS_LARB_DEC(smi_master_id);
 	port_id = SMI_PMQOS_PORT_MASK(smi_master_id);
 	if (!req) {
-		pr_notice("mm_add: Invalid req pointer\n");
+		pr_debug("mm_add: Invalid req pointer\n");
 		return -EINVAL;
 	}
 	if (larb_id >= MAX_LARB_COUNT || port_id >= MAX_PORT_COUNT) {
-		pr_notice("mm_add(0x%08x) Invalid master_id\n", smi_master_id);
+		pr_debug("mm_add(0x%08x) Invalid master_id\n", smi_master_id);
 		return -EINVAL;
 	}
 	if (req->init) {
-		pr_notice("mm_add(0x%08x) req is init\n", req->master_id);
+		pr_debug("mm_add(0x%08x) req is init\n", req->master_id);
 		return -EINVAL;
 	}
 
@@ -515,8 +515,8 @@ s32 mm_qos_add_request(struct plist_head *owner_list,
 	mutex_unlock(&bw_mutex);
 
 	if (log_level & 1 << log_bw) {
-		pr_notice("mm_add larb=%u port=%d\n", larb_id, port_id);
-		pr_notice("req=%p\n", req);
+		pr_debug("mm_add larb=%u port=%d\n", larb_id, port_id);
+		pr_debug("req=%p\n", req);
 	}
 	return 0;
 }
@@ -539,20 +539,20 @@ s32 mm_qos_set_request(struct mm_qos_request *req, u32 bw_value,
 	port = SMI_PMQOS_PORT_MASK(req->master_id);
 	if (!req->init || larb >= MAX_LARB_COUNT ||
 		port >= MAX_PORT_COUNT || comp_type >= BW_COMP_END) {
-		pr_notice("mm_set(0x%08x) init=%d larb=%d port=%d comp=%d\n",
+		pr_debug("mm_set(0x%08x) init=%d larb=%d port=%d comp=%d\n",
 			req->master_id, req->init, larb, port, comp_type);
 		dump_stack();
 		return -EINVAL;
 	}
 	if (!larb_req[larb].port_count || !larb_req[larb].ratio[port]) {
-		pr_notice("mm_set(0x%08x) invalid port_cnt=%d ratio=%d\n",
+		pr_debug("mm_set(0x%08x) invalid port_cnt=%d ratio=%d\n",
 			req->master_id, larb_req[larb].port_count,
 			larb_req[larb].ratio[port]);
 		return -EINVAL;
 	}
 
 	if (bw_value > max_bw_bound || hrt_value > max_bw_bound) {
-		pr_notice("mm_set(0x%08x) invalid bw=%d hrt=%d bw_bound=%d\n",
+		pr_debug("mm_set(0x%08x) invalid bw=%d hrt=%d bw_bound=%d\n",
 			req->master_id, bw_value,
 			hrt_value, max_bw_bound);
 		return -EINVAL;
@@ -562,7 +562,7 @@ s32 mm_qos_set_request(struct mm_qos_request *req, u32 bw_value,
 		req->bw_value == bw_value &&
 		req->comp_type == comp_type) {
 		if (log_level & 1 << log_bw)
-			pr_notice("mm_set(0x%08x) no change\n", req->master_id);
+			pr_debug("mm_set(0x%08x) no change\n", req->master_id);
 		return 0;
 	}
 
@@ -629,13 +629,13 @@ s32 mm_qos_set_request(struct mm_qos_request *req, u32 bw_value,
 	}
 
 	if (log_level & 1 << log_bw) {
-		pr_notice("set=0x%08x comp=%u,%u\n", req->master_id,
+		pr_debug("set=0x%08x comp=%u,%u\n", req->master_id,
 		comp_type, req->comp_type);
-		pr_notice("set=0x%08x bw=%u,%u total_bw=%d\n", req->master_id,
+		pr_debug("set=0x%08x bw=%u,%u total_bw=%d\n", req->master_id,
 		bw_value, req->bw_value, larb_req[larb].total_bw_data);
-		pr_notice("set=0x%08x hrt=%u,%u total_hrt=%d\n", req->master_id,
+		pr_debug("set=0x%08x hrt=%u,%u total_hrt=%d\n", req->master_id,
 		hrt_value, req->hrt_value, larb_req[larb].total_hrt_data);
-		pr_notice("set=0x%08x o_mix=%u total_mix=%d\n", req->master_id,
+		pr_debug("set=0x%08x o_mix=%u total_mix=%d\n", req->master_id,
 		old_larb_mix_value, larb_req[larb].total_mix_limit);
 	}
 
@@ -665,7 +665,7 @@ s32 mm_qos_set_request(struct mm_qos_request *req, u32 bw_value,
 		enum_req->ostd = req->ostd;
 
 	if (log_level & 1 << log_bw)
-		pr_notice("mm_set=0x%08x bw=%u ostd=%u hrt=%u comp=%u\n",
+		pr_debug("mm_set=0x%08x bw=%u ostd=%u hrt=%u comp=%u\n",
 			req->master_id, req->bw_value, req->ostd,
 			req->hrt_value, req->comp_type);
 
@@ -710,7 +710,7 @@ void mm_qos_update_all_request(struct plist_head *owner_list)
 #endif
 
 	if (!owner_list || plist_head_empty(owner_list)) {
-		pr_notice("%s: owner_list is invalid\n", __func__);
+		pr_debug("%s: owner_list is invalid\n", __func__);
 		return;
 	}
 
@@ -719,7 +719,7 @@ void mm_qos_update_all_request(struct plist_head *owner_list)
 	if (is_camera_larb(req->master_id)) {
 		cam_bw = dram_write_weight(get_cam_hrt_bw());
 		if (cam_bw > camera_max_bw) {
-			pr_notice("cam_bw(%d) > camera_max_bw(%d)\n",
+			pr_debug("cam_bw(%d) > camera_max_bw(%d)\n",
 				cam_bw, camera_max_bw);
 #ifdef MMDVFS_MMP
 			mmprofile_log_ex(
@@ -734,7 +734,7 @@ void mm_qos_update_all_request(struct plist_head *owner_list)
 #endif
 		}
 		if (cam_scen_change) {
-			pr_notice("scenario change time=%u cam_bw=%d\n",
+			pr_debug("scenario change time=%u cam_bw=%d\n",
 				jiffies_to_msecs(jiffies-cam_scen_start_time),
 				cam_bw);
 			cam_scen_change = false;
@@ -745,7 +745,7 @@ void mm_qos_update_all_request(struct plist_head *owner_list)
 #endif
 		if (total_hrt_bw != UNINITIALIZED_VALUE &&
 			get_total_used_hrt_bw() > total_hrt_bw)
-			pr_notice("hrt bw overflow used=%d avail=%d\n",
+			pr_debug("hrt bw overflow used=%d avail=%d\n",
 				get_total_used_hrt_bw(), total_hrt_bw);
 	}
 
@@ -773,7 +773,7 @@ void mm_qos_update_all_request(struct plist_head *owner_list)
 			&comm, &comm_port);
 		larb_update |= 1 << (comm * SMI_COMM_MASTER_NUM + comm_port);
 		if (log_level & 1 << log_bw)
-			pr_notice("update(0x%08x) ostd=%d value=%d hrt=%d\n",
+			pr_debug("update(0x%08x) ostd=%d value=%d hrt=%d\n",
 				req->master_id, req->ostd,
 				req->bw_value, req->hrt_value);
 		trace_mmqos__update_port(larb_id, port_id,
@@ -818,7 +818,7 @@ void mm_qos_update_all_request(struct plist_head *owner_list)
 		profile = sched_clock();
 		smi_ostd_update(owner_list, "MMDVFS");
 		if (log_level & 1 << log_bw)
-			pr_notice("config SMI (%d) cost: %llu us\n",
+			pr_debug("config SMI (%d) cost: %llu us\n",
 				i, div_u64(sched_clock() - profile, 1000));
 	}
 
@@ -843,7 +843,7 @@ void mm_qos_update_all_request(struct plist_head *owner_list)
 			max_ch_hrt_bw = max_t(s32,
 				final_chn_hrt_bw[comm][i], max_ch_hrt_bw);
 			if (log_level & 1 << log_smi_freq)
-				pr_notice("comm:%d chn:%d s_bw:%d h_bw:%d\n",
+				pr_debug("comm:%d chn:%d s_bw:%d h_bw:%d\n",
 					comm, i, channel_srt_bw[comm][i],
 					final_chn_hrt_bw[comm][i]);
 #ifdef MMDVFS_MMP
@@ -863,7 +863,7 @@ void mm_qos_update_all_request(struct plist_head *owner_list)
 		mtk_pm_qos_update_request(&smi_freq_request[comm],
 			max_t(s32, smi_srt_clk, smi_hrt_clk));
 		if (log_level & 1 << log_smi_freq)
-			pr_notice("comm:%d smi_srt_clk:%d smi_hrt_clk:%d\n",
+			pr_debug("comm:%d smi_srt_clk:%d smi_hrt_clk:%d\n",
 				comm, smi_srt_clk, smi_hrt_clk);
 #ifdef MMDVFS_MMP
 		mmprofile_log_ex(
@@ -892,7 +892,7 @@ void mm_qos_update_all_request(struct plist_head *owner_list)
 	}
 	mtk_pm_qos_update_request(&mm_bw_request, mm_bw);
 	if (log_level & 1 << log_bw)
-		pr_notice("config mm_bw=%d\n", mm_bw);
+		pr_debug("config mm_bw=%d\n", mm_bw);
 }
 EXPORT_SYMBOL_GPL(mm_qos_update_all_request);
 
@@ -913,7 +913,7 @@ void mm_qos_remove_all_request(struct plist_head *owner_list)
 
 	mutex_lock(&bw_mutex);
 	plist_for_each_entry_safe(req, temp, owner_list, owner_node) {
-		pr_notice("mm_del(0x%08x)\n", req->master_id);
+		pr_debug("mm_del(0x%08x)\n", req->master_id);
 		plist_del(&(req->owner_node), owner_list);
 		list_del(&(req->larb_node));
 		list_del(&(req->port_node));
@@ -994,7 +994,7 @@ static int notify_bw_throttle(void *data)
 	blocking_notifier_call_chain(&hrt_bw_throttle_notifier,
 		(camera_max_bw > 0)?BW_THROTTLE_START:BW_THROTTLE_END, NULL);
 
-	pr_notice("notify_time=%u\n",
+	pr_debug("notify_time=%u\n",
 		jiffies_to_msecs(jiffies-start_jiffies));
 	return 0;
 }
@@ -1006,7 +1006,7 @@ static int notify_bw_throttle_blocking(void *data)
 
 	atomic_dec(&lock_cam_count);
 	wake_up(&hrt_wait);
-	pr_notice("decrease lock_cam_count=%d\n",
+	pr_debug("decrease lock_cam_count=%d\n",
 		atomic_read(&lock_cam_count));
 	return 0;
 }
@@ -1019,12 +1019,12 @@ static void set_camera_max_bw(u32 occ_bw)
 
 	camera_max_bw = occ_bw;
 	wait_next_max_cam_bw_set = false;
-	pr_notice("set cam max occupy_bw=%d\n", occ_bw);
+	pr_debug("set cam max occupy_bw=%d\n", occ_bw);
 #ifdef BLOCKING_MECHANISM
 	/* No need to blocking if cam bw is decreasing */
 	if (camera_overlap_bw == 0) {
 		atomic_inc(&lock_cam_count);
-		pr_notice("increase lock_cam_count=%d\n",
+		pr_debug("increase lock_cam_count=%d\n",
 			atomic_read(&lock_cam_count));
 		pKThread = kthread_run(notify_bw_throttle_blocking,
 			NULL, "notify bw throttle blocking");
@@ -1061,7 +1061,7 @@ void mmdvfs_set_max_camera_hrt_bw(u32 bw)
 		set_camera_max_bw(mw_hrt_bw);
 	}
 
-	pr_notice("middleware set max camera hrt bw:%d\n", bw);
+	pr_debug("middleware set max camera hrt bw:%d\n", bw);
 #endif
 //mm_hrt_get_available_hrt_bw(get_virtual_port(VIRTUAL_DISP));
 }
@@ -1100,17 +1100,17 @@ static void mmdvfs_get_larb_node(struct device *dev, u32 larb_id)
 	s32 result;
 
 	if (larb_id >= MAX_LARB_COUNT) {
-		pr_notice("larb_id:%d is over MAX_LARB_COUNT:%d\n",
+		pr_debug("larb_id:%d is over MAX_LARB_COUNT:%d\n",
 			larb_id, MAX_LARB_COUNT);
 		return;
 	}
 
 	result = snprintf(larb_name, MAX_LARB_NAME, "larb%d", larb_id);
 	if (result < 0)
-		pr_notice("snprintf fail(%d) larb_id=%d\n", result, larb_id);
+		pr_debug("snprintf fail(%d) larb_id=%d\n", result, larb_id);
 	of_property_for_each_u32(dev->of_node, larb_name, prop, p, value) {
 		if (count >= MAX_PORT_COUNT) {
-			pr_notice("port size is over (%d)\n", MAX_PORT_COUNT);
+			pr_debug("port size is over (%d)\n", MAX_PORT_COUNT);
 			break;
 		}
 
@@ -1120,7 +1120,7 @@ static void mmdvfs_get_larb_node(struct device *dev, u32 larb_id)
 
 	larb_req[larb_id].port_count = count;
 	if (!count)
-		pr_notice("no data in larb (%s)\n", larb_name);
+		pr_debug("no data in larb (%s)\n", larb_name);
 	else
 		init_larb_list(larb_id);
 }
@@ -1203,7 +1203,7 @@ static int mmqos_probe(struct platform_device *pdev)
 		else if (value == 1)
 			comm_freq_class[comm_count] = PM_QOS_MDP_FREQ;
 		else
-			pr_notice("[mmqos]wrong comm_freq value:%d\n", value);
+			pr_debug("[mmqos]wrong comm_freq value:%d\n", value);
 		mtk_pm_qos_add_request(&smi_freq_request[comm_count],
 			comm_freq_class[comm_count],
 			PM_QOS_MM_FREQ_DEFAULT_VALUE);
@@ -1213,7 +1213,7 @@ static int mmqos_probe(struct platform_device *pdev)
 	cam_larb_size = 0;
 	of_property_for_each_u32(node, CAM_LARB_NODE_NAME, prop, p, value) {
 		if (cam_larb_size >= MAX_LARB_COUNT) {
-			pr_notice(
+			pr_debug(
 				"cam_larb is over the MAX_LARB_COUNT (%d)\n",
 				MAX_LARB_COUNT);
 			break;
@@ -1225,7 +1225,7 @@ static int mmqos_probe(struct platform_device *pdev)
 	of_property_for_each_u32(
 		node, MAX_OSTD_LARB_NODE_NAME, prop, p, value) {
 		if (value >= MAX_LARB_COUNT) {
-			pr_notice(
+			pr_debug(
 				"max_ostd_larb (%d) is over the MAX_LARB_COUNT (%d)\n",
 				value, MAX_LARB_COUNT);
 			continue;
@@ -1257,7 +1257,7 @@ static int mmqos_probe(struct platform_device *pdev)
 		if (value != SMI_COMM_MASTER_NUM)
 			larb_req[i].channel =
 				SMI_COMM_BUS_SEL[value & 0xffff];
-		pr_notice("larb[%d].comm_port=%d channel=%d\n",
+		pr_debug("larb[%d].comm_port=%d channel=%d\n",
 				i, value, larb_req[i].channel);
 	}
 
@@ -1313,12 +1313,12 @@ static int __init mmqos_init(void)
 
 	status = platform_driver_register(&mmqos_driver);
 	if (status != 0) {
-		pr_notice(
+		pr_debug(
 			"Failed to register MMQOS driver(%d)\n", status);
 		return -ENODEV;
 	}
 
-	pr_notice("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 	return 0;
 #endif /* CONFIG_FPGA_EARLY_PORTING */
 }
@@ -1378,7 +1378,7 @@ s32 get_virtual_port(enum virtual_source_id id)
 	case VIRTUAL_CCU_COMMON2:
 		return PORT_VIRTUAL_CCU_COMMON2;
 	default:
-		pr_notice("invalid source id:%u\n", id);
+		pr_debug("invalid source id:%u\n", id);
 		return -1;
 	}
 }
@@ -1445,12 +1445,12 @@ void mmdvfs_print_larbs_info(void)
 		tmp_str = log_str;
 		if (len > 0) {
 			while ((ptr = strsep(&tmp_str, "\n")) != NULL)
-				pr_notice("%s\n", ptr);
+				pr_debug("%s\n", ptr);
 		} else
-			pr_notice("no larbs info to print\n");
+			pr_debug("no larbs info to print\n");
 		kfree(log_str);
 	} else
-		pr_notice("kmalloc fails!\n");
+		pr_debug("kmalloc fails!\n");
 }
 
 int get_dump_larbs(char *buf, const struct kernel_param *kp)
@@ -1499,7 +1499,7 @@ static DECLARE_COMPLETION(comp);
 static int test_event(struct notifier_block *nb,
 		unsigned long value, void *v)
 {
-	pr_notice("ut test notifier: value=%lu\n", value);
+	pr_debug("ut test notifier: value=%lu\n", value);
 	/*msleep(50);*/ /* Use it when disp's notifier callback not ready*/
 	complete(&comp);
 	return 0;
@@ -1534,15 +1534,15 @@ int mmdvfs_qos_ut_set(const char *val, const struct kernel_param *kp)
 	result = sscanf(val, "%d %d %i %d", &qos_ut_case,
 		&req_id, &master, &value);
 	if (result != 4) {
-		pr_notice("invalid input: %s, result(%d)\n", val, result);
+		pr_debug("invalid input: %s, result(%d)\n", val, result);
 		return -EINVAL;
 	}
 	if (req_id >= UT_MAX_REQUEST) {
-		pr_notice("invalid req_id: %u\n", req_id);
+		pr_debug("invalid req_id: %u\n", req_id);
 		return -EINVAL;
 	}
 
-	pr_notice("ut with (case_id,req_id,master,value)=(%d,%u,%#x,%d)\n",
+	pr_debug("ut with (case_id,req_id,master,value)=(%d,%u,%#x,%d)\n",
 		qos_ut_case, req_id, master, value);
 	log_level = 1 << log_bw | 1 << log_smi_freq;
 	if (!ut_req_init) {
@@ -1590,14 +1590,14 @@ int mmdvfs_qos_ut_set(const char *val, const struct kernel_param *kp)
 		pKThread = kthread_run(make_cam_hrt_bw,
 			NULL, "make_cam_hrt_bw");
 		if (IS_ERR(pKThread))
-			pr_notice("create cam hrt bw thread failed\n");
+			pr_debug("create cam hrt bw thread failed\n");
 		/* Notifier will call complete */
 		wait_for_completion(&comp);
 		reinit_completion(&comp);
 		start_jiffies = jiffies;
 		mmdvfs_set_max_camera_hrt_bw(0);
 		wait_for_completion(&comp);
-		pr_notice("wait time should > 2000 msecs:%u\n",
+		pr_debug("wait time should > 2000 msecs:%u\n",
 			jiffies_to_msecs(jiffies-start_jiffies));
 		mm_hrt_remove_bw_throttle_notifier(&test_notifier);
 		break;
@@ -1613,13 +1613,13 @@ int mmdvfs_qos_ut_set(const char *val, const struct kernel_param *kp)
 		mm_qos_update_all_request_zero(&ut_req_list);
 		break;
 	default:
-		pr_notice("invalid case_id: %d\n", qos_ut_case);
+		pr_debug("invalid case_id: %d\n", qos_ut_case);
 		break;
 	}
 
-	pr_notice("Call SMI Dump API Begin\n");
+	pr_debug("Call SMI Dump API Begin\n");
 	/* smi_debug_bus_hang_detect(false, "MMDVFS"); */
-	pr_notice("Call SMI Dump API END\n");
+	pr_debug("Call SMI Dump API END\n");
 	log_level = old_log_level;
 	return 0;
 }
@@ -1640,17 +1640,17 @@ int set_disp_bw_ceiling(const char *val, const struct kernel_param *kp)
 
 	result = sscanf(val, "%d %d", &disp_bw, &wait);
 	if (result != 2) {
-		pr_notice("invalid input: %s, result(%d)\n", val, result);
+		pr_debug("invalid input: %s, result(%d)\n", val, result);
 		return -EINVAL;
 	}
-	pr_notice("%s (disp_bw, wait): (%d,%d)\n",
+	pr_debug("%s (disp_bw, wait): (%d,%d)\n",
 		__func__, disp_bw, wait);
 
 	disp_bw_ceiling = (disp_bw < 0)?0:disp_bw;
 	wait_next_max_cam_bw_set = wait;
 
 	disp_avail_hrt_bw = mm_hrt_get_available_hrt_bw(PORT_VIRTUAL_DISP);
-	pr_notice("disp_bw_ceiling=%d total_hrt_bw=%d disp_avail_hrt_bw=%d\n",
+	pr_debug("disp_bw_ceiling=%d total_hrt_bw=%d disp_avail_hrt_bw=%d\n",
 		disp_bw_ceiling, total_hrt_bw, disp_avail_hrt_bw);
 
 	if (!wait_next_max_cam_bw_set)
@@ -1677,7 +1677,7 @@ int set_force_bwl(const char *val, const struct kernel_param *kp)
 
 	result = sscanf(val, "%d %d %d", &comm, &port, &bwl);
 	if (result != 3) {
-		pr_notice("invalid input: %s, result(%d)\n", val, result);
+		pr_debug("invalid input: %s, result(%d)\n", val, result);
 		return -EINVAL;
 	}
 

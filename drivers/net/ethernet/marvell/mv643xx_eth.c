@@ -1125,7 +1125,7 @@ static int txq_reclaim(struct tx_queue *txq, int budget, int force)
 		}
 
 		if (cmd_sts & ERROR_SUMMARY) {
-			netdev_info(mp->dev, "tx error\n");
+			netdev_dbg(mp->dev, "tx error\n");
 			mp->dev->stats.tx_errors++;
 		}
 
@@ -1581,7 +1581,7 @@ mv643xx_eth_set_wol(struct net_device *dev, struct ethtool_wolinfo *wol)
 	 * this debugging hint is useful to have.
 	 */
 	if (err == -EOPNOTSUPP)
-		netdev_info(dev, "The PHY does not support set_wol, was CONFIG_MARVELL_PHY enabled?\n");
+		netdev_dbg(dev, "The PHY does not support set_wol, was CONFIG_MARVELL_PHY enabled?\n");
 	return err;
 }
 
@@ -2217,7 +2217,7 @@ static void handle_link_event(struct mv643xx_eth_private *mp)
 		if (netif_carrier_ok(dev)) {
 			int i;
 
-			netdev_info(dev, "link down\n");
+			netdev_dbg(dev, "link down\n");
 
 			netif_carrier_off(dev);
 
@@ -2248,7 +2248,7 @@ static void handle_link_event(struct mv643xx_eth_private *mp)
 	duplex = (port_status & FULL_DUPLEX) ? 1 : 0;
 	fc = (port_status & FLOW_CONTROL_ENABLED) ? 1 : 0;
 
-	netdev_info(dev, "link up, %d Mb/s, %s duplex, flow control %sabled\n",
+	netdev_dbg(dev, "link up, %d Mb/s, %s duplex, flow control %sabled\n",
 		    speed, duplex ? "full" : "half", fc ? "en" : "dis");
 
 	if (!netif_carrier_ok(dev))
@@ -2613,7 +2613,7 @@ static void mv643xx_eth_tx_timeout(struct net_device *dev)
 {
 	struct mv643xx_eth_private *mp = netdev_priv(dev);
 
-	netdev_info(dev, "tx timeout\n");
+	netdev_dbg(dev, "tx timeout\n");
 
 	schedule_work(&mp->tx_timeout_task);
 }
@@ -2857,7 +2857,7 @@ static int mv643xx_eth_shared_probe(struct platform_device *pdev)
 	int ret;
 
 	if (!mv643xx_eth_version_printed++)
-		pr_notice("MV-643xx 10/100/1000 ethernet driver version %s\n",
+		pr_debug("MV-643xx 10/100/1000 ethernet driver version %s\n",
 			  mv643xx_eth_driver_version);
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);

@@ -640,7 +640,7 @@ static s32 nps_enet_probe(struct platform_device *pdev)
 		goto out_netif_api;
 	}
 
-	dev_info(dev, "(rx/tx=%d)\n", priv->irq);
+	dev_dbg(dev, "(rx/tx=%d)\n", priv->irq);
 	return 0;
 
 out_netif_api:

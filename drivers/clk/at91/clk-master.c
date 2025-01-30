@@ -96,9 +96,9 @@ static unsigned long clk_master_recalc_rate(struct clk_hw *hw,
 	rate /= characteristics->divisors[div];
 
 	if (rate < characteristics->output.min)
-		pr_warn("master clk is underclocked");
+		pr_debug("master clk is underclocked");
 	else if (rate > characteristics->output.max)
-		pr_warn("master clk is overclocked");
+		pr_debug("master clk is overclocked");
 
 	return rate;
 }

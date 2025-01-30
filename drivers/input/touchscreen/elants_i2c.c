@@ -671,7 +671,7 @@ static int elants_i2c_do_update_firmware(struct i2c_client *client,
 		return -EIO;
 	}
 
-	dev_info(&client->dev, "successfully entered IAP mode");
+	dev_dbg(&client->dev, "successfully entered IAP mode");
 
 	send_id = client->addr;
 	error = elants_i2c_send(client, &send_id, 1);
@@ -714,7 +714,7 @@ static int elants_i2c_do_update_firmware(struct i2c_client *client,
 	/* Old iap needs to wait 200ms for WDT and rest is for hello packets */
 	msleep(300);
 
-	dev_info(&client->dev, "firmware update completed\n");
+	dev_dbg(&client->dev, "firmware update completed\n");
 	return 0;
 }
 
@@ -729,7 +729,7 @@ static int elants_i2c_fw_update(struct elants_data *ts)
 	if (!fw_name)
 		return -ENOMEM;
 
-	dev_info(&client->dev, "requesting fw name = %s\n", fw_name);
+	dev_dbg(&client->dev, "requesting fw name = %s\n", fw_name);
 	error = request_firmware(&fw, fw_name, &client->dev);
 	kfree(fw_name);
 	if (error) {

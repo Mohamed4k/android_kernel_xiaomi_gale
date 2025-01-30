@@ -734,7 +734,7 @@ static int _fps_ctx_reset(struct fps_ctx_t *fps_ctx, int reserve_num)
 	int i;
 
 	if (reserve_num >= FPS_ARRAY_SZ) {
-		pr_info("%s error to reset, reserve=%d\n",
+		pr_debug("%s error to reset, reserve=%d\n",
 			__func__, reserve_num);
 		WARN_ON(1);
 	}
@@ -782,7 +782,7 @@ static int fps_ctx_init(struct fps_ctx_t *fps_ctx, int wnd_sz)
 	mutex_init(&fps_ctx->lock);
 
 	if (wnd_sz > FPS_ARRAY_SZ) {
-		pr_info("%s error: wnd_sz = %d\n", __func__, wnd_sz);
+		pr_debug("%s error: wnd_sz = %d\n", __func__, wnd_sz);
 		wnd_sz = FPS_ARRAY_SZ;
 	}
 	fps_ctx->wnd_sz = wnd_sz;
@@ -2735,7 +2735,7 @@ static int init_decouple_buffers(void)
 	decouple_wdma_config.dstPitch = width * Bpp;
 	decouple_wdma_config.security = DISP_NORMAL_BUFFER;
 
-	pr_info("%s done\n", __func__);
+	pr_debug("%s done\n", __func__);
 	return 0;
 }
 
@@ -3870,7 +3870,7 @@ static void cabc_mode_switch_3rd(int param) {
 			display_feature_push_table(cabc1_3rd,1,1);
 			mdelay(CABC_3RD_DELAY);
 			last_cabc_off_cmd_3rd=cabc1_off_3rd;
-			pr_info("cabc 0xf0001 on 3rd\n");
+			pr_debug("cabc 0xf0001 on 3rd\n");
 			break;
 		case 0xf0002: //movie
 			display_feature_push_table(cabc2_on_3rd,1,1);
@@ -3878,7 +3878,7 @@ static void cabc_mode_switch_3rd(int param) {
 			display_feature_push_table(cabc2_3rd,1,1);
 			mdelay(CABC_3RD_DELAY);
 			last_cabc_off_cmd_3rd=cabc2_off_3rd;
-			pr_info("cabc 0xf0002 on 3rd\n");
+			pr_debug("cabc 0xf0002 on 3rd\n");
 			break;
 		case 0xf0003: //still
 			display_feature_push_table(cabc3_on_3rd,1,1);
@@ -3886,7 +3886,7 @@ static void cabc_mode_switch_3rd(int param) {
 			display_feature_push_table(cabc3_3rd,1,1);
 			mdelay(CABC_3RD_DELAY);
 			last_cabc_off_cmd_3rd=cabc3_off_3rd;
-			pr_info("cabc 0xf0003 on 3rd\n");
+			pr_debug("cabc 0xf0003 on 3rd\n");
 			break;
 		case 0xf0000://DISPPARAM_CABC_OFF off
 			display_feature_push_table(last_cabc_off_cmd_3rd,1,1);
@@ -3916,13 +3916,13 @@ int primary_display_set_panel_param(int param)
     current_level=get_current_backlight_level();
 	if(param != 0xf0000 && param != 0xf0001 && param != 0xf0002 && param != 0xf0003 &&
 		param != 0xB0000 && param != 0xC0000 && param != 0xD0000 && param != 0xE0000) {
-		pr_info("unknow cmds: 0x%x\n", param);
+		pr_debug("unknow cmds: 0x%x\n", param);
 		return 0;
 	}
 
 	if(param == 0xB0000 || param == 0xC0000 || param == 0xD0000 || param == 0xE0000) {
           if (current_level != 2047) {
-          pr_info("skip hbm cmd: 0x%x bl = %d\n", param, current_level);
+          pr_debug("skip hbm cmd: 0x%x bl = %d\n", param, current_level);
           return 0;
           }
         }
@@ -3944,66 +3944,66 @@ int primary_display_set_panel_param(int param)
 		cabc_mode_switch_3rd(param);
 	} else if ((strncmp(mtkfb_lcm_name, "dsi_panel_c3u_42_0f_0d_dsc_vdo", 30) == 0) &&
 		(param>=0xf0000 && param<=0xf0009)) {
-		pr_info("_###_%s, set_param_cmd: 0x%x\n",__func__, param);
+		pr_debug("_###_%s, set_param_cmd: 0x%x\n",__func__, param);
 		switch(param) {
 			case 0xf0001: //ui
 				mdelay(CABC_4RD_DELAY);
 				display_feature_push_table(cabc_ui_on_4th, 1, 1);
-				pr_info("%s : CABC_DISPPARAM_UI_ON on\n",__func__);
+				pr_debug("%s : CABC_DISPPARAM_UI_ON on\n",__func__);
 				break;
 			case 0xf0002: //movie
 				mdelay(CABC_4RD_DELAY);
 				display_feature_push_table(cabc_mov_on_4th, 1, 1);
-				pr_info("%s : CABC_DISPPARAM_MOVIE_ON\n",__func__);
+				pr_debug("%s : CABC_DISPPARAM_MOVIE_ON\n",__func__);
 				break;
 			case 0xf0003: //still
 				mdelay(CABC_4RD_DELAY);
 				display_feature_push_table(cabc_still_on_4th, 1, 1);
-				pr_info("%s : CABC_DISPPARAM_STILL_ON\n",__func__);
+				pr_debug("%s : CABC_DISPPARAM_STILL_ON\n",__func__);
 				break;
 			case 0xf0000://DISPPARAM_CABC_OFF off
 				mdelay(CABC_4RD_DELAY);
 				display_feature_push_table(cabc_off_on_4th, 1, 1);
-				pr_info("%s : CABC_DISPPARAM_OFF_ON\n",__func__);
+				pr_debug("%s : CABC_DISPPARAM_OFF_ON\n",__func__);
 				break;
 			default:
 				pr_err("%s : unknow cmds: 0x%x\n", __func__, param);
 				break;
 		}
 	} else {
-		pr_info("_###_%s,set_param_cmd: 0x%x\n",__func__, param);
+		pr_debug("_###_%s,set_param_cmd: 0x%x\n",__func__, param);
 		switch(param) {
 			case 0xf0001: //DISPPARAM_CABCUI_ON on
 				do_lcm_vdo_lp_write_2(cabc_level1,1);
-				pr_info("DISPPARAM_CABCUI_ON on\n",__func__);
+				pr_debug("DISPPARAM_CABCUI_ON on\n",__func__);
 				break;
 			case 0xf0003: //DISPPARAM_CABCSTILL_ON on
 				do_lcm_vdo_lp_write_2(cabc_level2,1);
-				pr_info("DISPPARAM_CABCSTILL_ON on\n",__func__);
+				pr_debug("DISPPARAM_CABCSTILL_ON on\n",__func__);
 				break;
 			case 0xf0002: //DISPPARAM_CABCMOVIE_ON on
 				do_lcm_vdo_lp_write_2(cabc_level3,1);
-				pr_info("DISPPARAM_CABCMOVIE_ON on\n",__func__);
+				pr_debug("DISPPARAM_CABCMOVIE_ON on\n",__func__);
 				break;
 			case 0xf0000://DISPPARAM_CABC_OFF off
 				do_lcm_vdo_lp_write_2(cabc_level0,1);
-				pr_info("DISPPARAM_CABC_OFF on\n",__func__);
+				pr_debug("DISPPARAM_CABC_OFF on\n",__func__);
 				break;
 			case 0xB0000: //hbm1 on
 				display_feature_push_table(hbm1_on,1,1);
-				pr_info("hbm1 on on\n",__func__);
+				pr_debug("hbm1 on on\n",__func__);
 				break;
 			case 0xC0000: //hbm2 on
 				display_feature_push_table(hbm2_on,1,1);
-				pr_info("hbm2 on on\n",__func__);
+				pr_debug("hbm2 on on\n",__func__);
 				break;
 			case 0xD0000: //hbm3 on
 				display_feature_push_table(hbm3_on,1,1);
-				pr_info("hbm3 on on\n",__func__);
+				pr_debug("hbm3 on on\n",__func__);
 				break;
 			case 0xE0000://hbm off
 				display_feature_push_table(hbm_off,1,1);
-				pr_info("hbm off on\n",__func__);
+				pr_debug("hbm off on\n",__func__);
 				break;
 			default:
 				pr_err("unknow cmds: 0x%x\n", param);
@@ -9220,7 +9220,7 @@ UINT32 DISP_GetVRamSizeBoot(char *cmdline)
 
 	vramsize = mtkfb_get_fb_size();
 	if (!vramsize)
-		pr_info("get fb size fail, size=0x%08x|%d\n",
+		pr_debug("get fb size fail, size=0x%08x|%d\n",
 			vramsize, vramsize);
 	DISPCHECK("[DT]display vram size = 0x%08x|%d\n",
 		vramsize, vramsize);
@@ -9237,7 +9237,7 @@ unsigned int primary_display_get_option(const char *option)
 		return disp_helper_get_option(DISP_OPT_USE_M4U);
 
 	/* ASSERT(0); */
-	pr_info("%s, invalid option\n", __func__);
+	pr_debug("%s, invalid option\n", __func__);
 	return -1;
 }
 
@@ -10074,7 +10074,7 @@ err0:
 
 int display_exit_tui(void)
 {
-	pr_info("[TUI-HAL] %s() start\n", __func__);
+	pr_debug("[TUI-HAL] %s() start\n", __func__);
 	mmprofile_log_ex(ddp_mmp_get_events()->tui,
 		MMPROFILE_FLAG_PULSE, 1, 1);
 
@@ -10099,7 +10099,7 @@ int display_exit_tui(void)
 
 	mmprofile_log_ex(ddp_mmp_get_events()->tui, MMPROFILE_FLAG_END, 0, 0);
 	DISPMSG("TDDP: %s\n", __func__);
-	pr_info("[TUI-HAL] %s() done\n", __func__);
+	pr_debug("[TUI-HAL] %s() done\n", __func__);
 	return 0;
 }
 
@@ -10175,7 +10175,7 @@ int primary_display_set_scenario(int scenario)
 	if (scenario != DISP_SCENARIO_NORMAL &&
 	    pgc->primary_display_scenario != DISP_SCENARIO_NORMAL) {
 		/* every scenario should start from NORMAL !! */
-		pr_info("%s set scenario %d fail ! current scenario is %d\n",
+		pr_debug("%s set scenario %d fail ! current scenario is %d\n",
 			__func__, scenario, pgc->primary_display_scenario);
 		return -EINVAL;
 	}

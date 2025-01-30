@@ -2394,12 +2394,12 @@ static int clk_mt6833_apmixed_probe(struct platform_device *pdev)
 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init begin\n", __func__);
+	pr_debug("%s init begin\n", __func__);
 #endif
 
 	base = devm_ioremap_resource(&pdev->dev, res);
 	if (IS_ERR(base)) {
-		pr_notice("%s(): ioremap failed\n", __func__);
+		pr_debug("%s(): ioremap failed\n", __func__);
 		return PTR_ERR(base);
 	}
 
@@ -2414,13 +2414,13 @@ static int clk_mt6833_apmixed_probe(struct platform_device *pdev)
 	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
 
 	if (r)
-		pr_notice("%s(): could not register clock provider: %d\n",
+		pr_debug("%s(): could not register clock provider: %d\n",
 			__func__, r);
 
 	apmixed_base = base;
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init end\n", __func__);
+	pr_debug("%s init end\n", __func__);
 #endif
 	pll_off(11);//apll1
 	pll_off(12);//apll2
@@ -2438,12 +2438,12 @@ static int clk_mt6833_top_probe(struct platform_device *pdev)
 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init begin\n", __func__);
+	pr_debug("%s init begin\n", __func__);
 #endif
 
 	base = devm_ioremap_resource(&pdev->dev, res);
 	if (IS_ERR(base)) {
-		pr_notice("%s(): ioremap failed\n", __func__);
+		pr_debug("%s(): ioremap failed\n", __func__);
 		return PTR_ERR(base);
 	}
 
@@ -2464,11 +2464,11 @@ static int clk_mt6833_top_probe(struct platform_device *pdev)
 			mt6833_top_clk_data);
 
 	if (r)
-		pr_notice("%s(): could not register clock provider: %d\n",
+		pr_debug("%s(): could not register clock provider: %d\n",
 			__func__, r);
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init end\n", __func__);
+	pr_debug("%s init end\n", __func__);
 #endif
 
 	return r;
@@ -2481,7 +2481,7 @@ static int clk_mt6833_ifrao_probe(struct platform_device *pdev)
 	struct device_node *node = pdev->dev.of_node;
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init begin\n", __func__);
+	pr_debug("%s init begin\n", __func__);
 #endif
 
 	clk_data = mtk_alloc_clk_data(CLK_IFRAO_NR_CLK);
@@ -2492,11 +2492,11 @@ static int clk_mt6833_ifrao_probe(struct platform_device *pdev)
 	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
 
 	if (r)
-		pr_notice("%s(): could not register clock provider: %d\n",
+		pr_debug("%s(): could not register clock provider: %d\n",
 			__func__, r);
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init end\n", __func__);
+	pr_debug("%s init end\n", __func__);
 #endif
 
 	return r;
@@ -2509,7 +2509,7 @@ static int clk_mt6833_peri_probe(struct platform_device *pdev)
 	struct device_node *node = pdev->dev.of_node;
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init begin\n", __func__);
+	pr_debug("%s init begin\n", __func__);
 #endif
 
 	clk_data = mtk_alloc_clk_data(CLK_PERI_NR_CLK);
@@ -2520,11 +2520,11 @@ static int clk_mt6833_peri_probe(struct platform_device *pdev)
 	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
 
 	if (r)
-		pr_notice("%s(): could not register clock provider: %d\n",
+		pr_debug("%s(): could not register clock provider: %d\n",
 			__func__, r);
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init end\n", __func__);
+	pr_debug("%s init end\n", __func__);
 #endif
 
 	return r;
@@ -2589,7 +2589,7 @@ static int clk_mt6833_probe(struct platform_device *pdev)
 
 	r = clk_probe(pdev);
 	if (r)
-		pr_notice("could not register clock provider: %s: %d\n",
+		pr_debug("could not register clock provider: %s: %d\n",
 			pdev->name, r);
 
 	return r;

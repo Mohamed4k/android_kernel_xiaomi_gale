@@ -67,7 +67,7 @@ xpc_process_connect(struct xpc_channel *ch, unsigned long *irq_flags)
 	if (!(ch->flags & XPC_C_ROPENCOMPLETE))
 		return;
 
-	dev_info(xpc_chan, "channel %d to partition %d connected\n",
+	dev_dbg(xpc_chan, "channel %d to partition %d connected\n",
 		 ch->number, ch->partid);
 
 	ch->flags = (XPC_C_CONNECTED | XPC_C_SETUP);	/* clear all else */
@@ -157,7 +157,7 @@ xpc_process_disconnect(struct xpc_channel *ch, unsigned long *irq_flags)
 	atomic_dec(&part->nchannels_active);
 
 	if (channel_was_connected) {
-		dev_info(xpc_chan, "channel %d to partition %d disconnected, "
+		dev_dbg(xpc_chan, "channel %d to partition %d disconnected, "
 			 "reason=%d\n", ch->number, ch->partid, ch->reason);
 	}
 

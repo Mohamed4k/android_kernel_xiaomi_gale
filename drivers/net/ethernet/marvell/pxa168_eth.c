@@ -499,7 +499,7 @@ static int add_del_hash_entry(struct pxa168_eth_private *pep,
 
 	if (i == HOP_NUMBER) {
 		if (!del) {
-			netdev_info(pep->dev,
+			netdev_dbg(pep->dev,
 				    "%s: table section is full, need to "
 				    "move to 16kB implementation?\n",
 				    __FILE__);
@@ -757,7 +757,7 @@ static void pxa168_eth_tx_timeout(struct net_device *dev)
 {
 	struct pxa168_eth_private *pep = netdev_priv(dev);
 
-	netdev_info(dev, "TX timeout  desc_count %d\n", pep->tx_desc_count);
+	netdev_dbg(dev, "TX timeout  desc_count %d\n", pep->tx_desc_count);
 
 	schedule_work(&pep->tx_timeout_task);
 }
@@ -1465,7 +1465,7 @@ static int pxa168_eth_probe(struct platform_device *pdev)
 		/* try reading the mac address, if set by the bootloader */
 		pxa168_eth_get_mac_address(dev, dev->dev_addr);
 		if (!is_valid_ether_addr(dev->dev_addr)) {
-			dev_info(&pdev->dev, "Using random mac address\n");
+			dev_dbg(&pdev->dev, "Using random mac address\n");
 			eth_hw_addr_random(dev);
 		}
 	}

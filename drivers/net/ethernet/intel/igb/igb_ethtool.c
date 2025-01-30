@@ -1414,7 +1414,7 @@ static int igb_intr_test(struct igb_adapter *adapter, u64 *data)
 		*data = 1;
 		return -1;
 	}
-	dev_info(&adapter->pdev->dev, "testing %s interrupt\n",
+	dev_dbg(&adapter->pdev->dev, "testing %s interrupt\n",
 		(shared_int ? "shared" : "unshared"));
 
 	/* Disable all the interrupts */
@@ -1940,7 +1940,7 @@ static int igb_loopback_test(struct igb_adapter *adapter, u64 *data)
 	}
 
 	if (adapter->hw.mac.type == e1000_i354) {
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			"Loopback test not supported on i354.\n");
 		*data = 0;
 		goto out;
@@ -2012,7 +2012,7 @@ static void igb_diag_test(struct net_device *netdev,
 		forced_speed_duplex = adapter->hw.mac.forced_speed_duplex;
 		autoneg = adapter->hw.mac.autoneg;
 
-		dev_info(&adapter->pdev->dev, "offline testing starting\n");
+		dev_dbg(&adapter->pdev->dev, "offline testing starting\n");
 
 		/* power up link for link test */
 		igb_power_up_link(adapter);
@@ -2060,7 +2060,7 @@ static void igb_diag_test(struct net_device *netdev,
 		if (if_running)
 			igb_open(netdev);
 	} else {
-		dev_info(&adapter->pdev->dev, "online testing starting\n");
+		dev_dbg(&adapter->pdev->dev, "online testing starting\n");
 
 		/* PHY is powered down when interface is down */
 		if (if_running && igb_link_test(adapter, &data[TEST_LINK]))

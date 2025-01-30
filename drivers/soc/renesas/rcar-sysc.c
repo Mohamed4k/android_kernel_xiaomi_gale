@@ -351,7 +351,7 @@ static int __init rcar_sysc_pd_init(void)
 
 	base = of_iomap(np, 0);
 	if (!base) {
-		pr_warn("%pOF: Cannot map regs\n", np);
+		pr_debug("%pOF: Cannot map regs\n", np);
 		error = -ENOMEM;
 		goto out_put;
 	}
@@ -430,7 +430,7 @@ static int __init rcar_sysc_pd_init(void)
 		error = pm_genpd_add_subdomain(domains->domains[area->parent],
 					       domains->domains[area->isr_bit]);
 		if (error)
-			pr_warn("Failed to add PM subdomain %s to parent %u\n",
+			pr_debug("Failed to add PM subdomain %s to parent %u\n",
 				area->name, area->parent);
 	}
 

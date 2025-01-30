@@ -3373,7 +3373,7 @@ static void bcmgenet_set_hw_params(struct bcmgenet_priv *priv)
 	}
 
 	/* Print the GENET core version */
-	dev_info(&priv->pdev->dev, "GENET " GENET_VER_FMT,
+	dev_dbg(&priv->pdev->dev, "GENET " GENET_VER_FMT,
 		 major, (reg >> 16) & 0x0f, reg & 0xffff);
 
 	/* Store the integrated PHY revision for the MDIO probing function
@@ -3395,12 +3395,12 @@ static void bcmgenet_set_hw_params(struct bcmgenet_priv *priv)
 		 * the PHY not from GENET.
 		 */
 		if (gphy_rev != 0) {
-			pr_warn("GENET is reporting EPHY revision: 0x%04x\n",
+			pr_debug("GENET is reporting EPHY revision: 0x%04x\n",
 				gphy_rev);
 		}
 	/* This is reserved so should require special treatment */
 	} else if (gphy_rev == 0 || gphy_rev == 0x01ff) {
-		pr_warn("Invalid GPHY revision detected: 0x%04x\n", gphy_rev);
+		pr_debug("Invalid GPHY revision detected: 0x%04x\n", gphy_rev);
 		return;
 	/* This is the good old scheme, just GPHY major, no minor nor patch */
 	} else if ((gphy_rev & 0xf0) != 0) {
@@ -3412,7 +3412,7 @@ static void bcmgenet_set_hw_params(struct bcmgenet_priv *priv)
 
 #ifdef CONFIG_PHYS_ADDR_T_64BIT
 	if (!(params->flags & GENET_HAS_40BITS))
-		pr_warn("GENET does not support 40-bits PA\n");
+		pr_debug("GENET does not support 40-bits PA\n");
 #endif
 
 	pr_debug("Configuration for version: %d\n"

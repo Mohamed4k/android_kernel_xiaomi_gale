@@ -227,7 +227,7 @@ static void __init rev_sku_to_speedo_ids(struct tegra_sku_info *sku_info)
 			}
 			break;
 		default:
-			pr_warn("Tegra Unknown SKU %d\n", sku_info->sku_id);
+			pr_debug("Tegra Unknown SKU %d\n", sku_info->sku_id);
 			sku_info->cpu_speedo_id = 0;
 			sku_info->soc_speedo_id = 0;
 			threshold_index = THRESHOLD_INDEX_0;
@@ -235,7 +235,7 @@ static void __init rev_sku_to_speedo_ids(struct tegra_sku_info *sku_info)
 		}
 		break;
 	default:
-		pr_warn("Tegra Unknown chip rev %d\n", sku_info->revision);
+		pr_debug("Tegra Unknown chip rev %d\n", sku_info->revision);
 		sku_info->cpu_speedo_id = 0;
 		sku_info->soc_speedo_id = 0;
 		threshold_index = THRESHOLD_INDEX_0;
@@ -267,7 +267,7 @@ void __init tegra30_init_speedo_data(struct tegra_sku_info *sku_info)
 	sku_info->cpu_process_id = i - 1;
 
 	if (sku_info->cpu_process_id == -1) {
-		pr_warn("Tegra CPU speedo value %3d out of range",
+		pr_debug("Tegra CPU speedo value %3d out of range",
 			 cpu_speedo_val);
 		sku_info->cpu_process_id = 0;
 		sku_info->cpu_speedo_id = 1;
@@ -280,7 +280,7 @@ void __init tegra30_init_speedo_data(struct tegra_sku_info *sku_info)
 	sku_info->soc_process_id = i - 1;
 
 	if (sku_info->soc_process_id == -1) {
-		pr_warn("Tegra SoC speedo value %3d out of range",
+		pr_debug("Tegra SoC speedo value %3d out of range",
 			soc_speedo_val);
 		sku_info->soc_process_id = 0;
 		sku_info->soc_speedo_id = 1;

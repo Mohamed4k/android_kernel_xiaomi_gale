@@ -1047,7 +1047,7 @@ static void if_sdio_reset_card_worker(struct work_struct *work)
 	 * instance for that reason.
 	 */
 
-	pr_info("Resetting card...");
+	pr_debug("Resetting card...");
 	mmc_remove_host(reset_host);
 	mmc_add_host(reset_host);
 }
@@ -1313,14 +1313,14 @@ static int if_sdio_suspend(struct device *dev)
 		return 0;
 	}
 
-	dev_info(dev, "%s: suspend: PM flags = 0x%x\n",
+	dev_dbg(dev, "%s: suspend: PM flags = 0x%x\n",
 		 sdio_func_id(func), flags);
 
 	/* If we aren't being asked to wake on anything, we should bail out
 	 * and let the SD stack power down the card.
 	 */
 	if (priv->wol_criteria == EHS_REMOVE_WAKEUP) {
-		dev_info(dev, "Suspend without wake params -- powering down card\n");
+		dev_dbg(dev, "Suspend without wake params -- powering down card\n");
 		if (priv->fw_ready) {
 			ret = lbs_suspend(priv);
 			if (ret)
@@ -1356,7 +1356,7 @@ static int if_sdio_resume(struct device *dev)
 	struct if_sdio_card *card = sdio_get_drvdata(func);
 	int ret;
 
-	dev_info(dev, "%s: resume: we're back\n", sdio_func_id(func));
+	dev_dbg(dev, "%s: resume: we're back\n", sdio_func_id(func));
 
 	if (card->priv->power_up_on_resume) {
 		if_sdio_power_on(card);

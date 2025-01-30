@@ -1506,7 +1506,7 @@ static int ks8851_probe(struct spi_device *spi)
 	ks->mii.mdio_read	= ks8851_phy_read;
 	ks->mii.mdio_write	= ks8851_phy_write;
 
-	dev_info(&spi->dev, "message enable is %d\n", msg_enable);
+	dev_dbg(&spi->dev, "message enable is %d\n", msg_enable);
 
 	/* set the default message enable */
 	ks->msg_enable = netif_msg_init(msg_enable, (NETIF_MSG_DRV |
@@ -1548,7 +1548,7 @@ static int ks8851_probe(struct spi_device *spi)
 		goto err_netdev;
 	}
 
-	netdev_info(ndev, "revision %d, MAC %pM, IRQ %d, %s EEPROM\n",
+	netdev_dbg(ndev, "revision %d, MAC %pM, IRQ %d, %s EEPROM\n",
 		    CIDER_REV_GET(cider), ndev->dev_addr, ndev->irq,
 		    ks->rc_ccr & CCR_EEPROM ? "has" : "no");
 
@@ -1572,7 +1572,7 @@ static int ks8851_remove(struct spi_device *spi)
 	struct ks8851_net *priv = spi_get_drvdata(spi);
 
 	if (netif_msg_drv(priv))
-		dev_info(&spi->dev, "remove\n");
+		dev_dbg(&spi->dev, "remove\n");
 
 	unregister_netdev(priv->netdev);
 	if (gpio_is_valid(priv->gpio))

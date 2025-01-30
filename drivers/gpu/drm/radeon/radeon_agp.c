@@ -245,7 +245,7 @@ int radeon_agp_init(struct radeon_device *rdev)
 	rdev->mc.gtt_size = rdev->ddev->agp->agp_info.aper_size << 20;
 	rdev->mc.gtt_start = rdev->mc.agp_base;
 	rdev->mc.gtt_end = rdev->mc.gtt_start + rdev->mc.gtt_size - 1;
-	dev_info(rdev->dev, "GTT: %lluM 0x%08llX - 0x%08llX\n",
+	dev_dbg(rdev->dev, "GTT: %lluM 0x%08llX - 0x%08llX\n",
 		rdev->mc.gtt_size >> 20, rdev->mc.gtt_start, rdev->mc.gtt_end);
 
 	/* workaround some hw issues */

@@ -297,8 +297,8 @@ static int axnet_config(struct pcmcia_device *link)
     dev->base_addr = link->resource[0]->start;
 
     if (!get_prom(link)) {
-	pr_notice("this is not an AX88190 card!\n");
-	pr_notice("use pcnet_cs instead.\n");
+	pr_debug("this is not an AX88190 card!\n");
+	pr_debug("use pcnet_cs instead.\n");
 	goto failed;
     }
 
@@ -348,11 +348,11 @@ static int axnet_config(struct pcmcia_device *link)
     SET_NETDEV_DEV(dev, &link->dev);
 
     if (register_netdev(dev) != 0) {
-	pr_notice("register_netdev() failed\n");
+	pr_debug("register_netdev() failed\n");
 	goto failed;
     }
 
-    netdev_info(dev, "Asix AX88%d90: io %#3lx, irq %d, hw_addr %pM\n",
+    netdev_dbg(dev, "Asix AX88%d90: io %#3lx, irq %d, hw_addr %pM\n",
 		((info->flags & IS_AX88790) ? 7 : 1),
 		dev->base_addr, dev->irq, dev->dev_addr);
     if (info->phy_id != -1) {
@@ -559,7 +559,7 @@ static void ei_watchdog(struct timer_list *t)
        this, we can limp along even if the interrupt is blocked */
     if (info->stale++ && (inb_p(nic_base + EN0_ISR) & ENISR_ALL)) {
 	if (!info->fast_poll)
-	    netdev_info(dev, "interrupt(s) dropped!\n");
+	    netdev_dbg(dev, "interrupt(s) dropped!\n");
 	ei_irq_wrapper(dev->irq, dev);
 	info->fast_poll = HZ;
     }
@@ -574,7 +574,7 @@ static void ei_watchdog(struct timer_list *t)
 	goto reschedule;
     link = mdio_read(mii_addr, info->phy_id, 1);
     if (!link || (link == 0xffff)) {
-	netdev_info(dev, "MII is missing!\n");
+	netdev_dbg(dev, "MII is missing!\n");
 	info->phy_id = -1;
 	goto reschedule;
     }
@@ -582,14 +582,14 @@ static void ei_watchdog(struct timer_list *t)
     link &= 0x0004;
     if (link != info->link_status) {
 	u_short p = mdio_read(mii_addr, info->phy_id, 5);
-	netdev_info(dev, "%s link beat\n", link ? "found" : "lost");
+	netdev_dbg(dev, "%s link beat\n", link ? "found" : "lost");
 	if (link) {
 	    info->duplex_flag = (p & 0x0140) ? 0x80 : 0x00;
 	    if (p)
-		netdev_info(dev, "autonegotiation complete: %dbaseT-%cD selected\n",
+		netdev_dbg(dev, "autonegotiation complete: %dbaseT-%cD selected\n",
 			    (p & 0x0180) ? 100 : 10, (p & 0x0140) ? 'F' : 'H');
 	    else
-		netdev_info(dev, "link partner did not autonegotiate\n");
+		netdev_dbg(dev, "link partner did not autonegotiate\n");
 	    AX88190_init(dev, 1);
 	}
 	info->link_status = link;
@@ -1108,7 +1108,7 @@ static irqreturn_t ax_interrupt(int irq, void *dev_id)
 			msg = "Interrupted while interrupts are masked!";
 		else
 			msg = "Reentering the interrupt handler!";
-		netdev_info(dev, "%s, isr=%#2x imr=%#2x\n",
+		netdev_dbg(dev, "%s, isr=%#2x imr=%#2x\n",
 			    msg,
 			    inb_p(e8390_base + EN0_ISR),
 			    inb_p(e8390_base + EN0_IMR));
@@ -1423,7 +1423,7 @@ static void ei_receive(struct net_device *dev)
 		
 		/* This _should_ never happen: it's here for avoiding bad clones. */
 		if (next_frame >= ei_local->stop_page) {
-			netdev_info(dev, "next frame inconsistency, %#2x\n",
+			netdev_dbg(dev, "next frame inconsistency, %#2x\n",
 				    next_frame);
 			next_frame = ei_local->rx_start_page;
 		}

@@ -64,7 +64,7 @@ static int am33xx_pm_suspend(suspend_state_t suspend_state)
 
 		switch (i) {
 		case 0:
-			dev_info(pm33xx_dev,
+			dev_dbg(pm33xx_dev,
 				 "PM: Successfully put all powerdomains to target state\n");
 			break;
 		case 1:

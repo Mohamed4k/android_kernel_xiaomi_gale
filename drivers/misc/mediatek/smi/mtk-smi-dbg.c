@@ -302,7 +302,7 @@ static void mtk_smi_dbg_print(struct mtk_smi_dbg_node *node, const u8 type)
 
 		if (ret < 0 || ret >= LINK_MAX - len) {
 			snprintf(buf + len, LINK_MAX - len, "%c", '\0');
-			dev_info(node->dev, "%s\n", buf);
+			dev_dbg(node->dev, "%s\n", buf);
 
 			memset(buf, '\0', sizeof(buf));
 			len = 0;
@@ -310,7 +310,7 @@ static void mtk_smi_dbg_print(struct mtk_smi_dbg_node *node, const u8 type)
 		} else
 			len += ret;
 	}
-	dev_info(node->dev, "========== rpm:%d busy:%d/%d ==========\n",
+	dev_dbg(node->dev, "========== rpm:%d busy:%d/%d ==========\n",
 		rpm, node->busy, DBG_PRINT_NR);
 	pm_runtime_put_sync(node->dev);
 }
@@ -320,7 +320,7 @@ static void mtk_smi_dbg_hang_detect_single(
 {
 	struct mtk_smi_dbg_node	*node = larb ? &smi->larb[id] : &smi->comm[id];
 
-	dev_info(node->dev, "%s: larb:%d id:%u\n", __func__, larb, id);
+	dev_dbg(node->dev, "%s: larb:%d id:%u\n", __func__, larb, id);
 	mtk_smi_dbg_print(node, larb ? TYPE_LARB : TYPE_COMM);
 	mtk_smi_dbg_print(node->next, larb ? TYPE_COMM : TYPE_MMSYS);
 }
@@ -344,7 +344,7 @@ static void mtk_smi_dbg_conf_set_run(
 		rdwr[i] = SMI_MON_DEC(mon[i], MON_BIT_RDWR);
 		port[i] = SMI_MON_DEC(mon[i], MON_BIT_PORT);
 	}
-	dev_info(node.dev,
+	dev_dbg(node.dev,
 		"%pa.%s:%u prll:%u dstn:%u rqst:%u port:rdwr %u:%u %u:%u %u:%u %u:%u\n",
 		&node.pa, name, id, prll, dstn, rqst, port[0], rdwr[0],
 		port[1], rdwr[1], port[2], rdwr[2], port[3], rdwr[3]);
@@ -375,7 +375,7 @@ static void mtk_smi_dbg_conf_set_run(
 	val_ena = (larb ? readl_relaxed(node.va + mon_ena) : SMI_MON_SET(
 		readl_relaxed(node.va + mon_ena), prll, 0x1, 1)) | 0x1;
 
-	dev_info(node.dev,
+	dev_dbg(node.dev,
 		"%pa.%s:%u MON_PORT:%#x=%#x MON_CON:%#x=%#x MON_ENA:%#x=%#x\n",
 		&node.pa, name, id,
 		mon_port, val_port, mon_con, val_con, mon_ena, val_ena);
@@ -419,7 +419,7 @@ static void mtk_smi_dbg_conf_stop_clr(
 	val[8] = readl_relaxed(
 		va + (larb ? SMI_LARB_MON_COS_MAX : SMI_MON_COS_MAX(0)));
 
-	dev_info(node.dev,
+	dev_dbg(node.dev,
 		"%pa.%s:%u exec:%llu prll:%u ACT:%u REQ:%u BEA:%u BYT:%u CP:%u DP:%u OSTD:%u CP_MAX:%u COS_MAX:%u\n",
 		&node.pa, larb ? "larb" : "common", id, smi->exec,
 		SMI_MON_DEC(mon, MON_BIT_PRLL), val[0], val[1], val[2], val[3],
@@ -436,7 +436,7 @@ static void mtk_smi_dbg_monitor_run(struct mtk_smi_dbg *smi)
 
 	smi->exec = sched_clock();
 	smi->frame = smi->frame ? smi->frame : 10;
-	pr_info("%s: exec:%llu frame:%u\n", __func__, smi->exec, smi->frame);
+	pr_debug("%s: exec:%llu frame:%u\n", __func__, smi->exec, smi->frame);
 
 	for (i = 0; i < ARRAY_SIZE(smi->larb); i++) {
 		if (!smi->larb[i].dev)
@@ -481,7 +481,7 @@ static void mtk_smi_dbg_monitor_set(struct mtk_smi_dbg *smi, const u64 val)
 	u32	i, *mon, mstr = SMI_MON_DEC(val, MON_BIT_MSTR);
 
 	if (mstr >= MTK_LARB_NR_MAX || !nodes[mstr].dev || !nodes[mstr].va) {
-		pr_info("%s: invalid %s:%d\n", __func__, name, mstr);
+		pr_debug("%s: invalid %s:%d\n", __func__, name, mstr);
 		return;
 	}
 	mon = nodes[mstr].mon;
@@ -493,18 +493,18 @@ static void mtk_smi_dbg_monitor_set(struct mtk_smi_dbg *smi, const u64 val)
 		}
 
 	if (i == SMI_MON_BUS_NR)
-		pr_info("%s: over monitor: %pa.%s:%u mon:%#x %#x %#x %#x\n",
+		pr_debug("%s: over monitor: %pa.%s:%u mon:%#x %#x %#x %#x\n",
 			__func__, &nodes[mstr].pa, name, mstr,
 			mon[0], mon[1], mon[2], mon[3]);
 	else
-		pr_info("%s: %pa.%s:%u mon:%#x %#x %#x %#x\n",
+		pr_debug("%s: %pa.%s:%u mon:%#x %#x %#x %#x\n",
 			__func__, &nodes[mstr].pa, name, mstr,
 			mon[0], mon[1], mon[2], mon[3]);
 }
 
 static int mtk_smi_dbg_get(void *data, u64 *val)
 {
-	pr_info("%s: val:%llu\n", __func__, *val);
+	pr_debug("%s: val:%llu\n", __func__, *val);
 	return 0;
 }
 
@@ -514,10 +514,10 @@ static int mtk_smi_dbg_set(void *data, u64 val)
 	u64			exval;
 
 	if (!smi) {
-		pr_info("%s: not init yet\n", __func__);
+		pr_debug("%s: not init yet\n", __func__);
 		return -EFAULT;
 	}
-	pr_info("%s: val:%#llx\n", __func__, val);
+	pr_debug("%s: val:%#llx\n", __func__, val);
 
 	switch (val & 0x7) {
 	case SET_OPS_DUMP:
@@ -591,11 +591,11 @@ s32 mtk_smi_dbg_larb_prepare_enable(const u32 id, const char *user)
 	s32			ret;
 
 	if (!smi) {
-		pr_info("%s: not init yet\n", __func__);
+		pr_debug("%s: not init yet\n", __func__);
 		return -EFAULT;
 	}
 	if (id >= MTK_LARB_NR_MAX || !smi->larb[id].dev) {
-		pr_info("%s: invalid larb-id:%u from user:%s\n", id, user);
+		pr_debug("%s: invalid larb-id:%u from user:%s\n", id, user);
 		return -EINVAL;
 	}
 
@@ -614,11 +614,11 @@ void mtk_smi_dbg_larb_disable_unprepare(const u32 id, const char *user)
 	struct mtk_smi_dbg	*smi = gsmi;
 
 	if (!smi) {
-		pr_info("%s: not init yet\n", __func__);
+		pr_debug("%s: not init yet\n", __func__);
 		return;
 	}
 	if (id >= MTK_LARB_NR_MAX || !smi->larb[id].dev) {
-		pr_info("%s: invalid larb-id:%u from user:%s\n", id, user);
+		pr_debug("%s: invalid larb-id:%u from user:%s\n", id, user);
 		return;
 	}
 
@@ -634,10 +634,10 @@ s32 mtk_smi_dbg_hang_detect(const char *user)
 	s32			i;
 
 	if (!smi) {
-		pr_info("%s: not init yet\n", __func__);
+		pr_debug("%s: not init yet\n", __func__);
 		return -EFAULT;
 	}
-	pr_info("%s: caller:%s\n", __func__, user);
+	pr_debug("%s: caller:%s\n", __func__, user);
 
 	for (i = 0; i < ARRAY_SIZE(smi->larb); i++)
 		mtk_smi_dbg_print(&smi->larb[i], TYPE_LARB);
@@ -673,7 +673,7 @@ struct mtk_smi_dbg_node *node, struct platform_device *pdev, const u8 type)
 	node->regs = type ? (type == TYPE_MMSYS ?
 		smi_mmsys_regs : smi_comm_regs) : smi_larb_regs;
 	memset(node->mon, ~0, sizeof(node->mon));
-	dev_info(node->dev, "pa:%pa va:%#x regs:%u\n",
+	dev_dbg(node->dev, "pa:%pa va:%#x regs:%u\n",
 		&node->pa, node->va, node->nr_regs);
 
 	ret = of_property_count_strings(node->dev->of_node, "clock-names");
@@ -690,7 +690,7 @@ struct mtk_smi_dbg_node *node, struct platform_device *pdev, const u8 type)
 		node->dev->of_node, "clock-names", prop, name) {
 		node->clks[i] = devm_clk_get(node->dev, name);
 		if (IS_ERR(node->clks[i])) {
-			dev_info(node->dev, "%d:%s clk_get failed\n", i, name);
+			dev_dbg(node->dev, "%d:%s clk_get failed\n", i, name);
 			break;
 		}
 		dev_dbg(node->dev, "clks[%d]:%s\n", i, name);
@@ -721,7 +721,7 @@ static s32 mtk_smi_dbg_probe(struct mtk_smi_dbg *smi)
 			of_node_put(node);
 			if (!pdev)
 				return -EINVAL;
-			dev_info(&pdev->dev, "larb-id:%u\n", id);
+			dev_dbg(&pdev->dev, "larb-id:%u\n", id);
 			ret = mtk_smi_dbg_parse(
 				&smi->larb[id], pdev, TYPE_LARB);
 			if (ret)
@@ -741,7 +741,7 @@ static s32 mtk_smi_dbg_probe(struct mtk_smi_dbg *smi)
 			smi->larb[id].next = &smi->comm[j];
 			if (j < nr_comms)
 				continue;
-			dev_info(&pdev->dev, "comm-id:%u\n", j);
+			dev_dbg(&pdev->dev, "comm-id:%u\n", j);
 			ret = mtk_smi_dbg_parse(&smi->comm[j], pdev, TYPE_COMM);
 			if (ret)
 				return ret;
@@ -757,7 +757,7 @@ static s32 mtk_smi_dbg_probe(struct mtk_smi_dbg *smi)
 			of_node_put(next);
 			if (!pdev)
 				continue;
-			dev_info(&pdev->dev, "smi-subsys\n");
+			dev_dbg(&pdev->dev, "smi-subsys\n");
 			mtk_smi_dbg_parse(&smi->mmsys, pdev, TYPE_MMSYS);
 		}
 		i += 1;

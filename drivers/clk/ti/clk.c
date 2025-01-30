@@ -150,7 +150,7 @@ void __init ti_dt_clocks_register(struct ti_dt_clk oclks[])
 		while (*ptr) {
 			if (*ptr == ':') {
 				if (num_args >= 2) {
-					pr_warn("Bad number of tags on %s\n",
+					pr_debug("Bad number of tags on %s\n",
 						c->node_name);
 					return;
 				}
@@ -175,7 +175,7 @@ void __init ti_dt_clocks_register(struct ti_dt_clk oclks[])
 		for (i = 0; i < num_args; i++) {
 			ret = kstrtoint(tags[i], i ? 10 : 16, clkspec.args + i);
 			if (ret) {
-				pr_warn("Bad tag in %s at %d: %s\n",
+				pr_debug("Bad tag in %s at %d: %s\n",
 					c->node_name, i, tags[i]);
 				of_node_put(node);
 				return;
@@ -198,12 +198,12 @@ void __init ti_dt_clocks_register(struct ti_dt_clk oclks[])
 				} else {
 					clkctrl_nodes_missing = true;
 
-					pr_warn("missing clkctrl nodes, please update your dts.\n");
+					pr_debug("missing clkctrl nodes, please update your dts.\n");
 					continue;
 				}
 			}
 
-			pr_warn("failed to lookup clock node %s, ret=%ld\n",
+			pr_debug("failed to lookup clock node %s, ret=%ld\n",
 				c->node_name, PTR_ERR(clk));
 		}
 	}

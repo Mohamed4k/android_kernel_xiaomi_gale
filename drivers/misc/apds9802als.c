@@ -241,7 +241,7 @@ static int apds9802als_probe(struct i2c_client *client,
 		dev_err(&client->dev, "device create file failed\n");
 		goto als_error1;
 	}
-	dev_info(&client->dev, "ALS chip found\n");
+	dev_dbg(&client->dev, "ALS chip found\n");
 	als_set_default_config(client);
 	mutex_init(&data->mutex);
 

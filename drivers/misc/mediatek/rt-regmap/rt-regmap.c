@@ -163,7 +163,7 @@ void rt_regmap_cache_sync(struct rt_regmap_device *rd)
 		}
 		rd->cache_dirty[i] = 0;
 	}
-	dev_info(&rd->dev, "%s successfully\n", __func__);
+	dev_dbg(&rd->dev, "%s successfully\n", __func__);
 err_cache_sync:
 	up(&rd->semaphore);
 }
@@ -204,7 +204,7 @@ void rt_regmap_cache_write_back(struct rt_regmap_device *rd, u32 reg)
 	}
 	rd->cache_dirty[rio.index] = 0;
 out:
-	dev_info(&rd->dev, "%s successfully\n", __func__);
+	dev_dbg(&rd->dev, "%s successfully\n", __func__);
 err_cache_write_back:
 	up(&rd->semaphore);
 }
@@ -254,7 +254,7 @@ static void rt_work_func(struct work_struct *work)
 	struct rt_regmap_device *rd =
 		container_of(work, struct rt_regmap_device, rt_work.work);
 
-	dev_info(&rd->dev, "%s\n", __func__);
+	dev_dbg(&rd->dev, "%s\n", __func__);
 	rt_regmap_cache_sync(rd);
 }
 
@@ -423,7 +423,7 @@ static int _rt_cache_block_write(struct rt_regmap_device *rd, u32 reg,
 
 			j += ret;
 		}
-		dev_info(&rd->dev, "RT_REGMAP [WRITE] reg0x%02x  [Data] %s\n",
+		dev_dbg(&rd->dev, "RT_REGMAP [WRITE] reg0x%02x  [Data] %s\n",
 				   reg, wri_data);
 	}
 	return 0;
@@ -502,7 +502,7 @@ static int rt_cache_block_read(struct rt_regmap_device *rd, u32 reg,
 	}
 
 	if (rd->props.io_log_en)
-		dev_info(&rd->dev, "RT_REGMAP [READ] reg0x%02x\n", reg);
+		dev_dbg(&rd->dev, "RT_REGMAP [READ] reg0x%02x\n", reg);
 
 	memcpy(dest, &rd->cache_data[rio.index][rio.offset], bytes);
 
@@ -789,7 +789,7 @@ static int rt_regmap_cache_init(struct rt_regmap_device *rd)
 	int ret = 0, i = 0, j = 0, count = 0, bytes_num = 0;
 	const rt_register_map_t *rm = rd->props.rm;
 
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 
 	down(&rd->semaphore);
 	rd->cache_data = devm_kzalloc(&rd->dev, rd->props.register_num *
@@ -841,7 +841,7 @@ static int rt_regmap_cache_init(struct rt_regmap_device *rd)
 		}
 	}
 
-	pr_info("%s successfully\n", __func__);
+	pr_debug("%s successfully\n", __func__);
 out:
 	up(&rd->semaphore);
 	return ret;
@@ -852,7 +852,7 @@ int rt_regmap_cache_reload(struct rt_regmap_device *rd)
 {
 	int i = 0;
 
-	dev_info(&rd->dev, "%s\n", __func__);
+	dev_dbg(&rd->dev, "%s\n", __func__);
 	down(&rd->semaphore);
 	for (i = 0; i < rd->props.register_num; i++)
 		rd->cache_dirty[i] = rd->cached[i] = 0;
@@ -891,7 +891,7 @@ static void rt_regmap_set_cache_mode(struct rt_regmap_device *rd,
 {
 	unsigned char mode_mask = mode & RT_CACHE_MODE_MASK;
 
-	dev_info(&rd->dev, "%s mode_mask = %d\n", __func__, mode_mask);
+	dev_dbg(&rd->dev, "%s mode_mask = %d\n", __func__, mode_mask);
 
 	down(&rd->write_mode_lock);
 	if (mode_mask == RT_CACHE_WR_THROUGH) {
@@ -1119,7 +1119,7 @@ static ssize_t general_write(struct file *file, const char __user *ubuf,
 	unsigned int size = 0;
 	unsigned long param = 0;
 
-	dev_info(&rd->dev, "%s @ %p, count = %u, pos = %llu\n",
+	dev_dbg(&rd->dev, "%s @ %p, count = %u, pos = %llu\n",
 			   __func__, ubuf, (unsigned int)count, *ppos);
 	*ppos = 0;
 	res = simple_write_to_buffer(lbuf, sizeof(lbuf) - 1, ppos, ubuf, count);
@@ -1357,7 +1357,7 @@ static ssize_t eachreg_write(struct file *file, const char __user *ubuf,
 		return -EINVAL;
 	}
 
-	dev_info(&rd->dev, "%s @ %p, count = %u, pos = %llu\n",
+	dev_dbg(&rd->dev, "%s @ %p, count = %u, pos = %llu\n",
 			   __func__, ubuf, (unsigned int)count, *ppos);
 	*ppos = 0;
 	res = simple_write_to_buffer(lbuf, sizeof(lbuf) - 1, ppos, ubuf, count);
@@ -1449,14 +1449,14 @@ static int rt_regmap_check(struct rt_regmap_device *rd)
 
 	/* check name property */
 	if (!rd->props.name) {
-		pr_notice("%s no name\n", __func__);
+		pr_debug("%s no name\n", __func__);
 		return -EINVAL;
 	}
 
 	for (i = 0; i < rd->props.register_num; i++) {
 		/* check byte size, 1 byte ~ 32 bytes is valid */
 		if (rm[i]->size < 1 || rm[i]->size > MAX_BYTE_SIZE) {
-			pr_notice("%s size(%d) must be %d ~ %d @ 0x%02x\n",
+			pr_debug("%s size(%d) must be %d ~ %d @ 0x%02x\n",
 				  __func__, rm[i]->size, 1, MAX_BYTE_SIZE,
 				  rm[i]->addr);
 			return -EINVAL;
@@ -1466,7 +1466,7 @@ static int rt_regmap_check(struct rt_regmap_device *rd)
 	for (i = 0; i < rd->props.register_num - 1; i++) {
 		/* check register sequence */
 		if (rm[i]->addr >= rm[i + 1]->addr) {
-			pr_info("%s sequence error @ 0x%02x\n",
+			pr_debug("%s sequence error @ 0x%02x\n",
 				__func__, rm[i]->addr);
 		}
 	}
@@ -1492,15 +1492,15 @@ struct rt_regmap_device *rt_regmap_device_register_ex
 	struct rt_regmap_device *rd = NULL;
 
 	if (!props) {
-		pr_notice("%s rt_regmap_properties is NULL\n", __func__);
+		pr_debug("%s rt_regmap_properties is NULL\n", __func__);
 		return NULL;
 	}
 	if (!rops) {
-		pr_notice("%s rt_regmap_fops is NULL\n", __func__);
+		pr_debug("%s rt_regmap_fops is NULL\n", __func__);
 		return NULL;
 	}
 
-	pr_info("%s name = %s\n", __func__, props->name);
+	pr_debug("%s name = %s\n", __func__, props->name);
 	rd = kzalloc(sizeof(*rd), GFP_KERNEL);
 	if (!rd)
 		return NULL;
@@ -1518,14 +1518,14 @@ struct rt_regmap_device *rt_regmap_device_register_ex
 	/* check rt_registe_map format */
 	ret = rt_regmap_check(rd);
 	if (ret < 0) {
-		pr_notice("%s check fail(%d)\n", __func__, ret);
+		pr_debug("%s check fail(%d)\n", __func__, ret);
 		goto out;
 	}
 
 	dev_set_name(&rd->dev, "rt_regmap_%s", rd->props.name);
 	ret = device_register(&rd->dev);
 	if (ret) {
-		pr_notice("%s device register fail(%d)\n", __func__, ret);
+		pr_debug("%s device register fail(%d)\n", __func__, ret);
 		goto out;
 	}
 
@@ -1535,7 +1535,7 @@ struct rt_regmap_device *rt_regmap_device_register_ex
 
 	ret = rt_regmap_cache_init(rd);
 	if (ret < 0) {
-		pr_notice("%s init fail(%d)\n", __func__, ret);
+		pr_debug("%s init fail(%d)\n", __func__, ret);
 		goto err_cacheinit;
 	}
 
@@ -1549,20 +1549,20 @@ struct rt_regmap_device *rt_regmap_device_register_ex
 	if (rd->rt_den) {
 		ret = rt_create_general_debug(rd, rd->rt_den);
 		if (ret < 0) {
-			pr_notice("%s create general debug fail(%d)\n",
+			pr_debug("%s create general debug fail(%d)\n",
 				  __func__, ret);
 			goto err_create_general_debug;
 		}
 		if (rd->props.rt_regmap_mode & RT_DBG_MODE_MASK) {
 			ret = rt_create_every_debug(rd, rd->rt_den);
 			if (ret < 0) {
-				pr_notice("%s create every debug fail(%d)\n",
+				pr_debug("%s create every debug fail(%d)\n",
 					  __func__, ret);
 				goto err_create_every_debug;
 			}
 		}
 	} else {
-		pr_notice("%s debugfs create dir fail\n", __func__);
+		pr_debug("%s debugfs create dir fail\n", __func__);
 		goto err_debug;
 	}
 #endif /* CONFIG_DEBUG_FS */
@@ -1602,11 +1602,11 @@ EXPORT_SYMBOL(rt_regmap_device_unregister);
 
 static int __init regmap_plat_init(void)
 {
-	pr_info("Init Richtek RegMap %s\n", RT_REGMAP_VERSION);
+	pr_debug("Init Richtek RegMap %s\n", RT_REGMAP_VERSION);
 #ifdef CONFIG_DEBUG_FS
 	rt_regmap_dir = debugfs_create_dir("rt-regmap", NULL);
 	if (!rt_regmap_dir) {
-		pr_notice("%s debugfs create dir fail\n", __func__);
+		pr_debug("%s debugfs create dir fail\n", __func__);
 		return -EINVAL;
 	}
 #endif /* CONFIG_DEBUG_FS */

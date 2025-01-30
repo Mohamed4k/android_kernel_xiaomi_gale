@@ -476,7 +476,7 @@ static int da9150_fg_probe(struct platform_device *pdev)
 
 	ver = da9150_fg_read_attr(fg, DA9150_QIF_FW_MAIN_VER,
 				  DA9150_QIF_FW_MAIN_VER_SIZE);
-	dev_info(dev, "Version: 0x%x\n", ver);
+	dev_dbg(dev, "Version: 0x%x\n", ver);
 
 	/* Handle DT data if provided */
 	if (dev->of_node) {

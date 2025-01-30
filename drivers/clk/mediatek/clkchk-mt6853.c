@@ -823,7 +823,7 @@ static unsigned int check_cg_state(struct pg_check_swcg *swcg)
 	while (swcg->name) {
 		if (!IS_ERR_OR_NULL(swcg->c)) {
 			if (__clk_get_enable_count(swcg->c) > 0) {
-				pr_notice("%s[%-17s: %3d]\n",
+				pr_debug("%s[%-17s: %3d]\n",
 				__func__,
 				__clk_get_name(swcg->c),
 				__clk_get_enable_count(swcg->c));
@@ -848,7 +848,7 @@ void mtk_check_subsys_swcg(enum subsys_id id)
 		/* check if Subsys CGs are still on */
 		ret = check_cg_state(mtk_subsys_check[i].swcgs);
 		if (ret) {
-			pr_notice("%s:(%d) warning!\n", __func__, id);
+			pr_debug("%s:(%d) warning!\n", __func__, id);
 
 			/* print registers dump */
 			print_subsys_reg(scpsys);
@@ -857,7 +857,7 @@ void mtk_check_subsys_swcg(enum subsys_id id)
 	}
 
 	if (ret) {
-		pr_notice("%s(%d): %d\n", __func__, id, ret);
+		pr_debug("%s(%d): %d\n", __func__, id, ret);
 		BUG_ON(1);
 	}
 }
@@ -1144,7 +1144,7 @@ void print_subsys_reg(enum chk_sys_id id)
 		return;
 
 	if (id >= chk_sys_num || id < 0) {
-		pr_info("wrong id:%d\n", id);
+		pr_debug("wrong id:%d\n", id);
 		return;
 	}
 
@@ -1158,7 +1158,7 @@ void print_subsys_reg(enum chk_sys_id id)
 		if (rns->base != rb_dump)
 			continue;
 
-		pr_info("%-18s: [0x%08x] = 0x%08x\n",
+		pr_debug("%-18s: [0x%08x] = 0x%08x\n",
 			rns->name, PHYSADDR(rns), clk_readl(ADDR(rns)));
 	}
 }

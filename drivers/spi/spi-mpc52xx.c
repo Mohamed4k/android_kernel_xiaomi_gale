@@ -488,14 +488,14 @@ static int mpc52xx_spi_probe(struct platform_device *op)
 	}
 
 	if (!ms->irq0)
-		dev_info(&op->dev, "using polled mode\n");
+		dev_dbg(&op->dev, "using polled mode\n");
 
 	dev_dbg(&op->dev, "registering spi_master struct\n");
 	rc = spi_register_master(master);
 	if (rc)
 		goto err_register;
 
-	dev_info(&ms->master->dev, "registered MPC5200 SPI bus\n");
+	dev_dbg(&ms->master->dev, "registered MPC5200 SPI bus\n");
 
 	return rc;
 

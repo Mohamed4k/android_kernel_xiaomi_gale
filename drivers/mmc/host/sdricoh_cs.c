@@ -469,7 +469,7 @@ static int sdricoh_pcmcia_probe(struct pcmcia_device *pcmcia_dev)
 {
 	struct pci_dev *pci_dev = NULL;
 
-	dev_info(&pcmcia_dev->dev, "Searching MMC controller for pcmcia device"
+	dev_dbg(&pcmcia_dev->dev, "Searching MMC controller for pcmcia device"
 		" %s %s ...\n", pcmcia_dev->prod_id[0], pcmcia_dev->prod_id[1]);
 
 	/* search pci cardbus bridge that contains the mmc controller */
@@ -479,7 +479,7 @@ static int sdricoh_pcmcia_probe(struct pcmcia_device *pcmcia_dev)
 			       pci_dev))) {
 		/* try to init the device */
 		if (!sdricoh_init_mmc(pci_dev, pcmcia_dev)) {
-			dev_info(&pcmcia_dev->dev, "MMC controller found\n");
+			dev_dbg(&pcmcia_dev->dev, "MMC controller found\n");
 			return 0;
 		}
 

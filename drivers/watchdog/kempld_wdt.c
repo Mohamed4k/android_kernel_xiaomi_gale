@@ -488,7 +488,7 @@ static int kempld_wdt_probe(struct platform_device *pdev)
 	if (status & KEMPLD_WDT_CFG_ENABLE) {
 		/* Get current watchdog settings */
 		kempld_wdt_update_timeouts(wdt_data);
-		dev_info(dev, "Watchdog was already enabled\n");
+		dev_dbg(dev, "Watchdog was already enabled\n");
 	}
 
 	platform_set_drvdata(pdev, wdt_data);
@@ -496,7 +496,7 @@ static int kempld_wdt_probe(struct platform_device *pdev)
 	if (ret)
 		return ret;
 
-	dev_info(dev, "Watchdog registered with %ds timeout\n", wdd->timeout);
+	dev_dbg(dev, "Watchdog registered with %ds timeout\n", wdd->timeout);
 
 	return 0;
 }

@@ -257,7 +257,7 @@ static const struct i40e_priv_flags i40e_gl_gstrings_priv_flags[] = {
  **/
 static void i40e_partition_setting_complaint(struct i40e_pf *pf)
 {
-	dev_info(&pf->pdev->dev,
+	dev_dbg(&pf->pdev->dev,
 		 "The link settings are allowed to be changed only from the first partition of a given port. Please switch to the first partition in order to change the setting.\n");
 }
 
@@ -673,7 +673,7 @@ static void i40e_get_settings_link_up(struct i40e_hw *hw,
 		break;
 	default:
 		/* if we got here and link is up something bad is afoot */
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "WARNING: Link is up but PHY type 0x%x is not recognized.\n",
 			    hw_link_info->phy_type);
 	}
@@ -866,7 +866,7 @@ static int i40e_set_link_ksettings(struct net_device *netdev,
 	    hw->device_id == I40E_DEV_ID_20G_KR2_A ||
 	    hw->device_id == I40E_DEV_ID_25G_B ||
 	    hw->device_id == I40E_DEV_ID_KX_X722) {
-		netdev_info(netdev, "Changing settings is not supported on backplane.\n");
+		netdev_dbg(netdev, "Changing settings is not supported on backplane.\n");
 		return -EOPNOTSUPP;
 	}
 
@@ -930,7 +930,7 @@ static int i40e_set_link_ksettings(struct net_device *netdev,
 			if (!ethtool_link_ksettings_test_link_mode(&safe_ks,
 								   supported,
 								   Autoneg)) {
-				netdev_info(netdev, "Autoneg not supported on this phy\n");
+				netdev_dbg(netdev, "Autoneg not supported on this phy\n");
 				err = -EINVAL;
 				goto done;
 			}
@@ -950,7 +950,7 @@ static int i40e_set_link_ksettings(struct net_device *netdev,
 								  Autoneg) &&
 			    hw->phy.link_info.phy_type !=
 			    I40E_PHY_TYPE_10GBASE_T) {
-				netdev_info(netdev, "Autoneg cannot be disabled on this phy\n");
+				netdev_dbg(netdev, "Autoneg cannot be disabled on this phy\n");
 				err = -EINVAL;
 				goto done;
 			}
@@ -1037,7 +1037,7 @@ static int i40e_set_link_ksettings(struct net_device *netdev,
 		/* make the aq call */
 		status = i40e_aq_set_phy_config(hw, &config, NULL);
 		if (status) {
-			netdev_info(netdev,
+			netdev_dbg(netdev,
 				    "Set phy config failed, err %s aq_err %s\n",
 				    i40e_stat_str(hw, status),
 				    i40e_aq_str(hw, hw->aq.asq_last_status));
@@ -1053,7 +1053,7 @@ static int i40e_set_link_ksettings(struct net_device *netdev,
 				   i40e_aq_str(hw, hw->aq.asq_last_status));
 
 	} else {
-		netdev_info(netdev, "Nothing changed, exiting without setting anything.\n");
+		netdev_dbg(netdev, "Nothing changed, exiting without setting anything.\n");
 	}
 
 done:
@@ -1073,7 +1073,7 @@ static int i40e_nway_reset(struct net_device *netdev)
 
 	ret = i40e_aq_set_link_restart_an(hw, link_up, NULL);
 	if (ret) {
-		netdev_info(netdev, "link restart failed, err %s aq_err %s\n",
+		netdev_dbg(netdev, "link restart failed, err %s aq_err %s\n",
 			    i40e_stat_str(hw, ret),
 			    i40e_aq_str(hw, hw->aq.asq_last_status));
 		return -EIO;
@@ -1152,18 +1152,18 @@ static int i40e_set_pauseparam(struct net_device *netdev,
 
 	is_an = hw_link_info->an_info & I40E_AQ_AN_COMPLETED;
 	if (pause->autoneg != is_an) {
-		netdev_info(netdev, "To change autoneg please use: ethtool -s <dev> autoneg <on|off>\n");
+		netdev_dbg(netdev, "To change autoneg please use: ethtool -s <dev> autoneg <on|off>\n");
 		return -EOPNOTSUPP;
 	}
 
 	/* If we have link and don't have autoneg */
 	if (!test_bit(__I40E_DOWN, pf->state) && !is_an) {
 		/* Send message that it might not necessarily work*/
-		netdev_info(netdev, "Autoneg did not complete so changing settings may not result in an actual change.\n");
+		netdev_dbg(netdev, "Autoneg did not complete so changing settings may not result in an actual change.\n");
 	}
 
 	if (dcbx_cfg->pfc.pfcenable) {
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "Priority flow control enabled. Cannot set link flow control.\n");
 		return -EOPNOTSUPP;
 	}
@@ -1190,19 +1190,19 @@ static int i40e_set_pauseparam(struct net_device *netdev,
 	status = i40e_set_fc(hw, &aq_failures, link_up);
 
 	if (aq_failures & I40E_SET_FC_AQ_FAIL_GET) {
-		netdev_info(netdev, "Set fc failed on the get_phy_capabilities call with err %s aq_err %s\n",
+		netdev_dbg(netdev, "Set fc failed on the get_phy_capabilities call with err %s aq_err %s\n",
 			    i40e_stat_str(hw, status),
 			    i40e_aq_str(hw, hw->aq.asq_last_status));
 		err = -EAGAIN;
 	}
 	if (aq_failures & I40E_SET_FC_AQ_FAIL_SET) {
-		netdev_info(netdev, "Set fc failed on the set_phy_config call with err %s aq_err %s\n",
+		netdev_dbg(netdev, "Set fc failed on the set_phy_config call with err %s aq_err %s\n",
 			    i40e_stat_str(hw, status),
 			    i40e_aq_str(hw, hw->aq.asq_last_status));
 		err = -EAGAIN;
 	}
 	if (aq_failures & I40E_SET_FC_AQ_FAIL_UPDATE) {
-		netdev_info(netdev, "Set fc failed on the get_link_info call with err %s aq_err %s\n",
+		netdev_dbg(netdev, "Set fc failed on the get_link_info call with err %s aq_err %s\n",
 			    i40e_stat_str(hw, status),
 			    i40e_aq_str(hw, hw->aq.asq_last_status));
 		err = -EAGAIN;
@@ -1225,7 +1225,7 @@ static u32 i40e_get_msglevel(struct net_device *netdev)
 	u32 debug_mask = pf->hw.debug_mask;
 
 	if (debug_mask)
-		netdev_info(netdev, "i40e debug_mask: 0x%08X\n", debug_mask);
+		netdev_dbg(netdev, "i40e debug_mask: 0x%08X\n", debug_mask);
 
 	return pf->msg_enable;
 }
@@ -1315,7 +1315,7 @@ static int i40e_get_eeprom(struct net_device *netdev,
 			ret_val = i40e_nvmupd_command(hw, cmd, bytes, &errno);
 
 		if ((errno || ret_val) && (hw->debug_mask & I40E_DEBUG_NVM))
-			dev_info(&pf->pdev->dev,
+			dev_dbg(&pf->pdev->dev,
 				 "NVMUpdate read failed err=%d status=0x%x errno=%d module=%d offset=0x%x size=%d\n",
 				 ret_val, hw->aq.asq_last_status, errno,
 				 (u8)(cmd->config & I40E_NVM_MOD_PNT_MASK),
@@ -1333,7 +1333,7 @@ static int i40e_get_eeprom(struct net_device *netdev,
 
 	ret_val = i40e_acquire_nvm(hw, I40E_RESOURCE_READ);
 	if (ret_val) {
-		dev_info(&pf->pdev->dev,
+		dev_dbg(&pf->pdev->dev,
 			 "Failed Acquiring NVM resource for read err=%d status=0x%x\n",
 			 ret_val, hw->aq.asq_last_status);
 		goto free_buff;
@@ -1353,18 +1353,18 @@ static int i40e_get_eeprom(struct net_device *netdev,
 				(u8 *)eeprom_buff + (I40E_NVM_SECTOR_SIZE * i),
 				last, NULL);
 		if (ret_val && hw->aq.asq_last_status == I40E_AQ_RC_EPERM) {
-			dev_info(&pf->pdev->dev,
+			dev_dbg(&pf->pdev->dev,
 				 "read NVM failed, invalid offset 0x%x\n",
 				 offset);
 			break;
 		} else if (ret_val &&
 			   hw->aq.asq_last_status == I40E_AQ_RC_EACCES) {
-			dev_info(&pf->pdev->dev,
+			dev_dbg(&pf->pdev->dev,
 				 "read NVM failed, access, offset 0x%x\n",
 				 offset);
 			break;
 		} else if (ret_val) {
-			dev_info(&pf->pdev->dev,
+			dev_dbg(&pf->pdev->dev,
 				 "read NVM failed offset %d err=%d status=0x%x\n",
 				 offset, ret_val, hw->aq.asq_last_status);
 			break;
@@ -1422,7 +1422,7 @@ static int i40e_set_eeprom(struct net_device *netdev,
 		ret_val = i40e_nvmupd_command(hw, cmd, bytes, &errno);
 
 	if ((errno || ret_val) && (hw->debug_mask & I40E_DEBUG_NVM))
-		dev_info(&pf->pdev->dev,
+		dev_dbg(&pf->pdev->dev,
 			 "NVMUpdate write failed err=%d status=0x%x errno=%d module=%d offset=0x%x size=%d\n",
 			 ret_val, hw->aq.asq_last_status, errno,
 			 (u8)(cmd->config & I40E_NVM_MOD_PNT_MASK),
@@ -1498,7 +1498,7 @@ static int i40e_set_ringparam(struct net_device *netdev,
 	    ring->tx_pending < I40E_MIN_NUM_DESCRIPTORS ||
 	    ring->rx_pending > I40E_MAX_NUM_DESCRIPTORS ||
 	    ring->rx_pending < I40E_MIN_NUM_DESCRIPTORS) {
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "Descriptors requested (Tx: %d / Rx: %d) out of range [%d-%d]\n",
 			    ring->tx_pending, ring->rx_pending,
 			    I40E_MIN_NUM_DESCRIPTORS, I40E_MAX_NUM_DESCRIPTORS);
@@ -1540,7 +1540,7 @@ static int i40e_set_ringparam(struct net_device *netdev,
 	tx_alloc_queue_pairs = vsi->alloc_queue_pairs *
 			       (i40e_enabled_xdp_vsi(vsi) ? 2 : 1);
 	if (new_tx_count != vsi->tx_rings[0]->count) {
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "Changing Tx descriptor count from %d to %d.\n",
 			    vsi->tx_rings[0]->count, new_tx_count);
 		tx_rings = kcalloc(tx_alloc_queue_pairs,
@@ -1579,7 +1579,7 @@ static int i40e_set_ringparam(struct net_device *netdev,
 
 	/* alloc updated Rx resources */
 	if (new_rx_count != vsi->rx_rings[0]->count) {
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "Changing Rx descriptor count from %d to %d\n",
 			    vsi->rx_rings[0]->count, new_rx_count);
 		rx_rings = kcalloc(vsi->alloc_queue_pairs,
@@ -4628,7 +4628,7 @@ flags_complete:
 		ret = i40e_aq_set_switch_config(&pf->hw, sw_flags, valid_flags,
 						0, NULL);
 		if (ret && pf->hw.aq.asq_last_status != I40E_AQ_RC_ESRCH) {
-			dev_info(&pf->pdev->dev,
+			dev_dbg(&pf->pdev->dev,
 				 "couldn't set switch config bits, err %s aq_err %s\n",
 				 i40e_stat_str(&pf->hw, ret),
 				 i40e_aq_str(&pf->hw,

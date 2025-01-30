@@ -445,6 +445,6 @@ int zx_pinctrl_init(struct platform_device *pdev,
 		return ret;
 	}
 
-	dev_info(&pdev->dev, "initialized pinctrl driver\n");
+	dev_dbg(&pdev->dev, "initialized pinctrl driver\n");
 	return 0;
 }

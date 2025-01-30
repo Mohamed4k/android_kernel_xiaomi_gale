@@ -417,7 +417,7 @@ uint32_t scp_get_freq(void)
 
 	if (i == dvfs->scp_opp_num) {
 		return_freq = dvfs->opp[dvfs->scp_opp_num - 1].freq;
-		pr_notice("warning: request freq %d > max opp %d\n",
+		pr_debug("warning: request freq %d > max opp %d\n",
 				sum, return_freq);
 	}
 
@@ -606,14 +606,14 @@ int scp_pll_ctrl_set(unsigned int pll_ctrl_flag, unsigned int pll_sel)
 	if (pll_sel != CLK_26M) {
 		idx = scp_get_freq_idx(pll_sel);
 		if (idx < 0) {
-			pr_notice("invalid idx %d\n", idx);
+			pr_debug("invalid idx %d\n", idx);
 			WARN_ON(1);
 			return -EINVAL;
 		}
 
 		mux_idx = dvfs->opp[idx].clk_mux;
 		if (mux_idx < 0) {
-			pr_notice("invalid mux_idx %d\n", mux_idx);
+			pr_debug("invalid mux_idx %d\n", mux_idx);
 			WARN_ON(1);
 			return -EINVAL;
 		}
@@ -783,22 +783,22 @@ static ssize_t mt_scp_dvfs_sleep_proc_write(
 		if (val >= 0  && val <= 3) {
 			if (val != scp_sleep_flag) {
 				scp_sleep_flag = val;
-				pr_info("scp_sleep_flag = %d\n",
+				pr_debug("scp_sleep_flag = %d\n",
 						scp_sleep_flag);
 				ret = scp_ipi_send(IPI_DVFS_SLEEP,
 							(void *)&scp_sleep_flag,
 							sizeof(scp_sleep_flag),
 							0, SCP_A_ID);
 				if (ret != SCP_IPI_DONE)
-					pr_info("%s: SCP send IPI fail - %d\n",
+					pr_debug("%s: SCP send IPI fail - %d\n",
 						__func__, ret);
 			} else
-				pr_info("SCP sleep flag is not changed\n");
+				pr_debug("SCP sleep flag is not changed\n");
 		} else {
-			pr_info("Warning: invalid input value %d\n", val);
+			pr_debug("Warning: invalid input value %d\n", val);
 		}
 	} else {
-		pr_info("Warning: invalid input command, val=%d\n", val);
+		pr_debug("Warning: invalid input command, val=%d\n", val);
 	}
 
 	return count;
@@ -861,13 +861,13 @@ static ssize_t mt_scp_dvfs_ctrl_proc_write(
 	if (n == 1 || n == 2) {
 		if (!strcmp(cmd, "on")) {
 			scp_dvfs_flag = 1;
-			pr_info("SCP DVFS: ON\n");
+			pr_debug("SCP DVFS: ON\n");
 		} else if (!strcmp(cmd, "off")) {
 			scp_dvfs_flag = -1;
-			pr_info("SCP DVFS: OFF\n");
+			pr_debug("SCP DVFS: OFF\n");
 		} else if (!strcmp(cmd, "opp")) {
 			if (dvfs_opp == -1) {
-				pr_info("remove the opp setting of command\n");
+				pr_debug("remove the opp setting of command\n");
 				feature_table[VCORE_TEST_FEATURE_ID].freq = 0;
 				scp_deregister_feature(
 						VCORE_TEST_FEATURE_ID);
@@ -876,7 +876,7 @@ static ssize_t mt_scp_dvfs_ctrl_proc_write(
 				uint32_t i;
 				uint32_t sum = 0, added_freq = 0;
 
-				pr_info("manually set opp = %d\n", dvfs_opp);
+				pr_debug("manually set opp = %d\n", dvfs_opp);
 
 				/*
 				 * calculate scp frequence
@@ -921,13 +921,13 @@ static ssize_t mt_scp_dvfs_ctrl_proc_write(
 				scp_register_feature(
 						VCORE_TEST_FEATURE_ID);
 			} else {
-				pr_info("invalid opp value %d\n", dvfs_opp);
+				pr_debug("invalid opp value %d\n", dvfs_opp);
 			}
 		} else {
-			pr_info("invalid command %s\n", cmd);
+			pr_debug("invalid command %s\n", cmd);
 		}
 	} else {
-		pr_info("invalid length %d\n", n);
+		pr_debug("invalid length %d\n", n);
 	}
 
 	return count;
@@ -1277,12 +1277,12 @@ static void mt_pmic_sshub_init_for_mt6781(void)
 		PMIC_RG_BUCK_VCORE_SSHUB_SLEEP_VOSEL_EN, 0);
 
 	if (Scp_Vsram_Ldo_usage == USE_VSRAM_OTHERS)
-		pr_notice("SCP VSRAM: VSRAM_OTHERS\n");
+		pr_debug("SCP VSRAM: VSRAM_OTHERS\n");
 	else if (Scp_Vsram_Ldo_usage == USE_VSRAM_CORE)
-		pr_notice("SCP VSRAM: VSRAM_CORE\n");
+		pr_debug("SCP VSRAM: VSRAM_CORE\n");
 	else {
 		Scp_Vsram_Ldo_usage = USE_VSRAM_OTHERS;
-		pr_notice("ERROR: unknown VSRAM LDO usage before PMIC setting\n");
+		pr_debug("ERROR: unknown VSRAM LDO usage before PMIC setting\n");
 		WARN_ON(1);
 	}
 
@@ -1457,12 +1457,12 @@ static void __init mt_pmic_sshub_init(void)
 	/* set SCP VCORE voltage */
 	if (regulator_set_voltage(reg_vcore, dvfs->opp[0].vcore,
 			max_vcore) != 0)
-		pr_notice("Set wrong vcore voltage\n");
+		pr_debug("Set wrong vcore voltage\n");
 
 	/* set SCP VSRAM voltage */
 	if (regulator_set_voltage(reg_vsram, dvfs->opp[0].vsram,
 			max_vsram) != 0)
-		pr_notice("Set wrong vsram voltage\n");
+		pr_debug("Set wrong vsram voltage\n");
 
 	if (scp_get_sub_feature_onoff(SYS_PMIC, PMIC_VOW_LP))
 		/* enable VOW low power mode */
@@ -1480,9 +1480,9 @@ static void __init mt_pmic_sshub_init(void)
 	/* BUCK_VCORE_SSHUB_EN: ON */
 	/* LDO_VSRAM_OTHERS_SSHUB_EN: ON */
 	if (regulator_enable(reg_vcore) != 0)
-		pr_notice("Enable vcore failed!!!\n");
+		pr_debug("Enable vcore failed!!!\n");
 	if (regulator_enable(reg_vsram) != 0)
-		pr_notice("Enable vsram failed!!!\n");
+		pr_debug("Enable vsram failed!!!\n");
 #endif
 #endif
 }
@@ -1596,9 +1596,9 @@ static int __init mt_scp_dvfs_pdrv_probe(struct platform_device *pdev)
 		gpio_mode = scp_get_sub_register_cfg(SYS_GPIO, GPIO_MODE);
 
 		if (*gpio_mode == 1)
-			pr_notice("v_req muxpin setting is correct\n");
+			pr_debug("v_req muxpin setting is correct\n");
 		else {
-			pr_notice("wrong V_REQ muxpin setting - %d\n",
+			pr_debug("wrong V_REQ muxpin setting - %d\n",
 					*gpio_mode);
 			WARN_ON(1);
 		}
@@ -1611,13 +1611,13 @@ static int __init mt_scp_dvfs_pdrv_probe(struct platform_device *pdev)
 	/* get high/low level of gpio pin */
 	gpio_idx = of_get_named_gpio(pdev->dev.of_node, "vsram_chk_gpio", 0);
 	gpio_val = gpio_get_value(gpio_idx);
-	pr_notice("vsram_chk_gpio value: %d\n", gpio_val);
+	pr_debug("vsram_chk_gpio value: %d\n", gpio_val);
 	if (gpio_val == 0) {
 		Scp_Vsram_Ldo_usage = USE_VSRAM_CORE;
-		pr_notice("VSRAM LDO: VSRAM_CORE\n");
+		pr_debug("VSRAM LDO: VSRAM_CORE\n");
 	} else {
 		Scp_Vsram_Ldo_usage = USE_VSRAM_OTHERS;
-		pr_notice("VSRAM LDO: VSRAM_OTHERS\n");
+		pr_debug("VSRAM LDO: VSRAM_OTHERS\n");
 	}
 #endif
 
@@ -1685,12 +1685,12 @@ static int __init mt_scp_dvfs_pdrv_probe(struct platform_device *pdev)
 	}
 
 	if (dvfs->dvfsrc_opp_num == 0) {
-		pr_notice("dvfsrc table has zero opp count\n");
+		pr_debug("dvfsrc table has zero opp count\n");
 	}
 
 #if (defined (CONFIG_MACH_MT6768) \
 	||defined(CONFIG_MACH_MT6781) || defined(CONFIG_MACH_MT6771) ||defined(CONFIG_MACH_MT6785))
-	pr_notice("mt6768  6781 6771 no pmic config in dts\n");
+	pr_debug("mt6768  6781 6771 no pmic config in dts\n");
 
 	mt_pmic_sshub_init();
 	goto pass;
@@ -1699,14 +1699,14 @@ static int __init mt_scp_dvfs_pdrv_probe(struct platform_device *pdev)
 	/* get Vcore/Vsram Regulator */
 	reg_vcore = devm_regulator_get_optional(&pdev->dev, "sshub-vcore");
 	if (IS_ERR(reg_vcore) || !reg_vcore) {
-		pr_notice("regulator vcore sshub supply is not available\n");
+		pr_debug("regulator vcore sshub supply is not available\n");
 		ret = PTR_ERR(reg_vcore);
 		goto pass;
 	}
 
 	reg_vsram = devm_regulator_get_optional(&pdev->dev, "sshub-vsram");
 	if (IS_ERR(reg_vsram) || !reg_vsram) {
-		pr_notice("regulator vsram sshub supply is not available\n");
+		pr_debug("regulator vsram sshub supply is not available\n");
 		ret = PTR_ERR(reg_vsram);
 		goto pass;
 	}

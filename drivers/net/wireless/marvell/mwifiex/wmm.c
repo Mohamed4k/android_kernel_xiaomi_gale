@@ -565,7 +565,7 @@ static void mwifiex_wmm_delete_all_ralist(struct mwifiex_private *priv)
 
 static int mwifiex_free_ack_frame(int id, void *p, void *data)
 {
-	pr_warn("Have pending ack frames!\n");
+	pr_debug("Have pending ack frames!\n");
 	kfree_skb(p);
 	return 0;
 }

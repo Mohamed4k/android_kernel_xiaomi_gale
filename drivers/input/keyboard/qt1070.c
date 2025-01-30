@@ -108,7 +108,7 @@ static bool qt1070_identify(struct i2c_client *client)
 		return false;
 	}
 
-	dev_info(&client->dev, "AT42QT1070 firmware version %x\n", ver);
+	dev_dbg(&client->dev, "AT42QT1070 firmware version %x\n", ver);
 
 	return true;
 }

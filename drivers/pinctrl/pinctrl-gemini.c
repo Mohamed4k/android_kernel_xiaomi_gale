@@ -2207,7 +2207,7 @@ static int gemini_pmx_set_mux(struct pinctrl_dev *pctldev,
 		return -ENODEV;
 	}
 
-	dev_info(pmx->dev,
+	dev_dbg(pmx->dev,
 		 "ACTIVATE function \"%s\" with group \"%s\"\n",
 		 func->name, grp->name);
 
@@ -2240,7 +2240,7 @@ static int gemini_pmx_set_mux(struct pinctrl_dev *pctldev,
 				"GLOBAL MISC CTRL before: %08x, after %08x, expected %08x\n",
 				before, after, expected);
 		} else {
-			dev_info(pmx->dev,
+			dev_dbg(pmx->dev,
 				 "padgroup %s %s\n",
 				 gemini_padgroups[i],
 				 enabled ? "enabled" : "disabled");
@@ -2262,7 +2262,7 @@ static int gemini_pmx_set_mux(struct pinctrl_dev *pctldev,
 				"GLOBAL MISC CTRL before: %08x, after %08x, expected %08x\n",
 				before, after, expected);
 		} else {
-			dev_info(pmx->dev,
+			dev_dbg(pmx->dev,
 				 "padgroup %s %s\n",
 				 gemini_padgroups[i],
 				 enabled ? "enabled" : "disabled");
@@ -2492,7 +2492,7 @@ static int gemini_pinconf_group_set(struct pinctrl_dev *pctldev,
 			regmap_update_bits(pmx->map, GLOBAL_IODRIVE,
 					   grp->driving_mask,
 					   val);
-			dev_info(pmx->dev,
+			dev_dbg(pmx->dev,
 				 "set group %s to %d mA drive strength mask %08x val %08x\n",
 				 grp->name, arg, grp->driving_mask, val);
 			break;
@@ -2563,21 +2563,21 @@ static int gemini_pmx_probe(struct platform_device *pdev)
 		pmx->nconfs = ARRAY_SIZE(gemini_confs_3512);
 		gemini_pmx_desc.pins = gemini_3512_pins;
 		gemini_pmx_desc.npins = ARRAY_SIZE(gemini_3512_pins);
-		dev_info(dev, "detected 3512 chip variant\n");
+		dev_dbg(dev, "detected 3512 chip variant\n");
 	} else if (val == 0x3516) {
 		pmx->is_3516 = true;
 		pmx->confs = gemini_confs_3516;
 		pmx->nconfs = ARRAY_SIZE(gemini_confs_3516);
 		gemini_pmx_desc.pins = gemini_3516_pins;
 		gemini_pmx_desc.npins = ARRAY_SIZE(gemini_3516_pins);
-		dev_info(dev, "detected 3516 chip variant\n");
+		dev_dbg(dev, "detected 3516 chip variant\n");
 	} else {
 		dev_err(dev, "unknown chip ID: %04x\n", val);
 		return -ENODEV;
 	}
 
 	ret = regmap_read(map, GLOBAL_MISC_CTRL, &val);
-	dev_info(dev, "GLOBAL MISC CTRL at boot: 0x%08x\n", val);
+	dev_dbg(dev, "GLOBAL MISC CTRL at boot: 0x%08x\n", val);
 	/* Mask off relevant pads */
 	val &= PADS_MASK;
 	/* Invert the meaning of the DRAM+flash pads */
@@ -2585,14 +2585,14 @@ static int gemini_pmx_probe(struct platform_device *pdev)
 	/* Print initial state */
 	tmp = val;
 	for_each_set_bit(i, &tmp, PADS_MAXBIT) {
-		dev_info(dev, "pad group %s %s\n", gemini_padgroups[i],
+		dev_dbg(dev, "pad group %s %s\n", gemini_padgroups[i],
 			 (val & BIT(i)) ? "enabled" : "disabled");
 	}
 
 	/* Check if flash pin is set */
 	regmap_read(map, GLOBAL_STATUS, &val);
 	pmx->flash_pin = !!(val & GLOBAL_STATUS_FLPIN);
-	dev_info(dev, "flash pin is %s\n", pmx->flash_pin ? "set" : "not set");
+	dev_dbg(dev, "flash pin is %s\n", pmx->flash_pin ? "set" : "not set");
 
 	pmx->pctl = devm_pinctrl_register(dev, &gemini_pmx_desc, pmx);
 	if (IS_ERR(pmx->pctl)) {
@@ -2600,7 +2600,7 @@ static int gemini_pmx_probe(struct platform_device *pdev)
 		return PTR_ERR(pmx->pctl);
 	}
 
-	dev_info(dev, "initialized Gemini pin control driver\n");
+	dev_dbg(dev, "initialized Gemini pin control driver\n");
 
 	return 0;
 }

@@ -1086,21 +1086,21 @@ static _osal_inline_ VOID stp_dbg_dump_data(PUINT8 pBuf, PINT8 title, INT32 len)
 	PUINT8 p_str;
 
 	p_str = &str[0];
-	pr_debug(" %s-len:%d\n", title, len);
+	pr_info(" %s-len:%d\n", title, len);
 	for (idx = 0; idx < len; idx++, pBuf++) {
 		sprintf(p_str, "%02x ", *pBuf);
 		p_str += 3;
 		if (15 == (idx % 16)) {
 			sprintf(p_str, "--end\n");
 			*(p_str + 6) = '\0';
-			pr_debug("%s", str);
+			pr_info("%s", str);
 			p_str = 0;
 		}
 	}
 	if (len % 16) {
 		sprintf(p_str, "--end\n");
 		*(p_str + 6) = '\0';
-		pr_debug("%s", str);
+		pr_info("%s", str);
 	}
 }
 #endif
@@ -1110,19 +1110,19 @@ static VOID stp_dbg_dump_data(PUINT8 pBuf, PINT8 title, INT32 len)
 	char str[240] = {""};
 	char buf_str[32] = {""};
 
-	pr_warn(" %s-len:%d\n", title, len);
-	/* pr_warn("    ", title, len); */
+	pr_info(" %s-len:%d\n", title, len);
+	/* pr_info("    ", title, len); */
 	for (k = 0; k < len; k++) {
 		if (strlen(str) < 200) {
 			if (snprintf(buf_str, sizeof(buf_str), "0x%02x ", pBuf[k]) > 0)
 				strncat(str, buf_str, strlen(buf_str));
 		} else {
-			pr_warn("More than 200 of the data is too much\n");
+			pr_info("More than 200 of the data is too much\n");
 			break;
 		}
 	}
 	strncat(str, "--end\n", strlen("--end\n"));
-	pr_warn("%s", str);
+	pr_info("%s", str);
 }
 
 
@@ -1561,10 +1561,10 @@ INT32 stp_dbg_log_ctrl(UINT32 on)
 {
 	if (on != 0) {
 		gStpDbgLogOut = 1;
-		pr_warn("STP-DBG: enable pkt log dump out.\n");
+		pr_info("STP-DBG: enable pkt log dump out.\n");
 	} else {
 		gStpDbgLogOut = 0;
-		pr_warn("STP-DBG: disable pkt log dump out.\n");
+		pr_info("STP-DBG: disable pkt log dump out.\n");
 	}
 
 	return 0;

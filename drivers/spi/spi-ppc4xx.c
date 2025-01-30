@@ -531,7 +531,7 @@ static int spi_ppc4xx_of_probe(struct platform_device *op)
 		goto unmap_regs;
 	}
 
-	dev_info(dev, "driver initialized\n");
+	dev_dbg(dev, "driver initialized\n");
 
 	return 0;
 

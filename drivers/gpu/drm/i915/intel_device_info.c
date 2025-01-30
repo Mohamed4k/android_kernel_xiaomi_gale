@@ -79,7 +79,7 @@ void intel_device_info_dump_flags(const struct intel_device_info *info,
 #undef PRINT_FLAG
 }
 
-static void sseu_dump(const struct sseu_dev_info *sseu, struct drm_printer *p)
+static void sseu_dump(const struct sseu_dev_dbg *sseu, struct drm_printer *p)
 {
 	int s;
 
@@ -124,7 +124,7 @@ void intel_device_info_dump(const struct intel_device_info *info,
 	intel_device_info_dump_flags(info, p);
 }
 
-void intel_device_info_dump_topology(const struct sseu_dev_info *sseu,
+void intel_device_info_dump_topology(const struct sseu_dev_dbg *sseu,
 				     struct drm_printer *p)
 {
 	int s, ss;
@@ -148,7 +148,7 @@ void intel_device_info_dump_topology(const struct sseu_dev_info *sseu,
 	}
 }
 
-static u16 compute_eu_total(const struct sseu_dev_info *sseu)
+static u16 compute_eu_total(const struct sseu_dev_dbg *sseu)
 {
 	u16 i, total = 0;
 
@@ -160,7 +160,7 @@ static u16 compute_eu_total(const struct sseu_dev_info *sseu)
 
 static void gen11_sseu_info_init(struct drm_i915_private *dev_priv)
 {
-	struct sseu_dev_info *sseu = &mkwrite_device_info(dev_priv)->sseu;
+	struct sseu_dev_dbg *sseu = &mkwrite_device_info(dev_priv)->sseu;
 	u8 s_en;
 	u32 ss_en, ss_en_mask;
 	u8 eu_en;
@@ -199,7 +199,7 @@ static void gen11_sseu_info_init(struct drm_i915_private *dev_priv)
 
 static void gen10_sseu_info_init(struct drm_i915_private *dev_priv)
 {
-	struct sseu_dev_info *sseu = &mkwrite_device_info(dev_priv)->sseu;
+	struct sseu_dev_dbg *sseu = &mkwrite_device_info(dev_priv)->sseu;
 	const u32 fuse2 = I915_READ(GEN8_FUSE2);
 	int s, ss;
 	const int eu_mask = 0xff;
@@ -276,7 +276,7 @@ static void gen10_sseu_info_init(struct drm_i915_private *dev_priv)
 
 static void cherryview_sseu_info_init(struct drm_i915_private *dev_priv)
 {
-	struct sseu_dev_info *sseu = &mkwrite_device_info(dev_priv)->sseu;
+	struct sseu_dev_dbg *sseu = &mkwrite_device_info(dev_priv)->sseu;
 	u32 fuse;
 
 	fuse = I915_READ(CHV_FUSE_GT);
@@ -330,7 +330,7 @@ static void cherryview_sseu_info_init(struct drm_i915_private *dev_priv)
 static void gen9_sseu_info_init(struct drm_i915_private *dev_priv)
 {
 	struct intel_device_info *info = mkwrite_device_info(dev_priv);
-	struct sseu_dev_info *sseu = &info->sseu;
+	struct sseu_dev_dbg *sseu = &info->sseu;
 	int s, ss;
 	u32 fuse2, eu_disable, subslice_mask;
 	const u8 eu_mask = 0xff;
@@ -433,7 +433,7 @@ static void gen9_sseu_info_init(struct drm_i915_private *dev_priv)
 
 static void broadwell_sseu_info_init(struct drm_i915_private *dev_priv)
 {
-	struct sseu_dev_info *sseu = &mkwrite_device_info(dev_priv)->sseu;
+	struct sseu_dev_dbg *sseu = &mkwrite_device_info(dev_priv)->sseu;
 	int s, ss;
 	u32 fuse2, subslice_mask, eu_disable[3]; /* s_max */
 
@@ -516,7 +516,7 @@ static void broadwell_sseu_info_init(struct drm_i915_private *dev_priv)
 static void haswell_sseu_info_init(struct drm_i915_private *dev_priv)
 {
 	struct intel_device_info *info = mkwrite_device_info(dev_priv);
-	struct sseu_dev_info *sseu = &info->sseu;
+	struct sseu_dev_dbg *sseu = &info->sseu;
 	u32 fuse1;
 	int s, ss;
 

@@ -650,7 +650,7 @@ static int s5m8767_pmic_dt_parse_pdata(struct platform_device *pdev,
 		} else {
 			if (pdata->buck_default_idx >= 8) {
 				pdata->buck_default_idx = 0;
-				dev_info(iodev->dev,
+				dev_dbg(iodev->dev,
 				"invalid value for default dvs index, use 0\n");
 			}
 		}

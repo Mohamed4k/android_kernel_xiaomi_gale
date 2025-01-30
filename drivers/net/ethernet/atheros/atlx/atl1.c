@@ -155,16 +155,16 @@ static int atl1_validate_option(int *value, struct atl1_option *opt,
 	case enable_option:
 		switch (*value) {
 		case OPTION_ENABLED:
-			dev_info(&pdev->dev, "%s enabled\n", opt->name);
+			dev_dbg(&pdev->dev, "%s enabled\n", opt->name);
 			return 0;
 		case OPTION_DISABLED:
-			dev_info(&pdev->dev, "%s disabled\n", opt->name);
+			dev_dbg(&pdev->dev, "%s disabled\n", opt->name);
 			return 0;
 		}
 		break;
 	case range_option:
 		if (*value >= opt->arg.r.min && *value <= opt->arg.r.max) {
-			dev_info(&pdev->dev, "%s set to %i\n", opt->name,
+			dev_dbg(&pdev->dev, "%s set to %i\n", opt->name,
 				*value);
 			return 0;
 		}
@@ -177,7 +177,7 @@ static int atl1_validate_option(int *value, struct atl1_option *opt,
 				ent = &opt->arg.l.p[i];
 				if (*value == ent->i) {
 					if (ent->str[0] != '\0')
-						dev_info(&pdev->dev, "%s\n",
+						dev_dbg(&pdev->dev, "%s\n",
 							ent->str);
 					return 0;
 				}
@@ -189,7 +189,7 @@ static int atl1_validate_option(int *value, struct atl1_option *opt,
 		break;
 	}
 
-	dev_info(&pdev->dev, "invalid %s specified (%i) %s\n",
+	dev_dbg(&pdev->dev, "invalid %s specified (%i) %s\n",
 		opt->name, *value, opt->err);
 	*value = opt->def;
 	return -1;
@@ -1312,7 +1312,7 @@ static u32 atl1_check_link(struct atl1_adapter *adapter)
 		if (netif_carrier_ok(netdev)) {
 			/* old link state: Up */
 			if (netif_msg_link(adapter))
-				dev_info(&adapter->pdev->dev, "link is down\n");
+				dev_dbg(&adapter->pdev->dev, "link is down\n");
 			adapter->link_speed = SPEED_0;
 			netif_carrier_off(netdev);
 		}
@@ -1355,7 +1355,7 @@ static u32 atl1_check_link(struct atl1_adapter *adapter)
 			adapter->link_duplex = duplex;
 			atl1_setup_mac_ctrl(adapter);
 			if (netif_msg_link(adapter))
-				dev_info(&adapter->pdev->dev,
+				dev_dbg(&adapter->pdev->dev,
 					"%s link is up %d Mbps %s\n",
 					netdev->name, adapter->link_speed,
 					adapter->link_duplex == FULL_DUPLEX ?
@@ -2633,7 +2633,7 @@ static s32 atl1_up(struct atl1_adapter *adapter)
 	err = pci_enable_msi(adapter->pdev);
 	if (err) {
 		if (netif_msg_ifup(adapter))
-			dev_info(&adapter->pdev->dev,
+			dev_dbg(&adapter->pdev->dev,
 				"Unable to enable MSI: %d\n", err);
 		irq_flags |= IRQF_SHARED;
 	}
@@ -2989,7 +2989,7 @@ static int atl1_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	adapter->hw.dev_rev = ioread16(adapter->hw.hw_addr +
 		(REG_MASTER_CTRL + 2));
 	if (netif_msg_probe(adapter))
-		dev_info(&pdev->dev, "version %s\n", ATLX_DRIVER_VERSION);
+		dev_dbg(&pdev->dev, "version %s\n", ATLX_DRIVER_VERSION);
 
 	/* set default ring resource counts */
 	adapter->rfd_ring.count = adapter->rrd_ring.count = ATL1_DEFAULT_RFD;

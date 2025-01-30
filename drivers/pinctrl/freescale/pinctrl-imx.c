@@ -761,7 +761,7 @@ int imx_pinctrl_probe(struct platform_device *pdev,
 		return ret;
 	}
 
-	dev_info(&pdev->dev, "initialized IMX pinctrl driver\n");
+	dev_dbg(&pdev->dev, "initialized IMX pinctrl driver\n");
 
 	return pinctrl_enable(ipctl->pctl);
 }

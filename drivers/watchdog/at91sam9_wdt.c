@@ -373,7 +373,7 @@ static int __init at91wdt_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, wdt);
 
-	pr_info("enabled (heartbeat=%d sec, nowayout=%d)\n",
+	pr_debug("enabled (heartbeat=%d sec, nowayout=%d)\n",
 		wdt->wdd.timeout, wdt->nowayout);
 
 	return 0;
@@ -389,7 +389,7 @@ static int __exit at91wdt_remove(struct platform_device *pdev)
 	struct at91wdt *wdt = platform_get_drvdata(pdev);
 	watchdog_unregister_device(&wdt->wdd);
 
-	pr_warn("I quit now, hardware will probably reboot!\n");
+	pr_debug("I quit now, hardware will probably reboot!\n");
 	del_timer(&wdt->timer);
 	clk_disable_unprepare(wdt->sclk);
 

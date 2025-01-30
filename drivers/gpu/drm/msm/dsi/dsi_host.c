@@ -2174,7 +2174,7 @@ int msm_dsi_host_cmd_rx(struct mipi_dsi_host *host,
 		ret = dsi_long_read_resp(buf, msg);
 		break;
 	default:
-		pr_warn("%s:Invalid response cmd\n", __func__);
+		pr_debug("%s:Invalid response cmd\n", __func__);
 		ret = 0;
 	}
 
@@ -2204,7 +2204,7 @@ int msm_dsi_host_set_src_pll(struct mipi_dsi_host *host,
 	ret = msm_dsi_pll_get_clk_provider(src_pll,
 				&byte_clk_provider, &pixel_clk_provider);
 	if (ret) {
-		pr_info("%s: can't get provider from pll, don't set parent\n",
+		pr_debug("%s: can't get provider from pll, don't set parent\n",
 			__func__);
 		return 0;
 	}

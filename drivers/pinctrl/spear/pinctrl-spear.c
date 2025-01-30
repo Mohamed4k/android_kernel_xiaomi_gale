@@ -75,7 +75,7 @@ static int set_mode(struct spear_pmx *pmx, int mode)
 	pmx_writel(pmx, val, pmx_mode->reg);
 
 	pmx->machdata->mode = pmx_mode->mode;
-	dev_info(pmx->dev, "Configured Mode: %s with id: %x\n\n",
+	dev_dbg(pmx->dev, "Configured Mode: %s with id: %x\n\n",
 			pmx_mode->name ? pmx_mode->name : "no_name",
 			pmx_mode->reg);
 

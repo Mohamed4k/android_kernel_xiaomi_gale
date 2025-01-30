@@ -381,7 +381,7 @@ struct kfd_dev *kgd2kfd_probe(struct kgd_dev *kgd,
 			PCI_EXP_DEVCAP2_ATOMIC_COMP32 |
 			PCI_EXP_DEVCAP2_ATOMIC_COMP64);
 	if (device_info->needs_pci_atomics && ret < 0) {
-		dev_info(kfd_device,
+		dev_dbg(kfd_device,
 			 "skipped device %x:%x, PCI rejects atomics\n",
 			 pdev->vendor, pdev->device);
 		return NULL;
@@ -470,7 +470,7 @@ bool kgd2kfd_device_init(struct kfd_dev *kfd,
 		goto out;
 	}
 
-	dev_info(kfd_device, "Allocated %d bytes on gart\n", size);
+	dev_dbg(kfd_device, "Allocated %d bytes on gart\n", size);
 
 	/* Initialize GTT sa with 512 byte chunk size */
 	if (kfd_gtt_sa_init(kfd, size, 512) != 0) {
@@ -513,7 +513,7 @@ bool kgd2kfd_device_init(struct kfd_dev *kfd,
 	kfd->dbgmgr = NULL;
 
 	kfd->init_complete = true;
-	dev_info(kfd_device, "added device %x:%x\n", kfd->pdev->vendor,
+	dev_dbg(kfd_device, "added device %x:%x\n", kfd->pdev->vendor,
 		 kfd->pdev->device);
 
 	pr_debug("Starting kfd with the following scheduling policy %d\n",

@@ -318,7 +318,7 @@ static void macb_get_hwaddr(struct macb *bp)
 		}
 	}
 
-	dev_info(&bp->pdev->dev, "invalid hw address, using random\n");
+	dev_dbg(&bp->pdev->dev, "invalid hw address, using random\n");
 	eth_hw_addr_random(bp->dev);
 }
 
@@ -460,13 +460,13 @@ static void macb_handle_link_change(struct net_device *dev)
 			macb_set_tx_clk(bp->tx_clk, phydev->speed, dev);
 
 			netif_carrier_on(dev);
-			netdev_info(dev, "link up (%d/%s)\n",
+			netdev_dbg(dev, "link up (%d/%s)\n",
 				    phydev->speed,
 				    phydev->duplex == DUPLEX_FULL ?
 				    "Full" : "Half");
 		} else {
 			netif_carrier_off(dev);
-			netdev_info(dev, "link down\n");
+			netdev_dbg(dev, "link down\n");
 		}
 	}
 }
@@ -4152,7 +4152,7 @@ static int macb_probe(struct platform_device *pdev)
 
 	phy_attached_info(phydev);
 
-	netdev_info(dev, "Cadence %s rev 0x%08x at 0x%08lx irq %d (%pM)\n",
+	netdev_dbg(dev, "Cadence %s rev 0x%08x at 0x%08lx irq %d (%pM)\n",
 		    macb_is_gem(bp) ? "GEM" : "MACB", macb_readl(bp, MID),
 		    dev->base_addr, dev->irq, dev->dev_addr);
 

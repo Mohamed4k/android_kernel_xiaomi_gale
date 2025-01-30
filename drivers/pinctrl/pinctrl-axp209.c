@@ -472,7 +472,7 @@ static int axp20x_pctl_probe(struct platform_device *pdev)
 		return ret;
 	}
 
-	dev_info(&pdev->dev, "AXP209 pinctrl and GPIO driver loaded\n");
+	dev_dbg(&pdev->dev, "AXP209 pinctrl and GPIO driver loaded\n");
 
 	return 0;
 }

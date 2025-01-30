@@ -91,7 +91,7 @@ static void lg_panel_get_data(struct lg_panel *ctx)
 
 	if (ret == 0) {
 		ret = lg_dcs_read(ctx, 0x0A, buffer, 1);
-		dev_info(ctx->dev, "return %d data(0x%08x) to dsi engine\n",
+		dev_dbg(ctx->dev, "return %d data(0x%08x) to dsi engine\n",
 			 ret, buffer[0] | (buffer[1] << 8));
 	}
 }
@@ -395,7 +395,7 @@ static int lg_prepare(struct drm_panel *panel)
 	struct lg_panel *ctx = panel_to_lg(panel);
 	int ret;
 
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 	if (ctx->prepared)
 		return 0;
 

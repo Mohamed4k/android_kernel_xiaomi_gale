@@ -33,7 +33,7 @@ struct ath9k_eeprom_ctx {
 	struct ath_hw *ah;
 };
 
-static char *dev_info = "ath9k";
+static char *dev_dbg = "ath9k";
 
 MODULE_AUTHOR("Atheros Communications");
 MODULE_DESCRIPTION("Support for Atheros 802.11n wireless LAN cards.");
@@ -1172,6 +1172,6 @@ static void __exit ath9k_exit(void)
 	is_ath9k_unloaded = true;
 	ath_ahb_exit();
 	ath_pci_exit();
-	pr_info("%s: Driver unloaded\n", dev_info);
+	pr_debug("%s: Driver unloaded\n", dev_dbg);
 }
 module_exit(ath9k_exit);

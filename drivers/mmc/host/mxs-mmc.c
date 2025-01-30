@@ -682,7 +682,7 @@ static int mxs_mmc_probe(struct platform_device *pdev)
 	if (ret)
 		goto out_free_dma;
 
-	dev_info(mmc_dev(host->mmc), "initialized\n");
+	dev_dbg(mmc_dev(host->mmc), "initialized\n");
 
 	return 0;
 

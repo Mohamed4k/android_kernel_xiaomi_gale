@@ -69,7 +69,7 @@ do { if (gDbgLevel >= UART_LOG_INFO)	\
 } while (0)
 #define UART_PR_WARN(fmt, arg...)	\
 do { if (gDbgLevel >= UART_LOG_WARN)	\
-		pr_warn(PFX "%s: "  fmt, __func__, ##arg);	\
+		pr_info(PFX "%s: "  fmt, __func__, ##arg);	\
 } while (0)
 #define UART_PR_ERR(fmt, arg...)	\
 do { if (gDbgLevel >= UART_LOG_ERR)	\
@@ -158,7 +158,7 @@ static _osal_inline_ INT32 stp_uart_tx_wakeup(struct tty_struct *tty)
 			return -1;
 		}
 		written_count = written;
-		/* pr_debug("len = %d, written = %d\n", len, written); */
+		/* pr_info("len = %d, written = %d\n", len, written); */
 		rd_idx = ((rd_idx + written) % MTKSTP_BUFFER_SIZE);
 		/* all data is accepted by UART driver, check again in case roll over */
 		len = (wr_idx >= rd_idx) ? (wr_idx - rd_idx) : (MTKSTP_BUFFER_SIZE - rd_idx);
@@ -248,7 +248,7 @@ static VOID stp_uart_tty_close(struct tty_struct *tty)
  */
 static VOID stp_uart_tty_wakeup(struct tty_struct *tty)
 {
-	/* pr_debug("%s: start !!\n", __FUNCTION__); */
+	/* pr_info("%s: start !!\n", __FUNCTION__); */
 
 	/* clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags); */
 
@@ -348,7 +348,7 @@ static VOID stp_uart_tty_receive(struct tty_struct *tty, const unsigned char *da
 		struct timeval now;
 
 		osal_do_gettimeofday(&now);
-		pr_warn("[+STP][  ][R] %4d --> sec = %lu, --> usec --> %lu\n",
+		pr_info("[+STP][  ][R] %4d --> sec = %lu, --> usec --> %lu\n",
 			count, now.tv_sec, now.tv_usec);
 	}
 #endif
@@ -373,7 +373,7 @@ static VOID stp_uart_tty_receive(struct tty_struct *tty, const unsigned char *da
 		struct timeval now;
 
 		osal_do_gettimeofday(&now);
-		pr_warn("[-STP][  ][R] %4d --> sec = %lu, --> usec --> %lu\n",
+		pr_info("[-STP][  ][R] %4d --> sec = %lu, --> usec --> %lu\n",
 			count, now.tv_sec, now.tv_usec);
 	}
 #endif
@@ -466,7 +466,7 @@ static VOID stp_uart_rx_worker(struct work_struct *work)
 	/* run until fifo becomes empty */
 	while (!kfifo_is_empty(g_stp_uart_rx_fifo)) {
 		read = kfifo_out(g_stp_uart_rx_fifo, g_stp_uart_rx_buf, LDISC_RX_BUF_SIZE);
-		/* pr_debug("rx_work:%d\n\r",read); */
+		/* pr_info("rx_work:%d\n\r",read); */
 		if (likely(read)) {
 			/* UART_LOUD_FUNC("->%d\n", read); */
 			mtk_wcn_stp_parser_data((UINT8 *) g_stp_uart_rx_buf, read);
@@ -507,7 +507,7 @@ static VOID stp_uart_tty_receive(struct tty_struct *tty, const PUINT8 data, PINT
 	/* need to lock fifo? skip for single writer single reader! */
 
 	written = kfifo_in(g_stp_uart_rx_fifo, (PUINT8) data, count);
-	/* pr_debug("uart_rx:%d,wr:%d\n\r",count,written); */
+	/* pr_info("uart_rx:%d,wr:%d\n\r",count,written); */
 
 	queue_work(g_stp_uart_rx_wq, g_stp_uart_rx_work);
 

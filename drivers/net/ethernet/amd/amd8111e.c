@@ -491,7 +491,7 @@ static int amd8111e_restart(struct net_device *dev)
 
 	/* Enable interrupt coalesce */
 	if(lp->options & OPTION_INTR_COAL_ENABLE){
-		netdev_info(dev, "Interrupt Coalescing Enabled.\n");
+		netdev_dbg(dev, "Interrupt Coalescing Enabled.\n");
 		amd8111e_set_coalesce(dev,ENABLE_COAL);
 	}
 
@@ -822,7 +822,7 @@ static int amd8111e_link_change(struct net_device *dev)
 		else if(speed == PHY_SPEED_100)
 			lp->link_config.speed = SPEED_100;
 
-		netdev_info(dev, "Link is Up. Speed is %s Mbps %s Duplex\n",
+		netdev_dbg(dev, "Link is Up. Speed is %s Mbps %s Duplex\n",
 			    (lp->link_config.speed == SPEED_100) ?
 							"100" : "10",
 			    (lp->link_config.duplex == DUPLEX_FULL) ?
@@ -834,7 +834,7 @@ static int amd8111e_link_change(struct net_device *dev)
 		lp->link_config.speed = SPEED_INVALID;
 		lp->link_config.duplex = DUPLEX_INVALID;
 		lp->link_config.autoneg = AUTONEG_INVALID;
-		netdev_info(dev, "Link is Down.\n");
+		netdev_dbg(dev, "Link is Down.\n");
 		netif_carrier_off(dev);
 	}
 
@@ -1228,7 +1228,7 @@ static int amd8111e_open(struct net_device *dev)
 	/* Start ipg timer */
 	if(lp->options & OPTION_DYN_IPG_ENABLE){
 		add_timer(&lp->ipg_data.ipg_timer);
-		netdev_info(dev, "Dynamic IPG Enabled\n");
+		netdev_dbg(dev, "Dynamic IPG Enabled\n");
 	}
 
 	lp->opened = 1;
@@ -1888,14 +1888,14 @@ static int amd8111e_probe_one(struct pci_dev *pdev,
 
 	/*  display driver and device information */
     	chip_version = (readl(lp->mmio + CHIPID) & 0xf0000000)>>28;
-	dev_info(&pdev->dev, "AMD-8111e Driver Version: %s\n", MODULE_VERS);
-	dev_info(&pdev->dev, "[ Rev %x ] PCI 10/100BaseT Ethernet %pM\n",
+	dev_dbg(&pdev->dev, "AMD-8111e Driver Version: %s\n", MODULE_VERS);
+	dev_dbg(&pdev->dev, "[ Rev %x ] PCI 10/100BaseT Ethernet %pM\n",
 		 chip_version, dev->dev_addr);
 	if (lp->ext_phy_id)
-		dev_info(&pdev->dev, "Found MII PHY ID 0x%08x at address 0x%02x\n",
+		dev_dbg(&pdev->dev, "Found MII PHY ID 0x%08x at address 0x%02x\n",
 			 lp->ext_phy_id, lp->ext_phy_addr);
 	else
-		dev_info(&pdev->dev, "Couldn't detect MII PHY, assuming address 0x01\n");
+		dev_dbg(&pdev->dev, "Couldn't detect MII PHY, assuming address 0x01\n");
 
     	return 0;
 

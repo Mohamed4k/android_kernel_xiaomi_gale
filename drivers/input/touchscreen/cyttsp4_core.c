@@ -308,23 +308,23 @@ static int cyttsp4_si_get_test_data(struct cyttsp4 *cd)
 		       "sysinfo_test_data");
 	if (si->si_ptrs.test->post_codel &
 	    CY_POST_CODEL_WDG_RST)
-		dev_info(cd->dev, "%s: %s codel=%02X\n",
+		dev_dbg(cd->dev, "%s: %s codel=%02X\n",
 			 __func__, "Reset was a WATCHDOG RESET",
 			 si->si_ptrs.test->post_codel);
 
 	if (!(si->si_ptrs.test->post_codel &
 	      CY_POST_CODEL_CFG_DATA_CRC_FAIL))
-		dev_info(cd->dev, "%s: %s codel=%02X\n", __func__,
+		dev_dbg(cd->dev, "%s: %s codel=%02X\n", __func__,
 			 "Config Data CRC FAIL",
 			 si->si_ptrs.test->post_codel);
 
 	if (!(si->si_ptrs.test->post_codel &
 	      CY_POST_CODEL_PANEL_TEST_FAIL))
-		dev_info(cd->dev, "%s: %s codel=%02X\n",
+		dev_dbg(cd->dev, "%s: %s codel=%02X\n",
 			 __func__, "PANEL TEST FAIL",
 			 si->si_ptrs.test->post_codel);
 
-	dev_info(cd->dev, "%s: SCANNING is %s codel=%02X\n",
+	dev_dbg(cd->dev, "%s: SCANNING is %s codel=%02X\n",
 		 __func__, si->si_ptrs.test->post_codel & 0x08 ?
 		 "ENABLED" : "DISABLED",
 		 si->si_ptrs.test->post_codel);

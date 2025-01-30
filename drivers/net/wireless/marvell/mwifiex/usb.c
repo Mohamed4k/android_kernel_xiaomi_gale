@@ -430,7 +430,7 @@ static int mwifiex_usb_probe(struct usb_interface *intf,
 		card->usb_boot_state = USB8XXX_FW_READY;
 		break;
 	default:
-		pr_warn("unknown id_product %#x\n", id_product);
+		pr_debug("unknown id_product %#x\n", id_product);
 		card->usb_boot_state = USB8XXX_FW_DNLD;
 		break;
 	}

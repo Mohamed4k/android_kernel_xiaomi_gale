@@ -174,7 +174,7 @@ static int qxlfb_framebuffer_dirty(struct drm_framebuffer *fb,
 				   unsigned num_clips)
 {
 	struct qxl_device *qdev = fb->dev->dev_private;
-	struct fb_info *info = qdev->fbdev_info;
+	struct fb_info *info = qdev->fbdev_dbg;
 	struct qxl_fbdev *qfbdev = info->par;
 	struct qxl_fb_image qxl_fb_image;
 	struct fb_image *image = &qxl_fb_image.fb_image;
@@ -301,7 +301,7 @@ static int qxlfb_create(struct qxl_fbdev *qfbdev,
 	fb_deferred_io_init(info);
 #endif
 
-	qdev->fbdev_info = info;
+	qdev->fbdev_dbg = info;
 	qdev->fbdev_qfb = &qfbdev->qfb;
 	DRM_INFO("fb mappable at 0x%lX, size %lu\n",  info->fix.smem_start, (unsigned long)info->screen_size);
 	DRM_INFO("fb: depth %d, pitch %d, width %d, height %d\n",

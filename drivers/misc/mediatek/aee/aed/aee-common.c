@@ -17,7 +17,7 @@ EXPORT_SYMBOL(aee_register_api);
 void aee_disable_api(void)
 {
 	if (g_aee_api) {
-		pr_info("disable aee kernel api");
+		pr_debug("disable aee kernel api");
 		g_aee_api = NULL;
 	}
 }
@@ -39,7 +39,7 @@ void aee_kernel_exception_api_func(const char *file, const int line,
 		g_aee_api->kernel_reportAPI(AE_DEFECT_EXCEPTION, db_opt, module,
 				msgbuf);
 	else
-		pr_notice("AEE kernel exception: %s", msgbuf);
+		pr_debug("AEE kernel exception: %s", msgbuf);
 	va_end(args);
 }
 EXPORT_SYMBOL(aee_kernel_exception_api_func);
@@ -66,7 +66,7 @@ void aee_kernel_warning_api_func(const char *file, const int line,
 			g_aee_api->kernel_reportAPI(AE_DEFECT_WARNING, db_opt,
 				module, msgbuf);
 	} else {
-		pr_notice("AEE kernel warning: %s", msgbuf);
+		pr_debug("AEE kernel warning: %s", msgbuf);
 	}
 	va_end(args);
 }
@@ -97,7 +97,7 @@ void aee_kernel_reminding_api(const char *file, const int line,
 		g_aee_api->kernel_reportAPI(AE_DEFECT_REMINDING, db_opt,
 				module, msgbuf);
 	else
-		pr_notice("AEE kernel reminding: %s", msgbuf);
+		pr_debug("AEE kernel reminding: %s", msgbuf);
 	va_end(args);
 }
 EXPORT_SYMBOL(aee_kernel_reminding_api);

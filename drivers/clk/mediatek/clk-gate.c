@@ -43,7 +43,7 @@ static void mtk_cg_set_bit_unused(struct clk_hw *hw)
 	struct mtk_clk_gate *cg = to_mtk_clk_gate(hw);
 	const char *c_n = clk_hw_get_name(hw);
 
-	pr_notice("disable_unused - %s\n", c_n);
+	pr_debug("disable_unused - %s\n", c_n);
 
 	regmap_write(cg->regmap, cg->set_ofs, BIT(cg->bit));
 }
@@ -53,7 +53,7 @@ static void mtk_cg_clr_bit_unused(struct clk_hw *hw)
 	struct mtk_clk_gate *cg = to_mtk_clk_gate(hw);
 	const char *c_n = clk_hw_get_name(hw);
 
-	pr_notice("disable_unused - %s\n", c_n);
+	pr_debug("disable_unused - %s\n", c_n);
 
 	regmap_write(cg->regmap, cg->clr_ofs, BIT(cg->bit));
 }
@@ -64,7 +64,7 @@ static void mtk_cg_set_bit_no_setclr_unused(struct clk_hw *hw)
 	u32 cgbit = BIT(cg->bit);
 	const char *c_n = clk_hw_get_name(hw);
 
-	pr_notice("disable_unused - %s\n", c_n);
+	pr_debug("disable_unused - %s\n", c_n);
 
 	regmap_update_bits(cg->regmap, cg->sta_ofs, cgbit, cgbit);
 }
@@ -75,7 +75,7 @@ static void mtk_cg_clr_bit_no_setclr_unused(struct clk_hw *hw)
 	u32 cgbit = BIT(cg->bit);
 	const char *c_n = clk_hw_get_name(hw);
 
-	pr_notice("disable_unused - %s\n", c_n);
+	pr_debug("disable_unused - %s\n", c_n);
 
 	regmap_update_bits(cg->regmap, cg->sta_ofs, cgbit, 0);
 }

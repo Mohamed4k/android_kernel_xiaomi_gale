@@ -250,7 +250,7 @@ static int tc589_config(struct pcmcia_device *link)
 	phys_addr = (__be16 *)dev->dev_addr;
 	/* Is this a 3c562? */
 	if (link->manf_id != MANFID_3COM)
-		dev_info(&link->dev, "hmmm, is this really a 3Com card??\n");
+		dev_dbg(&link->dev, "hmmm, is this really a 3Com card??\n");
 	multi = (link->card_id == PRODID_3COM_3C562);
 
 	link->io_lines = 16;
@@ -319,10 +319,10 @@ static int tc589_config(struct pcmcia_device *link)
 		goto failed;
 	}
 
-	netdev_info(dev, "3Com 3c%s, io %#3lx, irq %d, hw_addr %pM\n",
+	netdev_dbg(dev, "3Com 3c%s, io %#3lx, irq %d, hw_addr %pM\n",
 			(multi ? "562" : "589"), dev->base_addr, dev->irq,
 			dev->dev_addr);
-	netdev_info(dev, "  %dK FIFO split %s Rx:Tx, %s xcvr\n",
+	netdev_dbg(dev, "  %dK FIFO split %s Rx:Tx, %s xcvr\n",
 			(fifo & 7) ? 32 : 8, ram_split[(fifo >> 16) & 3],
 			if_names[dev->if_port]);
 	return 0;
@@ -427,11 +427,11 @@ static void dump_status(struct net_device *dev)
 {
 	unsigned int ioaddr = dev->base_addr;
 	EL3WINDOW(1);
-	netdev_info(dev, "  irq status %04x, rx status %04x, tx status %02x  tx free %04x\n",
+	netdev_dbg(dev, "  irq status %04x, rx status %04x, tx status %02x  tx free %04x\n",
 			inw(ioaddr+EL3_STATUS), inw(ioaddr+RX_STATUS),
 			inb(ioaddr+TX_STATUS), inw(ioaddr+TX_FREE));
 	EL3WINDOW(4);
-	netdev_info(dev, "  diagnostics: fifo %04x net %04x ethernet %04x media %04x\n",
+	netdev_dbg(dev, "  diagnostics: fifo %04x net %04x ethernet %04x media %04x\n",
 			inw(ioaddr+0x04), inw(ioaddr+0x06), inw(ioaddr+0x08),
 			inw(ioaddr+0x0a));
 	EL3WINDOW(1);
@@ -496,7 +496,7 @@ static int el3_config(struct net_device *dev, struct ifmap *map)
 	if ((map->port != (u_char)(-1)) && (map->port != dev->if_port)) {
 		if (map->port <= 3) {
 			dev->if_port = map->port;
-			netdev_info(dev, "switched to %s port\n", if_names[dev->if_port]);
+			netdev_dbg(dev, "switched to %s port\n", if_names[dev->if_port]);
 			tc589_set_xcvr(dev, dev->if_port);
 		} else {
 			return -EINVAL;
@@ -733,23 +733,23 @@ static void media_check(struct timer_list *t)
 	if (media != lp->media_status) {
 		if ((media & lp->media_status & 0x8000) &&
 				((lp->media_status ^ media) & 0x0800))
-		netdev_info(dev, "%s link beat\n",
+		netdev_dbg(dev, "%s link beat\n",
 				(lp->media_status & 0x0800 ? "lost" : "found"));
 		else if ((media & lp->media_status & 0x4000) &&
 		 ((lp->media_status ^ media) & 0x0010))
-		netdev_info(dev, "coax cable %s\n",
+		netdev_dbg(dev, "coax cable %s\n",
 				(lp->media_status & 0x0010 ? "ok" : "problem"));
 		if (dev->if_port == 0) {
 			if (media & 0x8000) {
 				if (media & 0x0800)
-					netdev_info(dev, "flipped to 10baseT\n");
+					netdev_dbg(dev, "flipped to 10baseT\n");
 				else
 			tc589_set_xcvr(dev, 2);
 			} else if (media & 0x4000) {
 				if (media & 0x0010)
 					tc589_set_xcvr(dev, 1);
 				else
-					netdev_info(dev, "flipped to 10base2\n");
+					netdev_dbg(dev, "flipped to 10base2\n");
 			}
 		}
 		lp->media_status = media;

@@ -81,7 +81,7 @@ static int dg_create_handle(u32 resource_id,
 
 	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
 	if (!entry) {
-		pr_warn("Failed allocating memory for datagram entry\n");
+		pr_debug("Failed allocating memory for datagram entry\n");
 		return VMCI_ERROR_NO_MEM;
 	}
 
@@ -96,7 +96,7 @@ static int dg_create_handle(u32 resource_id,
 				   VMCI_RESOURCE_TYPE_DATAGRAM,
 				   handle);
 	if (result != VMCI_SUCCESS) {
-		pr_warn("Failed to add new resource (handle=0x%x:0x%x), error: %d\n",
+		pr_debug("Failed to add new resource (handle=0x%x:0x%x), error: %d\n",
 			handle.context, handle.resource, result);
 		kfree(entry);
 		return result;
@@ -185,7 +185,7 @@ static int dg_dispatch_as_host(u32 context_id, struct vmci_datagram *dg)
 	retval = vmci_datagram_get_priv_flags(context_id, dg->src,
 					      &src_priv_flags);
 	if (retval != VMCI_SUCCESS) {
-		pr_warn("Couldn't get privileges (handle=0x%x:0x%x)\n",
+		pr_debug("Couldn't get privileges (handle=0x%x:0x%x)\n",
 			dg->src.context, dg->src.resource);
 		return retval;
 	}
@@ -350,7 +350,7 @@ int vmci_datagram_dispatch(u32 context_id,
 	if (VMCI_ROUTE_AS_GUEST == route)
 		return dg_dispatch_as_guest(dg);
 
-	pr_warn("Unknown route (%d) for datagram\n", route);
+	pr_debug("Unknown route (%d) for datagram\n", route);
 	return VMCI_ERROR_DST_UNREACHABLE;
 }
 

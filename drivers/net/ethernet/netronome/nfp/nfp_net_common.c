@@ -475,10 +475,10 @@ static void nfp_net_read_link_status(struct nfp_net *nn)
 
 	if (nn->link_up) {
 		netif_carrier_on(nn->dp.netdev);
-		netdev_info(nn->dp.netdev, "NIC Link is Up\n");
+		netdev_dbg(nn->dp.netdev, "NIC Link is Up\n");
 	} else {
 		netif_carrier_off(nn->dp.netdev);
-		netdev_info(nn->dp.netdev, "NIC Link is Down\n");
+		netdev_dbg(nn->dp.netdev, "NIC Link is Down\n");
 	}
 out:
 	spin_unlock_irqrestore(&nn->link_status_lock, flags);

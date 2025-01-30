@@ -426,7 +426,7 @@ static int twl4030_kp_probe(struct platform_device *pdev)
 	error = devm_request_threaded_irq(&pdev->dev, kp->irq, NULL, do_kp_irq,
 					  0, pdev->name, kp);
 	if (error) {
-		dev_info(kp->dbg_dev, "request_irq failed for irq no=%d: %d\n",
+		dev_dbg(kp->dbg_dev, "request_irq failed for irq no=%d: %d\n",
 			kp->irq, error);
 		return error;
 	}

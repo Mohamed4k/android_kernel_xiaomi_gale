@@ -297,7 +297,7 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
 			dev_err(&pdev->dev, "Invalid pulse duration: %uus\n",
 					duration);
 			duration = max(1U, min(max_duration, duration));
-			dev_info(&pdev->dev, "Pulse duration set to %uus\n",
+			dev_dbg(&pdev->dev, "Pulse duration set to %uus\n",
 					duration);
 		}
 

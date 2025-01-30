@@ -124,7 +124,7 @@ mt76pci_load_rom_patch(struct mt76x2_dev *dev)
 	}
 
 	if (rom_protect && (mt76_rr(dev, patch_reg) & patch_mask)) {
-		dev_info(dev->mt76.dev, "ROM patch already applied\n");
+		dev_dbg(dev->mt76.dev, "ROM patch already applied\n");
 		goto out;
 	}
 
@@ -139,7 +139,7 @@ mt76pci_load_rom_patch(struct mt76x2_dev *dev)
 	}
 
 	hdr = (struct mt76x2_patch_header *) fw->data;
-	dev_info(dev->mt76.dev, "ROM patch build: %.15s\n", hdr->build_time);
+	dev_dbg(dev->mt76.dev, "ROM patch build: %.15s\n", hdr->build_time);
 
 	mt76_wr(dev, MT_MCU_PCIE_REMAP_BASE4, MT_MCU_ROM_PATCH_OFFSET);
 
@@ -191,12 +191,12 @@ mt76pci_load_firmware(struct mt76x2_dev *dev)
 		goto error;
 
 	val = le16_to_cpu(hdr->fw_ver);
-	dev_info(dev->mt76.dev, "Firmware Version: %d.%d.%02d\n",
+	dev_dbg(dev->mt76.dev, "Firmware Version: %d.%d.%02d\n",
 		 (val >> 12) & 0xf, (val >> 8) & 0xf, val & 0xf);
 
 	val = le16_to_cpu(hdr->build_ver);
-	dev_info(dev->mt76.dev, "Build: %x\n", val);
-	dev_info(dev->mt76.dev, "Build Time: %.16s\n", hdr->build_time);
+	dev_dbg(dev->mt76.dev, "Build: %x\n", val);
+	dev_dbg(dev->mt76.dev, "Build Time: %.16s\n", hdr->build_time);
 
 	cur = (__le32 *) (fw->data + sizeof(*hdr));
 	len = le32_to_cpu(hdr->ilm_len);
@@ -229,7 +229,7 @@ mt76pci_load_firmware(struct mt76x2_dev *dev)
 		return -ETIMEDOUT;
 	}
 
-	dev_info(dev->mt76.dev, "Firmware running!\n");
+	dev_dbg(dev->mt76.dev, "Firmware running!\n");
 
 	release_firmware(fw);
 

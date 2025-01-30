@@ -315,7 +315,7 @@ static int wil_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	int i, start_idx;
 
 	/* check HW */
-	dev_info(&pdev->dev, WIL_NAME
+	dev_dbg(&pdev->dev, WIL_NAME
 		 " device found [%04x:%04x] (rev %x) bar size 0x%x\n",
 		 (int)pdev->vendor, (int)pdev->device, (int)pdev->revision,
 		 bar_size);
@@ -400,7 +400,7 @@ static int wil_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 				dma_addr_size[i], rc);
 			continue;
 		}
-		dev_info(dev, "using dma mask %d", dma_addr_size[i]);
+		dev_dbg(dev, "using dma mask %d", dma_addr_size[i]);
 		wil->dma_addr_size = dma_addr_size[i];
 		break;
 	}

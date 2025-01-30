@@ -94,11 +94,11 @@ int enic_get_vnic_config(struct enic *enic)
 	c->intr_timer_usec = min_t(u32, c->intr_timer_usec,
 		vnic_dev_get_intr_coal_timer_max(enic->vdev));
 
-	dev_info(enic_get_dev(enic),
+	dev_dbg(enic_get_dev(enic),
 		"vNIC MAC addr %pM wq/rq %d/%d mtu %d\n",
 		enic->mac_addr, c->wq_desc_count, c->rq_desc_count, c->mtu);
 
-	dev_info(enic_get_dev(enic), "vNIC csum tx/rx %s/%s "
+	dev_dbg(enic_get_dev(enic), "vNIC csum tx/rx %s/%s "
 		"tso/lro %s/%s rss %s intr mode %s type %s timer %d usec "
 		"loopback tag 0x%04x\n",
 		ENIC_SETTING(enic, TXCSUM) ? "yes" : "no",
@@ -206,7 +206,7 @@ void enic_get_res_counts(struct enic *enic)
 	enic->intr_count = vnic_dev_get_res_count(enic->vdev,
 		RES_TYPE_INTR_CTRL);
 
-	dev_info(enic_get_dev(enic),
+	dev_dbg(enic_get_dev(enic),
 		"vNIC resources avail: wq %d rq %d cq %d intr %d\n",
 		enic->wq_count, enic->rq_count,
 		enic->cq_count, enic->intr_count);
@@ -322,7 +322,7 @@ int enic_alloc_vnic_resources(struct enic *enic)
 
 	intr_mode = vnic_dev_get_intr_mode(enic->vdev);
 
-	dev_info(enic_get_dev(enic), "vNIC resources used:  "
+	dev_dbg(enic_get_dev(enic), "vNIC resources used:  "
 		"wq %d rq %d cq %d intr %d intr mode %s\n",
 		enic->wq_count, enic->rq_count,
 		enic->cq_count, enic->intr_count,

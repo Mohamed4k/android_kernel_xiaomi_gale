@@ -426,7 +426,7 @@ int vmci_doorbell_create(struct vmci_handle *handle,
 
 	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
 	if (entry == NULL) {
-		pr_warn("Failed allocating memory for datagram entry\n");
+		pr_debug("Failed allocating memory for datagram entry\n");
 		return VMCI_ERROR_NO_MEM;
 	}
 
@@ -434,7 +434,7 @@ int vmci_doorbell_create(struct vmci_handle *handle,
 		u32 context_id = vmci_get_context_id();
 
 		if (context_id == VMCI_INVALID_ID) {
-			pr_warn("Failed to get context ID\n");
+			pr_debug("Failed to get context ID\n");
 			result = VMCI_ERROR_NO_RESOURCES;
 			goto free_mem;
 		}
@@ -480,7 +480,7 @@ int vmci_doorbell_create(struct vmci_handle *handle,
 				   VMCI_RESOURCE_TYPE_DOORBELL,
 				   new_handle);
 	if (result != VMCI_SUCCESS) {
-		pr_warn("Failed to add new resource (handle=0x%x:0x%x), error: %d\n",
+		pr_debug("Failed to add new resource (handle=0x%x:0x%x), error: %d\n",
 			new_handle.context, new_handle.resource, result);
 		goto free_mem;
 	}
@@ -603,7 +603,7 @@ int vmci_doorbell_notify(struct vmci_handle dst, u32 priv_flags)
 	if (VMCI_ROUTE_AS_GUEST == route)
 		return dbell_notify_as_guest(dst, priv_flags);
 
-	pr_warn("Unknown route (%d) for doorbell\n", route);
+	pr_debug("Unknown route (%d) for doorbell\n", route);
 	return VMCI_ERROR_DST_UNREACHABLE;
 }
 EXPORT_SYMBOL_GPL(vmci_doorbell_notify);

@@ -223,7 +223,7 @@ void vop_init_debugfs(struct vop_info *vi)
 		return;
 	}
 	debugfs_create_file("dp", 0444, vi->dbg, vi, &dp_ops);
-	debugfs_create_file("vdev_info", 0444, vi->dbg, vi, &vdev_info_ops);
+	debugfs_create_file("vdev_dbg", 0444, vi->dbg, vi, &vdev_info_ops);
 }
 
 void vop_exit_debugfs(struct vop_info *vi)

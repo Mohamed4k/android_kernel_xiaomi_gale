@@ -68,11 +68,11 @@ static int __init vmci_drv_init(void)
 	if (!vmci_disable_guest) {
 		error = vmci_guest_init();
 		if (error) {
-			pr_warn("Failed to initialize guest personality (err=%d)\n",
+			pr_debug("Failed to initialize guest personality (err=%d)\n",
 				error);
 		} else {
 			vmci_guest_personality_initialized = true;
-			pr_info("Guest personality initialized and is %s\n",
+			pr_debug("Guest personality initialized and is %s\n",
 				vmci_guest_code_active() ?
 				"active" : "inactive");
 		}
@@ -81,11 +81,11 @@ static int __init vmci_drv_init(void)
 	if (!vmci_disable_host) {
 		error = vmci_host_init();
 		if (error) {
-			pr_warn("Unable to initialize host personality (err=%d)\n",
+			pr_debug("Unable to initialize host personality (err=%d)\n",
 				error);
 		} else {
 			vmci_host_personality_initialized = true;
-			pr_info("Initialized host personality\n");
+			pr_debug("Initialized host personality\n");
 		}
 	}
 

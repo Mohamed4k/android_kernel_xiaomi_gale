@@ -3857,12 +3857,12 @@ static void si_gpu_soft_reset(struct radeon_device *rdev, u32 reset_mask)
 	if (reset_mask == 0)
 		return;
 
-	dev_info(rdev->dev, "GPU softreset: 0x%08X\n", reset_mask);
+	dev_dbg(rdev->dev, "GPU softreset: 0x%08X\n", reset_mask);
 
 	evergreen_print_gpu_status_regs(rdev);
-	dev_info(rdev->dev, "  VM_CONTEXT1_PROTECTION_FAULT_ADDR   0x%08X\n",
+	dev_dbg(rdev->dev, "  VM_CONTEXT1_PROTECTION_FAULT_ADDR   0x%08X\n",
 		 RREG32(VM_CONTEXT1_PROTECTION_FAULT_ADDR));
-	dev_info(rdev->dev, "  VM_CONTEXT1_PROTECTION_FAULT_STATUS 0x%08X\n",
+	dev_dbg(rdev->dev, "  VM_CONTEXT1_PROTECTION_FAULT_STATUS 0x%08X\n",
 		 RREG32(VM_CONTEXT1_PROTECTION_FAULT_STATUS));
 
 	/* disable PG/CG */
@@ -3946,7 +3946,7 @@ static void si_gpu_soft_reset(struct radeon_device *rdev, u32 reset_mask)
 	if (grbm_soft_reset) {
 		tmp = RREG32(GRBM_SOFT_RESET);
 		tmp |= grbm_soft_reset;
-		dev_info(rdev->dev, "GRBM_SOFT_RESET=0x%08X\n", tmp);
+		dev_dbg(rdev->dev, "GRBM_SOFT_RESET=0x%08X\n", tmp);
 		WREG32(GRBM_SOFT_RESET, tmp);
 		tmp = RREG32(GRBM_SOFT_RESET);
 
@@ -3960,7 +3960,7 @@ static void si_gpu_soft_reset(struct radeon_device *rdev, u32 reset_mask)
 	if (srbm_soft_reset) {
 		tmp = RREG32(SRBM_SOFT_RESET);
 		tmp |= srbm_soft_reset;
-		dev_info(rdev->dev, "SRBM_SOFT_RESET=0x%08X\n", tmp);
+		dev_dbg(rdev->dev, "SRBM_SOFT_RESET=0x%08X\n", tmp);
 		WREG32(SRBM_SOFT_RESET, tmp);
 		tmp = RREG32(SRBM_SOFT_RESET);
 
@@ -4033,7 +4033,7 @@ static void si_gpu_pci_config_reset(struct radeon_device *rdev)
 	struct evergreen_mc_save save;
 	u32 tmp, i;
 
-	dev_info(rdev->dev, "GPU pci config reset\n");
+	dev_dbg(rdev->dev, "GPU pci config reset\n");
 
 	/* disable dpm? */
 

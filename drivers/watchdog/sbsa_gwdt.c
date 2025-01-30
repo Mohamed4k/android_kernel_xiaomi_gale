@@ -317,7 +317,7 @@ static int sbsa_gwdt_probe(struct platform_device *pdev)
 	if (ret)
 		return ret;
 
-	dev_info(dev, "Initialized with %ds timeout @ %u Hz, action=%d.%s\n",
+	dev_dbg(dev, "Initialized with %ds timeout @ %u Hz, action=%d.%s\n",
 		 wdd->timeout, gwdt->clk, action,
 		 status & SBSA_GWDT_WCS_EN ? " [enabled]" : "");
 

@@ -26,19 +26,19 @@ static int bring_up_probe(struct platform_device *pdev)
 
 	clk_con = of_count_phandle_with_args(pdev->dev.of_node, "clocks",
 			"#clock-cells");
-	pr_notice("sum: %d\n", clk_con);
+	pr_debug("sum: %d\n", clk_con);
 	for (i = 0; i < clk_con; i++) {
 		clk = of_clk_get(pdev->dev.of_node, i);
 		if (IS_ERR(clk)) {
 			long ret = PTR_ERR(clk);
 
 			if (ret == -EPROBE_DEFER)
-				pr_notice("clk %d is not ready\n", i);
+				pr_debug("clk %d is not ready\n", i);
 			else
-				pr_notice("get clk %d fail, ret=%d, clk_con=%d\n",
+				pr_debug("get clk %d fail, ret=%d, clk_con=%d\n",
 				       i, (int)ret, clk_con);
 		} else {
-			pr_notice("get clk [%d]: %s ok\n", i,
+			pr_debug("get clk [%d]: %s ok\n", i,
 					__clk_get_name(clk));
 			ret = clk_prepare_enable(clk);
 			if (ret) {

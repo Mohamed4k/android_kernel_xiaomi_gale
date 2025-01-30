@@ -421,7 +421,7 @@ int i40e_lan_add_device(struct i40e_pf *pf)
 	ldev->pf = pf;
 	INIT_LIST_HEAD(&ldev->list);
 	list_add(&ldev->list, &i40e_devices);
-	dev_info(&pf->pdev->dev, "Added LAN device PF%d bus=0x%02x dev=0x%02x func=0x%02x\n",
+	dev_dbg(&pf->pdev->dev, "Added LAN device PF%d bus=0x%02x dev=0x%02x func=0x%02x\n",
 		 pf->hw.pf_id, pf->hw.bus.bus_id,
 		 pf->hw.bus.device, pf->hw.bus.func);
 
@@ -460,7 +460,7 @@ int i40e_lan_del_device(struct i40e_pf *pf)
 	mutex_lock(&i40e_device_mutex);
 	list_for_each_entry_safe(ldev, tmp, &i40e_devices, list) {
 		if (ldev->pf == pf) {
-			dev_info(&pf->pdev->dev, "Deleted LAN device PF%d bus=0x%02x dev=0x%02x func=0x%02x\n",
+			dev_dbg(&pf->pdev->dev, "Deleted LAN device PF%d bus=0x%02x dev=0x%02x func=0x%02x\n",
 				 pf->hw.pf_id, pf->hw.bus.bus_id,
 				 pf->hw.bus.device, pf->hw.bus.func);
 			list_del(&ldev->list);
@@ -508,7 +508,7 @@ static void i40e_client_release(struct i40e_client *client)
 		}
 		/* delete the client instance */
 		i40e_client_del_instance(pf);
-		dev_info(&pf->pdev->dev, "Deleted client instance of Client %s\n",
+		dev_dbg(&pf->pdev->dev, "Deleted client instance of Client %s\n",
 			 client->name);
 		clear_bit(__I40E_SERVICE_SCHED, pf->state);
 	}
@@ -698,7 +698,7 @@ static int i40e_client_update_vsi_ctxt(struct i40e_info *ldev,
 	err = i40e_aq_get_vsi_params(&pf->hw, &ctxt, NULL);
 	ctxt.flags = I40E_AQ_VSI_TYPE_PF;
 	if (err) {
-		dev_info(&pf->pdev->dev,
+		dev_dbg(&pf->pdev->dev,
 			 "couldn't get PF vsi config, err %s aq_err %s\n",
 			 i40e_stat_str(&pf->hw, err),
 			 i40e_aq_str(&pf->hw,
@@ -726,7 +726,7 @@ static int i40e_client_update_vsi_ctxt(struct i40e_info *ldev,
 	if (update) {
 		err = i40e_aq_update_vsi_params(&vsi->back->hw, &ctxt, NULL);
 		if (err) {
-			dev_info(&pf->pdev->dev,
+			dev_dbg(&pf->pdev->dev,
 				 "update VSI ctxt for PE failed, err %s aq_err %s\n",
 				 i40e_stat_str(&pf->hw, err),
 				 i40e_aq_str(&pf->hw,
@@ -752,13 +752,13 @@ int i40e_register_client(struct i40e_client *client)
 	}
 
 	if (strlen(client->name) == 0) {
-		pr_info("i40e: Failed to register client with no name\n");
+		pr_debug("i40e: Failed to register client with no name\n");
 		ret = -EIO;
 		goto out;
 	}
 
 	if (registered_client) {
-		pr_info("i40e: Client %s has already been registered!\n",
+		pr_debug("i40e: Client %s has already been registered!\n",
 			client->name);
 		ret = -EEXIST;
 		goto out;
@@ -766,9 +766,9 @@ int i40e_register_client(struct i40e_client *client)
 
 	if ((client->version.major != I40E_CLIENT_VERSION_MAJOR) ||
 	    (client->version.minor != I40E_CLIENT_VERSION_MINOR)) {
-		pr_info("i40e: Failed to register client %s due to mismatched client interface version\n",
+		pr_debug("i40e: Failed to register client %s due to mismatched client interface version\n",
 			client->name);
-		pr_info("Client is using version: %02d.%02d.%02d while LAN driver supports %s\n",
+		pr_debug("Client is using version: %02d.%02d.%02d while LAN driver supports %s\n",
 			client->version.major, client->version.minor,
 			client->version.build,
 			i40e_client_interface_version_str);
@@ -780,7 +780,7 @@ int i40e_register_client(struct i40e_client *client)
 
 	i40e_client_prepare(client);
 
-	pr_info("i40e: Registered client %s\n", client->name);
+	pr_debug("i40e: Registered client %s\n", client->name);
 out:
 	return ret;
 }
@@ -797,7 +797,7 @@ int i40e_unregister_client(struct i40e_client *client)
 	int ret = 0;
 
 	if (registered_client != client) {
-		pr_info("i40e: Client %s has not been registered\n",
+		pr_debug("i40e: Client %s has not been registered\n",
 			client->name);
 		ret = -ENODEV;
 		goto out;
@@ -809,7 +809,7 @@ int i40e_unregister_client(struct i40e_client *client)
 	 */
 	i40e_client_release(client);
 
-	pr_info("i40e: Unregistered client %s\n", client->name);
+	pr_debug("i40e: Unregistered client %s\n", client->name);
 out:
 	return ret;
 }

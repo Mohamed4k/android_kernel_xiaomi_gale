@@ -289,7 +289,7 @@ static int __init renesas_soc_init(void)
 		if ((product & 0x7fff) == 0x5211)
 			product ^= 0x12;
 		if (soc->id && ((product >> 8) & 0xff) != soc->id) {
-			pr_warn("SoC mismatch (product = 0x%x)\n", product);
+			pr_debug("SoC mismatch (product = 0x%x)\n", product);
 			return -ENODEV;
 		}
 	}
@@ -310,7 +310,7 @@ static int __init renesas_soc_init(void)
 						   ((product >> 4) & 0x0f) + 1,
 						   product & 0xf);
 
-	pr_info("Detected Renesas %s %s %s\n", soc_dev_attr->family,
+	pr_debug("Detected Renesas %s %s %s\n", soc_dev_attr->family,
 		soc_dev_attr->soc_id, soc_dev_attr->revision ?: "");
 
 	soc_dev = soc_device_register(soc_dev_attr);

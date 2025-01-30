@@ -37,24 +37,24 @@ int write_pmic(int pmic_num, unsigned int addr,
 		return -1;
 	regulator = regulator_get_optional(NULL, pmic_reg_name[pmic_num]);
 	if (IS_ERR(regulator)) {
-		pr_notice("%s regulator get failed\n", __func__);
+		pr_debug("%s regulator get failed\n", __func__);
 		goto ERROR;
 	}
 	regmap = regulator_get_regmap(regulator);
 	if (IS_ERR(regmap)) {
-		pr_notice("%s regmap get failed\n", __func__);
+		pr_debug("%s regmap get failed\n", __func__);
 		goto ERROR;
 	}
 	ret = regmap_read(regmap, addr, &tmp_val);
 	if (ret) {
-		pr_notice("%s regmap read fail\n", __func__);
+		pr_debug("%s regmap read fail\n", __func__);
 		goto ERROR;
 	}
 	tmp_val &= (~mask);
 	tmp_val |= reg_val;
 	ret = regmap_write(regmap, addr, tmp_val);
 	if (ret) {
-		pr_notice("%s regmap write fail\n", __func__);
+		pr_debug("%s regmap write fail\n", __func__);
 		goto ERROR;
 	}
 	return 0;
@@ -75,12 +75,12 @@ void dump_pmic(int pmic_num, const char *scenario,
 		return;
 	regulator = regulator_get_optional(NULL, pmic_reg_name[pmic_num]);
 	if (IS_ERR(regulator)) {
-		pr_notice("%s regulator get failed\n", __func__);
+		pr_debug("%s regulator get failed\n", __func__);
 		goto ERROR;
 	}
 	regmap = regulator_get_regmap(regulator);
 	if (IS_ERR(regmap)) {
-		pr_notice("%s regmap get failed\n", __func__);
+		pr_debug("%s regmap get failed\n", __func__);
 		goto ERROR;
 	}
 	/* dump diff mode */
@@ -94,7 +94,7 @@ void dump_pmic(int pmic_num, const char *scenario,
 		for (i = 0; i < pmic_gs_len; i += 3) {
 			ret = regmap_read(regmap, pmic_gs[i], &val0);
 			if (ret) {
-				pr_notice("read pmic-%d 0x%x error\n",
+				pr_debug("read pmic-%d 0x%x error\n",
 					pmic_num, pmic_gs[i]);
 				goto ERROR;
 			}
@@ -120,7 +120,7 @@ void dump_pmic(int pmic_num, const char *scenario,
 
 				if (dump_cnt &&
 					((dump_cnt % PER_LINE_TO_PRINT) == 0)) {
-					pr_notice("%s", buf);
+					pr_debug("%s", buf);
 					p = buf;
 					p += snprintf(p, sizeof(buf), "\n");
 				}
@@ -128,7 +128,7 @@ void dump_pmic(int pmic_num, const char *scenario,
 
 		}
 		if (dump_cnt % PER_LINE_TO_PRINT)
-			pr_notice("%s", buf);
+			pr_debug("%s", buf);
 
 	/* dump raw data mode */
 	} else {
@@ -140,7 +140,7 @@ void dump_pmic(int pmic_num, const char *scenario,
 		for (i = 0; i < pmic_gs_len; i += 3) {
 			ret = regmap_read(regmap, pmic_gs[i], &val0);
 			if (ret) {
-				pr_notice("read pmic-%d 0x%x error\n",
+				pr_debug("read pmic-%d 0x%x error\n",
 				pmic_num, pmic_gs[i]);
 				goto ERROR;
 			}
@@ -151,13 +151,13 @@ void dump_pmic(int pmic_num, const char *scenario,
 					pmic_gs[i], val0);
 
 			if (dump_cnt && ((dump_cnt % PER_LINE_TO_PRINT) == 0)) {
-				pr_notice("%s", buf);
+				pr_debug("%s", buf);
 				p = buf;
 				p += snprintf(p, sizeof(buf), "\n");
 			}
 		}
 		if (dump_cnt % PER_LINE_TO_PRINT)
-			pr_notice("%s", buf);
+			pr_debug("%s", buf);
 	}
 ERROR:
 	return;

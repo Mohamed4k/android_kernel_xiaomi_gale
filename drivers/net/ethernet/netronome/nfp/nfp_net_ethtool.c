@@ -1293,7 +1293,7 @@ nfp_net_flash_device(struct net_device *netdev, struct ethtool_flash *flash)
 	if (err)
 		goto exit_close_nsp;
 
-	dev_info(dev, "Please be patient while writing flash image: %s\n",
+	dev_dbg(dev, "Please be patient while writing flash image: %s\n",
 		 flash->data);
 	dev_hold(netdev);
 	rtnl_unlock();
@@ -1303,7 +1303,7 @@ nfp_net_flash_device(struct net_device *netdev, struct ethtool_flash *flash)
 		dev_err(dev, "Flash write failed: %d\n", err);
 		goto exit_rtnl_lock;
 	}
-	dev_info(dev, "Finished writing flash image\n");
+	dev_dbg(dev, "Finished writing flash image\n");
 
 exit_rtnl_lock:
 	rtnl_lock();

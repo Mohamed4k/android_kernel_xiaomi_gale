@@ -2888,7 +2888,7 @@ nvkm_device_ctor(const struct nvkm_device_func *func,
 			goto done;
 		}
 
-		nvdev_info(device, "NVIDIA %s (%08x)\n",
+		nvdev_dbg(device, "NVIDIA %s (%08x)\n",
 			   device->chip->name, boot0);
 
 		/* determine frequency of timing crystal */

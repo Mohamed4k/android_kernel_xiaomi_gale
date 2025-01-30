@@ -1002,9 +1002,9 @@ static void show_rx_chain(struct spider_net_card *card)
 	int off = start - chain->ring;
 	int cstat = hwd->dmac_cmd_status;
 
-	dev_info(dev, "Total number of descrs=%d\n",
+	dev_dbg(dev, "Total number of descrs=%d\n",
 		chain->num_desc);
-	dev_info(dev, "Chain tail located at descr=%d, status=0x%x\n",
+	dev_dbg(dev, "Chain tail located at descr=%d, status=0x%x\n",
 		off, cstat);
 
 	curr_desc = spider_net_read_reg(card, SPIDER_NET_GDACTDPA);
@@ -1018,24 +1018,24 @@ static void show_rx_chain(struct spider_net_card *card)
 		status = hwd->dmac_cmd_status;
 
 		if (descr == chain->head)
-			dev_info(dev, "Chain head is at %d, head status=0x%x\n",
+			dev_dbg(dev, "Chain head is at %d, head status=0x%x\n",
 			         off, status);
 
 		if (curr_desc == descr->bus_addr)
-			dev_info(dev, "HW curr desc (GDACTDPA) is at %d, status=0x%x\n",
+			dev_dbg(dev, "HW curr desc (GDACTDPA) is at %d, status=0x%x\n",
 			         off, status);
 
 		if (next_desc == descr->bus_addr)
-			dev_info(dev, "HW next desc (GDACNEXTDA) is at %d, status=0x%x\n",
+			dev_dbg(dev, "HW next desc (GDACNEXTDA) is at %d, status=0x%x\n",
 			         off, status);
 
 		if (hwd->next_descr_addr == 0)
-			dev_info(dev, "chain is cut at %d\n", off);
+			dev_dbg(dev, "chain is cut at %d\n", off);
 
 		if (cstat != status) {
 			int from = (chain->num_desc + off - cnt) % chain->num_desc;
 			int to = (chain->num_desc + off - 1) % chain->num_desc;
-			dev_info(dev, "Have %d (from %d to %d) descrs "
+			dev_dbg(dev, "Have %d (from %d to %d) descrs "
 			         "with stat=0x%08x\n", cnt, from, to, cstat);
 			cstat = status;
 			cnt = 0;
@@ -1046,7 +1046,7 @@ static void show_rx_chain(struct spider_net_card *card)
 		descr = descr->next;
 	} while (descr != start);
 
-	dev_info(dev, "Last %d descrs with stat=0x%08x "
+	dev_dbg(dev, "Last %d descrs with stat=0x%08x "
 	         "for a total of %d descrs\n", cnt, cstat, tot);
 
 #ifdef DEBUG
@@ -1057,17 +1057,17 @@ static void show_rx_chain(struct spider_net_card *card)
 		struct spider_net_hw_descr *hwd = descr->hwdescr;
 		status = spider_net_get_descr_status(hwd);
 		cnt = descr - chain->ring;
-		dev_info(dev, "Descr %d stat=0x%08x skb=%p\n",
+		dev_dbg(dev, "Descr %d stat=0x%08x skb=%p\n",
 		         cnt, status, descr->skb);
-		dev_info(dev, "bus addr=%08x buf addr=%08x sz=%d\n",
+		dev_dbg(dev, "bus addr=%08x buf addr=%08x sz=%d\n",
 		         descr->bus_addr, hwd->buf_addr, hwd->buf_size);
-		dev_info(dev, "next=%08x result sz=%d valid sz=%d\n",
+		dev_dbg(dev, "next=%08x result sz=%d valid sz=%d\n",
 		         hwd->next_descr_addr, hwd->result_size,
 		         hwd->valid_size);
-		dev_info(dev, "dmac=%08x data stat=%08x data err=%08x\n",
+		dev_dbg(dev, "dmac=%08x data stat=%08x data err=%08x\n",
 		         hwd->dmac_cmd_status, hwd->data_status,
 		         hwd->data_error);
-		dev_info(dev, "\n");
+		dev_dbg(dev, "\n");
 
 		descr = descr->next;
 	} while (descr != start);
@@ -2038,7 +2038,7 @@ static void spider_net_link_phy(struct timer_list *t)
 
 	card->aneg_count = 0;
 
-	pr_info("%s: link up, %i Mbps, %s-duplex %sautoneg.\n",
+	pr_debug("%s: link up, %i Mbps, %s-duplex %sautoneg.\n",
 		card->netdev->name, phy->speed,
 		phy->duplex == 1 ? "Full" : "Half",
 		phy->autoneg == 1 ? "" : "no ");
@@ -2071,7 +2071,7 @@ spider_net_setup_phy(struct spider_net_card *card)
 		id = spider_net_read_phy(card->netdev, phy->mii_id, MII_BMSR);
 		if (id != 0x0000 && id != 0xffff) {
 			if (!sungem_phy_probe(phy, phy->mii_id)) {
-				pr_info("Found %s.\n", phy->def->name);
+				pr_debug("Found %s.\n", phy->def->name);
 				break;
 			}
 		}
@@ -2306,7 +2306,7 @@ spider_net_setup_netdev(struct spider_net_card *card)
 	}
 
 	if (netif_msg_probe(card))
-		pr_info("Initialized device %s.\n", netdev->name);
+		pr_debug("Initialized device %s.\n", netdev->name);
 
 	return 0;
 }
@@ -2518,19 +2518,19 @@ static int __init spider_net_init(void)
 
 	if (rx_descriptors < SPIDER_NET_RX_DESCRIPTORS_MIN) {
 		rx_descriptors = SPIDER_NET_RX_DESCRIPTORS_MIN;
-		pr_info("adjusting rx descriptors to %i.\n", rx_descriptors);
+		pr_debug("adjusting rx descriptors to %i.\n", rx_descriptors);
 	}
 	if (rx_descriptors > SPIDER_NET_RX_DESCRIPTORS_MAX) {
 		rx_descriptors = SPIDER_NET_RX_DESCRIPTORS_MAX;
-		pr_info("adjusting rx descriptors to %i.\n", rx_descriptors);
+		pr_debug("adjusting rx descriptors to %i.\n", rx_descriptors);
 	}
 	if (tx_descriptors < SPIDER_NET_TX_DESCRIPTORS_MIN) {
 		tx_descriptors = SPIDER_NET_TX_DESCRIPTORS_MIN;
-		pr_info("adjusting tx descriptors to %i.\n", tx_descriptors);
+		pr_debug("adjusting tx descriptors to %i.\n", tx_descriptors);
 	}
 	if (tx_descriptors > SPIDER_NET_TX_DESCRIPTORS_MAX) {
 		tx_descriptors = SPIDER_NET_TX_DESCRIPTORS_MAX;
-		pr_info("adjusting tx descriptors to %i.\n", tx_descriptors);
+		pr_debug("adjusting tx descriptors to %i.\n", tx_descriptors);
 	}
 
 	return pci_register_driver(&spider_net_driver);

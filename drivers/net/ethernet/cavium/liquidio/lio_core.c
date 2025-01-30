@@ -331,45 +331,45 @@ void liquidio_link_ctrl_cmd_completion(void *nctrl_ptr)
 		break;
 
 	case OCTNET_CMD_LRO_ENABLE:
-		dev_info(&oct->pci_dev->dev, "%s LRO Enabled\n", netdev->name);
+		dev_dbg(&oct->pci_dev->dev, "%s LRO Enabled\n", netdev->name);
 		break;
 
 	case OCTNET_CMD_LRO_DISABLE:
-		dev_info(&oct->pci_dev->dev, "%s LRO Disabled\n",
+		dev_dbg(&oct->pci_dev->dev, "%s LRO Disabled\n",
 			 netdev->name);
 		break;
 
 	case OCTNET_CMD_VERBOSE_ENABLE:
-		dev_info(&oct->pci_dev->dev, "%s Firmware debug enabled\n",
+		dev_dbg(&oct->pci_dev->dev, "%s Firmware debug enabled\n",
 			 netdev->name);
 		break;
 
 	case OCTNET_CMD_VERBOSE_DISABLE:
-		dev_info(&oct->pci_dev->dev, "%s Firmware debug disabled\n",
+		dev_dbg(&oct->pci_dev->dev, "%s Firmware debug disabled\n",
 			 netdev->name);
 		break;
 
 	case OCTNET_CMD_VLAN_FILTER_CTL:
 		if (nctrl->ncmd.s.param1)
-			dev_info(&oct->pci_dev->dev,
+			dev_dbg(&oct->pci_dev->dev,
 				 "%s VLAN filter enabled\n", netdev->name);
 		else
-			dev_info(&oct->pci_dev->dev,
+			dev_dbg(&oct->pci_dev->dev,
 				 "%s VLAN filter disabled\n", netdev->name);
 		break;
 
 	case OCTNET_CMD_ADD_VLAN_FILTER:
-		dev_info(&oct->pci_dev->dev, "%s VLAN filter %d added\n",
+		dev_dbg(&oct->pci_dev->dev, "%s VLAN filter %d added\n",
 			 netdev->name, nctrl->ncmd.s.param1);
 		break;
 
 	case OCTNET_CMD_DEL_VLAN_FILTER:
-		dev_info(&oct->pci_dev->dev, "%s VLAN filter %d removed\n",
+		dev_dbg(&oct->pci_dev->dev, "%s VLAN filter %d removed\n",
 			 netdev->name, nctrl->ncmd.s.param1);
 		break;
 
 	case OCTNET_CMD_SET_SETTINGS:
-		dev_info(&oct->pci_dev->dev, "%s settings changed\n",
+		dev_dbg(&oct->pci_dev->dev, "%s settings changed\n",
 			 netdev->name);
 
 		break;
@@ -456,7 +456,7 @@ void octeon_pf_changed_vf_macaddr(struct octeon_device *oct, u8 *mac)
 	rtnl_unlock();
 
 	if (macaddr_changed)
-		dev_info(&oct->pci_dev->dev,
+		dev_dbg(&oct->pci_dev->dev,
 			 "PF changed VF's MAC address to %pM\n", mac);
 
 	/* no need to notify the firmware of the macaddr change because
@@ -1554,7 +1554,7 @@ int liquidio_set_speed(struct lio *lio, int speed)
 
 	retval = octeon_send_soft_command(oct, sc);
 	if (retval == IQ_SEND_FAILED) {
-		dev_info(&oct->pci_dev->dev, "Failed to send soft command\n");
+		dev_dbg(&oct->pci_dev->dev, "Failed to send soft command\n");
 		retval = -EBUSY;
 	} else {
 		/* Wait for response or timeout */
@@ -1632,7 +1632,7 @@ int liquidio_get_speed(struct lio *lio)
 
 	retval = octeon_send_soft_command(oct, sc);
 	if (retval == IQ_SEND_FAILED) {
-		dev_info(&oct->pci_dev->dev, "Failed to send soft command\n");
+		dev_dbg(&oct->pci_dev->dev, "Failed to send soft command\n");
 		oct->no_speed_setting = 1;
 		oct->speed_setting = 25;
 

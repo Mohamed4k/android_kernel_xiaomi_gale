@@ -91,8 +91,8 @@ enum pool_type {
  * @nrefills: Stats when the pool is grown.
  * @gfp_flags: Flags to pass for alloc_page.
  * @name: Name of the pool.
- * @dev_name: Name derieved from dev - similar to how dev_info works.
- *   Used during shutdown as the dev_info during release is unavailable.
+ * @dev_name: Name derieved from dev - similar to how dev_dbg works.
+ *   Used during shutdown as the dev_dbg during release is unavailable.
  */
 struct dma_pool {
 	struct list_head pools; /* The 'struct device->dma_pools link */
@@ -224,7 +224,7 @@ static ssize_t ttm_pool_store(struct kobject *kobj, struct attribute *attr,
 			       NUM_PAGES_TO_ALLOC*(PAGE_SIZE >> 10));
 			return size;
 		} else if (val > NUM_PAGES_TO_ALLOC) {
-			pr_warn("Setting allocation size to larger than %lu is not recommended\n",
+			pr_debug("Setting allocation size to larger than %lu is not recommended\n",
 				NUM_PAGES_TO_ALLOC*(PAGE_SIZE >> 10));
 		}
 		m->options.alloc_size = val;
@@ -1166,7 +1166,7 @@ int ttm_dma_page_alloc_init(struct ttm_mem_global *glob, unsigned max_pages)
 
 	WARN_ON(_manager);
 
-	pr_info("Initializing DMA pool allocator\n");
+	pr_debug("Initializing DMA pool allocator\n");
 
 	_manager = kzalloc(sizeof(*_manager), GFP_KERNEL);
 	if (!_manager)
@@ -1200,7 +1200,7 @@ void ttm_dma_page_alloc_fini(void)
 {
 	struct device_pools *p, *t;
 
-	pr_info("Finalizing DMA pool allocator\n");
+	pr_debug("Finalizing DMA pool allocator\n");
 	ttm_dma_pool_mm_shrink_fini(_manager);
 
 	list_for_each_entry_safe_reverse(p, t, &_manager->pools, pools) {

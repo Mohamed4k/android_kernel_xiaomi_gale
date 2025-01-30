@@ -742,7 +742,7 @@ int t1_elmer0_ext_intr_handler(adapter_t *adapter)
 			t1_tpi_read(adapter,
 					A_ELMER0_GPI_STAT, &mod_detect);
 			if (netif_msg_link(adapter))
-				dev_info(&adapter->pdev->dev, "XPAK %s\n",
+				dev_dbg(&adapter->pdev->dev, "XPAK %s\n",
 					 mod_detect ? "removed" : "inserted");
 		}
 		break;

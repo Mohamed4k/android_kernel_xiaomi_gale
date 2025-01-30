@@ -1723,7 +1723,7 @@ static int exynos_dsi_probe(struct platform_device *pdev)
 				      dsi->supplies);
 	if (ret) {
 		if (ret != -EPROBE_DEFER)
-			dev_info(dev, "failed to get regulators: %d\n", ret);
+			dev_dbg(dev, "failed to get regulators: %d\n", ret);
 		return ret;
 	}
 
@@ -1743,7 +1743,7 @@ static int exynos_dsi_probe(struct platform_device *pdev)
 					continue;
 			}
 
-			dev_info(dev, "failed to get the clock: %s\n",
+			dev_dbg(dev, "failed to get the clock: %s\n",
 					clk_names[i]);
 			return PTR_ERR(dsi->clks[i]);
 		}
@@ -1758,7 +1758,7 @@ static int exynos_dsi_probe(struct platform_device *pdev)
 
 	dsi->phy = devm_phy_get(dev, "dsim");
 	if (IS_ERR(dsi->phy)) {
-		dev_info(dev, "failed to get dsim phy\n");
+		dev_dbg(dev, "failed to get dsim phy\n");
 		return PTR_ERR(dsi->phy);
 	}
 

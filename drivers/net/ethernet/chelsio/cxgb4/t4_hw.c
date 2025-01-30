@@ -3319,29 +3319,29 @@ int t4_get_version_info(struct adapter *adapter)
 void t4_dump_version_info(struct adapter *adapter)
 {
 	/* Device information */
-	dev_info(adapter->pdev_dev, "Chelsio %s rev %d\n",
+	dev_dbg(adapter->pdev_dev, "Chelsio %s rev %d\n",
 		 adapter->params.vpd.id,
 		 CHELSIO_CHIP_RELEASE(adapter->params.chip));
-	dev_info(adapter->pdev_dev, "S/N: %s, P/N: %s\n",
+	dev_dbg(adapter->pdev_dev, "S/N: %s, P/N: %s\n",
 		 adapter->params.vpd.sn, adapter->params.vpd.pn);
 
 	/* Firmware Version */
 	if (!adapter->params.fw_vers)
 		dev_warn(adapter->pdev_dev, "No firmware loaded\n");
 	else
-		dev_info(adapter->pdev_dev, "Firmware version: %u.%u.%u.%u\n",
+		dev_dbg(adapter->pdev_dev, "Firmware version: %u.%u.%u.%u\n",
 			 FW_HDR_FW_VER_MAJOR_G(adapter->params.fw_vers),
 			 FW_HDR_FW_VER_MINOR_G(adapter->params.fw_vers),
 			 FW_HDR_FW_VER_MICRO_G(adapter->params.fw_vers),
 			 FW_HDR_FW_VER_BUILD_G(adapter->params.fw_vers));
 
 	/* Bootstrap Firmware Version. (Some adapters don't have Bootstrap
-	 * Firmware, so dev_info() is more appropriate here.)
+	 * Firmware, so dev_dbg() is more appropriate here.)
 	 */
 	if (!adapter->params.bs_vers)
-		dev_info(adapter->pdev_dev, "No bootstrap loaded\n");
+		dev_dbg(adapter->pdev_dev, "No bootstrap loaded\n");
 	else
-		dev_info(adapter->pdev_dev, "Bootstrap version: %u.%u.%u.%u\n",
+		dev_dbg(adapter->pdev_dev, "Bootstrap version: %u.%u.%u.%u\n",
 			 FW_HDR_FW_VER_MAJOR_G(adapter->params.bs_vers),
 			 FW_HDR_FW_VER_MINOR_G(adapter->params.bs_vers),
 			 FW_HDR_FW_VER_MICRO_G(adapter->params.bs_vers),
@@ -3351,7 +3351,7 @@ void t4_dump_version_info(struct adapter *adapter)
 	if (!adapter->params.tp_vers)
 		dev_warn(adapter->pdev_dev, "No TP Microcode loaded\n");
 	else
-		dev_info(adapter->pdev_dev,
+		dev_dbg(adapter->pdev_dev,
 			 "TP Microcode version: %u.%u.%u.%u\n",
 			 FW_HDR_FW_VER_MAJOR_G(adapter->params.tp_vers),
 			 FW_HDR_FW_VER_MINOR_G(adapter->params.tp_vers),
@@ -3360,9 +3360,9 @@ void t4_dump_version_info(struct adapter *adapter)
 
 	/* Expansion ROM version */
 	if (!adapter->params.er_vers)
-		dev_info(adapter->pdev_dev, "No Expansion ROM loaded\n");
+		dev_dbg(adapter->pdev_dev, "No Expansion ROM loaded\n");
 	else
-		dev_info(adapter->pdev_dev,
+		dev_dbg(adapter->pdev_dev,
 			 "Expansion ROM version: %u.%u.%u.%u\n",
 			 FW_HDR_FW_VER_MAJOR_G(adapter->params.er_vers),
 			 FW_HDR_FW_VER_MINOR_G(adapter->params.er_vers),
@@ -3370,11 +3370,11 @@ void t4_dump_version_info(struct adapter *adapter)
 			 FW_HDR_FW_VER_BUILD_G(adapter->params.er_vers));
 
 	/* Serial Configuration version */
-	dev_info(adapter->pdev_dev, "Serial Configuration version: %#x\n",
+	dev_dbg(adapter->pdev_dev, "Serial Configuration version: %#x\n",
 		 adapter->params.scfg_vers);
 
 	/* VPD Version */
-	dev_info(adapter->pdev_dev, "VPD version: %#x\n",
+	dev_dbg(adapter->pdev_dev, "VPD version: %#x\n",
 		 adapter->params.vpd_vers);
 }
 

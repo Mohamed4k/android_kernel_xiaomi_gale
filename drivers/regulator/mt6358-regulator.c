@@ -602,7 +602,7 @@ static int pmic_regulator_ext2_enable(struct regulator_dev *rdev)
 				    PMIC_RG_STRUP_EXT_PMIC_SEL_SHIFT;
 	int ret = 0;
 
-	dev_info(&rdev->dev, "regulator ext_pmic2 enable\n");
+	dev_dbg(&rdev->dev, "regulator ext_pmic2 enable\n");
 	ret = regmap_read(rdev->regmap,
 			  PMIC_RG_STRUP_EXT_PMIC_EN_ADDR, &ext_en);
 	if ((ext_en & 0x2) != 0x2) {
@@ -632,7 +632,7 @@ static int pmic_regulator_ext2_disable(struct regulator_dev *rdev)
 				    PMIC_RG_STRUP_EXT_PMIC_SEL_SHIFT;
 	int ret = 0;
 
-	dev_info(&rdev->dev, "regulator ext_pmic2 disable\n");
+	dev_dbg(&rdev->dev, "regulator ext_pmic2 disable\n");
 	if (rdev->use_count == 0) {
 		dev_notice(&rdev->dev, "%s:%s should not be disable.(use_count=0)\n"
 			, __func__
@@ -1106,7 +1106,7 @@ static int mt6358_regulator_probe(struct platform_device *pdev)
 		dev_notice(&pdev->dev, "Failed to read Chip ID\n");
 		return -EIO;
 	}
-	dev_info(&pdev->dev, "Chip ID = 0x%x\n", reg_value);
+	dev_dbg(&pdev->dev, "Chip ID = 0x%x\n", reg_value);
 
 	for (i = 0; i < regulator_init_data->size; i++, mt_regulators++) {
 		mt_regulators->desc.of_parse_cb = mt6358_of_parse_cb;

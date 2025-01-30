@@ -153,7 +153,7 @@ static struct hdmi *msm_hdmi_init(struct platform_device *pdev)
 	hdmi->qfprom_mmio = msm_ioremap(pdev,
 		config->qfprom_mmio_name, "HDMI_QFPROM");
 	if (IS_ERR(hdmi->qfprom_mmio)) {
-		dev_info(&pdev->dev, "can't find qfprom resource\n");
+		dev_dbg(&pdev->dev, "can't find qfprom resource\n");
 		hdmi->qfprom_mmio = NULL;
 	}
 

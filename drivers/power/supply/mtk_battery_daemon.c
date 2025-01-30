@@ -4498,7 +4498,7 @@ bool is_daemon_support(struct mtk_battery *gm)
 {
 	bool is_support = true;
 
-	pr_notice("%s: is_support = %d\n", __func__, is_support);
+	pr_debug("%s: is_support = %d\n", __func__, is_support);
 	return is_support;
 }
 

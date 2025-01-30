@@ -1059,7 +1059,7 @@ static int ravb_phy_init(struct net_device *ndev)
 			goto err_phy_disconnect;
 		}
 
-		netdev_info(ndev, "limited PHY to 100Mbit/s\n");
+		netdev_dbg(ndev, "limited PHY to 100Mbit/s\n");
 	}
 
 	/* 10BASE is not supported */
@@ -2160,7 +2160,7 @@ static int ravb_probe(struct platform_device *pdev)
 	device_set_wakeup_capable(&pdev->dev, 1);
 
 	/* Print device information */
-	netdev_info(ndev, "Base address at %#x, %pM, IRQ %d.\n",
+	netdev_dbg(ndev, "Base address at %#x, %pM, IRQ %d.\n",
 		    (u32)ndev->base_addr, ndev->dev_addr, ndev->irq);
 
 	platform_set_drvdata(pdev, ndev);

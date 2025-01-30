@@ -225,7 +225,7 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
 	meson_parm_write(clk->map, &pll->rst, 0);
 
 	if (meson_clk_pll_wait_lock(hw)) {
-		pr_warn("%s: pll did not lock, trying to restore old rate %lu\n",
+		pr_debug("%s: pll did not lock, trying to restore old rate %lu\n",
 			__func__, old_rate);
 		/*
 		 * FIXME: Do we really need/want this HACK ?

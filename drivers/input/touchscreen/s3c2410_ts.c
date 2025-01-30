@@ -338,7 +338,7 @@ static int s3c2410ts_probe(struct platform_device *pdev)
 		goto err_inputdev;
 	}
 
-	dev_info(dev, "driver attached, registering input device\n");
+	dev_dbg(dev, "driver attached, registering input device\n");
 
 	/* All went ok, so register to the input system */
 	ret = input_register_device(ts.input);

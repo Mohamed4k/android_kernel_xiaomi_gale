@@ -960,13 +960,13 @@ static int rtl8139_init_one(struct pci_dev *pdev,
 	{
 		static int printed_version;
 		if (!printed_version++)
-			pr_info(RTL8139_DRIVER_NAME "\n");
+			pr_debug(RTL8139_DRIVER_NAME "\n");
 	}
 #endif
 
 	if (pdev->vendor == PCI_VENDOR_ID_REALTEK &&
 	    pdev->device == PCI_DEVICE_ID_REALTEK_8139 && pdev->revision >= 0x20) {
-		dev_info(&pdev->dev,
+		dev_dbg(&pdev->dev,
 			   "This (id %04x:%04x rev %02x) is an enhanced 8139C+ chip, use 8139cp\n",
 		       	   pdev->vendor, pdev->device, pdev->revision);
 		return -ENODEV;
@@ -976,7 +976,7 @@ static int rtl8139_init_one(struct pci_dev *pdev,
 	    pdev->device == PCI_DEVICE_ID_REALTEK_8139 &&
 	    pdev->subsystem_vendor == PCI_VENDOR_ID_ATHEROS &&
 	    pdev->subsystem_device == PCI_DEVICE_ID_REALTEK_8139) {
-		pr_info("OQO Model 2 detected. Forcing PIO\n");
+		pr_debug("OQO Model 2 detected. Forcing PIO\n");
 		use_io = 1;
 	}
 
@@ -1041,7 +1041,7 @@ static int rtl8139_init_one(struct pci_dev *pdev,
 
 	pci_set_drvdata (pdev, dev);
 
-	netdev_info(dev, "%s at 0x%p, %pM, IRQ %d\n",
+	netdev_dbg(dev, "%s at 0x%p, %pM, IRQ %d\n",
 		    board_info[ent->driver_data].name,
 		    ioaddr, dev->dev_addr, pdev->irq);
 
@@ -1059,12 +1059,12 @@ static int rtl8139_init_one(struct pci_dev *pdev,
 			if (mii_status != 0xffff  &&  mii_status != 0x0000) {
 				u16 advertising = mdio_read(dev, phy, 4);
 				tp->phys[phy_idx++] = phy;
-				netdev_info(dev, "MII transceiver %d status 0x%04x advertising %04x\n",
+				netdev_dbg(dev, "MII transceiver %d status 0x%04x advertising %04x\n",
 					    phy, mii_status, advertising);
 			}
 		}
 		if (phy_idx == 0) {
-			netdev_info(dev, "No MII transceivers found! Assuming SYM transceiver\n");
+			netdev_dbg(dev, "No MII transceivers found! Assuming SYM transceiver\n");
 			tp->phys[0] = 32;
 		}
 	} else
@@ -1083,13 +1083,13 @@ static int rtl8139_init_one(struct pci_dev *pdev,
 	if (board_idx < MAX_UNITS  &&  full_duplex[board_idx] > 0)
 		tp->mii.full_duplex = full_duplex[board_idx];
 	if (tp->mii.full_duplex) {
-		netdev_info(dev, "Media type forced to Full Duplex\n");
+		netdev_dbg(dev, "Media type forced to Full Duplex\n");
 		/* Changing the MII-advertised media because might prevent
 		   re-connection. */
 		tp->mii.force_media = 1;
 	}
 	if (tp->default_port) {
-		netdev_info(dev, "  Forcing %dMbps %s-duplex operation\n",
+		netdev_dbg(dev, "  Forcing %dMbps %s-duplex operation\n",
 			    (option & 0x20 ? 100 : 10),
 			    (option & 0x10 ? "full" : "half"));
 		mdio_write(dev, tp->phys[0], 0,
@@ -1578,11 +1578,11 @@ static inline void rtl8139_thread_iter (struct net_device *dev,
 			tp->mii.full_duplex = duplex;
 
 			if (mii_lpa) {
-				netdev_info(dev, "Setting %s-duplex based on MII #%d link partner ability of %04x\n",
+				netdev_dbg(dev, "Setting %s-duplex based on MII #%d link partner ability of %04x\n",
 					    tp->mii.full_duplex ? "full" : "half",
 					    tp->phys[0], mii_lpa);
 			} else {
-				netdev_info(dev, "media is unconnected, link down, or incompatible connection\n");
+				netdev_dbg(dev, "media is unconnected, link down, or incompatible connection\n");
 			}
 #if 0
 			RTL_W8 (Cfg9346, Cfg9346_Unlock);
@@ -2671,7 +2671,7 @@ static int __init rtl8139_init_module (void)
 	 * even if no 8139 board is found.
 	 */
 #ifdef MODULE
-	pr_info(RTL8139_DRIVER_NAME "\n");
+	pr_debug(RTL8139_DRIVER_NAME "\n");
 #endif
 
 	return pci_register_driver(&rtl8139_pci_driver);

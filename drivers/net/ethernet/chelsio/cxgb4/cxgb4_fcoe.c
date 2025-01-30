@@ -77,7 +77,7 @@ int cxgb_fcoe_enable(struct net_device *netdev)
 	if (!(adap->flags & FULL_INIT_DONE))
 		return -EINVAL;
 
-	dev_info(adap->pdev_dev, "Enabling FCoE offload features\n");
+	dev_dbg(adap->pdev_dev, "Enabling FCoE offload features\n");
 
 	netdev->features |= NETIF_F_FCOE_CRC;
 	netdev->vlan_features |= NETIF_F_FCOE_CRC;
@@ -106,7 +106,7 @@ int cxgb_fcoe_disable(struct net_device *netdev)
 	if (!(fcoe->flags & CXGB_FCOE_ENABLED))
 		return -EINVAL;
 
-	dev_info(adap->pdev_dev, "Disabling FCoE offload features\n");
+	dev_dbg(adap->pdev_dev, "Disabling FCoE offload features\n");
 
 	fcoe->flags &= ~CXGB_FCOE_ENABLED;
 

@@ -327,7 +327,7 @@ static void init_ldb_clks(struct device_node *np, void __iomem *ccm_base)
 	for (i = 0; i < 2; i++) {
 		/* Warn if a glitch might have been introduced already */
 		if (sel[i][0] != 3) {
-			pr_warn("ccm: ldb_di%d_sel already changed from reset value: %d\n",
+			pr_debug("ccm: ldb_di%d_sel already changed from reset value: %d\n",
 				i, sel[i][0]);
 		}
 
@@ -889,7 +889,7 @@ static void __init imx6q_clocks_init(struct device_node *ccm_node)
 	if (!ret)
 		ret = clk_set_parent(clk[IMX6QDL_CLK_CKO], clk[IMX6QDL_CLK_CKO2]);
 	if (ret)
-		pr_warn("failed to set up CLKO: %d\n", ret);
+		pr_debug("failed to set up CLKO: %d\n", ret);
 
 	/* Audio-related clocks configuration */
 	clk_set_parent(clk[IMX6QDL_CLK_SPDIF_SEL], clk[IMX6QDL_CLK_PLL3_PFD3_454M]);

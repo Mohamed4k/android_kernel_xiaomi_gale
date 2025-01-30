@@ -444,7 +444,7 @@ static int tda9950_probe(struct i2c_client *client,
 
 	cvr = tda9950_read(client, REG_CVR);
 
-	dev_info(&client->dev,
+	dev_dbg(&client->dev,
 		 "TDA9950 CEC interface, hardware version %u.%u\n",
 		 cvr >> 4, cvr & 15);
 

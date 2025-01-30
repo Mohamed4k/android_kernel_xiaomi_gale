@@ -387,7 +387,7 @@ static void r300_gpu_init(struct radeon_device *rdev)
 	WREG32(R300_GB_TILE_CONFIG, gb_tile_config);
 
 	if (r100_gui_wait_for_idle(rdev)) {
-		pr_warn("Failed to wait GUI idle while programming pipes. Bad things might happen.\n");
+		pr_debug("Failed to wait GUI idle while programming pipes. Bad things might happen.\n");
 	}
 
 	tmp = RREG32(R300_DST_PIPE_CONFIG);
@@ -398,10 +398,10 @@ static void r300_gpu_init(struct radeon_device *rdev)
 	       R300_DC_DC_DISABLE_IGNORE_PE);
 
 	if (r100_gui_wait_for_idle(rdev)) {
-		pr_warn("Failed to wait GUI idle while programming pipes. Bad things might happen.\n");
+		pr_debug("Failed to wait GUI idle while programming pipes. Bad things might happen.\n");
 	}
 	if (r300_mc_wait_for_idle(rdev)) {
-		pr_warn("Failed to wait MC idle while programming pipes. Bad things might happen.\n");
+		pr_debug("Failed to wait MC idle while programming pipes. Bad things might happen.\n");
 	}
 	DRM_INFO("radeon: %d quad pipes, %d Z pipes initialized\n",
 		 rdev->num_gb_pipes, rdev->num_z_pipes);
@@ -419,7 +419,7 @@ int r300_asic_reset(struct radeon_device *rdev, bool hard)
 	}
 	r100_mc_stop(rdev, &save);
 	status = RREG32(R_000E40_RBBM_STATUS);
-	dev_info(rdev->dev, "(%s:%d) RBBM_STATUS=0x%08X\n", __func__, __LINE__, status);
+	dev_dbg(rdev->dev, "(%s:%d) RBBM_STATUS=0x%08X\n", __func__, __LINE__, status);
 	/* stop CP */
 	WREG32(RADEON_CP_CSQ_CNTL, 0);
 	tmp = RREG32(RADEON_CP_RB_CNTL);
@@ -438,7 +438,7 @@ int r300_asic_reset(struct radeon_device *rdev, bool hard)
 	WREG32(R_0000F0_RBBM_SOFT_RESET, 0);
 	mdelay(1);
 	status = RREG32(R_000E40_RBBM_STATUS);
-	dev_info(rdev->dev, "(%s:%d) RBBM_STATUS=0x%08X\n", __func__, __LINE__, status);
+	dev_dbg(rdev->dev, "(%s:%d) RBBM_STATUS=0x%08X\n", __func__, __LINE__, status);
 	/* resetting the CP seems to be problematic sometimes it end up
 	 * hard locking the computer, but it's necessary for successful
 	 * reset more test & playing is needed on R3XX/R4XX to find a
@@ -450,7 +450,7 @@ int r300_asic_reset(struct radeon_device *rdev, bool hard)
 	WREG32(R_0000F0_RBBM_SOFT_RESET, 0);
 	mdelay(1);
 	status = RREG32(R_000E40_RBBM_STATUS);
-	dev_info(rdev->dev, "(%s:%d) RBBM_STATUS=0x%08X\n", __func__, __LINE__, status);
+	dev_dbg(rdev->dev, "(%s:%d) RBBM_STATUS=0x%08X\n", __func__, __LINE__, status);
 	/* restore PCI & busmastering */
 	pci_restore_state(rdev->pdev);
 	r100_enable_bm(rdev);
@@ -459,7 +459,7 @@ int r300_asic_reset(struct radeon_device *rdev, bool hard)
 		dev_err(rdev->dev, "failed to reset GPU\n");
 		ret = -1;
 	} else
-		dev_info(rdev->dev, "GPU reset succeed\n");
+		dev_dbg(rdev->dev, "GPU reset succeed\n");
 	r100_mc_resume(rdev, &save);
 	return ret;
 }

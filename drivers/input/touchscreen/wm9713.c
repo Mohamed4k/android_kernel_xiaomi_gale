@@ -165,14 +165,14 @@ static void wm9713_phy_init(struct wm97xx *wm)
 	if (rpu) {
 		dig3 &= 0xffc0;
 		dig3 |= WM9712_RPU(rpu);
-		dev_info(wm->dev, "setting pen detect pull-up to %d Ohms\n",
+		dev_dbg(wm->dev, "setting pen detect pull-up to %d Ohms\n",
 			 64000 / rpu);
 	}
 
 	/* Five wire panel? */
 	if (five_wire) {
 		dig3 |= WM9713_45W;
-		dev_info(wm->dev, "setting 5-wire touchscreen mode.");
+		dev_dbg(wm->dev, "setting 5-wire touchscreen mode.");
 
 		if (pil) {
 			dev_warn(wm->dev,
@@ -185,19 +185,19 @@ static void wm9713_phy_init(struct wm97xx *wm)
 	/* touchpanel pressure */
 	if (pil == 2) {
 		dig3 |= WM9712_PIL;
-		dev_info(wm->dev,
+		dev_dbg(wm->dev,
 			 "setting pressure measurement current to 400uA.");
 	} else if (pil)
-		dev_info(wm->dev,
+		dev_dbg(wm->dev,
 			 "setting pressure measurement current to 200uA.");
 	if (!pil)
 		pressure = 0;
 
 	/* sample settling delay */
 	if (delay < 0 || delay > 15) {
-		dev_info(wm->dev, "supplied delay out of range.");
+		dev_dbg(wm->dev, "supplied delay out of range.");
 		delay = 4;
-		dev_info(wm->dev, "setting adc sample delay to %d u Secs.",
+		dev_dbg(wm->dev, "setting adc sample delay to %d u Secs.",
 			 delay_table[delay]);
 	}
 	dig2 &= 0xff0f;

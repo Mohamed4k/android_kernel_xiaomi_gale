@@ -726,7 +726,7 @@ static int dma_init(struct device_node *cloud, struct device_node *dma_node)
 		dma_hw_enable_all(dma);
 	}
 
-	dev_info(kdev->dev, "DMA %s registered %d logical channels, flows %d, tx chans: %d, rx chans: %d%s\n",
+	dev_dbg(kdev->dev, "DMA %s registered %d logical channels, flows %d, tx chans: %d, rx chans: %d%s\n",
 		dma->name, num_chan, dma->max_rx_flow,
 		dma->max_tx_chan, dma->max_rx_chan,
 		dma->loopback ? ", loopback" : "");

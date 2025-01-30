@@ -1251,31 +1251,31 @@ static void bgx_print_qlm_mode(struct bgx *bgx, u8 lmacid)
 
 	switch (lmac->lmac_type) {
 	case BGX_MODE_SGMII:
-		dev_info(dev, "%s: SGMII\n", (char *)str);
+		dev_dbg(dev, "%s: SGMII\n", (char *)str);
 		break;
 	case BGX_MODE_XAUI:
-		dev_info(dev, "%s: XAUI\n", (char *)str);
+		dev_dbg(dev, "%s: XAUI\n", (char *)str);
 		break;
 	case BGX_MODE_RXAUI:
-		dev_info(dev, "%s: RXAUI\n", (char *)str);
+		dev_dbg(dev, "%s: RXAUI\n", (char *)str);
 		break;
 	case BGX_MODE_XFI:
 		if (!lmac->use_training)
-			dev_info(dev, "%s: XFI\n", (char *)str);
+			dev_dbg(dev, "%s: XFI\n", (char *)str);
 		else
-			dev_info(dev, "%s: 10G_KR\n", (char *)str);
+			dev_dbg(dev, "%s: 10G_KR\n", (char *)str);
 		break;
 	case BGX_MODE_XLAUI:
 		if (!lmac->use_training)
-			dev_info(dev, "%s: XLAUI\n", (char *)str);
+			dev_dbg(dev, "%s: XLAUI\n", (char *)str);
 		else
-			dev_info(dev, "%s: 40G_KR4\n", (char *)str);
+			dev_dbg(dev, "%s: 40G_KR4\n", (char *)str);
 		break;
 	case BGX_MODE_QSGMII:
-		dev_info(dev, "%s: QSGMII\n", (char *)str);
+		dev_dbg(dev, "%s: QSGMII\n", (char *)str);
 		break;
 	case BGX_MODE_RGMII:
-		dev_info(dev, "%s: RGMII\n", (char *)str);
+		dev_dbg(dev, "%s: RGMII\n", (char *)str);
 		break;
 	case BGX_MODE_INVALID:
 		/* Nothing to do */
@@ -1406,7 +1406,7 @@ static int acpi_get_mac_address(struct device *dev, struct acpi_device *adev,
 		goto out;
 	}
 
-	dev_info(dev, "MAC address set to: %pM\n", mac);
+	dev_dbg(dev, "MAC address set to: %pM\n", mac);
 
 	memcpy(dst, mac, ETH_ALEN);
 out:
@@ -1443,7 +1443,7 @@ static acpi_status bgx_acpi_match_id(acpi_handle handle, u32 lvl,
 
 	snprintf(bgx_sel, 5, "BGX%d", bgx->bgx_id);
 	if (ACPI_FAILURE(acpi_get_name(handle, ACPI_SINGLE_NAME, &string))) {
-		pr_warn("Invalid link device\n");
+		pr_debug("Invalid link device\n");
 		return AE_OK;
 	}
 
@@ -1717,7 +1717,7 @@ static struct pci_driver bgx_driver = {
 
 static int __init bgx_init_module(void)
 {
-	pr_info("%s, ver %s\n", DRV_NAME, DRV_VERSION);
+	pr_debug("%s, ver %s\n", DRV_NAME, DRV_VERSION);
 
 	return pci_register_driver(&bgx_driver);
 }

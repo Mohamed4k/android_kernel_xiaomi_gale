@@ -112,7 +112,7 @@ static int b43_sdio_probe(struct sdio_func *func,
 					break;
 				vendor = tuple->data[1] | (tuple->data[2]<<8);
 				device = tuple->data[3] | (tuple->data[4]<<8);
-				dev_info(&func->dev, "Chip ID %04x:%04x\n",
+				dev_dbg(&func->dev, "Chip ID %04x:%04x\n",
 					 vendor, device);
 				break;
 			default:

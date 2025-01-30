@@ -299,7 +299,7 @@ static int scpi_clocks_probe(struct platform_device *pdev)
 		cpufreq_dev = platform_device_register_simple("scpi-cpufreq",
 							      -1, NULL, 0);
 		if (IS_ERR(cpufreq_dev))
-			pr_warn("unable to register cpufreq device");
+			pr_debug("unable to register cpufreq device");
 	}
 	return 0;
 }

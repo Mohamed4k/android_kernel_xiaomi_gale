@@ -1493,7 +1493,7 @@ static int sh_mmcif_probe(struct platform_device *pdev)
 
 	dev_pm_qos_expose_latency_limit(dev, 100);
 
-	dev_info(dev, "Chip version 0x%04x, clock rate %luMHz\n",
+	dev_dbg(dev, "Chip version 0x%04x, clock rate %luMHz\n",
 		 sh_mmcif_readl(host->addr, MMCIF_CE_VERSION) & 0xffff,
 		 clk_get_rate(host->clk) / 1000000UL);
 

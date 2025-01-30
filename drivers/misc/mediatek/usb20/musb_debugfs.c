@@ -385,9 +385,9 @@ static int musb_regw_show(struct seq_file *s, void *unused)
 {
 	DBG(0, "%s -> Called\n", __func__);
 
-	pr_notice("Uage:\n");
-	pr_notice("Mac Write: echo mac:addr:data > regw\n");
-	pr_notice("Phy Write: echo phy:addr:data > regw\n");
+	pr_debug("Uage:\n");
+	pr_debug("Mac Write: echo mac:addr:data > regw\n");
+	pr_debug("Phy Write: echo phy:addr:data > regw\n");
 
 	return 0;
 }
@@ -412,7 +412,7 @@ static ssize_t musb_regw_mode_write
 
 	memset(buf, 0x00, sizeof(buf));
 
-	pr_notice("%s -> Called\n", __func__);
+	pr_debug("%s -> Called\n", __func__);
 
 	if (copy_from_user(buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
 		return -EFAULT;
@@ -445,16 +445,16 @@ static ssize_t musb_regw_mode_write
 	data = my_strtoul(tmp2, NULL, 0);
 
 	if (is_mac == 1) {
-		pr_notice("Mac base adddr 0x%lx, Write 0x%x[0x%x]\n",
+		pr_debug("Mac base adddr 0x%lx, Write 0x%x[0x%x]\n",
 			(unsigned long)musb->mregs, offset, data);
 		musb_writeb(musb->mregs, offset, data);
 	} else {
 		if ((offset % 4) != 0) {
-			pr_notice("Must use 32bits alignment address\n");
+			pr_debug("Must use 32bits alignment address\n");
 			return count;
 		}
 #ifdef CONFIG_MTK_MUSB_PHY
-		pr_notice("Phy base adddr 0x%lx, Write 0x%x[0x%x]\n",
+		pr_debug("Phy base adddr 0x%lx, Write 0x%x[0x%x]\n",
 		(unsigned long)((void __iomem *)
 		(((unsigned long)musb->xceiv->io_priv)
 		+ 0x800)), offset, data);
@@ -501,7 +501,7 @@ static ssize_t musb_regr_mode_write(struct file *file,
 
 	memset(buf, 0x00, sizeof(buf));
 
-	pr_notice("%s -> Called\n", __func__);
+	pr_debug("%s -> Called\n", __func__);
 
 	if (copy_from_user(buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
 		return -EFAULT;
@@ -528,16 +528,16 @@ static ssize_t musb_regr_mode_write(struct file *file,
 	offset = my_strtoul(tmp, NULL, 0);
 
 	if (is_mac == 1)
-		pr_notice("Read Mac base adddr 0x%lx, Read 0x%x[0x%x]\n",
+		pr_debug("Read Mac base adddr 0x%lx, Read 0x%x[0x%x]\n",
 			(unsigned long)musb->mregs, offset
 			, musb_readb(musb->mregs, offset));
 	else {
 		if ((offset % 4) != 0) {
-			pr_notice("Must use 32bits alignment address\n");
+			pr_debug("Must use 32bits alignment address\n");
 			return count;
 		}
 #ifdef CONFIG_MTK_MUSB_PHY
-		pr_notice("Read Phy base adddr 0x%lx, Read 0x%x[0x%x]\n",
+		pr_debug("Read Phy base adddr 0x%lx, Read 0x%x[0x%x]\n",
 			(unsigned long)((void __iomem *)
 			(((unsigned long)musb->xceiv->io_priv)
 			+ 0x800)), offset,

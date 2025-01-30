@@ -117,7 +117,7 @@ static int clk_mt6833_mm_probe(struct platform_device *pdev)
 	struct device_node *node = pdev->dev.of_node;
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init begin\n", __func__);
+	pr_debug("%s init begin\n", __func__);
 #endif
 
 	clk_data = mtk_alloc_clk_data(CLK_MM_NR_CLK);
@@ -128,11 +128,11 @@ static int clk_mt6833_mm_probe(struct platform_device *pdev)
 	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
 
 	if (r)
-		pr_notice("%s(): could not register clock provider: %d\n",
+		pr_debug("%s(): could not register clock provider: %d\n",
 			__func__, r);
 
 #if MT_CCF_BRINGUP
-	pr_notice("%s init end\n", __func__);
+	pr_debug("%s init end\n", __func__);
 #endif
 
 	return r;

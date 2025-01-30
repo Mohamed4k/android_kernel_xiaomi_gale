@@ -95,9 +95,9 @@ static struct platform_driver lcm_driver = {
 
 static int __init lcm_init(void)
 {
-	pr_notice("[Kernel/LCM] register lcm init driver\n");
+	pr_debug("[Kernel/LCM] register lcm init driver\n");
 	if (platform_driver_register(&lcm_driver)) {
-		pr_notice("LCM: failed to register this driver!\n");
+		pr_debug("LCM: failed to register this driver!\n");
 		return -ENODEV;
 	}
 
@@ -681,7 +681,7 @@ static void lcm_initial_registers(void)
 
 static void lcm_init_power(void)
 {
-	pr_notice("[Kernel/LCM] %s enter\n", __func__);
+	pr_debug("[Kernel/LCM] %s enter\n", __func__);
 
 	lcm_set_gpio_output(GPIO_LCD_PWR_EN, 1);
 	MDELAY(10);
@@ -689,7 +689,7 @@ static void lcm_init_power(void)
 
 static void lcm_suspend_power(void)
 {
-	pr_notice("[Kernel/LCM] %s enter\n", __func__);
+	pr_debug("[Kernel/LCM] %s enter\n", __func__);
 
 	lcm_set_gpio_output(GPIO_LCD_PWR_EN, 0);
 	MDELAY(20);
@@ -698,7 +698,7 @@ static void lcm_suspend_power(void)
 
 static void lcm_resume_power(void)
 {
-	pr_notice("[Kernel/LCM] %s enter\n", __func__);
+	pr_debug("[Kernel/LCM] %s enter\n", __func__);
 
 	lcm_set_gpio_output(GPIO_LCD_PWR_EN, 1);
 }
@@ -746,7 +746,7 @@ static void lcm_get_params(struct LCM_PARAMS *params)
 
 static void lcm_init_lcm(void)
 {
-	pr_notice("[Kernel/LCM] %s enter\n", __func__);
+	pr_debug("[Kernel/LCM] %s enter\n", __func__);
 
 #ifdef BUILD_LK
 	lcm_resume();
@@ -755,7 +755,7 @@ static void lcm_init_lcm(void)
 
 void lcm_suspend(void)
 {
-	pr_notice("[Kernel/LCM] %s enter\n", __func__);
+	pr_debug("[Kernel/LCM] %s enter\n", __func__);
 
 	lcm_set_gpio_output(GPIO_LCD_RST_EN, 1);
 	MDELAY(10);
@@ -767,7 +767,7 @@ void lcm_suspend(void)
 
 void lcm_resume(void)
 {
-	pr_notice("[Kernel/LCM] %s enter\n", __func__);
+	pr_debug("[Kernel/LCM] %s enter\n", __func__);
 
 	lcm_set_gpio_output(GPIO_LCD_RST_EN, 0);
 	lcm_set_gpio_output(GPIO_LCD_PWR_EN, 0);

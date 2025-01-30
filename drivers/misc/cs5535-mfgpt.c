@@ -199,7 +199,7 @@ struct cs5535_mfgpt_timer *cs5535_mfgpt_alloc_timer(int timer_nr, int domain)
 	}
 	timer->chip = mfgpt;
 	timer->nr = timer_nr;
-	dev_info(&mfgpt->pdev->dev, "registered timer %d\n", timer_nr);
+	dev_dbg(&mfgpt->pdev->dev, "registered timer %d\n", timer_nr);
 
 done:
 	return timer;
@@ -350,11 +350,11 @@ static int cs5535_mfgpt_probe(struct platform_device *pdev)
 	cs5535_mfgpt_chip.pdev = pdev;
 	spin_lock_init(&cs5535_mfgpt_chip.lock);
 
-	dev_info(&pdev->dev, "reserved resource region %pR\n", res);
+	dev_dbg(&pdev->dev, "reserved resource region %pR\n", res);
 
 	/* detect the available timers */
 	t = scan_timers(&cs5535_mfgpt_chip);
-	dev_info(&pdev->dev, "%d MFGPT timers available\n", t);
+	dev_dbg(&pdev->dev, "%d MFGPT timers available\n", t);
 	cs5535_mfgpt_chip.initialized = 1;
 	return 0;
 

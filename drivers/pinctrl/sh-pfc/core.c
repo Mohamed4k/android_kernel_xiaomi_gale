@@ -768,7 +768,7 @@ static int sh_pfc_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, pfc);
 
-	dev_info(pfc->dev, "%s support registered\n", info->name);
+	dev_dbg(pfc->dev, "%s support registered\n", info->name);
 
 	return 0;
 }

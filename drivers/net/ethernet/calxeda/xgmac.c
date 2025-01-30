@@ -1738,7 +1738,7 @@ static int xgmac_probe(struct platform_device *pdev)
 	}
 
 	uid = readl(priv->base + XGMAC_VERSION);
-	netdev_info(ndev, "h/w version is 0x%x\n", uid);
+	netdev_dbg(ndev, "h/w version is 0x%x\n", uid);
 
 	/* Figure out how many valid mac address filter registers we have */
 	writel(1, priv->base + XGMAC_ADDR_HIGH(31));

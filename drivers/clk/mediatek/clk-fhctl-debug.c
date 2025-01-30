@@ -47,10 +47,10 @@ static int __fh_ctrl_cmd_handler(struct clk_mt_fhctl *fh,
 {
 	int ret;
 
-	pr_info("pll_id:0x%x cmd: %x p1:%x", pll_id, cmd, p1);
+	pr_debug("pll_id:0x%x cmd: %x p1:%x", pll_id, cmd, p1);
 
 	if (fh == NULL) {
-		pr_info("Error: fh is null!");
+		pr_debug("Error: fh is null!");
 		return 0;
 	}
 
@@ -68,13 +68,13 @@ static int __fh_ctrl_cmd_handler(struct clk_mt_fhctl *fh,
 		ret = !(mtk_fh_set_rate(pll_id, p1, -1));
 		break;
 	default:
-		pr_info(" Not Support CMD:%x\n", cmd);
+		pr_debug(" Not Support CMD:%x\n", cmd);
 		ret = -EINVAL;
 		break;
 	}
 
 	if (ret)
-		pr_info(" Debug CMD fail err:%d\n", ret);
+		pr_debug(" Debug CMD fail err:%d\n", ret);
 
 	return ret;
 }
@@ -96,7 +96,7 @@ static ssize_t fh_ctrl_proc_write(struct file *file,
 
 	len = min(count, (sizeof(kbuf) - 1));
 
-	pr_info("count: %ld", count);
+	pr_debug("count: %ld", count);
 	if (count == 0)
 		return -1;
 
@@ -111,19 +111,19 @@ static ssize_t fh_ctrl_proc_write(struct file *file,
 
 	n = sscanf(kbuf, "%x %x %x", &cmd, &pll_id, &p1);
 	if ((n != 3) && (n != 2)) {
-		pr_info("error input format\n");
+		pr_debug("error input format\n");
 		return -EINVAL;
 	}
 
-	pr_info("pll:0x%x cmd:%x p1:%x", pll_id, cmd, p1);
+	pr_debug("pll:0x%x cmd:%x p1:%x", pll_id, cmd, p1);
 
 	if ((cmd < FH_DBG_CMD_ID) && (cmd > FH_DBG_CMD_MAX)) {
-		pr_info("cmd not support:%x", cmd);
+		pr_debug("cmd not support:%x", cmd);
 		return -EINVAL;
 	}
 
 	if (pll_id >= fhctl->pll_num) {
-		pr_info("pll_id is illegal:%d", pll_id);
+		pr_debug("pll_id is illegal:%d", pll_id);
 		return -EINVAL;
 	}
 
@@ -243,7 +243,7 @@ static int mt_fh_dumpregs_read(struct seq_file *m, void *data)
 	for (i = 0; i < fhctl->pll_num ; i++) {
 		fh = mtk_fh_get_fh_obj_tbl(fhctl, i);
 		if (fh == NULL) {
-			pr_info(" fh:NULL pll_id:%d", i);
+			pr_debug(" fh:NULL pll_id:%d", i);
 			seq_printf(m, "ERROR PLL_ID:%d clk_mt_fhctl is NULL\r\n",
 						i);
 			return 0;
@@ -256,7 +256,7 @@ static int mt_fh_dumpregs_read(struct seq_file *m, void *data)
 
 		fh_regs = fh->fh_regs;
 		if (fh_regs == NULL) {
-			pr_info("%s Not support dumpregs!",
+			pr_debug("%s Not support dumpregs!",
 				fh->pll_data->pll_name);
 			seq_printf(m, "PLL_%d: %s Not support dumpregs!\n",
 						i, fh->pll_data->pll_name);
@@ -326,7 +326,7 @@ void mt_fhctl_init_debugfs(struct mtk_fhctl *fhctl)
 
 	root = debugfs_create_dir("fhctl", NULL);
 	if (IS_ERR(root)) {
-		dev_info(dev, "create debugfs fail");
+		dev_dbg(dev, "create debugfs fail");
 		return;
 	}
 
@@ -336,7 +336,7 @@ void mt_fhctl_init_debugfs(struct mtk_fhctl *fhctl)
 	fh_dumpregs_dir = debugfs_create_devm_seqfile(dev,
 				"dumpregs", root, mt_fh_dumpregs_read);
 	if (IS_ERR(fh_dumpregs_dir)) {
-		dev_info(dev, "failed to create dumpregs debugfs");
+		dev_dbg(dev, "failed to create dumpregs debugfs");
 		return;
 	}
 
@@ -344,7 +344,7 @@ void mt_fhctl_init_debugfs(struct mtk_fhctl *fhctl)
 	fh_ctrl_dir = debugfs_create_file("ctrl", 0664,
 						root, fhctl, &ctrl_fops);
 	if (IS_ERR(fh_ctrl_dir)) {
-		dev_info(dev, "failed to create ctrl debugfs");
+		dev_dbg(dev, "failed to create ctrl debugfs");
 		return;
 	}
 

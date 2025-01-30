@@ -91,7 +91,7 @@ static int xilinx_wdt_stop(struct watchdog_device *wdd)
 
 	clk_disable(xdev->clk);
 
-	pr_info("Stopped!\n");
+	pr_debug("Stopped!\n");
 
 	return 0;
 }
@@ -238,7 +238,7 @@ static int xwdt_probe(struct platform_device *pdev)
 
 	clk_disable(xdev->clk);
 
-	dev_info(&pdev->dev, "Xilinx Watchdog Timer at %p with timeout %ds\n",
+	dev_dbg(&pdev->dev, "Xilinx Watchdog Timer at %p with timeout %ds\n",
 		 xdev->base, xilinx_wdt_wdd->timeout);
 
 	platform_set_drvdata(pdev, xdev);

@@ -269,7 +269,7 @@ static int xircom_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 		goto err_unmap;
 	}
 
-	netdev_info(dev, "Xircom cardbus revision %i at irq %i\n",
+	netdev_dbg(dev, "Xircom cardbus revision %i at irq %i\n",
 		    pdev->revision, pdev->irq);
 	/* start the transmitter to get a heartbeat */
 	/* TODO: send 2 dummy packets here */
@@ -349,7 +349,7 @@ static irqreturn_t xircom_interrupt(int irq, void *dev_instance)
 		int newlink;
 		netdev_dbg(dev, "Link status has changed\n");
 		newlink = link_status(card);
-		netdev_info(dev, "Link is %d mbit\n", newlink);
+		netdev_dbg(dev, "Link is %d mbit\n", newlink);
 		if (newlink)
 			netif_carrier_on(dev);
 		else
@@ -441,7 +441,7 @@ static int xircom_open(struct net_device *dev)
 	const int irq = xp->pdev->irq;
 	int retval;
 
-	netdev_info(dev, "xircom cardbus adaptor found, using irq %i\n", irq);
+	netdev_dbg(dev, "xircom cardbus adaptor found, using irq %i\n", irq);
 	retval = request_irq(irq, xircom_interrupt, IRQF_SHARED, dev->name, dev);
 	if (retval)
 		return retval;

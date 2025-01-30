@@ -291,7 +291,7 @@ static int uli526x_init_one(struct pci_dev *pdev,
 	ULI526X_DBUG(0, "uli526x_init_one()", 0);
 
 	if (!printed_version++)
-		pr_info("%s\n", version);
+		pr_debug("%s\n", version);
 
 	/* Init network device */
 	dev = alloc_etherdev(sizeof(*db));
@@ -300,7 +300,7 @@ static int uli526x_init_one(struct pci_dev *pdev,
 	SET_NETDEV_DEV(dev, &pdev->dev);
 
 	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) {
-		pr_warn("32-bit PCI DMA not available\n");
+		pr_debug("32-bit PCI DMA not available\n");
 		err = -ENODEV;
 		goto err_out_free;
 	}
@@ -407,7 +407,7 @@ static int uli526x_init_one(struct pci_dev *pdev,
 	if (err)
 		goto err_out_unmap;
 
-	netdev_info(dev, "ULi M%04lx at pci%s, %pM, irq %d\n",
+	netdev_dbg(dev, "ULi M%04lx at pci%s, %pM, irq %d\n",
 		    ent->driver_data >> 16, pci_name(pdev),
 		    dev->dev_addr, pdev->irq);
 
@@ -537,7 +537,7 @@ static void uli526x_init(struct net_device *dev)
 	}
 
 	if (phy_tmp == 32)
-		pr_warn("Can not find the phy address!!!\n");
+		pr_debug("Can not find the phy address!!!\n");
 	/* Parser SROM and media mode */
 	db->media_mode = uli526x_media_mode;
 
@@ -1074,7 +1074,7 @@ static void uli526x_timer(struct timer_list *t)
 		/* Link Failed */
 		ULI526X_DBUG(0, "Link Failed", tmp_cr12);
 		netif_carrier_off(dev);
-		netdev_info(dev, "NIC Link is Down\n");
+		netdev_dbg(dev, "NIC Link is Down\n");
 		db->link_failed = 1;
 
 		/* For Force 10/100M Half/Full mode: Enable Auto-Nego mode */
@@ -1100,7 +1100,7 @@ static void uli526x_timer(struct timer_list *t)
 
 			if(db->link_failed==0)
 			{
-				netdev_info(dev, "NIC Link is Up %d Mbps %s duplex\n",
+				netdev_dbg(dev, "NIC Link is Up %d Mbps %s duplex\n",
 					    (db->op_mode == ULI526X_100MHF ||
 					     db->op_mode == ULI526X_100MFD)
 					    ? 100 : 10,
@@ -1115,7 +1115,7 @@ static void uli526x_timer(struct timer_list *t)
 		{
 			if(db->init==1)
 			{
-				netdev_info(dev, "NIC Link is Down\n");
+				netdev_dbg(dev, "NIC Link is Down\n");
 				netif_carrier_off(dev);
 			}
 		}
@@ -1807,7 +1807,7 @@ MODULE_PARM_DESC(mode, "ULi M5261/M5263: Bit 0: 10/100Mbps, bit 2: duplex, bit 8
 static int __init uli526x_init_module(void)
 {
 
-	pr_info("%s\n", version);
+	pr_debug("%s\n", version);
 	printed_version = 1;
 
 	ULI526X_DBUG(0, "init_module() ", debug);

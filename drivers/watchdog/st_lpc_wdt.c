@@ -232,7 +232,7 @@ static int st_wdog_probe(struct platform_device *pdev)
 
 	st_wdog_setup(st_wdog, true);
 
-	dev_info(&pdev->dev, "LPC Watchdog driver registered, reset type is %s",
+	dev_dbg(&pdev->dev, "LPC Watchdog driver registered, reset type is %s",
 		 st_wdog->warm_reset ? "warm" : "cold");
 
 	return ret;

@@ -775,7 +775,7 @@ static int qlcnic_set_channels(struct net_device *dev,
 	adapter->flags |= QLCNIC_TSS_RSS;
 
 	err = qlcnic_setup_rings(adapter);
-	netdev_info(dev, "Allocated %d SDS rings and %d Tx rings\n",
+	netdev_dbg(dev, "Allocated %d SDS rings and %d Tx rings\n",
 		    adapter->drv_sds_rings, adapter->drv_tx_rings);
 
 	return err;
@@ -1097,7 +1097,7 @@ static int qlcnic_loopback_test(struct net_device *netdev, u8 mode)
 		return qlcnic_83xx_loopback_test(netdev, mode);
 
 	if (!(ahw->capabilities & QLCNIC_FW_CAPABILITY_MULTI_LOOPBACK)) {
-		dev_info(&adapter->pdev->dev,
+		dev_dbg(&adapter->pdev->dev,
 			 "Firmware do not support loopback test\n");
 		return -EOPNOTSUPP;
 	}
@@ -1127,7 +1127,7 @@ static int qlcnic_loopback_test(struct net_device *netdev, u8 mode)
 		msleep(500);
 		qlcnic_process_rcv_ring_diag(sds_ring);
 		if (loop++ > QLCNIC_ILB_MAX_RCV_LOOP) {
-			netdev_info(netdev,
+			netdev_dbg(netdev,
 				    "Firmware didn't sent link up event to loopback request\n");
 			ret = -ETIMEDOUT;
 			goto free_res;
@@ -1615,7 +1615,7 @@ int qlcnic_enable_fw_dump_state(struct qlcnic_adapter *adapter)
 		fw_dump->enable = true;
 	}
 
-	dev_info(&adapter->pdev->dev, "FW dump enabled\n");
+	dev_dbg(&adapter->pdev->dev, "FW dump enabled\n");
 
 	return 0;
 }
@@ -1638,7 +1638,7 @@ static int qlcnic_disable_fw_dump_state(struct qlcnic_adapter *adapter)
 		fw_dump->enable = false;
 	}
 
-	dev_info(&adapter->pdev->dev, "FW dump disabled\n");
+	dev_dbg(&adapter->pdev->dev, "FW dump disabled\n");
 
 	return 0;
 }
@@ -1700,7 +1700,7 @@ qlcnic_get_dump_data(struct net_device *netdev, struct ethtool_dump *dump,
 	}
 
 	if (!fw_dump->clr) {
-		netdev_info(netdev, "Dump not available\n");
+		netdev_dbg(netdev, "Dump not available\n");
 		return -EINVAL;
 	}
 
@@ -1720,7 +1720,7 @@ qlcnic_get_dump_data(struct net_device *netdev, struct ethtool_dump *dump,
 	vfree(fw_dump->data);
 	fw_dump->data = NULL;
 	fw_dump->clr = 0;
-	netdev_info(netdev, "extracted the FW dump Successfully\n");
+	netdev_dbg(netdev, "extracted the FW dump Successfully\n");
 	return 0;
 }
 
@@ -1730,7 +1730,7 @@ static int qlcnic_set_dump_mask(struct qlcnic_adapter *adapter, u32 mask)
 	struct net_device *netdev = adapter->netdev;
 
 	if (!qlcnic_check_fw_dump_state(adapter)) {
-		netdev_info(netdev,
+		netdev_dbg(netdev,
 			    "Can not change driver mask to 0x%x. FW dump not enabled\n",
 			    mask);
 		return -EOPNOTSUPP;
@@ -1741,7 +1741,7 @@ static int qlcnic_set_dump_mask(struct qlcnic_adapter *adapter, u32 mask)
 	/* Store new capture mask in template header as well*/
 	qlcnic_store_cap_mask(adapter, fw_dump->tmpl_hdr, mask);
 
-	netdev_info(netdev, "Driver mask changed to: 0x%x\n", mask);
+	netdev_dbg(netdev, "Driver mask changed to: 0x%x\n", mask);
 	return 0;
 }
 
@@ -1762,18 +1762,18 @@ qlcnic_set_dump(struct net_device *netdev, struct ethtool_dump *val)
 		}
 
 		if (!qlcnic_check_fw_dump_state(adapter)) {
-			netdev_info(netdev, "FW dump not enabled\n");
+			netdev_dbg(netdev, "FW dump not enabled\n");
 			ret = -EOPNOTSUPP;
 			break;
 		}
 
 		if (fw_dump->clr) {
-			netdev_info(netdev,
+			netdev_dbg(netdev,
 				    "Previous dump not cleared, not forcing dump\n");
 			break;
 		}
 
-		netdev_info(netdev, "Forcing a FW dump\n");
+		netdev_dbg(netdev, "Forcing a FW dump\n");
 		qlcnic_dev_request_reset(adapter, val->flag);
 		break;
 	case QLCNIC_DISABLE_FW_DUMP:
@@ -1797,7 +1797,7 @@ qlcnic_set_dump(struct net_device *netdev, struct ethtool_dump *val)
 		break;
 
 	case QLCNIC_FORCE_FW_RESET:
-		netdev_info(netdev, "Forcing a FW reset\n");
+		netdev_dbg(netdev, "Forcing a FW reset\n");
 		qlcnic_dev_request_reset(adapter, val->flag);
 		adapter->flags &= ~QLCNIC_FW_RESET_OWNER;
 		break;
@@ -1805,7 +1805,7 @@ qlcnic_set_dump(struct net_device *netdev, struct ethtool_dump *val)
 	case QLCNIC_SET_QUIESCENT:
 	case QLCNIC_RESET_QUIESCENT:
 		if (test_bit(__QLCNIC_MAINTENANCE_MODE, &adapter->state))
-			netdev_info(netdev, "Device is in non-operational state\n");
+			netdev_dbg(netdev, "Device is in non-operational state\n");
 		break;
 
 	default:
@@ -1825,7 +1825,7 @@ qlcnic_set_dump(struct net_device *netdev, struct ethtool_dump *val)
 		if (valid_mask) {
 			ret = qlcnic_set_dump_mask(adapter, val->flag);
 		} else {
-			netdev_info(netdev, "Invalid dump level: 0x%x\n",
+			netdev_dbg(netdev, "Invalid dump level: 0x%x\n",
 				    val->flag);
 			ret = -EINVAL;
 		}

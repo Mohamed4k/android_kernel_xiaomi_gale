@@ -1106,7 +1106,7 @@ static int rk_gmac_clk_init(struct plat_stmmacenet_data *plat)
 		dev_err(dev, "cannot get clock %s\n", "clk_mac_speed");
 
 	if (bsp_priv->clock_input) {
-		dev_info(dev, "clock input from PHY\n");
+		dev_dbg(dev, "clock input from PHY\n");
 	} else {
 		if (bsp_priv->phy_iface == PHY_INTERFACE_MODE_RMII)
 			clk_set_rate(bsp_priv->clk_mac, 50000000);
@@ -1251,7 +1251,7 @@ static struct rk_priv_data *rk_gmac_setup(struct platform_device *pdev,
 		dev_err(dev, "Can not read property: clock_in_out.\n");
 		bsp_priv->clock_input = true;
 	} else {
-		dev_info(dev, "clock input or output? (%s).\n",
+		dev_dbg(dev, "clock input or output? (%s).\n",
 			 strings);
 		if (!strcmp(strings, "input"))
 			bsp_priv->clock_input = true;
@@ -1266,7 +1266,7 @@ static struct rk_priv_data *rk_gmac_setup(struct platform_device *pdev,
 		dev_err(dev, "set tx_delay to 0x%x\n",
 			bsp_priv->tx_delay);
 	} else {
-		dev_info(dev, "TX delay(0x%x).\n", value);
+		dev_dbg(dev, "TX delay(0x%x).\n", value);
 		bsp_priv->tx_delay = value;
 	}
 
@@ -1277,7 +1277,7 @@ static struct rk_priv_data *rk_gmac_setup(struct platform_device *pdev,
 		dev_err(dev, "set rx_delay to 0x%x\n",
 			bsp_priv->rx_delay);
 	} else {
-		dev_info(dev, "RX delay(0x%x).\n", value);
+		dev_dbg(dev, "RX delay(0x%x).\n", value);
 		bsp_priv->rx_delay = value;
 	}
 
@@ -1295,7 +1295,7 @@ static struct rk_priv_data *rk_gmac_setup(struct platform_device *pdev,
 			}
 		}
 	}
-	dev_info(dev, "integrated PHY? (%s).\n",
+	dev_dbg(dev, "integrated PHY? (%s).\n",
 		 bsp_priv->integrated_phy ? "yes" : "no");
 
 	bsp_priv->pdev = pdev;
@@ -1315,24 +1315,24 @@ static int rk_gmac_powerup(struct rk_priv_data *bsp_priv)
 	/*rmii or rgmii*/
 	switch (bsp_priv->phy_iface) {
 	case PHY_INTERFACE_MODE_RGMII:
-		dev_info(dev, "init for RGMII\n");
+		dev_dbg(dev, "init for RGMII\n");
 		bsp_priv->ops->set_to_rgmii(bsp_priv, bsp_priv->tx_delay,
 					    bsp_priv->rx_delay);
 		break;
 	case PHY_INTERFACE_MODE_RGMII_ID:
-		dev_info(dev, "init for RGMII_ID\n");
+		dev_dbg(dev, "init for RGMII_ID\n");
 		bsp_priv->ops->set_to_rgmii(bsp_priv, 0, 0);
 		break;
 	case PHY_INTERFACE_MODE_RGMII_RXID:
-		dev_info(dev, "init for RGMII_RXID\n");
+		dev_dbg(dev, "init for RGMII_RXID\n");
 		bsp_priv->ops->set_to_rgmii(bsp_priv, bsp_priv->tx_delay, 0);
 		break;
 	case PHY_INTERFACE_MODE_RGMII_TXID:
-		dev_info(dev, "init for RGMII_TXID\n");
+		dev_dbg(dev, "init for RGMII_TXID\n");
 		bsp_priv->ops->set_to_rgmii(bsp_priv, 0, bsp_priv->rx_delay);
 		break;
 	case PHY_INTERFACE_MODE_RMII:
-		dev_info(dev, "init for RMII\n");
+		dev_dbg(dev, "init for RMII\n");
 		bsp_priv->ops->set_to_rmii(bsp_priv);
 		break;
 	default:

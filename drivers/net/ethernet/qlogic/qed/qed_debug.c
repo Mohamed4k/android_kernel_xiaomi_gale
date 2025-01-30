@@ -7665,7 +7665,7 @@ static void qed_dbg_print_feature(u8 *p_text_buf, u32 text_size)
 	if (!p_text_buf)
 		return;
 
-	pr_notice("\n%.*s", precision, p_text_buf);
+	pr_debug("\n%.*s", precision, p_text_buf);
 	for (i = precision; i < text_size; i += precision)
 		pr_cont("%.*s", precision, p_text_buf + i);
 	pr_cont("\n");

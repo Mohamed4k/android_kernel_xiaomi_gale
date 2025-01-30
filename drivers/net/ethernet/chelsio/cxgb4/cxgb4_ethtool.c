@@ -1082,7 +1082,7 @@ static int set_flash(struct net_device *netdev, struct ethtool_flash *ef)
 	ret = t4_fw_upgrade(adap, mbox, fw->data, fw->size, 1);
 	release_firmware(fw);
 	if (!ret)
-		dev_info(adap->pdev_dev,
+		dev_dbg(adap->pdev_dev,
 			 "loaded firmware %s, reload cxgb4 driver\n", ef->data);
 	return ret;
 }

@@ -248,7 +248,7 @@ static int zx2967_wdt_probe(struct platform_device *pdev)
 	if (ret)
 		goto err;
 
-	dev_info(dev, "watchdog enabled (timeout=%d sec, nowayout=%d)",
+	dev_dbg(dev, "watchdog enabled (timeout=%d sec, nowayout=%d)",
 		 wdt->wdt_device.timeout, WATCHDOG_NOWAYOUT);
 
 	return 0;

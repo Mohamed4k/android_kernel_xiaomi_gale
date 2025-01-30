@@ -34,7 +34,7 @@
 #define rt_info(fmt, args...)   \
 do {\
 	if (RTLOG_LEVEL >= LOGLEVEL_INFO) {\
-		pr_info(fmt, ##args); \
+		pr_debug(fmt, ##args); \
 	} \
 } while (0)
 
@@ -453,7 +453,7 @@ static int rt9466_register_rt_regmap(struct rt9466_info *info)
 	struct i2c_client *client = info->client;
 	struct rt_regmap_properties *prop = NULL;
 
-	dev_info(info->dev, "%s\n", __func__);
+	dev_dbg(info->dev, "%s\n", __func__);
 
 	prop = devm_kzalloc(&client->dev, sizeof(struct rt_regmap_properties),
 		GFP_KERNEL);
@@ -2525,7 +2525,7 @@ static int rt9466_get_vbus(struct charger_device *chg_dev, u32 *vbus)
 
 	*vbus = adc_vbus;
 
-	dev_info(info->dev, "%s: vbus = %dmA\n", __func__, adc_vbus);
+	dev_dbg(info->dev, "%s: vbus = %dmA\n", __func__, adc_vbus);
 	return ret;
 }
 #endif
@@ -2968,7 +2968,7 @@ static int rt9466_safety_check(struct charger_device *chg_dev, u32 polling_ieoc)
 
 	ret = rt9466_get_adc(info, RT9466_ADC_IBAT, &adc_ibat);
 	if (ret < 0) {
-		dev_info(info->dev, "%s: get adc failed\n", __func__);
+		dev_dbg(info->dev, "%s: get adc failed\n", __func__);
 		return ret;
 	}
 	if (adc_ibat <= polling_ieoc)
@@ -2977,7 +2977,7 @@ static int rt9466_safety_check(struct charger_device *chg_dev, u32 polling_ieoc)
 		counter = 0;
 	/* If IBAT is less than polling_ieoc for 3 times, trigger EOC event */
 	if (counter == 3) {
-		dev_info(info->dev, "%s: polling_ieoc = %d, ibat = %d\n",
+		dev_dbg(info->dev, "%s: polling_ieoc = %d, ibat = %d\n",
 			__func__, polling_ieoc, adc_ibat);
 		charger_dev_notify(info->chg_dev, CHARGER_DEV_NOTIFY_EOC);
 		counter = 0;

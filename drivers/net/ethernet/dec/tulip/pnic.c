@@ -149,7 +149,7 @@ void pnic_timer(struct timer_list *t)
 				tulip_restart_rxtx(tp);
 				netif_trans_update(dev);
 				if (tulip_debug > 1)
-					dev_info(&dev->dev,
+					dev_dbg(&dev->dev,
 						 "Changing PNIC configuration to %s %s-duplex, CSR6 %08x\n",
 						 medianame[dev->if_port],
 						 tp->full_duplex ? "full" : "half",
@@ -161,7 +161,7 @@ too_good_connection:
 	mod_timer(&tp->timer, RUN_AT(next_tick));
 	if(!ioread32(ioaddr + CSR7)) {
 		if (tulip_debug > 1)
-			dev_info(&dev->dev, "sw timer wakeup\n");
+			dev_dbg(&dev->dev, "sw timer wakeup\n");
 		disable_irq(dev->irq);
 		tulip_refill_rx(dev);
 		enable_irq(dev->irq);

@@ -254,7 +254,7 @@ ath5k_pci_probe(struct pci_dev *pdev,
 		goto err_map;
 	}
 
-	dev_info(&pdev->dev, "registered as '%s'\n", wiphy_name(hw->wiphy));
+	dev_dbg(&pdev->dev, "registered as '%s'\n", wiphy_name(hw->wiphy));
 
 	ah = hw->priv;
 	ah->hw = hw;
