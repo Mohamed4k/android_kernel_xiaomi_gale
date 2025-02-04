@@ -19,7 +19,7 @@ DEFCONFIG="gale_defconfig"
 # you can set you name or host name(optional)
 
 export KBUILD_BUILD_USER="ColoroXKernel"
-export KBUILD_BUILD_HOST="specific cat"
+export KBUILD_BUILD_HOST="Μσση🌙"
 
 # do not modify TC_DIR and export PATCH it's been including with the proton-clang dir
 
