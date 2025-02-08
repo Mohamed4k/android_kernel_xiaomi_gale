@@ -725,7 +725,7 @@ struct bus_type mdio_bus_type = {
 };
 EXPORT_SYMBOL(mdio_bus_type);
 
-int __init mdio_bus_init(void)
+int mdio_bus_init(void)
 {
 	int ret;
 

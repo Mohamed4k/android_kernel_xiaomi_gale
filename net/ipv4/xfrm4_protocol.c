@@ -293,7 +293,7 @@ int xfrm4_protocol_deregister(struct xfrm4_protocol *handler,
 }
 EXPORT_SYMBOL(xfrm4_protocol_deregister);
 
-void __init xfrm4_protocol_init(void)
+void xfrm4_protocol_init(void)
 {
 	xfrm_input_register_afinfo(&xfrm4_input_afinfo);
 }

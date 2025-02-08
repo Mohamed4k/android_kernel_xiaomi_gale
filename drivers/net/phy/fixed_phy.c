@@ -253,7 +253,7 @@ void fixed_phy_unregister(struct phy_device *phy)
 }
 EXPORT_SYMBOL_GPL(fixed_phy_unregister);
 
-static int __init fixed_mdio_bus_init(void)
+static int fixed_mdio_bus_init(void)
 {
 	struct fixed_mdio_bus *fmb = &platform_fmb;
 	int ret;
